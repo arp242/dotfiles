@@ -1,0 +1,236 @@
+# UTF-8 (Unicode) compose sequence
+# David.Monniaux@ens.fr
+#
+# see /usr/X11R6/include/X11/keysymdef.h for character escapes
+# Part 1 - Manual definitions
+
+# Spacing versions of dead accents
+<dead_tilde> <space>             	: "~"   asciitilde # TILDE
+<dead_tilde> <dead_tilde>        	: "~"   asciitilde # TILDE
+<dead_acute> <space>             	: "'"   apostrophe # APOSTROPHE
+<dead_acute> <dead_acute>        	: "´"   acute # ACUTE ACCENT
+<dead_grave> <space>             	: "`"   grave # GRAVE ACCENT
+<dead_grave> <dead_grave>        	: "`"   grave # GRAVE ACCENT
+<dead_circumflex> <space>        	: "^"   asciicircum # CIRCUMFLEX ACCENT
+<dead_circumflex> <dead_circumflex> 	: "^"   asciicircum # CIRCUMFLEX ACCENT
+<dead_macron> <space>            	: "¯"   macron # MACRON
+<dead_macron> <dead_macron>      	: "¯"   macron # MACRON
+<dead_abovedot> <space>          	: "˙"   abovedot # DOT ABOVE
+<dead_abovedot> <dead_abovedot>  	: "˙"   abovedot # DOT ABOVE
+<dead_diaeresis> <dead_diaeresis> 	: "¨"   diaeresis # DIAERESIS
+<dead_diaeresis> <space>         	: "\""   quotedbl # REVERSE SOLIDUS
+<dead_doubleacute> <space>       	: "˝"   U2dd # DOUBLE ACUTE ACCENT
+<dead_doubleacute> <dead_doubleacute> 	: "˝"   U2dd # DOUBLE ACUTE ACCENT
+
+
+# ASCII characters that may be difficult to access
+# on some keyboards.
+<Multi_key> <o> <c>              	: "©"   copyright # COPYRIGHT SIGN
+<Multi_key> <o> <r>              	: "®"   registered # REGISTERED SIGN
+<Multi_key> <t> <m> : "™" # 2122 trademark
+
+<Multi_key> <period> <period>    	: "…"   ellipsis # HORIZONTAL ELLIPSIS
+<Multi_key> <h> <y> : "‐" # 2010 hyphen
+<Multi_key> <exclam> <minus> : "‑" # 2011 non-breaking hyphen
+<Multi_key> <f> <i> : "‒" # 2012 figure dash
+<Multi_key> <e> <n> : "–" # 2013 en dash
+<Multi_key> <e> <m> : "—" # 2014 em dash
+
+<Multi_key> <period> <minus>    	: "·"   periodcentered # MIDDLE DOT
+<Multi_key> <period> <equal>    	: "•"   enfilledcircbullet # BULLET
+
+# Quotation marks
+<Multi_key> <6> <apostrophe>  	: "‘"   U2018 # LEFT SINGLE QUOTATION MARK
+<Multi_key> <9> <apostrophe> 	: "’"   U2019 # RIGHT SINGLE QUOTATION MARK
+<Multi_key> <6> <quotedbl>    	: "“"   U201c # LEFT DOUBLE QUOTATION MARK
+<Multi_key> <7> <quotedbl> 	: "”"   U201d # RIGHT DOUBLE QUOTATION MARK
+
+<Multi_key> <comma> <apostrophe> 	: "‚"   U201a # SINGLE LOW-9 QUOTATION MARK
+<Multi_key> <comma> <quotedbl>   	: "„"   U201e # DOUBLE LOW-9 QUOTATION MARK
+
+# Per xxx
+<Multi_key> <percent> <percent>        	: "‰"   U2030 # PER MILLE SIGN
+
+# Currencies
+<Multi_key> <dollar> <e>          	: "€"   EuroSign # EURO SIGN
+<Multi_key> <dollar> <c>            	: "¢"   cent # CENT SIGN
+
+# Dashes
+<Multi_key> <minus> <minus> <space> 	: "–"   U2013 # EN DASH
+<Multi_key> <minus> <minus> <minus> 	: "—"   U2014 # EM DASH
+
+<Multi_key> <circumflex> <1>            	: "¹"   onesuperior # SUPERSCRIPT ONE
+<Multi_key> <circumflex> <2>            	: "²"   twosuperior # SUPERSCRIPT TWO
+<Multi_key> <circumflex> <3>            	: "³"   threesuperior # SUPERSCRIPT THREE
+<Multi_key> <minus> <0> 		      : "₀"   zerosubscript       # SUBSCRIPT ZERO
+<Multi_key> <minus> <1> 		      : "₁"   onesubscript        # SUBSCRIPT ONE
+<Multi_key> <minus> <2> 		      : "₂"   twosubscript        # SUBSCRIPT TWO
+<Multi_key> <minus> <3> 		      : "₃"   threesubscript      # SUBSCRIPT THREE
+<Multi_key> <minus> <4> 		      : "₄"   foursubscript       # SUBSCRIPT FOUR
+<Multi_key> <minus> <5> 		      : "₅"   fivesubscript       # SUBSCRIPT FIVE
+<Multi_key> <minus> <6> 		      : "₆"   sixsubscript        # SUBSCRIPT SIX
+<Multi_key> <minus> <7> 		      : "₇"   sevensubscript      # SUBSCRIPT SEVEN
+<Multi_key> <minus> <8> 		      : "₈"   eightsubscript      # SUBSCRIPT EIGHT
+<Multi_key> <minus> <9> 		      : "₉"   ninesubscript       # SUBSCRIPT NINE
+
+<Multi_key> <1> <4>              	: "¼"   onequarter # VULGAR FRACTION ONE QUARTER
+<Multi_key> <1> <2>              	: "½"   onehalf # VULGAR FRACTION ONE HALF
+<Multi_key> <3> <4>              	: "¾"   threequarters # VULGAR FRACTION THREE QUARTERS
+
+<Multi_key> <plus> <minus>       	: "±"   plusminus # PLUS-MINUS SIGN
+<Multi_key> <o> <o>              	: "°"   degree # DEGREE SIGN
+
+<Multi_key> <u>              	: "µ"   mu # MICRO SIGN
+
+### Math signs
+<Multi_key> <x> <x>              	: "×"   multiply # MULTIPLICATION SIGN
+<Multi_key> <colon> <minus>      	: "÷"   division # DIVISION SIGN
+<Multi_key> <minus> <colon>      	: "÷"   division # DIVISION SIGN
+<dead_stroke> <equal> 		      : "≠"   notequal            # NOT EQUAL TO
+<Multi_key> <less> <equal> : "≤" # 2264 less-than or equal to
+<Multi_key> <greater> <equal> : "≥" # 2265 greater-than or equal to
+<Multi_key> <asciitilde> <equal> : "≅" # 2245 approximately equal to
+
+<Multi_key> <8> <8> : "∞" # 221E infinity
+
+<Multi_key> <s> <q> : "√" # 221A square root
+<Multi_key> <c> <u> : "∛" # 221B cube root
+<Multi_key> <f> <o> : "∜" # 221C fourth root
+
+<Multi_key> <underscore> <underscore> : "−" # 2212 minus sign
+
+<Multi_key> <slash> <slash> : "⁄" # 2044 fraction slash
+
+<Multi_key> <1> <apostrophe> : "′" # 2032 prime
+<Multi_key> <2> <apostrophe> : "″" # 2033 double prime
+<Multi_key> <3> <apostrophe> : "‴" # 2034 triple prime
+
+### Greek letters
+<Multi_key> <asterisk> <A> : "Α" # 0391 capital alpha
+<Multi_key> <asterisk> <B> : "Β" # 0392 capital beta
+<Multi_key> <asterisk> <G> : "Γ" # 0393 capital gamma
+<Multi_key> <asterisk> <D> : "Δ" # 0394 capital delta
+<Multi_key> <asterisk> <E> : "Ε" # 0395 capital epsilon
+<Multi_key> <asterisk> <Z> : "Ζ" # 0396 capital zeta
+<Multi_key> <asterisk> <H> : "Η" # 0397 capital eta
+<Multi_key> <asterisk> <U> : "Θ" # 0398 capital theta
+<Multi_key> <asterisk> <I> : "Ι" # 0399 capital iota
+<Multi_key> <asterisk> <K> : "Κ" # 039A capital kappa
+<Multi_key> <asterisk> <L> : "Λ" # 039B capital lambda
+<Multi_key> <asterisk> <M> : "Μ" # 039C capital mu
+<Multi_key> <asterisk> <N> : "Ν" # 039D capital nu
+<Multi_key> <asterisk> <J> : "Ξ" # 039E capital xi
+<Multi_key> <asterisk> <O> : "Ο" # 039F capital omicron
+<Multi_key> <asterisk> <P> : "Π" # 03A0 capital pi
+<Multi_key> <asterisk> <R> : "Ρ" # 03A1 capital rho
+<Multi_key> <asterisk> <S> : "Σ" # 03A3 capital sigma
+<Multi_key> <asterisk> <T> : "Τ" # 03A4 capital tau
+<Multi_key> <asterisk> <Y> : "Υ" # 03A5 capital upsilon
+<Multi_key> <asterisk> <F> : "Φ" # 03A6 capital phi
+<Multi_key> <asterisk> <X> : "Χ" # 03A7 capital chi
+<Multi_key> <asterisk> <C> : "Ψ" # 03A8 capital psi
+<Multi_key> <asterisk> <V> : "Ω" # 03A9 capital omega
+<Multi_key> <asterisk> <a> : "α" # 03B1 small alpha
+<Multi_key> <asterisk> <b> : "β" # 03B2 small beta
+<Multi_key> <asterisk> <g> : "γ" # 03B3 small gamma
+<Multi_key> <asterisk> <d> : "δ" # 03B4 small delta
+<Multi_key> <asterisk> <e> : "ε" # 03B5 small epsilon
+<Multi_key> <asterisk> <z> : "ζ" # 03B6 small zeta
+<Multi_key> <asterisk> <h> : "η" # 03B7 small eta
+<Multi_key> <asterisk> <u> : "θ" # 03B8 small theta
+<Multi_key> <asterisk> <i> : "ι" # 03B9 small iota
+<Multi_key> <asterisk> <k> : "κ" # 03BA small kappa
+<Multi_key> <asterisk> <l> : "λ" # 03BB small lambda
+<Multi_key> <asterisk> <m> : "μ" # 03BC small mu
+<Multi_key> <asterisk> <n> : "ν" # 03BD small nu
+<Multi_key> <asterisk> <j> : "ξ" # 03BE small xi
+<Multi_key> <asterisk> <o> : "ο" # 03BF small omicron
+<Multi_key> <asterisk> <p> : "π" # 03C0 small pi
+<Multi_key> <asterisk> <r> : "ρ" # 03C1 small rho
+<Multi_key> <asterisk> <q> : "ς" # 03C2 small final sigma
+<Multi_key> <asterisk> <s> : "σ" # 03C3 small sigma
+<Multi_key> <asterisk> <t> : "τ" # 03C4 small tau
+<Multi_key> <asterisk> <y> : "υ" # 03C5 small upsilon
+<Multi_key> <asterisk> <f> : "φ" # 03C6 small phi
+<Multi_key> <asterisk> <x> : "χ" # 03C7 small chi
+<Multi_key> <asterisk> <c> : "ψ" # 03C8 small psi
+<Multi_key> <asterisk> <v> : "ω" # 03C9 small omega
+
+### Accented letters
+<dead_grave> <A>                 	: "À"   Agrave # LATIN CAPITAL LETTER A WITH GRAVE
+<Multi_key> <grave> <A>          	: "À"   Agrave # LATIN CAPITAL LETTER A WITH GRAVE
+<dead_acute> <A>                 	: "Á"   Aacute # LATIN CAPITAL LETTER A WITH ACUTE
+<Multi_key> <acute> <A>          	: "Á"   Aacute # LATIN CAPITAL LETTER A WITH ACUTE
+<Multi_key> <apostrophe> <A>     	: "Á"   Aacute # LATIN CAPITAL LETTER A WITH ACUTE
+
+<dead_grave> <E>                 	: "È"   Egrave # LATIN CAPITAL LETTER E WITH GRAVE
+<Multi_key> <grave> <E>          	: "È"   Egrave # LATIN CAPITAL LETTER E WITH GRAVE
+<dead_acute> <E>                 	: "É"   Eacute # LATIN CAPITAL LETTER E WITH ACUTE
+<Multi_key> <acute> <E>          	: "É"   Eacute # LATIN CAPITAL LETTER E WITH ACUTE
+<Multi_key> <apostrophe> <E>     	: "É"   Eacute # LATIN CAPITAL LETTER E WITH ACUTE
+<dead_circumflex> <E>            	: "Ê"   Ecircumflex # LATIN CAPITAL LETTER E WITH CIRCUMFLEX
+<Multi_key> <asciicircum> <E>    	: "Ê"   Ecircumflex # LATIN CAPITAL LETTER E WITH CIRCUMFLEX
+<dead_diaeresis> <E>             	: "Ë"   Ediaeresis # LATIN CAPITAL LETTER E WITH DIAERESIS
+<Multi_key> <quotedbl> <E>       	: "Ë"   Ediaeresis # LATIN CAPITAL LETTER E WITH DIAERESIS
+
+<dead_diaeresis> <I>             	: "Ï"   Idiaeresis # LATIN CAPITAL LETTER I WITH DIAERESIS
+<Multi_key> <quotedbl> <I>       	: "Ï"   Idiaeresis # LATIN CAPITAL LETTER I WITH DIAERESIS
+
+<dead_grave> <O>                 	: "Ò"   Ograve # LATIN CAPITAL LETTER O WITH GRAVE
+<Multi_key> <grave> <O>          	: "Ò"   Ograve # LATIN CAPITAL LETTER O WITH GRAVE
+<dead_acute> <O>                 	: "Ó"   Oacute # LATIN CAPITAL LETTER O WITH ACUTE
+<Multi_key> <acute> <O>          	: "Ó"   Oacute # LATIN CAPITAL LETTER O WITH ACUTE
+<Multi_key> <apostrophe> <O>     	: "Ó"   Oacute # LATIN CAPITAL LETTER O WITH ACUTE
+
+<dead_diaeresis> <O>             	: "Ö"   Odiaeresis # LATIN CAPITAL LETTER O WITH DIAERESIS
+<Multi_key> <quotedbl> <O>       	: "Ö"   Odiaeresis # LATIN CAPITAL LETTER O WITH DIAERESIS
+
+<dead_grave> <U>                 	: "Ù"   Ugrave # LATIN CAPITAL LETTER U WITH GRAVE
+<Multi_key> <grave> <U>          	: "Ù"   Ugrave # LATIN CAPITAL LETTER U WITH GRAVE
+<dead_acute> <U>                 	: "Ú"   Uacute # LATIN CAPITAL LETTER U WITH ACUTE
+<Multi_key> <acute> <U>          	: "Ú"   Uacute # LATIN CAPITAL LETTER U WITH ACUTE
+<Multi_key> <apostrophe> <U>     	: "Ú"   Uacute # LATIN CAPITAL LETTER U WITH ACUTE
+
+<dead_grave> <a>                 	: "à"   agrave # LATIN SMALL LETTER A WITH GRAVE
+<Multi_key> <grave> <a>          	: "à"   agrave # LATIN SMALL LETTER A WITH GRAVE
+<dead_acute> <a>                 	: "á"   aacute # LATIN SMALL LETTER A WITH ACUTE
+<Multi_key> <acute> <a>          	: "á"   aacute # LATIN SMALL LETTER A WITH ACUTE
+<Multi_key> <apostrophe> <a>     	: "á"   aacute # LATIN SMALL LETTER A WITH ACUTE
+
+<dead_diaeresis> <a>             	: "ä"   adiaeresis # LATIN SMALL LETTER A WITH DIAERESIS
+<Multi_key> <quotedbl> <a>       	: "ä"   adiaeresis # LATIN SMALL LETTER A WITH DIAERESIS
+
+<dead_grave> <e>                 	: "è"   egrave # LATIN SMALL LETTER E WITH GRAVE
+<Multi_key> <grave> <e>          	: "è"   egrave # LATIN SMALL LETTER E WITH GRAVE
+<dead_acute> <e>                 	: "é"   eacute # LATIN SMALL LETTER E WITH ACUTE
+<Multi_key> <acute> <e>          	: "é"   eacute # LATIN SMALL LETTER E WITH ACUTE
+<Multi_key> <apostrophe> <e>     	: "é"   eacute # LATIN SMALL LETTER E WITH ACUTE
+
+<dead_diaeresis> <e>             	: "ë"   ediaeresis # LATIN SMALL LETTER E WITH DIAERESIS
+<Multi_key> <quotedbl> <e>       	: "ë"   ediaeresis # LATIN SMALL LETTER E WITH DIAERESIS
+<dead_grave> <i>                 	: "ì"   igrave # LATIN SMALL LETTER I WITH GRAVE
+<Multi_key> <grave> <i>          	: "ì"   igrave # LATIN SMALL LETTER I WITH GRAVE
+<dead_acute> <i>                 	: "í"   iacute # LATIN SMALL LETTER I WITH ACUTE
+<Multi_key> <acute> <i>          	: "í"   iacute # LATIN SMALL LETTER I WITH ACUTE
+<Multi_key> <apostrophe> <i>     	: "í"   iacute # LATIN SMALL LETTER I WITH ACUTE
+<Multi_key> <asciicircum> <i>    	: "î"   icircumflex # LATIN SMALL LETTER I WITH CIRCUMFLEX
+<dead_diaeresis> <i>             	: "ï"   idiaeresis # LATIN SMALL LETTER I WITH DIAERESIS
+<Multi_key> <quotedbl> <i>       	: "ï"   idiaeresis # LATIN SMALL LETTER I WITH DIAERESIS
+
+<dead_grave> <o>                 	: "ò"   ograve # LATIN SMALL LETTER O WITH GRAVE
+<Multi_key> <grave> <o>          	: "ò"   ograve # LATIN SMALL LETTER O WITH GRAVE
+<dead_acute> <o>                 	: "ó"   oacute # LATIN SMALL LETTER O WITH ACUTE
+<Multi_key> <acute> <o>          	: "ó"   oacute # LATIN SMALL LETTER O WITH ACUTE
+<Multi_key> <apostrophe> <o>     	: "ó"   oacute # LATIN SMALL LETTER O WITH ACUTE
+<dead_diaeresis> <o>             	: "ö"   odiaeresis # LATIN SMALL LETTER O WITH DIAERESIS
+<Multi_key> <quotedbl> <o>       	: "ö"   odiaeresis # LATIN SMALL LETTER O WITH DIAERESIS
+
+<dead_grave> <u>                 	: "ù"   ugrave # LATIN SMALL LETTER U WITH GRAVE
+<Multi_key> <grave> <u>          	: "ù"   ugrave # LATIN SMALL LETTER U WITH GRAVE
+<dead_acute> <u>                 	: "ú"   uacute # LATIN SMALL LETTER U WITH ACUTE
+<Multi_key> <acute> <u>          	: "ú"   uacute # LATIN SMALL LETTER U WITH ACUTE
+<Multi_key> <apostrophe> <u>     	: "ú"   uacute # LATIN SMALL LETTER U WITH ACUTE
+<dead_diaeresis> <u>             	: "ü"   udiaeresis # LATIN SMALL LETTER U WITH DIAERESIS
+<Multi_key> <quotedbl> <u>       	: "ü"   udiaeresis # LATIN SMALL LETTER U WITH DIAERESIS
+
+

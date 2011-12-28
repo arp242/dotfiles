@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/home/www/priv.arp242.net/cal/template'
+let g:netrw_dirhist_2='/usr/local/lib/python2.7/site-packages/gevent'
+let g:netrw_dirhist_3='/home/www/arp242.net/groen'
+let g:netrw_dirhist_4='/home/www/arp242.net/test/weblog/code'
+let g:netrw_dirhist_5='/home/www/arp242.net/test/code'
+let g:netrw_dirhist_6='/home/www/arp242.net/code'

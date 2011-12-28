@@ -1,0 +1,8 @@
+[ui]
+username = Martin Tournoij <martin@arp242.net>
+
+[extensions]
+hgext.convert=
+
+[web]
+cacerts = /usr/local/share/certs/ca-root-nss.crt
