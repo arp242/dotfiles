@@ -1,0 +1,14 @@
+# vim:ts=8:sts=8
+
+# urlview
+macro index B "<pipe-message>urlview<enter>"
+macro pager B "<pipe-message>urlview<enter>"
+
+# general
+macro pager \e1 "<enter-command>set pager_index_lines=0<enter>"
+macro pager \e2 "<enter-command>set pager_index_lines=5<enter>"
+macro pager \e3 "<enter-command>set pager_index_lines=10<enter>"
+macro pager \e4 "<enter-command>set pager_index_lines=15<enter>"
+macro pager \e5 "<enter-command>set pager_index_lines=20<enter>"
+macro pager \e6 "<enter-command>set pager_index_lines=25<enter>"
+macro pager \e7 "<enter-command>set pager_index_lines=30<enter>"
