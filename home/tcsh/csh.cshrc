@@ -68,6 +68,8 @@ else if ($uname == FreeBSD) then
 	else
 		setenv TERM xterm-color
 	endif
+else if ($uname == Linux) then
+	setenv TERM xterm-color
 else
 	setenv TERM vt220
 endif
@@ -119,6 +121,9 @@ set autolist
 
 # Use history to aid expansion
 set autoexpand
+
+# Never autologout
+set autologout
 
 # Smarter completion
 #set complete = enhance
@@ -381,7 +386,7 @@ if ($uname == FreeBSD) then
 	complete service 'n/*/`service -l`/'
 
 	complete pkg_delete 'c/-/(i v D n p d f G x X r)/' 'n@*@`/bin/ls /var/db/pkg`@'
-else if  ($uname == Linux)
+else if  ($uname == Linux) then
 	# Use /bin/ls to prevent ls options interfering (i.e. adding a *)
 	complete service 'n@*@`/bin/ls /etc/init.d`@' 
 endif
