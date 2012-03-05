@@ -1,5 +1,6 @@
-# $FreeBSD: src/etc/csh.cshrc,v 1.3.56.1.6.1 2010/12/21 17:09:25 kensmith Exp $
+# $FreeBSD: release/9.0.0/etc/csh.cshrc 50472 1999-08-27 23:37:10Z peter $
 #	$OpenBSD: csh.cshrc,v 1.2 1996/05/26 10:25:19 deraadt Exp $
+# $Config$
 #
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
@@ -22,7 +23,7 @@ set uname = `uname`
 ##################################################
 # Environment
 #################################################
-umask 027
+umask 022
 
 setenv PATH ~/bin
 setenv PATH ${PATH}:/sbin:/bin:/usr/sbin:/usr/bin
