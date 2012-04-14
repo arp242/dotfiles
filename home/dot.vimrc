@@ -155,6 +155,9 @@ set wildmode=list
 " TODO ... ?
 set completeopt=longest,menu,preview
 
+" Allow cursor to go one character past the end of the line
+set virtualedit=onemore
+
 " TODO I need to look at this...
 "set formatoptions+=
 
