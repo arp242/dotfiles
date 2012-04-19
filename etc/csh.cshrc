@@ -390,6 +390,7 @@ if ($uname == FreeBSD) then
 else if  ($uname == Linux) then
 	# Use /bin/ls to prevent ls options interfering (i.e. adding a *)
 	complete service 'n@*@`/bin/ls /etc/init.d`@' 
+	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
 endif
 
 # Only list make targets
