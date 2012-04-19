@@ -1,6 +1,5 @@
 # $FreeBSD: release/9.0.0/etc/csh.cshrc 50472 1999-08-27 23:37:10Z peter $
 #	$OpenBSD: csh.cshrc,v 1.2 1996/05/26 10:25:19 deraadt Exp $
-# $Config$
 #
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
@@ -233,6 +232,8 @@ endif
 # Override the tcsh builtins
 if (-x /usr/bin/nice) then
 	alias nice "/usr/bin/nice"
+else if (-x /bin/nice) then
+        alias nice "/bin/nice"
 endif
 
 if (-x /usr/bin/time) then
@@ -245,7 +246,6 @@ alias mv "mv -i"
 alias make "nice -n 20 make"
 alias lman "groff -man -Tascii"
 alias j "jobs -l"
-alias su "su -f"
 
 # Third-party stuff
 if (-X mplayer) then
