@@ -1,0 +1,19 @@
+# vim:ts=8:sts=8
+
+unlists *
+lists freebsd-questions
+lists questions
+lists freebsd-ports
+lists ports
+lists freebsd-chat
+lists chat
+lists pbi-dev
+
+unsubscribe *
+subscribe freebsd-questions
+subscribe questions
+subscribe freebsd-ports
+subscribe ports
+subscribe freebsd-chat
+subscribe chat
+subscribe pbi-dev

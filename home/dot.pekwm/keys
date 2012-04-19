@@ -1,0 +1,128 @@
+# vim:syntax=config
+
+Global {
+	# Moving in frames
+	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
+	KeyPress = "Mod4 h" { Actions = "FocusDirectional Left" }
+	KeyPress = "Mod4 l" { Actions = "FocusDirectional Right" }
+	KeyPress = "Mod4 k" { Actions = "FocusDirectional Up" }
+	KeyPress = "Mod4 j" { Actions = "FocusDirectional Down" }
+	KeyPress = "Mod4 Left" { Actions = "FocusDirectional Left" }
+	KeyPress = "Mod4 Right" { Actions = "FocusDirectional Right" }
+	KeyPress = "Mod4 Up" { Actions = "FocusDirectional Up" }
+	KeyPress = "Mod4 Down" { Actions = "FocusDirectional Down" }
+
+	KeyPress = "Mod4 A" { Actions = "ActivateClientRel -1" }
+	KeyPress = "Mod4 S" { Actions = "ActivateClientRel 1" }
+
+	# Moving in workspaces
+	KeyPress = "Mod4 F1" { Actions = "GotoWorkspace 1" }
+	KeyPress = "Mod4 F2" { Actions = "GotoWorkspace 2" }
+	KeyPress = "Mod4 F3" { Actions = "GotoWorkspace 3" }
+	KeyPress = "Mod4 F4" { Actions = "GotoWorkspace 4" }
+	KeyPress = "Mod4 F5" { Actions = "GotoWorkspace 5" }
+	KeyPress = "Mod4 F6" { Actions = "GotoWorkspace 6" }
+	KeyPress = "Mod4 F7" { Actions = "GotoWorkspace 7" }
+	KeyPress = "Mod4 F8" { Actions = "GotoWorkspace 8" }
+
+	KeyPress = "Mod4 1" { Actions = "SendToWorkspace 1" }
+	KeyPress = "Mod4 2" { Actions = "SendToWorkspace 2" }
+	KeyPress = "Mod4 3" { Actions = "SendToWorkspace 3" }
+	KeyPress = "Mod4 4" { Actions = "SendToWorkspace 4" }
+	KeyPress = "Mod4 5" { Actions = "SendToWorkspace 5" }
+	KeyPress = "Mod4 6" { Actions = "SendToWorkspace 6" }
+	KeyPress = "Mod4 7" { Actions = "SendToWorkspace 7" }
+	KeyPress = "Mod4 8" { Actions = "SendToWorkspace 8" }
+
+	# Simple window management
+	KeyPress = "Mod4 M" { Actions = "Toggle Maximized True True" }
+	KeyPress = "Mod4 Shift M" { Actions = "Toggle FullScreen" }
+	KeyPress = "Mod4 Return" { Actions = "MoveResize" }
+	KeyPress = "Mod4 Z" { Actions = "Toggle Marked" }
+	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
+	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
+	KeyPress = "Mod4 D" { Actions = "Detach" }
+	
+	# External Commands
+	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 80x24" }
+
+	# Pekwm control
+	KeyPress = "Ctrl Mod1 R" { Actions = "Reload" }
+	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
+	KeyPress = "Mod4 Q" { Actions = "ShowCmdDialog" }
+	KeyPress = "Mod4 T" { Actions = "Toggle HarbourHidden" }
+}
+
+# Keys when MoveResize is active
+MoveResize {
+	KeyPress = "h" { Actions = "MoveHorizontal -50" }
+	KeyPress = "l" { Actions = "MoveHorizontal 100" }
+	KeyPress = "k" { Actions = "MoveVertical -50" }
+	KeyPress = "j" { Actions = "MoveVertical 100" }
+	KeyPress = "Left" { Actions = "MoveHorizontal -50" }
+	KeyPress = "Right" { Actions = "MoveHorizontal 100" }
+	KeyPress = "Up" { Actions = "MoveVertical -50" }
+	KeyPress = "Down" { Actions = "MoveVertical 100" }
+	Keypress = "Shift h" { Actions = "MoveHorizontal -5" }
+	Keypress = "Shift l" { Actions = "MoveHorizontal 5" }
+	Keypress = "Shift k" { Actions = "MoveVertical -5" }
+	Keypress = "Shift j" { Actions = "MoveVertical 5" }
+	Keypress = "Shift Left" { Actions = "MoveHorizontal -5" }
+	Keypress = "Shift Right" { Actions = "MoveHorizontal 5" }
+	Keypress = "Shift Up" { Actions = "MoveVertical -5" }
+	Keypress = "Shift Down" { Actions = "MoveVertical 5" }
+
+	Keypress = "Mod4 h" { Actions = "ResizeHorizontal -50" }
+	Keypress = "Mod4 l" { Actions = "ResizeHorizontal 100" }
+	Keypress = "Mod4 k" { Actions = "ResizeVertical -50" }
+	Keypress = "Mod4 j" { Actions = "ResizeVertical 100" }
+	Keypress = "Mod4 Left" { Actions = "ResizeHorizontal -50" }
+	Keypress = "Mod4 Right" { Actions = "ResizeHorizontal 100" }
+	Keypress = "Mod4 Up" { Actions = "ResizeVertical -50" }
+	Keypress = "Mod4 Down" { Actions = "ResizeVertical 100" }
+	Keypress = "Shift Mod4 h" { Actions = "ResizeHorizontal -5" }
+	Keypress = "Shift Mod4 l" { Actions = "ResizeHorizontal 5" }
+	Keypress = "Shift Mod4 k" { Actions = "ResizeVertical -5" }
+	Keypress = "Shift Mod4 j" { Actions = "ResizeVertical 5" }
+	Keypress = "Shift Mod4 Left" { Actions = "ResizeHorizontal -5" }
+	Keypress = "Shift Mod4 Right" { Actions = "ResizeHorizontal 5" }
+	Keypress = "Shift Mod4 Up" { Actions = "ResizeVertical -5" }
+	Keypress = "Shift Mod4 Down" { Actions = "ResizeVertical 5" }
+
+	Keypress = "s" { Actions = "MoveSnap" }
+	Keypress = "Escape" { Actions = "Cancel" }
+	Keypress = "q" { Actions = "Cancel" }
+	Keypress = "Return" { Actions = "End" }
+}
+
+# Keys for CmdDialog editing
+CmdDialog {
+	KeyPress = "Left" { Actions = "CursPrev" }
+	KeyPress = "Right" { Actions = "CursNext" }
+	KeyPress = "Ctrl A" { Actions = "CursBegin" }
+	KeyPress = "Ctrl E" { Actions = "CursEnd" }
+	KeyPress = "BackSpace" { Actions = "Erase" }
+	KeyPress = "Ctrl K" { Actions = "ClearFromCursor" }
+	KeyPress = "Ctrl C" { Actions = "Clear" }
+	KeyPress = "Return" { Actions = "Exec" }
+	KeyPress = "Escape" { Actions = "Close" }
+	KeyPress = "Up" { Actions = "HistPrev" }
+	KeyPress = "Down" { Actions = "HistNext" }
+	KeyPress = "Any Any" { Actions = "Insert" }
+}
+
+# Keys working in menus
+Menu {
+	KeyPress = "j" { Actions = "NextItem" }
+	KeyPress = "k" { Actions = "PrevItem" }
+	KeyPress = "h" { Actions = "LeaveSubmenu" }
+	KeyPress = "l" { Actions = "EnterSubmenu" }
+	KeyPress = "Down" { Actions = "NextItem" }
+	KeyPress = "Up" { Actions = "PrevItem" }
+	KeyPress = "Left" { Actions = "LeaveSubmenu" }
+	KeyPress = "Right" { Actions = "EnterSubmenu" }
+	KeyPress = "Return" { Actions = "Select" }
+	KeyPress = "space" { Actions = "Select" }
+	KeyPress = "Escape" { Actions = "Close" }
+	KeyPress = "q" { Actions = "Close" }
+}

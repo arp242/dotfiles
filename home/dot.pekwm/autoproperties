@@ -1,0 +1,21 @@
+# vim:syntax=config
+#
+# http://www.pekwm.org/files/pekwm/doc/0.1.7/html/config/autoprops.html
+
+
+Property = ".*,^Opera" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "2"
+}
+Property = ".*,^Firefox" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "2"
+}
+
+#Harbour {
+#	Property = "stalonetray,stalonetray" {
+#		ApplyOn = "New Start Reload"
+#		Position = "-1"
+#		Focusable = "False"
+#	}
+#}

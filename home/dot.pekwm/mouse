@@ -1,0 +1,94 @@
+# vim:syntax=config
+
+FrameTitle {
+	ButtonRelease = "1" { Actions = "Raise; Focus; ActivateClient" }
+	ButtonRelease = "2" { Actions = "ShowMenu Window" }
+	ButtonRelease = "3" { Actions = "Lower" }
+	Motion = "1" { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "2" { Threshold = "4"; Actions = "GroupingDrag True" }
+	Motion = "Mod4 1" { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "Mod4 3" { Actions = "Resize" }
+	Enter = "Any Any" { Actions = "Focus" }
+}
+
+OtherTitle {
+	ButtonRelease = "1" { Actions = "Raise; Focus" }
+	ButtonRelease = "2" { Actions = "Focus" }
+	ButtonRelease = "3" { Actions = "Close" }
+	ButtonRelease = "Mod4 3" { Actions = "ShowMenu Window" }
+	Motion = "1" { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "Mod4 1" { Threshold = "4"; Actions = "Raise; Move" }
+	Enter = "Any Any" { Actions = "Focus" }
+}
+
+Border {
+	TopLeft {
+		ButtonPress = "1" { Actions = "Focus; Resize TopLeft" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	Top {
+		ButtonPress = "1" { Actions = "Focus; Resize Top" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	TopRight {
+		ButtonPress = "1" { Actions = "Focus; Resize TopRight" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	Left {
+		ButtonPress = "1" { Actions = "Focus; Resize Left" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	Right {
+		ButtonPress = "1" { Actions = "Focus; Resize Right" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	BottomLeft {
+		ButtonPress = "1" { Actions = "Focus; Resize BottomLeft" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	Bottom {
+		ButtonPress = "1" { Actions = "Focus; Resize Bottom" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+	BottomRight {
+		ButtonPress = "1" { Actions = "Focus; Resize BottomRight" }
+		Enter = "Any Any" { Actions = "Focus" }
+	}
+}
+
+ScreenEdge {
+	Down {
+	}
+	Up {
+	}
+	Left {
+	}
+	Right {
+	}
+}
+
+Client {
+	ButtonPress = "1" { Actions = "Focus; Raise" }
+	Motion = "Mod4 1" { Threshold = "4"; Actions = "Focus; Raise; Move" }
+	Motion = "Mod4 2" { Threshold = "4"; Actions = "GroupingDrag True" }
+	Motion = "Mod4 3" { Actions = "Resize BottomRight" }
+	Enter = "Any Any" { Actions = "Focus" }
+}
+
+Root {
+#	ButtonRelease = "1" { Actions = "ShowMenu Root" }
+#	ButtonRelease = "2" { Actions = "HideAllMenus" }
+#	ButtonRelease = "3" { Actions = "ShowMenu Goto" }
+#	ButtonRelease = "Mod4 3" { Actions = "ShowMenu GotoClient" }
+}
+
+Menu {
+	Enter = "Any Any" { Actions = "Focus" }
+}
+
+Other {
+	Enter = "Any Any" { Actions = "Focus" }
+	#ButtonRelease = "3" { Actions = "Close" }
+	#Motion = "1" { Actions = "Focus; Raise; Move" }
+	#Motion = "Mod4 1" { Threshold = "4"; Actions = "Focus; Raise; Move" }
+}
