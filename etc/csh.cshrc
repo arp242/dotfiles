@@ -222,6 +222,8 @@ else if ($uname == Linux) then
 	alias lc ls -lh
 	alias la ls -A
 	alias lac ls -lhA
+
+	alias sockstat "netstat -lnptu"
 else
 	# These should work on almost any platform ...
 	alias la "ls -a"
