@@ -15,6 +15,8 @@ else if (-d /opt/csw/bin) then
 # FreeBSD, OpenBSD
 else if (-d /usr/local/bin) then
 	set prefix = /usr/local
+else
+    set prefix = 0
 endif
 
 set uname = `uname`
@@ -32,7 +34,9 @@ endif
 if (-d /usr/local/bin) then
 	setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
 endif
-setenv PATH ${PATH}:${prefix}/bin:/${prefix}/sbin
+if ($prefix != 0) then
+    setenv PATH ${PATH}:${prefix}/bin:/${prefix}/sbin
+endif
 setenv PATH ${PATH}:/usr/games
 
 # Some commonly installed packages on OpenSolaris
