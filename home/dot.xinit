@@ -12,7 +12,7 @@ cd ~
 xset -b
 xsetroot -solid "#3A6EA5"
 run randombg
-xmodmap ~/.xmodmap
+xmodmap ~/.Xmodmap
 setxkbmap -option compose:caps
 xbacklight -set 30
 
