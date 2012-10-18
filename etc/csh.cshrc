@@ -196,7 +196,7 @@ if ($uname == FreeBSD) then
 	if (-X bsdgrep) then
 		alias grep "bsdgrep --color"
 	else
-		alias grep "bsdgrep --color"
+		alias grep "grep --color"
 	endif
 
 	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
@@ -213,7 +213,6 @@ else if ($uname == OpenBSD) then
 		alias lac "ls -FAlTho"
 	endif
 
-	alias grep "grep --color"
 	alias pdiff "diff -urN -x CVS -x .svn -I '^# .OpenBSD: '"
 else if ($uname == SunOS) then
 	alias ls "ls-F"
