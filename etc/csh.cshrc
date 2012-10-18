@@ -4,6 +4,7 @@
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
 # Should work on: FreeBSD, OpenBSD, Linux, OpenSolaris
+# $Config$
 #
 
 # NetBSD
@@ -85,12 +86,8 @@ if (-X locale) then
 endif
 
 if ($uname == FreeBSD) then
-	setenv CFLAGS '-I/usr/local/include/'
-	setenv LDFALGS '-L/usr/local/lib/'
 	setenv CVSROOT ":pserver:anoncvs@anoncvs.fr.FreeBSD.org:/home/ncvs"
 else if ($uname == OpenBSD) then
-	setenv CFLAGS '-I/usr/local/include/'
-	setenv LDFALGS '-L/usr/local/lib/'
 	setenv PKG_PATH "ftp://ftp.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/"
 	setenv CVSROOT "anoncvs@anoncvs.fr.openbsd.org:/cvs"
 endif
@@ -129,9 +126,6 @@ set autoexpand
 # Never autologout
 set autologout
 
-# Smarter completion
-#set complete = enhance
-
 # Colorize stuff
 set color
 
@@ -156,6 +150,12 @@ set listjobs
 # Show current dir.
 set prompt = "[%~]%# "
 
+# Show date & hostname on right side
+set rprompt = "%B%U%m%b%u:%T"
+
+# Never print "DING!" as the time
+set noding
+
 # Use % for normal user and # for super
 set promptchars = "%#"
 
@@ -171,11 +171,12 @@ set printexitvalue
 # Ask for confirmation if we do rm *
 set rmstar
 
-# Show date&hostname on right side
-set rprompt = "%m:%T"
-
 # Save history
 set savehist = 8192 merge
+
+# Lists file name suffixes to be ignored by completion
+# TODO Doesn't seem to work ... ?
+set fignore = (.o .pyc)
 
 #################################################
 # Aliases
@@ -191,6 +192,7 @@ if ($uname == FreeBSD) then
 	alias la "ls-F -A"
 	alias lc "ls-F -lThoI"
 	alias lac "ls-F -lThoA"
+	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
 
 	# bsdgrep is FreeBSD >=9
 	if (-X bsdgrep) then
@@ -198,8 +200,6 @@ if ($uname == FreeBSD) then
 	else
 		alias grep "grep --color"
 	endif
-
-	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
 else if ($uname == OpenBSD) then
 	if (-X colorls) then
 		alias ls "colorls -FG"
@@ -232,6 +232,13 @@ else
 	alias la "ls -a"
 	alias lc "ls -l"
 	alias lac "ls -la"
+endif
+
+# bsdgrep is FreeBSD >=9
+if (-X bsdgrep) then
+	alias grep "bsdgrep --color"
+else
+	alias grep "grep --color"
 endif
 
 # Override the tcsh builtins
@@ -280,7 +287,6 @@ else if (-X xtermcontrol) then
 endif
 
 # Typos
-alias -	 "cd -"
 alias sl "ls"
 alias l	 "ls"
 alias c	 "cd"
@@ -357,7 +363,7 @@ complete bindkey 'C/*/b/'
 complete chgrp 'p/1/g/'
 
 # users
-# XXX Support user:group completion
+# TODO Support user:group completion
 complete chown 'p/1/u/'
 
 # You can use complete to provide extensive help for complex commands
@@ -376,15 +382,14 @@ complete find \
 # set up programs to complete only with files ending in certain extensions
 complete cc 'p/*/f:*.[cao]/'
 complete python 'p/*/f:*.py/'
-complete perl 'p/*/f:*.pl/'
+complete perl 'p/*/f:*.[pP][lL]/'
 #complete sh 'p/*/f:*.sh/'
 
 # of course, this completes with all current completions
 complete uncomplete 'p/*/X/'
 
 # set a list of hosts
-set hostlist=(glitch colo xs7.xs4all.nl aragorn.nl)
-complete ssh 'p/1/$hostlist/' 'p/2/c/'
+#complete ssh 'p/1/`grep HostName ~/.ssh/config | sed "s|HostName ||" | tr -d "\t"`/'
 
 #  complete [command [word/pattern/list[:select]/[[suffix]/] ...]] (+)
 if ($uname == FreeBSD) then
