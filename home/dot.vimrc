@@ -134,7 +134,9 @@ set title
 set titleold=
 
 " Use blowfish for encrypting files
-set cryptmethod=blowfish
+if has("cryptv")
+	set cryptmethod=blowfish
+endif
 
 " Show as much of the last line as possibe instead of @
 " Show unprintable chars as <xx>
@@ -150,7 +152,7 @@ set scrolloff=5
 set wildmenu
 
 " List all matches, only complete when it's unambigious
-set wildmode=list
+set wildmode=list,longest
 
 " TODO ... ?
 set completeopt=longest,menu,preview
