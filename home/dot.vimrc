@@ -230,6 +230,8 @@ endif
 """"""""""""
 " Keybinds "
 """"""""""""
+map <F2> :registers<CR>
+map <F3> :buffers<CR>
 MapToggle <F10> list
 MapToggle <F11> spell
 MapToggle <F12> paste
@@ -264,14 +266,13 @@ filetype plugin indent on
 autocmd BufEnter * :syntax sync fromstart
 
 " Automatically close preview window when not needed anymore
-autocmd InsertLeave * call AutoClosePreviewWindow()
-autocmd CursorMovedI * call AutoClosePreviewWindow()
-
-function! AutoClosePreviewWindow()
-	if !&l:previewwindow
-		pclose
-	endif
-endfunction
+"autocmd InsertLeave * call AutoClosePreviewWindow()
+"autocmd CursorMovedI * call AutoClosePreviewWindow()
+"function! AutoClosePreviewWindow()
+"	if !&l:previewwindow
+"		pclose
+"	endif
+"endfunction
 
 au BufNewFile,BufRead *[mM]akefile* setf make
 
@@ -301,18 +302,12 @@ au BufNewFile,BufRead *.tpl set textwidth=9999
 "let python_highlight_space_errors=1
 
 """ PHP syntax settings
-" SQL syntax highlighting inside strings
-"let php_sql_query=1
-
-" HTML syntax highlighting inside strings
-"let php_htmlInStrings=1
-
 " highlighting parent error ] or )
-"let php_parent_error_close=1
-"let php_parent_error_open =1
+let php_parent_error_close=1
+let php_parent_error_open=1
 
 """ Scheme syntax settings
-"let g:is_chicken=1
+let g:is_chicken=1
 
 """"""""""""""""""
 " Plugin options "
@@ -320,11 +315,4 @@ au BufNewFile,BufRead *.tpl set textwidth=9999
 let mapleader=","
 
 """ TODO: Check out this:
-" http://www.vim.org/scripts/script.php?script_id=159
-" http://www.vim.org/scripts/script.php?script_id=42
-" http://www.vim.org/scripts/script.php?script_id=1338
 " http://vim.wikia.com/wiki/PHP_manual_in_Vim_help_format
-" http://www.vim.org/scripts/script.php?script_id=1697
-" http://www.vim.org/scripts/script.php?script_id=1984
-" http://developers.blog.box.com/2007/06/20/how-to-debug-php-with-vim-and-xdebug-on-linux/
-" http://www.vim.org/scripts/script.php?script_id=1798

@@ -2,7 +2,7 @@
 
 set hostname = "arp242.net"
 #set sendmail="/usr/local/bin/tmda-sendmail"
-set spoolfile = "imaps://mail.daemonforums.org/"
+set spoolfile = "imaps://mail.arp242.net/"
 
 set folder = !/INBOX		# Default folder ...
 set mbox = !/INBOX		# ... And again

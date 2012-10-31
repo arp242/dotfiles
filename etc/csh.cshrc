@@ -234,13 +234,6 @@ else
 	alias lac "ls -la"
 endif
 
-# bsdgrep is FreeBSD >=9
-if (-X bsdgrep) then
-	alias grep "bsdgrep --color"
-else
-	alias grep "grep --color"
-endif
-
 # Override the tcsh builtins
 if (-x /usr/bin/nice) then
 	alias nice "/usr/bin/nice"
@@ -302,27 +295,28 @@ alias helpcommand man
 # Keybinds
 #################################################
 # Delete
-bindkey ^[[3~	delete-char
+bindkey ^[[3~ delete-char
 
 # Home
-bindkey ^[[H	beginning-of-line
-bindkey ^[[1~	beginning-of-line
+bindkey ^[[H beginning-of-line
+bindkey ^[[1~ beginning-of-line
 
 # End
-bindkey ^[[F	end-of-line
-bindkey ^[[4~	end-of-line
+bindkey ^[[F end-of-line
+bindkey ^[[4~ end-of-line
 
 # F1
-bindkey ^[[M	run-help
-bindkey OP	run-help
+bindkey ^[[M run-help
+bindkey OP run-help
+bindkey ^[[11~ run-help # Putty
 
 # Arrow keys
-bindkey -k up	history-search-backward
-bindkey -k down	history-search-forward
+bindkey -k up history-search-backward
+bindkey -k down history-search-forward
 
 # Insert
-bindkey ^[[L	overwrite-mode
-bindkey ^[[2~	overwrite-mode
+bindkey ^[[L yank
+bindkey ^[[2 yank
 
 #################################################
 # Completion
@@ -330,6 +324,18 @@ bindkey ^[[2~	overwrite-mode
 # Show directories only
 complete cd 'C/*/d/'
 complete rmdir 'C/*/d/'
+
+complete alias 'p/1/a/'
+complete unalias 'p/1/a/'
+complete unset 'p/1/s/'
+complete set 'p/1/s/'
+complete unsetenv 'p/1/e/'
+complete setenv 'p/1/e/'
+complete limit 'p/1/l/'
+complete bindkey 'C/*/b/'
+complete chgrp 'p/1/g/'
+complete chown 'p/1/u/' # TODO Support user:group completion
+complete uncomplete 'p/*/X/'
 
 #complete kill 'c/-/S/' 'p/1/(-)//'
 complete kill 'c/-/S/' 'n/*/`ps -axco pid= | sort`/'
@@ -341,35 +347,6 @@ complete where 'p/1/c/'
 complete man 'p/1/c/'
 complete apropos 'p/1/c/'
 
-# aliases
-complete alias 'p/1/a/'
-complete unalias 'p/1/a/'
-
-# variables
-complete unset 'p/1/s/'
-complete set 'p/1/s/'
-
-# environment variables
-complete unsetenv 'p/1/e/'
-complete setenv 'p/1/e/'
-
-# limits
-complete limit 'p/1/l/'
-
-# key bindings
-complete bindkey 'C/*/b/'
-
-# groups
-complete chgrp 'p/1/g/'
-
-# users
-# TODO Support user:group completion
-complete chown 'p/1/u/'
-
-# You can use complete to provide extensive help for complex commands
-# like find.  
-# Please check your version before using these completions, as some
-# differences may exist.
 complete find \
 	'n/-name/f/' 'n/-newer/f/' 'n/-{,n}cpio/f/' \
 	'n/-exec/c/' 'n/-ok/c/' 'n/-user/u/' 'n/-group/g/' \
@@ -379,17 +356,25 @@ complete find \
 	size xdev and or)/' \
 	'p/*/d/'
 
+complete hg 'p/1/(add annotate clone commit diff export forget init log \
+	merge phase pull push remove serve status summary update)/'
+
+complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
+	delete diff export help import info list lock log merge mergeinfo \
+	mkdir move propdel propedit propget proplist propset resolve \
+	resolved revert status switch unlock update)/'
+
+# Only list make targets
+complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
+
 # set up programs to complete only with files ending in certain extensions
 complete cc 'p/*/f:*.[cao]/'
 complete python 'p/*/f:*.py/'
 complete perl 'p/*/f:*.[pP][lL]/'
 #complete sh 'p/*/f:*.sh/'
 
-# of course, this completes with all current completions
-complete uncomplete 'p/*/X/'
-
 # set a list of hosts
-#complete ssh 'p/1/`grep HostName ~/.ssh/config | sed "s|HostName ||" | tr -d "\t"`/'
+complete ssh 'p@1@`cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`@'
 
 #  complete [command [word/pattern/list[:select]/[[suffix]/] ...]] (+)
 if ($uname == FreeBSD) then
@@ -402,6 +387,3 @@ else if  ($uname == Linux) then
 	complete service 'n@*@`/bin/ls /etc/init.d`@' 
 	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
 endif
-
-# Only list make targets
-complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
