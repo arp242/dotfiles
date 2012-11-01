@@ -295,6 +295,9 @@ au BufNewFile,BufRead
 au BufNewFile,BufRead *.html,*.htm,*.inc set textwidth=120
 au BufNewFile,BufRead *.tpl set textwidth=9999
 
+" Tabs don't work well with haskell
+au BufNewFile,BufRead *.hs set expandtab ts=4 sts=4 sw=4
+
 """ Python syntax settings
 "let python_highlight_numbers=1
 "let python_highlight_builtins=1
