@@ -1,0 +1,46 @@
+run()
+{
+	t=$(which $1)
+	if [ $? -eq 0 ]; then
+		$* &
+	fi
+}
+
+cd ~
+
+# X settings
+xset -b
+xsetroot -solid "#3A6EA5"
+run randombg
+xmodmap ~/.Xmodmap
+setxkbmap -option compose:caps
+xbacklight -set 30
+
+# moused does this on FreeBSD much better than X
+if [ $(uname -s) = FreeBSD ]; then
+	xset m 1/1 1
+	mixer vol 75 pcm 75
+else
+	xset m 4/8 1
+fi
+
+run xbindkeys
+#run pidgin
+run mailtray
+run battray
+sleep 2
+run trayer --edge bottom --align right --widthtype request --expand true
+#run xflux -l 51.44 -g 5.46 -k 5000
+
+#set SSH_ASKPASS=True
+#export $SSH_ASKPASS
+
+#ssh-agent
+#run ssh-add
+t=$(which pekwm)
+if [ $? -eq 0 ]; then
+	exec ssh-agent pekwm
+	#exec hest
+else
+	exec ssh-agent twm
+fi

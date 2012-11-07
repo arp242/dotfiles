@@ -1,0 +1,55 @@
+# vim:ts=8:sts=8
+
+set hostname = "arp242.net"
+#set sendmail="/usr/local/bin/tmda-sendmail"
+set spoolfile = "imaps://mail.arp242.net/"
+
+set folder = !/INBOX		# Default folder ...
+set mbox = !/INBOX		# ... And again
+set from = "martin@arp242.net"	# My mail
+set mbox_type = "Maildir"	# Mailbox type
+set editor = "vim"		# Editor
+set charset = "utf-8"		# Charset for reading
+set send_charset="us-ascii:iso-8859-1:UTF-8"	# Charset for sending
+set certificate_file=~/.mutt/cert # TLS cert
+set alias_file=~/.mutt/aliases	# Keep aliases in this file.
+set mailcap_path=~/.mutt/mailcap # mailcap file
+set realname = "Martin Tournoij" # My name
+set postpone = ask-no		# Ask about postponing ....
+set postponed = "!Drafts"	# ... And save postponed messages here
+set move = no			# Hold messages in $MAIL
+set mark_old = no		# Don't mark unread new msgs as old
+set print = ask-yes		# Ask before printing
+set delete = yes		# Don't ask before doing a delete
+set include			# Include the message in replies
+set sort = threads		# Sort in threads
+set sort_aux = date-received	# Sort threads by date received
+set allow_8bit = no		# 8bit isn't safe via Demon
+#set maildir_trash = yes		# Trash messages instead of really deleting them
+set copy			# Keep copies of outgoing mail ...
+set record = "!Sent"		# ... Here
+set beep = no			# We don't need no beeping software.
+set tilde			# Fill out messages with '~'.
+set pager_context = 5		# Show 5 lines of context when pressing space
+set pager_index_lines = 10	# Show 10 index lines in pages
+set pager_stop = yes		# Don't go to next message automaticly
+set quit = ask-yes		# Ask before exiting
+set followup_to = yes		# Add a Mail-Followup-To header to subcribed maillists
+set wait_key = no		# Don't press key after we're done with external program
+set help = no			# Don't show help bar
+set edit_headers = yes		# edit the header of your outgoing messages
+set mime_forward = yes		# Include forwarded mails as attachment instead of inline
+set confirmappend = no		# Just append, don't hassle me.
+set signature = "~/.mutt/signature.sh |"
+alternative_order text/plain text/enriched text/html
+
+set index_format="%Z│ %{%b %d}│ %-20.20F│ %s"
+set index_format="%Z| %{%b %d}| %-20.20F| %s"
+
+source ~/.mutt/gpg
+source ~/.mutt/mailboxes
+source ~/.mutt/headers
+source ~/.mutt/color
+source ~/.mutt/keys
+source ~/.mutt/macros
+source ~/.mutt/lists

@@ -1,0 +1,266 @@
+# button - Focused
+$COLOR_BUTTON_F="#fff49a"
+$COLOR_BUTTON_F_LIGHT="#ffffff"
+$COLOR_BUTTON_F_DARK="#a49d63"
+# button - Unfocused
+$COLOR_BUTTON_U="#e5e5e5"
+$COLOR_BUTTON_U_LIGHT="#999999"
+$COLOR_BUTTON_U_DARK="#999999"
+# button - Pressed
+$COLOR_BUTTON_P="#fff49a"
+$COLOR_BUTTON_P_LIGHT="#a49d63"
+$COLOR_BUTTON_P_DARK="#ffffff"
+
+# menu - Focused
+$COLOR_MENU_F_BG="#aaaaaa"
+$COLOR_MENU_F_ITEM="#ffffff"
+$COLOR_MENU_F_SEP="#888888"
+$COLOR_MENU_F_TEXT="#111111"
+# menu - Unfocusd
+$COLOR_MENU_U_BG="#505050"
+$COLOR_MENU_U_ITEM="#cccccc"
+$COLOR_MENU_U_SEP="#303030"
+$COLOR_MENU_U_TEXT="#555555"
+# menu - Selected
+$COLOR_MENU_S_BG="Empty"
+$COLOR_MENU_S_ITEM="#bbbbbb"
+$COLOR_MENU_S_ITEM_DARK="#666666"
+$COLOR_MENU_S_ITEM_LIGHT="#666666"
+$COLOR_MENU_S_TEXT="#000000"
+# menuArrow - Focused
+$COLOR_MENU_ARROW_F="#aaaaaa"
+# menuArrow - Unfocused
+$COLOR_MENU_ARROW_U="#ffffff"
+# menuArrow - Selected
+$COLOR_MENU_ARROW_S="#ffffff"
+
+# cmddialog
+$COLOR_CMD_BG="#ffffff"
+$COLOR_CMD_TEXT="#000000"
+
+PDecor {
+
+Decor = "DEFAULT" {
+	Title {
+		Height = "17"
+		Pad = "2 0 2 0"
+
+		Focused = "Empty"
+		Unfocused = "Empty"
+
+		Tab {
+			Focused = "SolidRaised #d1e0ff #2c3c5c #2c3c5c 1 0"
+			FocusedSelected = "SolidRaised #5281bf #c9e8ff #363f45 1 0"
+			Unfocused = "SolidRaised #e5e5e5 #e5e5e5 #e5e5e5 1 0"
+			UnfocusedSelected = "SolidRaised #ffffff #ffffff #ffffff 1 0"
+		}
+		Separator {
+			Focused = "Empty"
+			Unfocused = "Empty"
+		}
+		Font {
+			Focused = "fixed#Center"
+		}
+		FontColor {
+			Focused = "#506ca6"
+			FocusedSelected = "#ffffff"
+			Unfocused = "#999999"
+			UnfocusedSelected = "#333333"
+		}
+		Buttons {
+			Left {
+				Button = "1" { Actions = "Close" }
+				Button = "2" { Actions = "Kill" }
+
+				Focused = "SolidRaised $COLOR_BUTTON_F $COLOR_BUTTON_F_LIGHT $COLOR_BUTTON_F_DARK 1 0 17x17"
+				Unfocused = "SolidRaised $COLOR_BUTTON_U $COLOR_BUTTON_U_LIGHT $COLOR_BUTTON_U_DARK 1 0 17x17"
+				Pressed = "SolidRaised $COLOR_BUTTON_P $COLOR_BUTTON_P_LIGHT $COLOR_BUTTON_P_DARK 1 0 17x17"
+			}
+			Right { 
+				Button = "1" { Actions = "Toggle Maximized 1 1" }
+				Button = "2" { Actions = "Toggle Maximized 0 1" }
+				Button = "3" { Actions = "Toggle Maximized 1 0" }
+
+				Focused = "SolidRaised $COLOR_BUTTON_F $COLOR_BUTTON_F_LIGHT $COLOR_BUTTON_F_DARK 1 0 17x17"
+				Unfocused = "SolidRaised $COLOR_BUTTON_U $COLOR_BUTTON_U_LIGHT $COLOR_BUTTON_U_DARK 1 0 17x17"
+				Pressed = "SolidRaised $COLOR_BUTTON_P $COLOR_BUTTON_P_LIGHT $COLOR_BUTTON_P_DARK 1 0 17x17"
+			}
+		}
+		Border {
+			Focused {
+				TopLeft = "Solid #2c3c5c 1x1"
+				Top = "Solid #2c3c5c 1x1"
+			  TopRight = "Solid #2c3c5c 1x1"
+				Left = "Solid #2c3c5c 1x1"
+				Right = "Solid #2c3c5c 1x1"
+				BottomLeft = "Solid #2c3c5c 1x1"
+				Bottom = "Solid #2c3c5c 1x1"
+				BottomRight = "Solid #2c3c5c 1x1"
+			}
+			Unfocused {
+				TopLeft = "Solid #999999 1x1"
+				Top = "Solid #999999 1x1"
+				TopRight = "Solid #999999 1x1"
+				Left = "Solid #999999 1x1"
+				Right = "Solid #999999 1x1"
+				BottomLeft = "Solid #999999 1x1"
+				Bottom = "Solid #999999 1x1"
+				BottomRight = "Solid #999999 1x1"
+			}
+		}
+	}
+}
+
+Decor = "MENU" {
+	Title {
+		Height = "17"
+		Pad = "2 0 2 0"
+
+		Focused = "Empty"
+		Unfocused = "Empty"
+
+		Tab {
+			Focused = "SolidRaised #d1e0ff #2c3c5c #2c3c5c 1 0"
+			FocusedSelected = "SolidRaised #5281bf #c9e8ff #363f45 1 0"
+			Unfocused = "SolidRaised #e5e5e5 #e5e5e5 #e5e5e5 1 0"
+			UnfocusedSelected = "SolidRaised #ffffff #ffffff #ffffff 1 0"
+		}
+		Separator {
+			Focused = "Empty"
+			Unfocused = "Empty"
+		}
+		Font {
+			Focused = "fixed#Center"
+		}
+		FontColor {
+			Focused = "#506ca6"
+			FocusedSelected = "#ffffff"
+			Unfocused = "#999999"
+			UnfocusedSelected = "#333333"
+		}
+		Border {
+			Focused {
+				TopLeft = "Solid #2c3c5c 1x1"
+				Top = "Solid #2c3c5c 1x1"
+				TopRight = "Solid #2c3c5c 1x1"
+				Left = "Solid #2c3c5c 1x1"
+				Right = "Solid #2c3c5c 1x1"
+				BottomLeft = "Solid #2c3c5c 1x1"
+				Bottom = "Solid #2c3c5c 1x1"
+				BottomRight = "Solid #2c3c5c 1x1"
+			}
+			Unfocused {
+				TopLeft = "Solid #999999 1x1"
+				Top = "Solid #999999 1x1"
+				TopRight = "Solid #999999 1x1"
+				Left = "Solid #999999 1x1"
+				Right = "Solid #999999 1x1"
+				BottomLeft = "Solid #999999 1x1"
+				Bottom = "Solid #999999 1x1"
+				BottomRight = "Solid #999999 1x1"
+			}
+		}
+	}
+}
+
+Decor = "STATUSWINDOW" {
+	Title {
+		Height = "0"
+		Pad = "0 0 0 0"
+
+		Focused = "Empty"
+		Unfocused = "Empty"
+
+		Tab {
+			Focused = "Empty"
+			FocusedSelected = "Empty"
+			Unfocused = "Empty"
+			UnfocusedSelected = "Empty"
+		}
+		Separator {
+			Focused = "Empty"
+			Unfocused = "Empty"
+		}
+		Font {
+			Focused = "Empty"
+		}
+		FontColor {
+			Focused = "Empty"
+			FocusedSelected = "Empty"
+			Unfocused = "Empty"
+			UnfocusedSelected = "Empty"
+		}
+		Border {
+			Focused {
+				TopLeft = "Solid #2c3c5c 1x1"
+				Top = "Solid #2c3c5c 1x1"
+				TopRight = "Solid #2c3c5c 1x1"
+				Left = "Solid #2c3c5c 1x1"
+				Right = "Solid #2c3c5c 1x1"
+				BottomLeft = "Solid #2c3c5c 1x1"
+				Bottom = "Solid #2c3c5c 1x1"
+				BottomRight = "Solid #2c3c5c 1x1"
+			}
+			Unfocused {
+				TopLeft = "Solid #999999 1x1"
+				Top = "Solid #999999 1x1"
+				TopRight = "Solid #999999 1x1"
+				Left = "Solid #999999 1x1"
+				Right = "Solid #999999 1x1"
+				BottomLeft = "Solid #999999 1x1"
+				Bottom = "Solid #999999 1x1"
+				BottomRight = "Solid #999999 1x1"
+			}
+		}
+	}
+}
+
+}
+
+Harbour {
+	Texture = "SolidRaised #5281bf #c9e8ff #363f45 1 0"
+}
+
+Menu {
+	Focused {
+		Font = "fixed"
+		Background = "Solid $COLOR_MENU_F_BG"
+		Item = "Solid $COLOR_MENU_F_ITEM 1 0"
+		Separator = "Solid $COLOR_MENU_F_SEP 0x2"
+    Arrow = "Solid $COLOR_MENU_ARROW_F 4x4"
+		Text = "$COLOR_MENU_F_TEXT"
+	}
+	Unfocused {
+		Font = "fixed"
+		Background = "Solid $COLOR_MENU_U_BG"
+		Item = "Solid $COLOR_MENU_U_ITEM 1 0"
+		Separator = "Solid $COLOR_MENU_U_SEP 0x2"
+    Arrow = "Solid $COLOR_MENU_ARROW_U 4x4"
+		Text = "$COLOR_MENU_U_TEXT"
+	}
+	Selected {
+		Font = "fixed"
+		Background = "$COLOR_MENU_S_BG"
+		Item = "SolidRaised $COLOR_MENU_S_ITEM $COLOR_MENU_S_ITEM_LIGHT $COLOR_MENU_S_ITEM_DARK 1 0"
+    Arrow = "Solid $COLOR_MENU_ARROW_S 4x4"
+		Text = "$COLOR_MENU_S_TEXT"
+	}
+
+	Pad = "2 2 2 2"
+}
+
+CmdDialog {
+	Font = "fixed"
+	Texture = "Solid $COLOR_CMD_BG"
+	Text = "$COLOR_CMD_TEXT"
+}
+
+Status {
+	Font = "fixed"
+	Texture = "Solid #ffffff"
+	Text = "#000000"
+}
+
+Root {
+	Command = "xsetroot -solid rgb:64/7f/a4" 
+}
