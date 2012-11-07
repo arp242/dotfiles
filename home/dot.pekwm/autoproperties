@@ -12,10 +12,20 @@ Property = ".*,^Firefox" {
 	Workspace = "2"
 }
 
-#Harbour {
-#	Property = "stalonetray,stalonetray" {
-#		ApplyOn = "New Start Reload"
-#		Position = "-1"
-#		Focusable = "False"
-#	}
-#}
+Property = "mtournoij - Skype (Beta)" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Focusable = "False"
+	Sticky = "True"
+}
+
+Property = ".*,^Pidgin" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Sticky = "True"
+	Skip = "FocusToggle"
+}
+
+Property = ".*,^ncmpc" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Sticky = "True"
+	Skip = "FocusToggle"
+}

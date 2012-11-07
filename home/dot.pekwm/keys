@@ -37,62 +37,25 @@ Global {
 	# Simple window management
 	KeyPress = "Mod4 M" { Actions = "Toggle Maximized True True" }
 	KeyPress = "Mod4 Shift M" { Actions = "Toggle FullScreen" }
-	KeyPress = "Mod4 Return" { Actions = "MoveResize" }
 	KeyPress = "Mod4 Z" { Actions = "Toggle Marked" }
 	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
 	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
 	KeyPress = "Mod4 D" { Actions = "Detach" }
 	
+	Chain = "Mod4 Return" {
+		KeyPress = "h" { Actions = "MoveToEdge TopLeft" }
+		KeyPress = "l" { Actions = "MoveToEdge TopRight" }
+	}
+	
 	# External Commands
-	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 80x24" }
+	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 90x27" }
+	KeyPress = "Mod4 N" { Actions = "Exec xterm -geometry 90x27 -e ncmpc" }
+	KeyPress = "Mod4 P" { Actions = "Exec mpc toggle" }
 
 	# Pekwm control
-	KeyPress = "Ctrl Mod1 R" { Actions = "Reload" }
 	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
 	KeyPress = "Mod4 Q" { Actions = "ShowCmdDialog" }
 	KeyPress = "Mod4 T" { Actions = "Toggle HarbourHidden" }
-}
-
-# Keys when MoveResize is active
-MoveResize {
-	KeyPress = "h" { Actions = "MoveHorizontal -50" }
-	KeyPress = "l" { Actions = "MoveHorizontal 100" }
-	KeyPress = "k" { Actions = "MoveVertical -50" }
-	KeyPress = "j" { Actions = "MoveVertical 100" }
-	KeyPress = "Left" { Actions = "MoveHorizontal -50" }
-	KeyPress = "Right" { Actions = "MoveHorizontal 100" }
-	KeyPress = "Up" { Actions = "MoveVertical -50" }
-	KeyPress = "Down" { Actions = "MoveVertical 100" }
-	Keypress = "Shift h" { Actions = "MoveHorizontal -5" }
-	Keypress = "Shift l" { Actions = "MoveHorizontal 5" }
-	Keypress = "Shift k" { Actions = "MoveVertical -5" }
-	Keypress = "Shift j" { Actions = "MoveVertical 5" }
-	Keypress = "Shift Left" { Actions = "MoveHorizontal -5" }
-	Keypress = "Shift Right" { Actions = "MoveHorizontal 5" }
-	Keypress = "Shift Up" { Actions = "MoveVertical -5" }
-	Keypress = "Shift Down" { Actions = "MoveVertical 5" }
-
-	Keypress = "Mod4 h" { Actions = "ResizeHorizontal -50" }
-	Keypress = "Mod4 l" { Actions = "ResizeHorizontal 100" }
-	Keypress = "Mod4 k" { Actions = "ResizeVertical -50" }
-	Keypress = "Mod4 j" { Actions = "ResizeVertical 100" }
-	Keypress = "Mod4 Left" { Actions = "ResizeHorizontal -50" }
-	Keypress = "Mod4 Right" { Actions = "ResizeHorizontal 100" }
-	Keypress = "Mod4 Up" { Actions = "ResizeVertical -50" }
-	Keypress = "Mod4 Down" { Actions = "ResizeVertical 100" }
-	Keypress = "Shift Mod4 h" { Actions = "ResizeHorizontal -5" }
-	Keypress = "Shift Mod4 l" { Actions = "ResizeHorizontal 5" }
-	Keypress = "Shift Mod4 k" { Actions = "ResizeVertical -5" }
-	Keypress = "Shift Mod4 j" { Actions = "ResizeVertical 5" }
-	Keypress = "Shift Mod4 Left" { Actions = "ResizeHorizontal -5" }
-	Keypress = "Shift Mod4 Right" { Actions = "ResizeHorizontal 5" }
-	Keypress = "Shift Mod4 Up" { Actions = "ResizeVertical -5" }
-	Keypress = "Shift Mod4 Down" { Actions = "ResizeVertical 5" }
-
-	Keypress = "s" { Actions = "MoveSnap" }
-	Keypress = "Escape" { Actions = "Cancel" }
-	Keypress = "q" { Actions = "Cancel" }
-	Keypress = "Return" { Actions = "End" }
 }
 
 # Keys for CmdDialog editing

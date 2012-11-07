@@ -18,25 +18,25 @@ Files {
 MoveResize {
 	# The distance from screen edge required for the window to snap against it
 	# in pixels.
-	EdgeAttract = "5"
+	EdgeAttract = "20"
 
 	# The distance from screen edge required for the window moving to start
 	# being resisted in pizels.
-	EdgeResist = "10"
+	EdgeResist = "20"
 
 	# The distance from other clients that a window will snap against them to in
 	# pixels.
-	WindowAttract = "5"
+	WindowAttract = "20"
 
 	# The distance from other clients that a window movement will start being
 	# resisted.
-	WindowResist = "10"
+	WindowResist = "20"
 
 	# If true, turns on opaque Moving
-	OpaqueMove = "False"
+	OpaqueMove = "True"
 
 	# If true, turns on opaque Resizing
-	OpaqueResize = "False"
+	OpaqueResize = "True"
 }
 
 #######################################
@@ -48,10 +48,10 @@ Screen {
 
 	# Number of workspaces on each row. Value < 1 fits all workspaces on a
 	# single row.
-  WorkspacesPerRow = "4"
+	WorkspacesPerRow = "4"
 
 	# List of names for workspaces separated by ;.
-  WorkspaceNames = "Main;Web;Root;Glitch;Chat;Music;Misc1;Misc2"
+	WorkspaceNames = "Main;Web;Root;Glitch;Chat;Music;Misc1;Misc2"
 
 	# Controls whether a list of all available frames on the workspace is
 	# displayed during the NextFrame/PrevFrame actions.
@@ -68,9 +68,6 @@ Screen {
 	# disabled.
 	ShowWorkspaceIndicator = "0"
 
-	# Changes the size of the WorkspaceIndicator, higher value means smaller size.
-	WorkspaceIndicatorScale = "20"
-
 	# Toggles if new windows should be placed using the rules found in the
 	# Placement subsection, or just opened on the top left corner of your
 	# screen.
@@ -81,12 +78,12 @@ Screen {
 
 	# This string contains what pekwm uses to trim down overlong window titles.
 	# If it's empty, no trimming down is performed at all.
-	TrimTitle = "..."
+	TrimTitle = ".."
 
 	# How many pixels from the edge of the screen should screen edges be.
 	# Paremeters correspond to the following edges: top bottom left right. A
 	# value of 0 disables edges.
-	EdgeSize = "4"
+	EdgeSize = "0"
 
 	# Toggles if the screen edge should be reserved space.
 	EdgeIndent = "False"
@@ -126,11 +123,11 @@ Screen {
 
 			# Pixels to leave between new and old windows and screen edges. When 0,
 			# no space is reserved.
-			OffsetX = "5"
+			OffsetX = "0"
 
 			# Pixels to leave between new and old windows and screen edges. When 0,
 			# no space is reserved.
-			OffsetY = "5"
+			OffsetY = "0"
 		}
 	}
 
@@ -183,7 +180,7 @@ Harbour {
 
 	# Controls whether maximized clients will cover the harbour (true), or if
 	# they will stop at the edge of the harbour (false).
-	MaximizeOver = "False"
+	MaximizeOver = "True"
 
 	# When RandR or Xinerama is on, decides on what head the harbour resides on.
 	# Integer is the head number.
@@ -193,7 +190,7 @@ Harbour {
 		# Controls the minimum size of dockapp clients. If a dockapp client is
 		# smaller than the minimum, it gets resized up to the SideMin value. Integer
 		# is a number of pixels.
-		SideMin = "16"
+		SideMin = "24"
 
 		# Controls the maximum size of dockapp clients. If a dockapp client is
 		# larger than the maximum, it gets resized down to the SideMax value.
