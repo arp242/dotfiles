@@ -375,6 +375,7 @@ complete perl 'p/*/f:*.[pP][lL]/'
 
 # set a list of hosts
 complete ssh 'p@1@`cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`@'
+complete sftp 'p@1@`cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`@'
 
 #  complete [command [word/pattern/list[:select]/[[suffix]/] ...]] (+)
 if ($uname == FreeBSD) then
