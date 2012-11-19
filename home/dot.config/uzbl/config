@@ -1,0 +1,429 @@
+set prefix      = @(echo $PREFIX)@
+set data_home   = @(echo $XDG_DATA_HOME)@
+set cache_home  = @(echo $XDG_CACHE_HOME)@
+set config_home = @(echo $XDG_CONFIG_HOME)@
+set scripts_dir = @data_home/uzbl:@prefix/share/uzbl/examples/data:scripts
+set fifo_dir    = /tmp
+set socket_dir  = /tmp
+
+set shell_cmd   = sh -c
+
+# General config aliases
+set mode_config     = request MODE_CONFIG
+set on_event        = request ON_EVENT
+set on_set          = request ON_SET
+set modmap          = request MODMAP
+set ignore_key      = request IGNORE_KEY
+set toggle_modes    = request TOGGLE_MODES
+
+# Hardcoded handlers
+set scheme_handler         = sync_spawn @scripts_dir/scheme.py
+set authentication_handler = sync_spawn @scripts_dir/auth.py
+set download_handler       = sync_spawn @scripts_dir/download.sh
+
+##############################
+### Dynamic event handlers ###
+##############################
+
+# Website wants to open a new window
+@on_event NEW_WINDOW event NEW_TAB %s
+
+# User requests a new window
+@on_event REQ_NEW_WINDOW event NEW_TAB %s
+
+# Reset the keycmd on navigation
+@on_event LOAD_START @set_mode
+
+# add some javascript to the page for other 'js' and 'script' commands to access later.
+@on_event LOAD_COMMIT js uzbl = {};
+@on_event LOAD_COMMIT script @scripts_dir/formfiller.js
+@on_event LOAD_COMMIT script @scripts_dir/follow.js
+
+# Add page to history
+@on_event LOAD_FINISH spawn @scripts_dir/history.sh
+
+# Prevent forms from auto-focusing on load
+@on_event LOAD_FINISH js setTimeout(function(){document.activeElement.blur()}, 500)
+
+# Switch to insert mode if a (editable) html form is clicked
+@on_event FOCUS_ELEMENT sh 'if [ "$1" = INPUT -o "$1" = TEXTAREA -o "$1" = SELECT ]; then echo "@set_mode insert" > $UZBL_FIFO; fi' %s
+
+# Switch to command mode if anything else is clicked
+@on_event ROOT_ACTIVE @set_mode command
+
+# Scroll percentage calculation
+@on_event SCROLL_VERT set scroll_message = \@<(function(curr, min, max, size){if(max == size) return '--'; var p=(curr/(max - size)); return Math.round(10000*p)/100;})(%1,%2,%3,%4)>\@%
+
+# Set status
+@on_event LOAD_START @set_status wait
+@on_event LOAD_COMMIT @set_status recv
+@on_event LOAD_FINISH @set_status done
+
+# Userscripts/per-site-settings. See the script and the example configuration for details
+#@on_event LOAD_COMMIT    spawn @scripts_dir/per-site-settings.py @data_home/uzbl/per-site-settings
+
+set set_mode = set mode =
+set set_status = set status_message =
+set default_mode = command
+
+# homepage
+set uri = duckduckgo.com
+
+# Custom CSS. Including link follower hint styles
+set stylesheet_uri = file://@config_home/uzbl/style.css
+
+# Useragent we send to servers
+set useragent = Uzbl (Webkit @{WEBKIT_MAJOR}.@{WEBKIT_MINOR}) (@(+uname -sm)@)
+
+# SSL certificates
+set ssl_ca_file = /usr/local/share/certs/ca-root-nss.crt
+
+##set ssl_verify = 1
+set ssl_verify = 0
+
+# Command to toggle ssl_verify value:
+#@cbind  !ssl = chain 'toggle ssl_verify' 'reload'
+
+# Example SSL error handler:
+#@on_event LOAD_ERROR js var patt=new RegExp('SSL handshake failed'); if (patt.test('%3')) {alert ('%3');}
+
+
+#################
+### Statusbar ###
+#################
+set show_status = 1
+set status_background = #fff
+
+
+set modcmd_style      = weight="bold"
+set keycmd_style      = foreground="#000"
+set prompt_style      = foreground="#000"
+set cursor_style      = underline="single"
+set completion_style  = foreground="black"
+set hint_style        = weight="bold"
+
+set mode_section      = <b>\@[\@mode_indicator]\@</b>
+set keycmd_section    = <span \@prompt_style>\@[\@keycmd_prompt]\@</span><span \@modcmd_style>\@modcmd</span><span \@keycmd_style>\@keycmd</span><span \@completion_style>\@completion_list</span>
+set progress_section  = <span>\@[\@progress.output]\@</span>
+set scroll_section    = <span>\@[\@scroll_message]\@</span>
+set uri_section       = <span>\@[\@uri]\@</span>
+set status_section    = <span>\@status_message</span>
+set selected_section  = <span>\@[\@SELECTED_URI]\@</span>
+
+set download_section  = <span>\@downloads</span>
+
+set status_format       = <span
+font_family="monospace">@mode_section@keycmd_section (@progress_section) (@status_section) (@scroll_section) @selected_section (@download_section)</span>
+set status_format_right = <span font_family="monospace">@uri_section</span>
+
+set title_format_long = \@keycmd_prompt \@raw_modcmd \@raw_keycmd \@TITLE - Uzbl <\@NAME> \@SELECTED_URI
+
+# Progress bar config
+# %d = done, %p = pending %c = percent done, %i = int done, %s = spinner,
+# %t = percent pending, %o = int pending, %r = sprite scroll
+set progress.format = %c
+
+### Configure cookie blacklist
+
+# Accept 'session cookies' from uzbl.org (when you have a whitelist all other cookies are dropped)
+#request WHITELIST_COOKIE domain 'uzbl.org$' expires '^$'
+
+# Drop google analytics tracking cookies (applied after whitelists if any)
+#request BLACKLIST_COOKIE name '^__utm.$'
+
+### SSL
+
+### Keybinds
+
+# Internal modmapping and ignoring
+#modmap <From>          <To>
+@modmap <Control>       <Ctrl>
+@modmap <ISO_Left_Tab>  <Shift-Tab>
+@modmap <space>         <Space>
+@modmap <KP_Enter>      <Enter>
+
+#ignore_key <glob>
+@ignore_key <ISO_*>
+@ignore_key <Shift>
+@ignore_key <Multi_key>
+@ignore_key <Mod2>
+
+## Bind aliases
+
+# request BIND <bind cmd> = <command>
+set bind      = request MODE_BIND global
+
+# request MODE_BIND <mode> <bind cmd> = <command>
+set mode_bind = request MODE_BIND
+
+# Insert mode binding alias
+set ibind     = @mode_bind insert
+
+# Command mode binding alias
+set cbind     = @mode_bind command
+
+# Non-insert mode bindings alias (ebind for edit-bind).
+set ebind     = @mode_bind global,-insert
+
+## Global & keycmd editing binds
+
+# Resets keycmd and returns to default mode.
+@on_event  ESCAPE    @set_mode
+@on_event  ESCAPE    event KEYCMD_CLEAR
+@on_event  ESCAPE    js uzbl.follow.clearHints()
+@on_event  ESCAPE    search_clear
+@on_event  ESCAPE    js window.getSelection().removeAllRanges()
+@bind   <Escape>     = event ESCAPE
+@bind   <Ctrl>[      = event ESCAPE
+
+# Commands for editing and traversing the keycmd.
+@ebind  <Return>     = event KEYCMD_EXEC_CURRENT
+@ebind  <Home>       = event SET_CURSOR_POS 0
+@ebind  <End>        = event SET_CURSOR_POS -1
+@ebind  <Left>       = event SET_CURSOR_POS -
+@ebind  <Right>      = event SET_CURSOR_POS +
+@ebind  <BackSpace>  = event KEYCMD_BACKSPACE
+@ebind  <Delete>     = event KEYCMD_DELETE
+@ebind  <Tab>        = event START_COMPLETION
+# Readline-ish bindings.
+#@ebind  <Ctrl>w      = event KEYCMD_STRIP_WORD \ -./&?=
+@ebind  <Ctrl>u      = event SET_KEYCMD
+@ebind  <Ctrl>a      = event SET_CURSOR_POS 0
+@ebind  <Ctrl>e      = event SET_CURSOR_POS -1
+
+@ebind <Up>          = event HISTORY_PREV
+@ebind <Down>        = event HISTORY_NEXT
+#@ebind <Ctrl>r<search:>_ = event HISTORY_SEARCH %s
+# Keycmd injection/append examples.
+#@ebind  <Ctrl>su = event INJECT_KEYCMD \@uri
+#@ebind  <Ctrl>st = event INJECT_KEYCMD \@title
+#@ebind  <Ctrl>du = event APPEND_KEYCMD \@uri
+#@ebind  <Ctrl>dt = event APPEND_KEYCMD \@title
+
+### Mouse bindings
+
+# Middle click open in new window
+@bind  <Button2>  = sh 'if [ "$1" ]; then echo "event REQ_NEW_WINDOW $1" > "$UZBL_FIFO"; else echo "uri $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"; fi' '\@SELECTED_URI'
+
+### Keyboard bindings
+
+# With this command you can enter in any command at runtime when prefixed with
+# a colon.
+@cbind    :_        = %s
+
+# Open a new window or tab
+@cbind w = event REQ_NEW_WINDOW
+@cbind <Ctrl>t event REQ_NEW_WINDOW
+@ebind <Ctrl>t event REQ_NEW_WINDOW
+
+# Page movement binds
+@cbind  j            = scroll vertical 60
+@cbind  k            = scroll vertical -60
+@cbind  h            = scroll horizontal -60
+@cbind  l            = scroll horizontal 60
+@cbind  <Page_Up>    = scroll vertical -100%
+@cbind  <Page_Down>  = scroll vertical 100%
+@cbind  <Ctrl>f      = scroll vertical 100%
+@cbind  <Ctrl>b      = scroll vertical -100%
+@cbind  <<           = scroll vertical begin
+@cbind  >>           = scroll vertical end
+@cbind  <Home>       = scroll vertical begin
+@cbind  <End>        = scroll vertical end
+@cbind  ^            = scroll horizontal begin
+@cbind  $            = scroll horizontal end
+@cbind  <Space>      = scroll vertical 95%
+@cbind  G<Go To:>_   = scroll vertical %r!
+@cbind  _G<Go To:>_  = scroll horizontal %r!
+
+# Navigation binds
+@cbind  b   = back
+@cbind  m   = forward
+@cbind  S   = stop
+@cbind  r   = reload
+@cbind  <Ctrl>r   = reload_ign_cache
+
+# Zoom binds
+@cbind  +   = zoom_in
+@cbind  -   = zoom_out
+@cbind  T   = toggle zoom_type
+@cbind  1   = set zoom_level = 1.0
+@cbind  2   = set zoom_level = 2.0
+
+# Appearance binds
+@cbind  t   = toggle show_status
+
+# Page searching binds
+@cbind  /*  = search %s
+@cbind  ?*  = search_reverse %s
+
+# Jump to next and previous items
+@cbind  n   = search
+@cbind  N   = search_reverse
+
+# Web searching binds
+@cbind sd<DuckDuckGo: >_ = uri http://duckduckgo.com/?q=%s
+@cbind swe<Wikipedia: >_ = uri http://en.wikipedia.org/w/index.php?title=Special:Search&search=\@<encodeURIComponent(%r)>\@&go=Go
+@cbind swn<Wikipedia NL: >_ = uri http://nl.wikipedia.org/w/index.php?title=Special:Search&search=\@<encodeURIComponent(%r)>\@&go=Go
+
+# Handy binds
+# Exit binding
+@cbind  ZZ = exit
+@cbind  <Ctrl>w = exit
+@ibind  <Ctrl>w = exit
+
+# Open URL
+@cbind  o<Open: >_ = uri %s
+
+# Load current url in promp and edit
+@cbind  O<Open: \@uri>_  = uri %s
+
+# Insert mode
+@cbind i = @set_mode insert
+@bind <Ctrl>i  = @set_mode insert
+
+# Insert mode and focus first input
+@cbind I = spawn @scripts_dir/go_input.sh
+
+# New window binds
+#@cbind  gw  = event REQ_NEW_WINDOW
+@cbind  <Ctrl>t  = event REQ_NEW_WINDOW
+
+# SSL-ify bindings
+@cbind  zs  = uri \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
+@cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
+
+# Yanking & pasting binds
+@cbind  yu  = sh 'echo -n "$UZBL_URI" | xclip'
+@cbind  yU  = sh 'echo -n "$1" | xclip' '\@SELECTED_URI'
+@cbind  yy  = sh 'echo -n "$UZBL_TITLE" | xclip'
+@cbind  ys  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ clipboard
+
+# Clone current window
+@cbind  c   = event REQ_NEW_WINDOW \@uri
+# Go the page from primary selection
+@cbind  p   = sh 'echo "uri $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+# Go to the page in clipboard
+@cbind  P   = sh 'echo "uri $(xclip -selection clipboard -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+# Start a new uzbl instance from the page in primary selection
+@cbind  'p  = sh 'echo "event REQ_NEW_WINDOW $(xclip -o)" > "$UZBL_FIFO"'
+# paste primary selection into keycmd at the cursor position
+@bind <Shift><Insert> = sh 'echo "event INJECT_KEYCMD $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+
+# Bookmark inserting binds
+@cbind <Ctrl>m<tags:>_  = sh 'echo "$UZBL_URI $1" >> "$XDG_DATA_HOME"/uzbl/bookmarks' '%s'
+# Or use a script to insert a bookmark.
+@cbind  M  = spawn @scripts_dir/insert_bookmark.sh
+
+# Bookmark/history loading
+@cbind  U  = spawn @scripts_dir/load_url_from_history.sh
+@cbind  u  = spawn @scripts_dir/load_url_from_bookmarks.sh
+
+# Temporary bookmarks
+@cbind  <Ctrl>d  = spawn @scripts_dir/insert_temp.sh
+@cbind  D        = spawn @scripts_dir/load_url_from_temps.sh
+
+# Link following (similar to vimperator and konqueror)
+# Set custom keys you wish to use for navigation. Some common examples:
+set follow_hint_keys = 0123456789
+#set follow_hint_keys = qwerty
+#set follow_hint_keys = asdfghjkl;
+#set follow_hint_keys = thsnd-rcgmvwb/;789aefijkopquxyz234
+@cbind  fl*  = spawn @scripts_dir/follow.sh \@< uzbl.follow("\@follow_hint_keys", "%s", 'click') >\@
+@cbind  Fl*  = spawn @scripts_dir/follow.sh \@< uzbl.follow("\@follow_hint_keys", "%s", 'newwindow') >\@
+@cbind  fL*  = spawn @scripts_dir/follow.sh \@< uzbl.follow("\@follow_hint_keys", "%s", 'returnuri') >\@ set
+@cbind  FL*  = spawn @scripts_dir/follow.sh \@< uzbl.follow("\@follow_hint_keys", "%s", 'returnuri') >\@ clipboard
+
+@cbind  fs  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ set
+@cbind  fS  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('click') >\@
+@cbind  Fs  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('newwindow') >\@
+@cbind  FS  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ clipboard
+
+@cbind  ft*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'returnuri') >\@ set
+@cbind  fT*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'click') >\@
+@cbind  Ft*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'newwindow') >\@
+@cbind  FT*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'returnuri') >\@ clipboard
+
+@cbind  '*  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followTextContent("%s", 'click') >\@
+
+# Form filler binds
+# This script allows you to configure (per domain) values to fill in form
+# fields (eg login information) and to fill in these values automatically.
+# This implementation allows you to save multiple profiles for each form
+# (think about multiple accounts on some website).
+set formfiller = spawn @scripts_dir/formfiller.sh
+@cbind  ze  = @formfiller edit
+@cbind  zn  = @formfiller new
+@cbind  zl  = @formfiller load
+@cbind  zo  = @formfiller once
+
+### Uzbl tabbed binds
+
+# Tab opening
+@cbind  gn              = event NEW_TAB
+@cbind  gN              = event NEW_TAB_NEXT
+@cbind  go<Open: >_       = event NEW_TAB %s
+@cbind  gO<Open: >_       = event NEW_TAB_NEXT %s
+
+# Closing / resting
+@cbind  gQ              = event CLEAN_TABS
+
+# Tab navigating
+@cbind  g<              = event FIRST_TAB
+@cbind  g>              = event LAST_TAB
+@cbind  gt              = event NEXT_TAB
+@cbind  gT              = event PREV_TAB
+@cbind  gi<index:>_     = event GOTO_TAB %s
+
+# Preset loading
+set preset = event PRESET_TABS
+@cbind  gs<preset save:>_   = @preset save %s
+@cbind  glo<preset load:>_  = @preset load %s
+@cbind  gd<preset del:>_    = @preset del %s
+# This doesn't work right now.
+#@cbind  gli                 = @preset list
+
+### Context menu items
+
+# Default context menu
+#menu_add Google = set uri = http://google.com
+#menu_add Go Home = set uri = http://uzbl.org
+#menu_separator separator_1
+#menu_add Quit uzbl = exit
+
+# Link context menu
+#menu_link_add Print Link = print \@SELECTED_URI
+
+### Mode configuration
+
+# Define some mode specific uzbl configurations.
+set command  = @mode_config command
+set insert   = @mode_config insert
+set stack    = @mode_config stack
+
+# Command mode config.
+#@command  keycmd_style        = foreground="red"
+#@command  status_background   = #202020
+@command  mode_indicator      = 
+@command  keycmd_events       = 1
+@command  forward_keys        = 0
+@command  modcmd_updates      = 1
+
+# Insert mode config.
+#@insert   status_background   = #303030
+@insert   mode_indicator      = -- INSERT --
+@insert   forward_keys        = 1
+@insert   keycmd_events       = 0
+@insert   modcmd_updates      = 0
+
+# Multi-stage-binding mode config.
+#@stack    keycmd_style        = foreground="red"
+#@stack    status_background   = #202020
+@stack    mode_indicator      = 
+@stack    prompt_style        = foreground="#888" weight="light"
+@stack    keycmd_events       = 1
+@stack    modcmd_updates      = 1
+@stack    forward_keys        = 0
+
+### Post-load misc commands
+sync_spawn_exec @scripts_dir/load_cookies.sh
+sync_spawn_exec @scripts_dir/load_cookies.sh @data_home/uzbl/session-cookies.txt
