@@ -94,7 +94,6 @@ set ssl_verify = 0
 set show_status = 1
 set status_background = #fff
 
-
 set modcmd_style      = weight="bold"
 set keycmd_style      = foreground="#000"
 set prompt_style      = foreground="#000"
@@ -112,8 +111,8 @@ set selected_section  = <span>\@[\@SELECTED_URI]\@</span>
 
 set download_section  = <span>\@downloads</span>
 
-set status_format       = <span
-font_family="monospace">@mode_section@keycmd_section (@progress_section) (@status_section) (@scroll_section) @selected_section (@download_section)</span>
+#set status_format = <span font_family="monospace">@mode_section@keycmd_section (@progress_section) (@status_section) (@scroll_section) @selected_section (@download_section)</span>
+set status_format = <span font_family="monospace">@mode_section@keycmd_section (@progress_section) [@scroll_section] @selected_section @download_section</span>
 set status_format_right = <span font_family="monospace">@uri_section</span>
 
 set title_format_long = \@keycmd_prompt \@raw_modcmd \@raw_keycmd \@TITLE - Uzbl <\@NAME> \@SELECTED_URI
@@ -275,7 +274,7 @@ set ebind     = @mode_bind global,-insert
 @cbind  o<Open: >_ = uri %s
 
 # Load current url in promp and edit
-@cbind  O<Open: \@uri>_  = uri %s
+@cbind  O<Open:\ \@uri>_  = uri %s
 
 # Insert mode
 @cbind i = @set_mode insert
