@@ -1,6 +1,9 @@
-run()
+#!/bin/sh
+#
+
+__run()
 {
-	t=$(which $1)
+	local t=$(which $1)
 	if [ $? -eq 0 ]; then
 		$* &
 	fi
@@ -9,9 +12,13 @@ run()
 cd ~
 
 # X settings
+if [ -f ~/.wallpaper.png ]; then
+    __run qiv -y ~/.wallpaper.png
+else
+    xsetroot -solid "#3A6EA5"
+fi
+
 xset -b
-xsetroot -solid "#3A6EA5"
-run randombg
 xmodmap ~/.Xmodmap
 setxkbmap -option compose:caps
 xbacklight -set 30
@@ -24,19 +31,13 @@ else
 	xset m 4/8 1
 fi
 
-run xbindkeys
-#run pidgin
-run mailtray
-run battray
-sleep 2
-run trayer --edge bottom --align right --widthtype request --expand true
-#run xflux -l 51.44 -g 5.46 -k 5000
+__run xbindkeys
+__run parcellite
+__run pidgin
+__run mailtray
+__run battray
+__run docker -vertical
 
-#set SSH_ASKPASS=True
-#export $SSH_ASKPASS
-
-#ssh-agent
-#run ssh-add
 t=$(which pekwm)
 if [ $? -eq 0 ]; then
 	exec ssh-agent pekwm
