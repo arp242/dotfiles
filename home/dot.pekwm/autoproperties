@@ -7,24 +7,8 @@ Property = ".*,^Opera" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "2"
 }
-Property = ".*,^Firefox" {
-	ApplyOn = "New Start Reload Transient Workspace"
-	Workspace = "2"
-}
-
-Property = "mtournoij - Skype (Beta)" {
-	ApplyOn = "New Start Reload Transient Workspace"
-	Focusable = "False"
-	Sticky = "True"
-}
 
 Property = ".*,^Pidgin" {
-	ApplyOn = "New Start Reload Transient Workspace"
-	Sticky = "True"
-	Skip = "FocusToggle"
-}
-
-Property = ".*,^ncmpc" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Sticky = "True"
 	Skip = "FocusToggle"

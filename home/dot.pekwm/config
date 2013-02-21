@@ -169,7 +169,7 @@ Menu {
 #######################################
 Harbour {
 	# Which edge to place the harbour on. One of Right, Left, Top, or Bottom.
-	Placement = "Right"
+	Placement = "Top"
 	
 	# From what to which direction the harbour expands. One of TopToBottom,
 	# BottomToTop, RightToLeft, LeftToRight.
