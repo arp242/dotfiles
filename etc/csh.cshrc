@@ -4,7 +4,6 @@
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
 # Should work on: FreeBSD, OpenBSD, Linux, OpenSolaris
-# $Config$
 #
 
 # NetBSD
@@ -257,10 +256,8 @@ if (-X mplayer) then
 	alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
 endif
 
-# Some programs are hard coded to launch firefox ... :-/
 if (-X opera) then
 	alias opera "opera -nomail"
-	alias firefox "opera"
 endif
 
 alias youtube-dl 'youtube-dl -t'
@@ -281,8 +278,8 @@ endif
 
 # Typos
 alias sl "ls"
-alias l	 "ls"
-alias c	 "cd"
+alias l "ls"
+alias c "cd"
 alias vo "vi"
 # I know ci is already a command, but not used often and it mangles files!
 alias ci "vi"
@@ -321,10 +318,29 @@ bindkey ^[[2 yank
 #################################################
 # Completion
 #################################################
+# http://forums.freebsd.org/showthread.php?t=35129
+
+# word/pattern/list
+# c/pat/rep/ complete current word beginning with pat
+# C/pat/rep/ complete current word including all of pat
+# n/pat/rep/ complete next word beginning with pat
+# N/pat/rep/ complete next word including all of pat
+# p/pat/rep/ complete word p, where p is the word number
+
+set hosts
+if ( -r "$HOME/.hosts" ) then
+	set hosts=($hosts `grep -Ev '(^#|^$)' $HOME/.hosts`)
+endif
+
+if ( -r "$HOME/.ssh/known_hosts" ) then
+	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`)
+endif
+
 # Show directories only
 complete cd 'C/*/d/'
 complete rmdir 'C/*/d/'
 
+# Various built-in
 complete alias 'p/1/a/'
 complete unalias 'p/1/a/'
 complete unset 'p/1/s/'
@@ -333,11 +349,15 @@ complete unsetenv 'p/1/e/'
 complete setenv 'p/1/e/'
 complete limit 'p/1/l/'
 complete bindkey 'C/*/b/'
-complete chgrp 'p/1/g/'
-complete chown 'p/1/u/' # TODO Support user:group completion
 complete uncomplete 'p/*/X/'
+complete fg 'c/%/j/'
 
-#complete kill 'c/-/S/' 'p/1/(-)//'
+# Users
+complete chgrp 'p/1/g/'
+# TODO Support user:group completion
+complete chown 'p/1/u/: c/:/g/'
+
+# TODO: Doesn't work on Linux
 complete kill 'c/-/S/' 'n/*/`ps -axco pid= | sort`/'
 complete pkill 'c/-/S/' 'n/*/`ps -axco command= | sort -u`/'
 
@@ -346,6 +366,31 @@ complete which 'p/1/c/'
 complete where 'p/1/c/'
 complete man 'p/1/c/'
 complete apropos 'p/1/c/'
+
+complete hg 'p/1/(add annotate clone commit diff export forget init log \
+	merge phase pull push remove serve status summary update)/'
+
+complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
+	delete diff export help import info list lock log merge mergeinfo \
+	mkdir move propdel propedit propget proplist propset resolve \
+	resolved revert status switch unlock update)/' \
+	'n/help/(add blame cat changelist checkout cleanup commit copy \
+	delete diff export help import info list lock log merge mergeinfo \
+	mkdir move propdel propedit propget proplist propset resolve \
+	resolved revert status switch unlock update)/'
+
+# set up programs to complete only with files ending in certain extensions
+complete cc 'p/*/f:*.[cao]/'
+complete python 'p/*/f:*.py/'
+complete perl 'p/*/f:*.[pP][lL]/'
+#complete sh 'p/*/f:*.sh/'
+
+# set a list of hosts
+complete ssh 'p/1/$hosts/'
+complete sftp 'p/1/$hosts/'
+complete scp 'p/1/$hosts/'
+complete ping 'p/1/$hosts/'
+
 
 complete find \
 	'n/-name/f/' 'n/-newer/f/' 'n/-{,n}cpio/f/' \
@@ -356,26 +401,10 @@ complete find \
 	size xdev and or)/' \
 	'p/*/d/'
 
-complete hg 'p/1/(add annotate clone commit diff export forget init log \
-	merge phase pull push remove serve status summary update)/'
-
-complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
-	delete diff export help import info list lock log merge mergeinfo \
-	mkdir move propdel propedit propget proplist propset resolve \
-	resolved revert status switch unlock update)/'
+complete ifconfig 'p/1/`ifconfig -l`/' 
 
 # Only list make targets
 complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
-
-# set up programs to complete only with files ending in certain extensions
-complete cc 'p/*/f:*.[cao]/'
-complete python 'p/*/f:*.py/'
-complete perl 'p/*/f:*.[pP][lL]/'
-#complete sh 'p/*/f:*.sh/'
-
-# set a list of hosts
-complete ssh 'p@1@`cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`@'
-complete sftp 'p@1@`cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`@'
 
 #  complete [command [word/pattern/list[:select]/[[suffix]/] ...]] (+)
 if ($uname == FreeBSD) then
@@ -383,6 +412,8 @@ if ($uname == FreeBSD) then
 	complete service 'n/*/`service -l`/'
 
 	complete pkg_delete 'c/-/(i v D n p d f G x X r)/' 'n@*@`/bin/ls /var/db/pkg`@'
+	complete kldload 'n@*@`ls -1 /boot/modules/ /boot/kernel/ | sed "s|\.ko||g"`@'
+	complete kldunload 'n@*@`kldstat | awk \{sub\(\/\.ko\/,\"\",\$NF\)\;print\ \$NF\} | grep -v Name`@'
 else if  ($uname == Linux) then
 	# Use /bin/ls to prevent ls options interfering (i.e. adding a *)
 	complete service 'n@*@`/bin/ls /etc/init.d`@' 
