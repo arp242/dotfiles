@@ -333,7 +333,7 @@ complete fg 'c/%/j/'
 
 # Users
 complete chgrp 'p/1/g/'
-complete chown 'p/1/u/: c/:/g/'
+complete chown 'c/*[.:]/g/' 'p/1/u/:' 'n/*/f/'
 
 # Procs
 complete kill 'c/-/S/' 'n/*/`ps axco pid= | sort`/'
