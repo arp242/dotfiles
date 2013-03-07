@@ -21,16 +21,13 @@ endif
 
 set uname = `uname`
 
-##################################################
-# Environment
-#################################################
+###################
+### Environment ###
+###################
 umask 022
 
 setenv PATH ~/bin
 setenv PATH ${PATH}:/sbin:/bin:/usr/sbin:/usr/bin
-if (-d /usr/X11R6/bin) then
-	setenv PATH ${PATH}:/usr/X11R6/bin:/usr/X11R6/sbin
-endif
 if (-d /usr/local/bin) then
 	setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
 endif
@@ -53,13 +50,11 @@ endif
 
 # Various applications settings
 setenv PAGER less
-# --squeeze-blank-lines
-# --chop-long-lines
-setenv LESS "--ignore-case --LONG-PROMPT --SILENT --tabs=2 --no-init"
+setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init"
 
 setenv BLOCKSIZE K
 setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=01;31:"
-setenv GREP_COLOR 31
+setenv GREP_COLOR 31 # red
 setenv ACK_COLOR_FILENAME red
 
 if ($uname == OpenBSD) then
@@ -84,9 +79,7 @@ if (-X locale) then
 	setenv LC_CTYPE en_US.UTF-8
 endif
 
-if ($uname == FreeBSD) then
-	setenv CVSROOT ":pserver:anoncvs@anoncvs.fr.FreeBSD.org:/home/ncvs"
-else if ($uname == OpenBSD) then
+if ($uname == OpenBSD) then
 	setenv PKG_PATH "ftp://ftp.openbsd.org/pub/OpenBSD/`uname -r`/packages/`uname -m`/"
 	setenv CVSROOT "anoncvs@anoncvs.fr.openbsd.org:/cvs"
 endif
@@ -110,9 +103,9 @@ else if (-X lynx) then
 	setenv BROWSER lynx
 endif
 
-#################################################
-# Settings
-#################################################
+################
+### Settings ###
+################
 # Basic corrections when completing
 set autocorrect
 
@@ -149,14 +142,14 @@ set listjobs
 # Show current dir.
 set prompt = "[%~]%# "
 
+# Use % for normal user and # for super
+set promptchars = "%#"
+
 # Show date & hostname on right side
 set rprompt = "%B%U%m%b%u:%T"
 
 # Never print "DING!" as the time
 set noding
-
-# Use % for normal user and # for super
-set promptchars = "%#"
 
 # Don't beep
 set nobeep
@@ -174,14 +167,12 @@ set rmstar
 set savehist = 8192 merge
 
 # Lists file name suffixes to be ignored by completion
-# TODO Doesn't seem to work ... ?
 set fignore = (.o .pyc)
 
 #################################################
 # Aliases
 #################################################
-# "Special" aliases
-# Update xterm title on directory change
+# Update xterm title on directory change (special alias)
 alias cwdcmd 'echo -n "\033]2;tcsh: $cwd\007"'
 
 # Modestly color my ls. But not christmas tree Linux colors! (See environment
@@ -239,7 +230,6 @@ if (-x /usr/bin/nice) then
 else if (-x /bin/nice) then
         alias nice "/bin/nice"
 endif
-
 if (-x /usr/bin/time) then
 	alias time "/usr/bin/time -h"
 endif
@@ -248,8 +238,8 @@ endif
 alias cp "cp -i"
 alias mv "mv -i"
 alias make "nice -n 20 make"
-alias lman "groff -man -Tascii"
 alias j "jobs -l"
+alias lman "groff -man -Tascii" # `local man' <file>.1
 
 # Third-party stuff
 if (-X mplayer) then
@@ -260,11 +250,8 @@ if (-X opera) then
 	alias opera "opera -nomail"
 endif
 
+# use title in filename
 alias youtube-dl 'youtube-dl -t'
-alias turboturbofull  'xfreerdp -x lan -u carpetsmoker -f -o 192.168.3.11'
-alias turboturbo  'xfreerdp -x lan -u carpetsmoker -g 1024x768 -o 192.168.3.11'
-alias xangband "angband -mx11 -- -n3"
-alias xtome "tome -mx11 -- -n3"
 
 if (-X xtermset) then
 	alias xt "xtermset -title"
@@ -281,16 +268,15 @@ alias sl "ls"
 alias l "ls"
 alias c "cd"
 alias vo "vi"
-# I know ci is already a command, but not used often and it mangles files!
-alias ci "vi"
+alias ci "vi" # ci already exists, but few people use it and it mangles files!
 alias grpe "grep"
 alias Grep "grep"
 
 alias helpcommand man
 
-#################################################
-# Keybinds
-#################################################
+##############
+# Keybinds ###
+##############
 # Delete
 bindkey ^[[3~ delete-char
 
@@ -318,15 +304,6 @@ bindkey ^[[2 yank
 #################################################
 # Completion
 #################################################
-# http://forums.freebsd.org/showthread.php?t=35129
-
-# word/pattern/list
-# c/pat/rep/ complete current word beginning with pat
-# C/pat/rep/ complete current word including all of pat
-# n/pat/rep/ complete next word beginning with pat
-# N/pat/rep/ complete next word including all of pat
-# p/pat/rep/ complete word p, where p is the word number
-
 set hosts
 if ( -r "$HOME/.hosts" ) then
 	set hosts=($hosts `grep -Ev '(^#|^$)' $HOME/.hosts`)
@@ -335,6 +312,8 @@ endif
 if ( -r "$HOME/.ssh/known_hosts" ) then
 	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`)
 endif
+
+set noglob
 
 # Show directories only
 complete cd 'C/*/d/'
@@ -354,12 +333,12 @@ complete fg 'c/%/j/'
 
 # Users
 complete chgrp 'p/1/g/'
-# TODO Support user:group completion
 complete chown 'p/1/u/: c/:/g/'
 
-# TODO: Doesn't work on Linux
-complete kill 'c/-/S/' 'n/*/`ps -axco pid= | sort`/'
-complete pkill 'c/-/S/' 'n/*/`ps -axco command= | sort -u`/'
+# Procs
+complete kill 'c/-/S/' 'n/*/`ps axco pid= | sort`/'
+complete pkill 'c/-/S/' 'n/*/`ps axco command= | sort -u`/'
+complete killall 'c/-/S/' 'n/*/`ps axco command= | sort -u`/'
 
 # Use available commands as arguments
 complete which 'p/1/c/'
@@ -367,8 +346,24 @@ complete where 'p/1/c/'
 complete man 'p/1/c/'
 complete apropos 'p/1/c/'
 
-complete hg 'p/1/(add annotate clone commit diff export forget init log \
-	merge phase pull push remove serve status summary update)/'
+# set up programs to complete only with files ending in certain extensions
+complete cc 'p/*/f:*.[cao]/'
+complete python 'p/*/f:*.py/'
+complete perl 'p/*/f:*.[pP][lL]/'
+
+# Complete hosts
+complete ssh 'p/1/$hosts/'
+complete sftp 'p/1/$hosts/'
+complete scp 'p/1/$hosts/'
+complete ping 'p/1/$hosts/'
+
+# Misc.
+complete hg 'p/1/(add addremove annotate archive backout bisect bookmarks \
+	branch branches bundle cat clone commit copy diff export forget graft \
+	grep heads help identify import incoming init locate log manifest \
+	merge outgoing parents paths phase pull push recover remove rename \
+	resolve revert rollback root serve showconfig status summary tag tags \
+	tip unbundle update verify version/)'
 
 complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
 	delete diff export help import info list lock log merge mergeinfo \
@@ -379,43 +374,70 @@ complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
 	mkdir move propdel propedit propget proplist propset resolve \
 	resolved revert status switch unlock update)/'
 
-# set up programs to complete only with files ending in certain extensions
-complete cc 'p/*/f:*.[cao]/'
-complete python 'p/*/f:*.py/'
-complete perl 'p/*/f:*.[pP][lL]/'
-#complete sh 'p/*/f:*.sh/'
+complete git 'p/1/(add merge-recursive add--interactive merge-resolve am \
+	merge-subtree annotate merge-tree apply mergetool archimport mktag \
+	archive mktree bisect mv bisect--helper name-rev blame notes branch \
+	pack-objects bundle pack-redundant cat-file pack-refs check-attr \
+	patch-id check-ref-format peek-remote checkout prune checkout-index \
+	prune-packed cherry pull cherry-pick push clean quiltimport clone \
+	read-tree column rebase commit receive-pack commit-tree reflog config \
+	relink count-objects remote credential-cache remote-ext \
+	credential-cache--daemon remote-fd credential-store remote-ftp daemon \
+	remote-ftps describe remote-http diff remote-https diff-files \
+	remote-testgit diff-index repack diff-tree replace difftool \
+	repo-config difftool--helper request-pull fast-export rerere \
+	fast-import reset fetch rev-list fetch-pack rev-parse filter-branch \
+	revert fmt-merge-msg rm for-each-ref send-email format-patch send-pack \
+	fsck sh-i18n--envsubst fsck-objects shell gc shortlog \
+	get-tar-commit-id show grep show-branch hash-object show-index help \
+	show-ref http-backend stage http-fetch stash http-push status \
+	imap-send stripspace index-pack submodule init symbolic-ref init-db \
+	tag instaweb tar-tree log unpack-file lost-found unpack-objects \
+	ls-files update-index ls-remote update-ref ls-tree update-server-info \
+	mailinfo upload-archive mailsplit upload-pack merge var merge-base \
+	verify-pack merge-file verify-tag merge-index web--browse \
+	merge-octopus whatchanged merge-one-file write-tree merge-ours)/'
 
-# set a list of hosts
-complete ssh 'p/1/$hosts/'
-complete sftp 'p/1/$hosts/'
-complete scp 'p/1/$hosts/'
-complete ping 'p/1/$hosts/'
-
-
-complete find \
-	'n/-name/f/' 'n/-newer/f/' 'n/-{,n}cpio/f/' \
-	'n/-exec/c/' 'n/-ok/c/' 'n/-user/u/' 'n/-group/g/' \
-	'n/-fstype/(nfs 4.2)/' 'n/-type/(b c d f l p s)/' \
-	'c/-/(name newer cpio ncpio exec ok user group fstype type atime \
-	ctime depth inum ls mtime nogroup nouser perm print prune \
-	size xdev and or)/' \
-	'p/*/d/'
-
-complete ifconfig 'p/1/`ifconfig -l`/' 
+complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
+	'n/-type/(c b d f p l s)/' \
+	'n/-user/u/ n/-group/g/' \
+	'n/-exec/c/' 'n/-ok/c/' \
+	'n/-cpio/f/' \
+	'n/-ncpio/f/' \
+	'n/-newer/f/' \
+	'c/-/(fstype name perm prune type user nouser group nogroup size inum \
+		atime mtime ctime exec ok print ls cpio ncpio newer xdev depth \
+		daystart follow maxdepth mindepth noleaf version anewer cnewer \
+		amin cmin mmin true false uid gid ilname iname ipath iregex \
+		links lname empty path regex used xtype fprint fprint0 fprintf \
+		print0 printf not a and o or)/' \
+	'n/*/d/'
 
 # Only list make targets
 complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
 
-#  complete [command [word/pattern/list[:select]/[[suffix]/] ...]] (+)
-if ($uname == FreeBSD) then
-	complete sysctl 'n/*/`sysctl -Na`/'
-	complete service 'n/*/`service -l`/'
+complete dd 'c/if=/f/' 'c/of=/f/' \
+	'c/conv=*,/(ascii block ebcdic lcase pareven noerror notrunc osync sparse swab sync unblock)/,' \
+	'c/conv=/(ascii block ebcdic lcase pareven noerror notrunc osync sparse swab sync unblock)/,' \
+	'p/*/(bs cbs count files fillcahr ibs if iseek obs of oseek seek skip conv)/='
 
-	complete pkg_delete 'c/-/(i v D n p d f G x X r)/' 'n@*@`/bin/ls /var/db/pkg`@'
-	complete kldload 'n@*@`ls -1 /boot/modules/ /boot/kernel/ | sed "s|\.ko||g"`@'
+# FreeBSD-specific stuff
+if ($uname == FreeBSD) then
+	complete service 'p/1/`service -l`/' 'n/*/(start stop reload restart status rcvar onestart onestop)/'
+	complete ifconfig 'p/1/`ifconfig -l`/'
+	complete sysctl 'n/*/`sysctl -Na`/'
+
+	complete pkg_delete 'n@*@`/bin/ls /var/db/pkg`@'
+	complete pkg_info 'n@*@`/bin/ls /var/db/pkg`@'
+	complete kldload 'n@*@`/bin/ls -1 /boot/modules/ /boot/kernel/ | grep -v symbols | sed "s|\.ko||g"`@'
 	complete kldunload 'n@*@`kldstat | awk \{sub\(\/\.ko\/,\"\",\$NF\)\;print\ \$NF\} | grep -v Name`@'
+	complete netstat 'n/-I/`ifconfig -l`/' 'n/*/(start stop restart reload status)/'
+# Linux
 else if  ($uname == Linux) then
-	# Use /bin/ls to prevent ls options interfering (i.e. adding a *)
-	complete service 'n@*@`/bin/ls /etc/init.d`@' 
+	complete service 'p/1/`/bin/ls /etc/init.d`/'
+	complete ifconfig 'p/1/`ifconfig -s | sed 1d | cut -d" " -f1`/'
+	
 	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
 endif
+
+unset noglob
