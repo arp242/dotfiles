@@ -51,7 +51,7 @@ Global {
 	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 90x27" }
 	KeyPress = "Mod4 N" { Actions = "Exec xterm -geometry 90x27 -e ncmpc" }
 	KeyPress = "Mod4 P" { Actions = "Exec mpc toggle" }
-    KeyPress = "Mod4 U" { Actions = "Exec xterm -geometry 90x27 -e mutt" }
+	KeyPress = "Mod4 U" { Actions = "Exec xterm -geometry 90x27 -e mutt" }
 
 	# Pekwm control
 	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }

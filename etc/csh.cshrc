@@ -363,7 +363,7 @@ complete hg 'p/1/(add addremove annotate archive backout bisect bookmarks \
 	grep heads help identify import incoming init locate log manifest \
 	merge outgoing parents paths phase pull push recover remove rename \
 	resolve revert rollback root serve showconfig status summary tag tags \
-	tip unbundle update verify version/)'
+	tip unbundle update verify version)/'
 
 complete svn 'p/1/(add blame cat changelist checkout cleanup commit copy \
 	delete diff export help import info list lock log merge mergeinfo \

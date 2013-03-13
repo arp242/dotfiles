@@ -1,8 +1,6 @@
 [ui]
 username = Martin Tournoij <martin@arp242.net>
 
-[extensions]
-hgext.convert=
-
 [web]
+; XXX: This is FreeBSD-specific
 cacerts = /usr/local/share/certs/ca-root-nss.crt
