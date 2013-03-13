@@ -31,17 +31,18 @@ else
 	xset m 4/8 1
 fi
 
-__run xbindkeys
+#__run xbindkeys
 __run parcellite
-__run pidgin
+#__run pidgin
 __run mailtray
-__run battray
-__run docker -vertical
+__run redshift
+#__run battray
+__run trayer --edge bottom --align right --widthtype request --expand true
+#__run docker -vertical
 
 t=$(which pekwm)
 if [ $? -eq 0 ]; then
 	exec ssh-agent pekwm
-	#exec hest
 else
 	exec ssh-agent twm
 fi

@@ -67,7 +67,8 @@ set set_status = set status_message =
 set default_mode = command
 
 # homepage
-set uri = duckduckgo.com
+#set uri = duckduckgo.com
+set uri = about:blank
 
 # Custom CSS. Including link follower hint styles
 set stylesheet_uri = file://@config_home/uzbl/style.css
@@ -92,13 +93,16 @@ set ssl_verify = 0
 ### Statusbar ###
 #################
 set show_status = 1
-set status_background = #fff
-
+#set status_background = #fff
+set status_background = #000
 set modcmd_style      = weight="bold"
-set keycmd_style      = foreground="#000"
-set prompt_style      = foreground="#000"
+#set keycmd_style      = foreground="#000"
+set keycmd_style      = foreground="#fff"
+#set prompt_style      = foreground="#000"
+set prompt_style      = foreground="#fff"
 set cursor_style      = underline="single"
-set completion_style  = foreground="black"
+#set completion_style  = foreground="#000"
+set completion_style  = foreground="#fff"
 set hint_style        = weight="bold"
 
 set mode_section      = <b>\@[\@mode_indicator]\@</b>
@@ -112,8 +116,8 @@ set selected_section  = <span>\@[\@SELECTED_URI]\@</span>
 set download_section  = <span>\@downloads</span>
 
 #set status_format = <span font_family="monospace">@mode_section@keycmd_section (@progress_section) (@status_section) (@scroll_section) @selected_section (@download_section)</span>
-set status_format = <span font_family="monospace">@mode_section@keycmd_section (@progress_section) [@scroll_section] @selected_section @download_section</span>
-set status_format_right = <span font_family="monospace">@uri_section</span>
+set status_format = <span foreground="#fff" font_family="monospace">@mode_section@keycmd_section (@progress_section) [@scroll_section] @selected_section @download_section</span>
+set status_format_right = <span foreground="#fff" font_family="monospace">@uri_section</span>
 
 set title_format_long = \@keycmd_prompt \@raw_modcmd \@raw_keycmd \@TITLE - Uzbl <\@NAME> \@SELECTED_URI
 
@@ -266,15 +270,16 @@ set ebind     = @mode_bind global,-insert
 
 # Handy binds
 # Exit binding
-@cbind  ZZ = exit
-@cbind  <Ctrl>w = exit
-@ibind  <Ctrl>w = exit
+@cbind ZZ = exit
+@cbind <Ctrl>w = exit
+@ibind <Ctrl>w = exit
 
 # Open URL
-@cbind  o<Open: >_ = uri %s
+@cbind o<Open: >_ = uri %s
 
 # Load current url in promp and edit
-@cbind  O<Open:\ \@uri>_  = uri %s
+@cbind O<Open:\ \@uri>_  = uri %s
+@cbind <F8><Open:\ \@uri>_  = uri %s
 
 # Insert mode
 @cbind i = @set_mode insert
@@ -292,19 +297,23 @@ set ebind     = @mode_bind global,-insert
 @cbind  zS  = event REQ_NEW_WINDOW \@(echo "$UZBL_URI" | sed -e 's/^http:/https:/')\@
 
 # Yanking & pasting binds
-@cbind  yu  = sh 'echo -n "$UZBL_URI" | xclip'
-@cbind  yU  = sh 'echo -n "$1" | xclip' '\@SELECTED_URI'
-@cbind  yy  = sh 'echo -n "$UZBL_TITLE" | xclip'
-@cbind  ys  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ clipboard
+@cbind yu  = sh 'echo -n "$UZBL_URI" | xclip'
+@cbind yU  = sh 'echo -n "$1" | xclip' '\@SELECTED_URI'
+@cbind yy  = sh 'echo -n "$UZBL_TITLE" | xclip'
+@cbind ys  = spawn @scripts_dir/follow.sh \@< uzbl.follow.followSelection('returnuri') >\@ clipboard
 
 # Clone current window
-@cbind  c   = event REQ_NEW_WINDOW \@uri
+@cbind c   = event REQ_NEW_WINDOW \@uri
+
 # Go the page from primary selection
-@cbind  p   = sh 'echo "uri $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+@cbind p   = sh 'echo "uri $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+
 # Go to the page in clipboard
-@cbind  P   = sh 'echo "uri $(xclip -selection clipboard -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+@cbind P   = sh 'echo "uri $(xclip -selection clipboard -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
+
 # Start a new uzbl instance from the page in primary selection
-@cbind  'p  = sh 'echo "event REQ_NEW_WINDOW $(xclip -o)" > "$UZBL_FIFO"'
+@cbind 'p  = sh 'echo "event REQ_NEW_WINDOW $(xclip -o)" > "$UZBL_FIFO"'
+
 # paste primary selection into keycmd at the cursor position
 @bind <Shift><Insert> = sh 'echo "event INJECT_KEYCMD $(xclip -o | sed s/\\\@/%40/g)" > "$UZBL_FIFO"'
 

@@ -1,10 +1,8 @@
 " vim:noexpandtab:ts=8:sts=8:sw=8
-" $Config$
-"
 
-"""""""""""""
-" Functions "
-"""""""""""""
+"""""""""""""""""
+""" Functions """
+"""""""""""""""""
 " Make directory if it doesn't exist yet
 function! MkdirIfNeeded(dir, flags, permissions)
 	if !isdirectory(a:dir)
@@ -43,30 +41,30 @@ else
 	let env="personal"
 endif
 
-""""""""""""""""""""
-" Standard options "
-""""""""""""""""""""
+
+""""""""""""""""""""""""
+""" Standard options """
+""""""""""""""""""""""""
 " Use Vim settings, rather then Vi settings
 set nocompatible
 
-" allow backspacing over everything
+" Allow backspacing over everything
 set backspace=indent,eol,start
 
-" keep n lines of command line history
+" Keep n lines of command line history
 set history=500
 
-" show the cursor position all the time
+" Show the cursor position all the time
 set ruler
-" TODO: Tweak this
 set rulerformat=%l,%c%V%=%P
 
-" display incomplete commands
+" Display incomplete commands
 set showcmd
 
-" do incremental searching
+" Jump to search word while typing
 set incsearch
 
-" highlight the last used search pattern.
+" Highlight the last used search pattern.
 set hlsearch
 
 " Case-insensitive searching ...
@@ -75,11 +73,8 @@ set ignorecase
 " ... Unless the patern contains upper case letters
 set smartcase
 
-" set 'text width' to 70 characters.
-set textwidth=78
-
-" Automatically write files on :q
-set autowriteall
+" set 'text width' to 80 characters.
+set textwidth=80
 
 " Show a + when wrapping a line
 set showbreak=+
@@ -87,10 +82,10 @@ set showbreak=+
 " Wrap at word
 set linebreak
 
-" always set auto indenting on
+" Always set auto indenting on
 set autoindent
 
-" keep backup file
+" Keep backup file when writing
 set backup
 
 " Extension for backup files
@@ -99,10 +94,10 @@ set backupext=.bak
 " String to use in 'list' mode
 set listchars=tab:>-,trail:_
 
-" Language for spell check
+" Default language for spell check
 set spelllang=en_us
 
-" Use English!
+" Always use English in UI/help
 set helplang=en
 set langmenu=en
 
@@ -112,7 +107,7 @@ set mousemodel=popup_setpos
 " Disable folds
 set nofoldenable
 
-" Always show tab line
+" Always show tab bar at top
 set showtabline=2
 
 " Always show statusline
@@ -136,11 +131,11 @@ set ttyfast
 " Update term title
 set title
 
+" .Restore old title after leaving Vim
+set titleold=
+
 " Never beep
 set visualbell
-
-" Restore it after leaving Vim
-set titleold=
 
 " Use blowfish for encrypting files
 if has("cryptv")
@@ -162,6 +157,9 @@ set wildmenu
 
 " List all matches, only complete when it's unambigious
 set wildmode=list,longest
+
+" Ignore these files in completion
+set wildignore=*.o,*.pyc
 
 " TODO ... ?
 set completeopt=longest,menu,preview
@@ -193,22 +191,37 @@ else
 endif
 call MkdirIfNeeded(tmpdir, 'p', 0700)
 
-" Where to keep backup files.
 let &backupdir=tmpdir
-
-" Keep swap file here
 let &dir=tmpdir
+
+" Switch syntax highlighting on
+syntax on
+
+" Use standard color scheme (some Linuxes feel the need to overwrite this in
+" global vimrc)
+colorscheme default
+set background=light
+
+" 16 colors are enough
+set t_Co=16
+
+" Enable file type detection
+filetype plugin indent on
 
 " Go to the last cursor location when a file is opened
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")|execute("normal `\"")|endif
 
-""""""""""""""""
-" GUI settings "
-""""""""""""""""
+" Syntax breaks less often
+autocmd BufEnter * :syntax sync fromstart
+
+
+""""""""""""""""""""
+""" GUI settings """
+""""""""""""""""""""
 if has("gui_running")
 	" Default width & height
 	set lines=80
-	set columns=150
+	set columns=80
 
 	" Activate mouse
 	set mouse=a
@@ -227,95 +240,64 @@ if has("gui_running")
 	set guifont=Dejavu_Sans_Mono:h10
 endif
 
-""""""""""""
-" Keybinds "
-""""""""""""
+""""""""""""""""
+""" Keybinds """
+""""""""""""""""
 map <F2> :registers<CR>
 map <F3> :buffers<CR>
+map <F4> :jumps<CR>
 MapToggle <F10> list
 MapToggle <F11> spell
 MapToggle <F12> paste
 
-inoremap <C-Space> <C-X><C-O>
 
-" Replace array notation with object notation
-"%s/\['\(.\{-}\)'\]/->\1/gc
+""""""""""""""""""""""""""""""""""
+""" Language-specific settings """
+""""""""""""""""""""""""""""""""""
 
-"""""""""""""""""""""""
-" Syntax highlighting "
-"""""""""""""""""""""""
-" Switch syntax highlighting on
-syntax on
+""" HTML
+au BufNewFile,BufRead *.html,*.htm,*.inc,*.tpl set textwidth=120
 
-" Use standard color scheme (some Linuxes feel the need to overwrite this in
-" global vimrc)
-"colorscheme default
-colorscheme peachpuff
-set background=light
+""" Haskell
+" Tabs don't work well with haskell
+au BufNewFile,BufRead *.hs set expandtab ts=4 sts=4 sw=4
 
-" 16 colors are enough
-set t_Co=16
+""" Scheme
+let g:is_chicken=1
 
-" Enable file type detection
-filetype plugin indent on
+""" Python
+" https://github.com/davidhalter/jedi-vim
 
-" Don't highlight matching parens
-"let loaded_matchparen=1
+""" PHP
+" http://www.vim.org/scripts/script.php?script_id=3171
+au FileType php set omnifunc=phpcomplete#CompletePHP
 
-" Syntax breaks less often
-autocmd BufEnter * :syntax sync fromstart
+" Replace array notation with object notation in PHP
+"map <F4> :s/\['\(.\{-}\)'\]/->\1/gc<CR>
+"imap <F4> :s/\['\(.\{-}\)'\]/->\1/gc<CR>
 
-" Automatically close preview window when not needed anymore
-"autocmd InsertLeave * call AutoClosePreviewWindow()
-"autocmd CursorMovedI * call AutoClosePreviewWindow()
-"function! AutoClosePreviewWindow()
-"	if !&l:previewwindow
-"		pclose
-"	endif
-"endfunction
 
-au BufNewFile,BufRead *[mM]akefile* setf make
+" highlighting parent error ] or )
+let php_parent_error_close=1
+let php_parent_error_open=1
 
-" We want a tabstop of 8 (instead of 2) for some files (mainly configfiles)
+""" Misc.
+" We want a tabstop of 8 (instead of 2)
 au BufNewFile,BufRead
-	\ Makefile*,
+	\ [Mm]akefile*,
 	\.vimrc,
 	\crontab*,
 	\*cshrc*,
 	\*.conf,*.ini,*.cfg,*.rc,
 	\ set ts=8 sts=8 sw=8
 
-" GNU configure/autotools is a piece is shit. Loading the file with syntax is
-" way to slow
-au BufNewFile,BufRead
-	\ configure,
-	\ set syntax=
+" Loading GNU configure crap with syntax is way too slow.
+au BufNewFile,BufRead configure set syntax=
 
-" html syntax
-au BufNewFile,BufRead *.html,*.htm,*.inc set textwidth=120
-au BufNewFile,BufRead *.tpl set textwidth=9999
-
-" Tabs don't work well with haskell
-au BufNewFile,BufRead *.hs set expandtab ts=4 sts=4 sw=4
-
-""" Python syntax settings
-"let python_highlight_numbers=1
-"let python_highlight_builtins=1
-"let python_highlight_exceptions=1
-"let python_highlight_space_errors=1
-
-""" PHP syntax settings
-" highlighting parent error ] or )
-let php_parent_error_close=1
-let php_parent_error_open=1
-
-""" Scheme syntax settings
-let g:is_chicken=1
-
-""""""""""""""""""
-" Plugin options "
-""""""""""""""""""
-let mapleader=","
-
-""" TODO: Check out this:
-" http://vim.wikia.com/wiki/PHP_manual_in_Vim_help_format
+""""""""""""""""""""""
+""" Plugin options """
+""""""""""""""""""""""
+""" SuperTab
+" Default is <C-p>
+let g:SuperTabDefaultCompletionType = "<C-x><C-o>"
+"let g:SuperTabDefaultCompletionType = "context"
