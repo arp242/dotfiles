@@ -1,0 +1,10 @@
+have_header: checking for ruby.h... -------------------- yes
+
+"cpp -I. -I/usr/local/lib/ruby/1.8/amd64-freebsd9 -I. -I/usr/include   -I/usr/include  -fwrapv -I/usr/include -O2 -pipe -fno-strict-aliasing -std=gnu89  -fPIC    conftest.c -o conftest.i"
+checked program was:
+/* begin */
+1: #include <ruby.h>
+/* end */
+
+--------------------
+

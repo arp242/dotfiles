@@ -56,9 +56,17 @@ set history=500
 
 " Show the cursor position all the time
 set ruler
-set rulerformat=%l,%c%V%=%P
 
-" Display incomplete commands
+" %40 - 40 wide
+" %= Right align
+" %l line num of cursor
+" %L Total lines in buf
+" %c column of cursor
+" %o Byte pos of cursor
+" %B Byte value under cursor
+set rulerformat=%40(%=[%l/%L]\ [%c\ %o\ 0x%B]%)
+
+" Display incomplete commands in status line
 set showcmd
 
 " Jump to search word while typing
@@ -155,14 +163,14 @@ set scrolloff=5
 " Better tab completion at the Vim cmd
 set wildmenu
 
-" List all matches, only complete when it's unambigious
-set wildmode=list,longest
-
 " Ignore these files in completion
 set wildignore=*.o,*.pyc
 
-" TODO ... ?
-set completeopt=longest,menu,preview
+" List all matches, only complete when it's unambigious
+set wildmode=list:longest,full
+
+" Insert mode completion
+set completeopt=longest,menu
 
 " Allow cursor to go one character past the end of the line
 set virtualedit=onemore
@@ -170,17 +178,16 @@ set virtualedit=onemore
 " TODO I need to look at this...
 "set formatoptions+=
 
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+
+" Round indent to multiple of shiftwidth when using < and >
+set shiftround
+
 " The tab settings for work
 if env == "work"
-	set tabstop=4
-	set shiftwidth=4
-	set softtabstop=4
 	set expandtab
-" ... and for everything else
-else
-	set tabstop=2
-	set shiftwidth=2
-	set softtabstop=2
 endif
 
 " Set (& create if needed) a temp directory to keep backup & swap files
@@ -240,15 +247,21 @@ if has("gui_running")
 	set guifont=Dejavu_Sans_Mono:h10
 endif
 
+
 """"""""""""""""
 """ Keybinds """
 """"""""""""""""
-map <F2> :registers<CR>
-map <F3> :buffers<CR>
-map <F4> :jumps<CR>
+nnoremap <F2> :registers<CR>
+nnoremap <F3> :buffers<CR>
+nnoremap <F4> :jumps<CR>
+nnoremap <F5> :TlistToggle<CR>
+nnoremap <F6> :marks<CR>
+
 MapToggle <F10> list
 MapToggle <F11> spell
 MapToggle <F12> paste
+
+map ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
 
 
 """"""""""""""""""""""""""""""""""
@@ -270,7 +283,6 @@ let g:is_chicken=1
 
 """ PHP
 " http://www.vim.org/scripts/script.php?script_id=3171
-au FileType php set omnifunc=phpcomplete#CompletePHP
 
 " Replace array notation with object notation in PHP
 "map <F4> :s/\['\(.\{-}\)'\]/->\1/gc<CR>
@@ -301,3 +313,29 @@ au BufNewFile,BufRead configure set syntax=
 " Default is <C-p>
 let g:SuperTabDefaultCompletionType = "<C-x><C-o>"
 "let g:SuperTabDefaultCompletionType = "context"
+"
+
+""" Taglist
+" Exit Vim when only the  taglist window is present
+let Tlist_Exit_OnlyWindow = 1
+
+" Display the tags for only the current active buffer
+"let Tlist_Show_One_File = 1
+
+let Tlist_WinWidth=40
+
+""" ShowMarks
+" Off by default
+let g:showmarks_enable=0
+
+
+" (Possibly) check this out:
+" http://www.vim.org/scripts/script.php?script_id=2507
+" http://www.vim.org/scripts/script.php?script_id=1234
+" https://github.com/xolox/vim-easytags#readme 
+" https://github.com/shawncplus/phpcomplete.vim
+" http://www.mwop.net/blog/134-exuberant-ctags-with-PHP-in-Vim.html
+" http://www.vim.org/scripts/script.php?script_id=610
+" http://andrew-stewart.ca/2012/10/31/vim-ctags
+" http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
+" https://bacardi55.org/2013/02/27/how-can-i-use-vim-on-a-daily-basis.html#/
