@@ -1,10 +1,21 @@
 [user]
-	name = Martin Tournoij
-	email = martin@arp242.net
+    name = Martin Tournoij
+    email = martin@augusoft.nl
 
 [core]
-	pager =
+    pager =
 
 [alias]
-	st = status --short
-	ci = commit
+    st = status --short
+    ci = commit -a
+
+[diff]
+    dif = diff --ignore-space-at-eol
+
+[color]
+    status =
+    diff =
+    log =
+
+[push]
+    default = matching
