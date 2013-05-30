@@ -3,7 +3,7 @@
 #
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
-# Should work on: FreeBSD, OpenBSD, Linux, OpenSolaris
+# Should work on: FreeBSD, OpenBSD, Linux, OpenSolaris, Windows 7
 #
 
 # NetBSD
@@ -19,27 +19,35 @@ else
     set prefix = 0
 endif
 
-set uname = `uname`
+if (-X uname) then
+	set uname = `uname`
+else
+	set uname = win32
+endif
+
+if ($uname == MINGW32_NT-6.1) then
+	set uname = win32
+endif
 
 ###################
 ### Environment ###
 ###################
 umask 022
 
-setenv PATH ~/bin
-setenv PATH ${PATH}:/sbin:/bin:/usr/sbin:/usr/bin
-if (-d /usr/local/bin) then
-	setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
+if ($uname != win32) then
+	setenv PATH ~/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/games
+
+	if (-d /usr/local/bin) then
+		setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
+	endif
+	if ($prefix != 0) then
+		setenv PATH ${PATH}:${prefix}/bin:/${prefix}/sbin
+	endif
 endif
-if ($prefix != 0) then
-    setenv PATH ${PATH}:${prefix}/bin:/${prefix}/sbin
-endif
-setenv PATH ${PATH}:/usr/games
 
 # Some commonly installed packages on OpenSolaris
 if ($uname == SunOS) then
-	setenv PATH ${PATH}:/opt/VirtualBox
-	setenv PATH ${PATH}:/opt/csw/gcc4/bin
+	setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 endif
 
 # /var/ is a memory device on my laptop
@@ -173,7 +181,9 @@ set fignore = (.o .pyc)
 # Aliases
 #################################################
 # Update xterm title on directory change (special alias)
-alias cwdcmd 'echo -n "\033]2;tcsh: $cwd\007"'
+if ($uname != win32) then
+	alias cwdcmd 'echo -n "\033]2;tcsh: $cwd\007"'
+endif
 
 # Modestly color my ls. But not christmas tree Linux colors! (See environment
 # variable $LS_COLOR above)
@@ -217,6 +227,13 @@ else if ($uname == Linux) then
 	alias lac ls -lhA
 
 	alias sockstat "netstat -lnptu"
+else if ($uname == win32) then
+	alias ls ls-F
+	alias la "ls -a"
+	alias lc "ls -l"
+	alias lac "ls -la"
+
+	alias clear cls
 else
 	# These should work on almost any platform ...
 	alias la "ls -a"
@@ -277,25 +294,39 @@ alias helpcommand man
 ##############
 # Keybinds ###
 ##############
-# Delete
-bindkey ^[[3~ delete-char
+if ($uname == win32) then
+	bindkey -b N-up history-search-backward
+	bindkey -b N-down history-search-forward
+	bindkey -b N-right forward-char
+	bindkey -b N-left backward-char
+	bindkey -b N-del delete-char
+	bindkey -b N-ins overwrite-mode
+	bindkey -b N-1 which-command
+	bindkey -b N-2 expand-history
+	bindkey -b N-3 complete-word-raw
+	bindkey -b N-home beginning-of-line
+	bindkey -b N-end end-of-line
+else
+	# F1
+	bindkey ^[[M run-help
+	bindkey OP run-help
+	bindkey ^[[11~ run-help # Putty
 
-# Home
-bindkey ^[[H beginning-of-line
-bindkey ^[[1~ beginning-of-line
+	# Delete
+	bindkey ^[[3~ delete-char
 
-# End
-bindkey ^[[F end-of-line
-bindkey ^[[4~ end-of-line
+	# Home
+	bindkey ^[[H beginning-of-line
+	bindkey ^[[1~ beginning-of-line
 
-# F1
-bindkey ^[[M run-help
-bindkey OP run-help
-bindkey ^[[11~ run-help # Putty
+	# End
+	bindkey ^[[F end-of-line
+	bindkey ^[[4~ end-of-line
 
-# Arrow keys
-bindkey -k up history-search-backward
-bindkey -k down history-search-forward
+	# Arrow keys
+	bindkey -k up history-search-backward
+	bindkey -k down history-search-forward
+endif
 
 # Insert
 bindkey ^[[L yank
@@ -441,3 +472,4 @@ else if  ($uname == Linux) then
 endif
 
 unset noglob
+
