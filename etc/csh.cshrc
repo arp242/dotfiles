@@ -1,5 +1,6 @@
 # $FreeBSD: release/9.0.0/etc/csh.cshrc 50472 1999-08-27 23:37:10Z peter $
 #	$OpenBSD: csh.cshrc,v 1.2 1996/05/26 10:25:19 deraadt Exp $
+# $hgid:
 #
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>

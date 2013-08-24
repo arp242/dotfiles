@@ -1,6 +1,11 @@
+; $hgid:
+
 [ui]
 username = Martin Tournoij <martin@arp242.net>
 
 [web]
 ; XXX: This is FreeBSD-specific
 cacerts = /usr/local/share/certs/ca-root-nss.crt
+
+[trusted]
+users = martin

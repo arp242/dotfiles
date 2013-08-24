@@ -1,3 +1,5 @@
+! $hgid:
+
 ! Scroll on scroll lock
 !Xterm*allowScrollLock: true
 

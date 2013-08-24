@@ -1,3 +1,5 @@
+# $hgid:
+
 (use parley)
 
 (let ((old (current-input-port)))

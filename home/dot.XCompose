@@ -1,5 +1,6 @@
 # UTF-8 (Unicode) compose sequence
 # David.Monniaux@ens.fr
+# $hgid:
 #
 # see /usr/X11R6/include/X11/keysymdef.h for character escapes
 # Part 1 - Manual definitions
