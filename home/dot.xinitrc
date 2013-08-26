@@ -35,7 +35,7 @@ _run mailtray
 _run redshift
 _run trayer --edge bottom --align right --widthtype request --expand true
 
-if [ -f ~/.xinitrc_local ];
+if [ -f ~/.xinitrc_local ]; then
 	. ~/.xinitrc_local
 fi
 
