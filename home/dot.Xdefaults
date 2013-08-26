@@ -1,0 +1,22 @@
+! $hgid:
+
+! Scroll on scroll lock
+!Xterm*allowScrollLock: true
+
+! Hide pointer when typing.
+Xterm*pointerMode: 2
+
+! Lines of scrollback.
+XTerm*saveLines: 1024
+
+! Run as login shell.
+XTerm*loginShell: True
+
+! No scollbar
+XTerm*scrollBar: false
+
+! Use UTF-8
+Xterm*locale: UTF-8
+
+! Nice font
+xterm*faceName: DejaVu Sans Mono:pixelsize=16
