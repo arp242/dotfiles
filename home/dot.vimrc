@@ -5,19 +5,33 @@
 """ Functions """
 """""""""""""""""
 " Make directory if it doesn't exist yet
-function! MkdirIfNeeded(dir, flags, permissions)
+fun! MkdirIfNeeded(dir, flags, permissions)
 	if !isdirectory(a:dir)
 		call mkdir(a:dir, a:flags, a:permissions)
 	endif
-endfunction
+endfun
 
 " Map key to toggle an option on/off
-function! MapToggle(key, opt)
+fun! MapToggle(key, opt)
 	let cmd=':set '.a:opt.'! \| set '.a:opt."?\<CR>"
 	exec 'nnoremap '.a:key.' '.cmd
 	exec 'inoremap '.a:key." \<C-O>".cmd
-endfunction
+endfun
 command -nargs=+ MapToggle call MapToggle(<f-args>)
+
+" Replace `} else {' with `}<CR>else {'
+fun! SaneIndent()
+	"silent %s/\(\s*\)}\s*\(else\|catch\)/\1}\r\1\2/g
+	silent! %s/\v(\s*)}\s*(else|catch)/\1}\r\1\2/g
+	execute "normal ''"
+endfun
+
+" Replace `}<CR>else {' with `} else {'
+fun! NotSoSaneIndent()
+	"silent %s/}\_.\(\s*\)\(else\|catch\)/} \2/g
+	silent! %s/\v}\_.(\s*)(else|catch)/} \2/g
+	execute "normal ''"
+endfun
 
 " Are we running on Windows or some UNIX system?
 if has("win32") || has("win64")
@@ -36,7 +50,7 @@ else
 	let whoami=substitute(system("whoami"), '\n', '', '')
 endif
 
-if hostname =~ "xs1\.nl$"
+if hostname =~ "COMPUTER13"
 	let env="work"
 else
 	let env="personal"
@@ -132,7 +146,7 @@ set viminfo='500,:500,%,<500,s10
 set encoding=utf-8
 
 " Always use \n
-set fileformat=unix
+set fileformats=unix
 
 " Faster redrawing
 set ttyfast
@@ -144,7 +158,7 @@ set title
 set titleold=
 
 " Never beep
-set visualbell
+"set visualbell
 
 " Use blowfish for encrypting files
 if has("cryptv")
@@ -165,7 +179,7 @@ set scrolloff=5
 set wildmenu
 
 " Ignore these files in completion
-set wildignore=*.o,*.pyc
+set wildignore=*.o,*.pyc,*.png,*.jpg
 
 " List all matches, only complete when it's unambigious
 set wildmode=list:longest,full
@@ -220,7 +234,7 @@ filetype plugin indent on
 au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")|execute("normal `\"")|endif
 
 " Syntax breaks less often
-autocmd BufEnter * :syntax sync fromstart
+au BufEnter * :syntax sync fromstart
 
 
 """"""""""""""""""""
@@ -228,8 +242,8 @@ autocmd BufEnter * :syntax sync fromstart
 """"""""""""""""""""
 if has("gui_running")
 	" Default width & height
-	set lines=80
-	set columns=80
+	set lines=55
+	set columns=120
 
 	" Activate mouse
 	set mouse=a
@@ -276,6 +290,9 @@ au BufNewFile,BufRead *.html,*.htm,*.inc,*.tpl set textwidth=120
 " Tabs don't work well with haskell
 au BufNewFile,BufRead *.hs set expandtab ts=4 sts=4 sw=4
 
+" PHP
+au BufNewFile *.php exe "normal O<?php"
+
 """ Scheme
 let g:is_chicken=1
 
@@ -307,6 +324,10 @@ au BufNewFile,BufRead
 " Loading GNU configure crap with syntax is way too slow.
 au BufNewFile,BufRead configure set syntax=
 
+" HTML is almost always Twig or Jinja
+au BufNewFile,BufRead *.html set syntax=htmldjango
+
+
 """"""""""""""""""""""
 """ Plugin options """
 """"""""""""""""""""""
@@ -328,6 +349,8 @@ let Tlist_WinWidth=40
 """ ShowMarks
 " Off by default
 let g:showmarks_enable=0
+
+let g:CommandTMatchWindowAtTop = 1
 
 
 " (Possibly) check this out:

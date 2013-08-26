@@ -307,6 +307,9 @@ if ($uname == win32) then
 	bindkey -b N-3 complete-word-raw
 	bindkey -b N-home beginning-of-line
 	bindkey -b N-end end-of-line
+
+	bindkey -b M-x e_copy_to_clipboard
+	bindkey -b M-y e_paste_from_clipboard
 else
 	# F1
 	bindkey ^[[M run-help
