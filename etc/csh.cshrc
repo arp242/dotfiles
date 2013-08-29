@@ -469,7 +469,7 @@ if ($uname == FreeBSD) then
 	complete netstat 'n/-I/`ifconfig -l`/' 'n/*/(start stop restart reload status)/'
 # Linux
 else if  ($uname == Linux) then
-	complete service 'p/1/`/bin/ls /etc/init.d`/'
+	complete service 'p@1@`/bin/ls /etc/init.d`@'
 	complete ifconfig 'p/1/`ifconfig -s | sed 1d | cut -d" " -f1`/'
 	
 	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
