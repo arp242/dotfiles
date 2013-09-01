@@ -1,0 +1,20 @@
+# $hgid:
+
+[user]
+	name = Martin Tournoij
+	email = martin@arp242.net
+
+[core]
+	pager =
+
+[alias]
+	st = status --short
+	ci = commit -a
+
+[color]
+	status =
+	diff =
+	log =
+
+[push]
+	default = matching

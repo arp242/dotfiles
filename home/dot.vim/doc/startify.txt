@@ -1,0 +1,276 @@
+*startify.txt*                        Showing recently used files like a boss.
+*startify*
+
+
+                __                    __           ___
+               /\ \__                /\ \__  __  /'___\
+           ____\ \ ,_\    __     _ __\ \ ,_\/\_\/\ \__/  __  __
+          /',__\\ \ \/  /'__`\  /\`'__\ \ \/\/\ \ \ ,__\/\ \/\ \
+         /\__, `\\ \ \_/\ \L\.\_\ \ \/ \ \ \_\ \ \ \ \_/\ \ \_\ \
+         \/\____/ \ \__\ \__/.\_\\ \_\  \ \__\\ \_\ \_\  \/`____ \
+          \/___/   \/__/\/__/\/_/ \/_/   \/__/ \/_/\/_/   `/___/> \
+                                                             /\___/
+                                                             \/__/
+
+
+==============================================================================
+CONTENTS                                                     *startify-contents*
+
+    1.Intro..........................................|startify-intro|
+    2.Usage..........................................|startify-usage|
+    3.Options........................................|startify-options|
+    4.Commands.......................................|startify-commands|
+    5.Colors.........................................|startify-colors|
+    6.FAQ............................................|startify-faq|
+    7.Author.........................................|startify-author|
+    8.License........................................|startify-license|
+
+
+==============================================================================
+1. Intro                                                        *startify-intro*
+
+Startify is a zero-conf plugin which shows recently used files, bookmarks and
+sessions that were saved to a certain directory.
+
+
+==============================================================================
+2. Usage                                                        *startify-usage*
+
+Startify basically provides two things:
+
+1) If you start Vim without giving any filenames to it (or pipe stuff to it so
+   it reads from STDIN), startify will show a small but pretty start screen
+   which shows recently used files (using viminfo) and sessions by default.
+
+   Additionally, you can define bookmarks, thus entries for files that always
+   should be available in the start screen.
+
+   You can either navigate to a certain menu entry and hit enter or you just
+   key in whatever is written between the square brackets on that line. You
+   can even double-click anywhere on the line now.
+
+   Per default the startify buffer gets closed automatically, if an entry was
+   selected.
+
+   You can reopen the screen via :Startify.
+
+   Moreover, 'e' creates an empty buffer, 'i' creates an empty buffers and
+   jumps into insert mode, 'q' quits.
+
+2) It eases handling of loading and saving sessions by only working with a
+   certain directory. These commands are used for convenience:
+
+      :SLoad    load a session
+      :SSave    save a session
+      :SDelete  delete a session
+
+The default settings are pretty sane, so it should work without any
+configuration.
+
+
+==============================================================================
+3. Options                                                    *startify-options*
+
+Put these variables into your vimrc. The shown assignments are also the
+default values.
+
+============-
+
+    let g:startify_empty_buffer_key = ''
+
+This creates an additional, hidden mapping for the empty buffer.
+
+Example: let g:startify_empty_buffer_key = 'o'
+
+
+============-
+
+    let g:startify_session_dir = '~/.vim/session'
+
+The directory to save/load sessions to/from.
+
+The default for Windows systems is '$HOME\vimfiles\session'.
+
+
+============-
+
+    let g:startify_show_sessions = 1
+
+List saved sessions in g:startify_session_dir.
+
+
+============-
+
+    let g:startify_show_files = 1
+
+List recently used files using viminfo.
+
+
+============-
+
+    let g:startify_show_files_number = 10
+
+The amount of files to list.
+
+
+============-
+
+    let g:startify_bookmarks = []
+
+A list of files to bookmark. Those files will always be shown at the bottom of
+the start screen.
+
+Example: let g:startify_bookmarks = [ '~/.vimrc' ]
+
+============-
+
+    let g:startify_skiplist = []
+
+A list of Vim regular expressions to filter recently used files.
+
+Example: let g:startify_skiplist = [
+           \ 'COMMIT_EDITMSG',
+           \ $VIMRUNTIME .'/doc',
+           \ 'bundle/.*/doc'
+           \ ]
+
+
+============-
+
+    let g:startify_skiplist_server = []
+
+Do not create the startify buffer, if this is a Vim server instance with a
+name contained in this list.
+
+Example: let g:startify_skiplist_server = [ 'GVIM' ]
+
+
+============-
+
+    let g:startify_custom_indices = []
+
+Use any list of strings as indices instead of increasing numbers. If there are
+more startify entries than actual items in the custom list, the remaining
+entries will be filled using the default numbering scheme starting from 0.
+
+Thus you can create your own indexing scheme that fits your keyboard layout.
+You don't want to leave the home row, do you?!
+
+Example: let g:startify_custom_indices = ['a','s','d','f']
+
+This would result in:
+
+    [a]  /last/recently/used/file1
+    [s]  /last/recently/used/file2
+    [d]  /last/recently/used/file3
+    [f]  /last/recently/used/file4
+    [0]  /last/recently/used/file5
+    [1]  /last/recently/used/file6
+    etc.
+
+NOTE: There is no sanitizing going on, so you should know what you're doing!
+
+Best practices:
+
+- do not use 'e', 'i' or 'q' (they will be overwritten anyway)
+- do not use duplicates (previous mappings will be overwritten)
+- do not uses empty strings (creates unreachable entries)
+- (you might want to keep 'j' and 'k' for navigation)
+
+
+============-
+
+    let g:startify_enable_special = 1
+
+Don't show <empty buffer> and <quit>.
+
+
+==============================================================================
+4. Commands                                                  *startify-commands*
+
+    :SLoad    load a session
+    :SSave    save a session
+    :SDelete  delete a session
+
+These take either 0 or 1 argument. If you don't specify the session name as an
+argument, they will just ask for it.
+
+Providing only a part of the session name works too, if you complete the
+argument with either <c-d> or <tab> afterwards.
+
+
+    :Startify
+
+Open the startify buffer.
+
+
+==============================================================================
+5. Colors                                                      *startify-colors*
+
+You can overwrite the highlight groups used by startify. The plugin defines
+these groups:
+
+    StartifyBracket         [,]
+    StartifyFile            the actual file
+    StartifyNumber          the numbers between []
+    StartifyPath            the path to a file
+    StartifySlash           slashes in paths
+    StartifySpecial         <empty buffer>,<quit>
+
+Example: (my terminal emulator supports 256 colors)
+
+    hi StartifyBracket ctermfg=240
+    hi StartifyNumber  ctermfg=215
+    hi StartifyPath    ctermfg=245
+    hi StartifySlash   ctermfg=240
+
+
+==============================================================================
+6. FAQ (Or: Typical rants)                                        *startify-faq*
+
+"I don't want the start screen to use cursorline!"
+--------------------------------------------------
+
+Startify sets its own filetype "startify". Thus one could set buffer-local
+options like this:
+
+    autocmd FileType startify setlocal nocursorline
+
+
+"Last recently used files don't seem to get updated at :Startify!"
+-----------------------------------------------------------
+
+It's because Vim loads the list from viminfo only once, at startup.
+
+
+"I use iTerm2 and have broken colors when using sessions!"
+----------------------------------------------------------
+
+Nothing this plugin could do about. Try playing around with 'sessionoptions'.
+Some people swear it works for them with these settings:
+
+    set sessionoptions=blank,curdir,folds,help,tabpages,winpos
+
+
+==============================================================================
+7. About the author                                            *startify-author*
+
+My nick on Freenode IRC is mhi^.
+
+For latest developments: https://github.com/mhinz
+
+If you use any of my plugins, star it on github. This is a great way of
+getting feedback! Same for issues or feature requests.
+
+Thank you for flying mhi airlines. Get the Vim on!
+
+
+==============================================================================
+8. License                                                    *startify-license*
+
+Copyright © Marco Hinz. Distributed under the same terms as Vim itself.
+
+See |license|.
+
+
+vim: tw=78

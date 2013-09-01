@@ -1,0 +1,15 @@
+# vim:syntax=config
+#
+# http://www.pekwm.org/files/pekwm/doc/0.1.7/html/config/autoprops.html
+
+
+Property = ".*,^Opera" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "2"
+}
+
+Property = ".*,^Pidgin" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Sticky = "True"
+	Skip = "FocusToggle"
+}
