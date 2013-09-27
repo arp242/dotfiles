@@ -1,3 +1,5 @@
+# vim:syntax=tcsh
+#
 # $FreeBSD: release/9.0.0/etc/csh.cshrc 50472 1999-08-27 23:37:10Z peter $
 #	$OpenBSD: csh.cshrc,v 1.2 1996/05/26 10:25:19 deraadt Exp $
 # $hgid:
@@ -72,7 +74,7 @@ if ($uname == OpenBSD) then
 else if ($uname == FreeBSD) then
 	if ($tty =~ ttyv*) then
 		setenv TERM cons25
-		/usr/sbin/kbdcontrol -r fast
+		kbdcontrol -r fast
 	else
 		setenv TERM xterm-color
 	endif
@@ -148,7 +150,7 @@ set listlinks
 # List all jobs after ^Z
 set listjobs
 
-# Show current dir.
+# Show current dir
 set prompt = "[%~]%# "
 
 # Use % for normal user and # for super
@@ -183,7 +185,7 @@ set fignore = (.o .pyc)
 #################################################
 # Update xterm title on directory change (special alias)
 if ($uname != win32) then
-	alias cwdcmd 'echo -n "\033]2;tcsh: $cwd\007"'
+	alias cwdcmd source ~/.tcsh/cwdcmd
 endif
 
 # Modestly color my ls. But not christmas tree Linux colors! (See environment
