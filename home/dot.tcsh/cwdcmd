@@ -1,0 +1,34 @@
+# vim:set syntax=tcsh
+
+echo -n "\033]2;tcsh: $cwd\007"
+
+unset printexitvalue
+
+# Only get the branch once, for the sake of efficiency
+if ( $?reporoot ) then
+	if ( "$cwd" =~ "$reporoot*" ) then
+		echo "goto end"
+		goto end
+	endif
+endif
+
+set repo = `sh -c 'hg branch 2>/dev/null'`
+if ( "X$repo" != "X" ) then
+	set prompt = "%{\033[33m%}(hg:$repo)%{\033[0m%}[%~]%# "
+	set reporoot = `hg root`
+	goto end
+endif
+
+set repo = `sh -c 'git rev-parse --abbrev-ref HEAD 2>/dev/null'`
+if ( "X$repo" != "X" ) then
+	set prompt = "%{\033[33m%}(git:$repo)%{\033[0m%}[%~]%# "
+	set reporoot = `git rev-parse --show-toplevel`
+	goto end
+endif 
+
+set prompt = "[%~]%# "
+unset reporoot
+
+
+end:
+	set printexitvalue

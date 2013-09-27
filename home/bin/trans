@@ -1,4 +1,5 @@
 #!/bin/sh
+# $hgid:
 #
 # Translate text using google. No google account needed.
 #
@@ -61,4 +62,6 @@ encoding=$(echo "$html" | grep -m1 '^Content-Type:' | cut -d= -f2 | tr -d '[[:sp
 echo "$html" \
 	| iconv -f $encoding \
 	| sed -n "s/.*TRANSLATED_TEXT='\(.*\)';INP.*/\1/p;" \
+	| sed 's/\\x3cbr\\x3e/\
+/g' \
 	| python -c 'import sys; print sys.stdin.read().replace(r"\x3cbr\x3e", "\n").strip()'

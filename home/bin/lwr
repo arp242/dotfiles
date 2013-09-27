@@ -1,4 +1,5 @@
 #!/bin/sh
+# $hgid:
 # 
 # Rename all files in the current directory to lowercase
 #
