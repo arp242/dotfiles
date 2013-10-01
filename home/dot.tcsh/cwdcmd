@@ -7,21 +7,24 @@ unset printexitvalue
 # Only get the branch once, for the sake of efficiency
 if ( $?reporoot ) then
 	if ( "$cwd" =~ "$reporoot*" ) then
-		echo "goto end"
 		goto end
 	endif
 endif
 
-set repo = `sh -c 'hg branch 2>/dev/null'`
-if ( "X$repo" != "X" ) then
-	set prompt = "%{\033[33m%}(hg:$repo)%{\033[0m%}[%~]%# "
+hg branch >& /dev/null
+if ( $? == 0 ) then
+	set repo = `hg branch`
+	#set prompt = "%{\033[35m%}(hg:$repo)%{\033[0m%}[%~]%# "
+	set prompt = "[%~]($repo)%# "
 	set reporoot = `hg root`
 	goto end
 endif
 
-set repo = `sh -c 'git rev-parse --abbrev-ref HEAD 2>/dev/null'`
-if ( "X$repo" != "X" ) then
-	set prompt = "%{\033[33m%}(git:$repo)%{\033[0m%}[%~]%# "
+git rev-parse --abbrev-ref HEAD >& /dev/null
+if ( $? == 0 ) then
+	set repo = `git rev-parse --abbrev-ref HEAD`
+	#set prompt = "%{\033[35m%}(git:$repo)%{\033[0m%}[%~]%# "
+	set prompt = "[%~]($repo)%# "
 	set reporoot = `git rev-parse --show-toplevel`
 	goto end
 endif 
