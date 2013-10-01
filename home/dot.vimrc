@@ -271,6 +271,8 @@ nnoremap <F3> :buffers<CR>
 nnoremap <F4> :jumps<CR>
 nnoremap <F5> :TlistToggle<CR>
 nnoremap <F6> :marks<CR>
+nnoremap <F7> :GundoToggle<CR>
+nnoremap <F8> :YRShow<CR>
 
 MapToggle <F10> list
 MapToggle <F11> spell
@@ -343,3 +345,4 @@ let g:ctrlp_cache_dir = tmpdir
 let g:ctrlp_open_new_file = 't'
 "let g:ctrlp_user_command =  'find %s -type f'
 
+let g:syntastic_auto_loc_list = 1
