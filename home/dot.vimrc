@@ -41,19 +41,19 @@ else
 endif
 
 " System Hostname
-let hostname=substitute(system('hostname'), '\n', '', '')
+let hostname = substitute(system('hostname'), '\n', '', '')
 
 " Current username
 if uname == "win32"
-	let whoami=substitute(system("whoami /LOGONID"), '\n', '', '')
+	let whoami = substitute(system("whoami /LOGONID"), '\n', '', '')
 else
-	let whoami=substitute(system("whoami"), '\n', '', '')
+	let whoami = substitute(system("whoami"), '\n', '', '')
 endif
 
 if hostname =~ "COMPUTER13"
-	let env="work"
+	let env = "work"
 else
-	let env="personal"
+	let env = "personal"
 endif
 
 
@@ -207,14 +207,14 @@ endif
 
 " Set (& create if needed) a temp directory to keep backup & swap files
 if uname == "win32"
-	let tmpdir='C:/tmp/vim_' . whoami
+	let tmpdir = 'C:/tmp/vim_' . whoami
 else
-	let tmpdir='/var/tmp/vim_' . whoami
+	let tmpdir = '/var/tmp/vim_' . whoami
 endif
 call MkdirIfNeeded(tmpdir, 'p', 0700)
 
-let &backupdir=tmpdir
-let &dir=tmpdir
+let &backupdir = tmpdir
+let &dir = tmpdir
 
 " Switch syntax highlighting on
 syntax on
@@ -331,35 +331,15 @@ au BufNewFile,BufRead *.html set syntax=htmldjango
 """"""""""""""""""""""
 """ Plugin options """
 """"""""""""""""""""""
-""" SuperTab
-" Default is <C-p>
-let g:SuperTabDefaultCompletionType = "<C-x><C-o>"
-"let g:SuperTabDefaultCompletionType = "context"
-"
-
-""" Taglist
-" Exit Vim when only the  taglist window is present
-let Tlist_Exit_OnlyWindow = 1
-
-" Display the tags for only the current active buffer
-"let Tlist_Show_One_File = 1
-
-let Tlist_WinWidth=40
-
 """ ShowMarks
 " Off by default
 let g:showmarks_enable=0
 
-let g:CommandTMatchWindowAtTop = 1
+""" CtrlP
+let g:ctrlp_map = "<Leader>t"
+let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:100'
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cache_dir = tmpdir
+let g:ctrlp_open_new_file = 't'
+"let g:ctrlp_user_command =  'find %s -type f'
 
-
-" (Possibly) check this out:
-" http://www.vim.org/scripts/script.php?script_id=2507
-" http://www.vim.org/scripts/script.php?script_id=1234
-" https://github.com/xolox/vim-easytags#readme 
-" https://github.com/shawncplus/phpcomplete.vim
-" http://www.mwop.net/blog/134-exuberant-ctags-with-PHP-in-Vim.html
-" http://www.vim.org/scripts/script.php?script_id=610
-" http://andrew-stewart.ca/2012/10/31/vim-ctags
-" http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
-" https://bacardi55.org/2013/02/27/how-can-i-use-vim-on-a-daily-basis.html#/
