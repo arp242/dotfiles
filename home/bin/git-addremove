@@ -1,0 +1,8 @@
+#!/bin/sh -e
+#
+# add/remove all changes from the index, similar to hg addremove
+# From: https://github.com/ddollar/git-utils
+#
+
+git add -A $@
+git ls-files --deleted -z $@ | xargs -0 git rm 
