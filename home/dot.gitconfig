@@ -10,6 +10,7 @@
 [alias]
 	st = status --short
 	ci = commit -a
+	co = checkout
 
 [color]
 	status =
