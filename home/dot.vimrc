@@ -57,6 +57,8 @@ else
 endif
 
 
+execute pathogen#infect()
+
 """"""""""""""""""""""""
 """ Standard options """
 """"""""""""""""""""""""
@@ -190,6 +192,9 @@ set completeopt=longest,menu
 " Allow cursor to go one character past the end of the line
 set virtualedit=onemore
 
+" Max. number of tabs to be open with -p argument or :tab all"
+set tabpagemax=50
+
 " TODO I need to look at this...
 "set formatoptions+=
 
@@ -199,6 +204,9 @@ set softtabstop=4
 
 " Round indent to multiple of shiftwidth when using < and >
 set shiftround
+
+" Backspace at start of line remove shiftwidith worth of space
+set smarttab
 
 " The tab settings for work
 if env == "work"
@@ -267,11 +275,11 @@ endif
 """ Keybinds """
 """"""""""""""""
 nnoremap <F2> :registers<CR>
-nnoremap <F3> :buffers<CR>
+"nnoremap <F3> :buffers<CR>
+nnoremap <F3> :BufExplorer<CR>
 nnoremap <F4> :jumps<CR>
-nnoremap <F5> :TlistToggle<CR>
+nnoremap <F5> :UndotreeToggle<cr>
 nnoremap <F6> :marks<CR>
-nnoremap <F7> :GundoToggle<CR>
 nnoremap <F8> :YRShow<CR>
 
 MapToggle <F10> list
@@ -280,6 +288,17 @@ MapToggle <F12> paste
 
 map ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
 
+" Use <C-L> to clear the highlighting of :set hlsearch
+nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
+
+" We don't need no stinkin' ex mode
+map Q gq
+
+" Typo's
+"cmap W w
+"cmap Q q
+"cmap Wq wq
+"cmap WQ wq
 
 """"""""""""""""""""""""""""""""""
 """ Language-specific settings """
@@ -346,3 +365,39 @@ let g:ctrlp_open_new_file = 't'
 "let g:ctrlp_user_command =  'find %s -type f'
 
 let g:syntastic_auto_loc_list = 1
+
+fun! LastCommand()
+	let l:i = -1
+
+	while l:i > -100
+		let l:cmd = histget("cmd", l:i)
+		if strpart(l:cmd, 0, 1) == "!"
+			let l:i = 1
+			execute l:cmd
+			break
+		endif
+		let l:i -= 1
+	endwhile
+
+	if l:i < 1
+		echoerr "No command found"
+	endif
+endfun
+
+nnoremap <Leader>r :call LastCommand()<CR>
+
+" http://stackoverflow.com/a/7053522/660921
+
+"if &term =~ "xtermTODO.*"
+"	let &t_ti = &t_ti . "\e[?2004h"
+"	let &t_te = "\e[?2004l" . &t_te
+"	function XTermPasteBegin(ret)
+"		set pastetoggle=<Esc>[201~
+"		set paste
+"		return a:ret
+"	endfunction
+"	map <expr> <Esc>[200~ XTermPasteBegin("i")
+"	imap <expr> <Esc>[200~ XTermPasteBegin("")
+"	cmap <Esc>[200~ <nop>
+"	cmap <Esc>[201~ <nop>
+"endif

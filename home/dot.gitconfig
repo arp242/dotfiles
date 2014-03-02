@@ -6,16 +6,20 @@
 
 [core]
 	pager =
+	eol = lf
+
+[color]
+	branch =
+	diff =
+	status =
+	grep =
+
+[diff]
+	mnemonicprefix = true
+
+[push]
+	default = matching
 
 [alias]
 	st = status --short
 	ci = commit -a
-	co = checkout
-
-[color]
-	status =
-	diff =
-	log =
-
-[push]
-	default = matching
