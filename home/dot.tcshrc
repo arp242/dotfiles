@@ -61,20 +61,21 @@ endif
 
 # Various applications settings
 setenv PAGER less
-setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init"
+setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 
 setenv BLOCKSIZE K
 setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=01;31:"
 setenv GREP_COLOR 31 # red
 setenv ACK_COLOR_FILENAME red
 
-if ($uname == OpenBSD) then
+if (($?TMUX)) then
+	setenv TERM screen
+else if ($uname == OpenBSD) then
 	# Seems to work better on OpenBSD ...
 	setenv TERM xterm-xfree86
 else if ($uname == FreeBSD) then
 	if ($tty =~ ttyv*) then
 		setenv TERM cons25
-		kbdcontrol -r fast
 	else
 		setenv TERM xterm-color
 	endif
@@ -178,13 +179,13 @@ set rmstar
 set savehist = 8192 merge
 
 # Lists file name suffixes to be ignored by completion
-set fignore = (.o .pyc)
+set fignore = (.pyc)
 
 #################################################
 # Aliases
 #################################################
 # Update xterm title on directory change (special alias)
-if ($uname != win32) then
+if ($uname != win32 && -f ~/.tcsh/cwdcmd) then
 	alias cwdcmd source ~/.tcsh/cwdcmd
 endif
 
@@ -385,11 +386,12 @@ complete apropos 'p/1/c/'
 
 # set up programs to complete only with files ending in certain extensions
 complete cc 'p/*/f:*.[cao]/'
-complete python 'p/*/f:*.py/'
-complete perl 'p/*/f:*.[pP][lL]/'
+#complete python 'p/*/f:*.py/'
+#complete perl 'p/*/f:*.[pP][lL]/'
 
 # Complete hosts
 complete ssh 'p/1/$hosts/'
+complete pssh 'p/1/$hosts/'
 complete sftp 'p/1/$hosts/'
 complete scp 'p/1/$hosts/'
 complete ping 'p/1/$hosts/'
@@ -478,4 +480,3 @@ else if  ($uname == Linux) then
 endif
 
 unset noglob
-

@@ -31,8 +31,6 @@ fi
 
 _run parcellite
 _run pidgin
-_run mailtray
-_run redshift
 _run trayer --edge bottom --align right --widthtype request --expand true
 
 if [ -f ~/.xinitrc_local ]; then

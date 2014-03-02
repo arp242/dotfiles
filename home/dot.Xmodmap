@@ -1,4 +1,14 @@
-! $hgid:
+! $hgid: f3582eb64861
 
 pointer = 1 2 3 4 5 6 7 8 9 10 11 12
+
+! Insert
 keycode 106 = 38
+
+! CapsLock is CTRL
+remove Lock = Caps_Lock
+keysym Caps_Lock = Control_L
+add Control = Control_L
+
+! Right Alt is compose
+keysym Alt_R = Multi_key
