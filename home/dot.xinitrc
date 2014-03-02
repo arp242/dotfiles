@@ -3,7 +3,7 @@
 
 _run()
 {
-	local t=$(which $1 > /dev/null)
+	local t=$(which $1 > /dev/null 2>&1)
 	if [ $? -eq 0 ]; then
 		$* &
 	fi
@@ -12,11 +12,10 @@ _run()
 cd ~
 
 # X settings
-xset -b
-xmodmap ~/.Xmodmap
-setxkbmap -option compose:caps
-xbacklight -set 30
-xsetroot -solid "#3a6ea5"
+_run xset -b
+_run xmodmap ~/.Xmodmap
+_run xbacklight -set 30
+_run xsetroot -solid "#3a6ea5"
 
 if [ -f ~/.wallpaper.png ]; then
     _run qiv -y ~/.wallpaper.png
@@ -24,9 +23,9 @@ fi
 
 # moused does this on FreeBSD much better than X
 if [ $(uname -s) = FreeBSD ]; then
-	xset m 1/1 1
+	_run xset m 1/1 1
 else
-	xset m 4/8 1
+	_run xset m 4/8 1
 fi
 
 _run parcellite

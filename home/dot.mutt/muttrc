@@ -1,33 +1,38 @@
 # vim:ts=8:sts=8
 
 set hostname = "arp242.net"
-#set sendmail="/usr/local/bin/tmda-sendmail"
-set spoolfile = "imaps://mail.arp242.net/"
+set spoolfile = "imaps://mail.messagingengine.com/INBOX"
+set folder = "imaps://mail.messagingengine.com/INBOX"
+set record=+"Sent Items"
+set postponed="+Drafts"
+set mask = "."
 
-set folder = !/INBOX		# Default folder ...
+set sendmail = /usr/local/sbin/ssmtp
+
+#set folder = !/INBOX		# Default folder ...
 set mbox = !/INBOX		# ... And again
 set from = "martin@arp242.net"	# My mail
 set mbox_type = "Maildir"	# Mailbox type
 set editor = "vim"		# Editor
 set charset = "utf-8"		# Charset for reading
-set send_charset="us-ascii:iso-8859-1:UTF-8"	# Charset for sending
+set send_charset="us-ascii:UTF-8"	# Charset for sending
 set certificate_file=~/.mutt/cert # TLS cert
 set alias_file=~/.mutt/aliases	# Keep aliases in this file.
 set mailcap_path=~/.mutt/mailcap # mailcap file
 set realname = "Martin Tournoij" # My name
 set postpone = ask-no		# Ask about postponing ....
-set postponed = "!Drafts"	# ... And save postponed messages here
+#set postponed = "!Drafts"	# ... And save postponed messages here
 set move = no			# Hold messages in $MAIL
 set mark_old = no		# Don't mark unread new msgs as old
 set print = ask-yes		# Ask before printing
-set delete = yes		# Don't ask before doing a delete
+#set delete = yes		# Don't ask before doing a delete
 set include			# Include the message in replies
 set sort = threads		# Sort in threads
 set sort_aux = date-received	# Sort threads by date received
 set allow_8bit = no		# 8bit isn't safe via Demon
-#set maildir_trash = yes		# Trash messages instead of really deleting them
+set maildir_trash = yes		# Trash messages instead of really deleting them
 set copy			# Keep copies of outgoing mail ...
-set record = "!Sent"		# ... Here
+#set record = "!Sent"		# ... Here
 set beep = no			# We don't need no beeping software.
 set tilde			# Fill out messages with '~'.
 set pager_context = 5		# Show 5 lines of context when pressing space
