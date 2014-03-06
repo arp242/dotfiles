@@ -88,7 +88,11 @@ if __name__ == '__main__':
 						shutil.copy2(origfile, destfile)
 						continue
 					data = data.replace('$hgid:', _version)
-					open(destfile, 'w').write(data)
+					try:
+						open(destfile, 'w').write(data)
+					except IOError:
+						print('Error: %s' % sys.exc_info()[1])
+						continue
 					shutil.copystat(origfile, destfile)
 				else:
 					shutil.copy2(origfile, destfile)
