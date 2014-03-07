@@ -66,6 +66,9 @@ setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 setenv BLOCKSIZE K
 setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=01;31:"
 setenv GREP_COLOR 31 # red
+# Also red, for just the matching part (as above)... Newer GNU greps seem to
+# "require" this to prevent x-mas tree syndrome
+setenv GREP_COLORS "ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0"
 setenv ACK_COLOR_FILENAME red
 
 if (($?TMUX)) then
@@ -229,6 +232,7 @@ else if ($uname == Linux) then
 	alias lc ls -lh
 	alias la ls -A
 	alias lac ls -lhA
+	alias grep "grep --color"
 
 	alias sockstat "netstat -lnptu"
 else if ($uname == win32) then
@@ -348,7 +352,7 @@ if ( -r "$HOME/.hosts" ) then
 endif
 
 if ( -r "$HOME/.ssh/known_hosts" ) then
-	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | sort -u`)
+-	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | cut -d, -f1 | sort -u`)
 endif
 
 set noglob

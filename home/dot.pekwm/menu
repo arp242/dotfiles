@@ -1,45 +1,8 @@
 # vim:syntax=config
 
 RootMenu = "Pekwm" {
-	Entry = "xterm" { Actions = "Exec xterm &" }
-
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-
-	SubMenu = "Workspace" {
-		# Create goto menu once per pekwm config reload. The fast way that
-		# will work for most if not all users.
-		COMMAND = "/usr/local/share/pekwm/scripts/pekwm_ws_menu.sh goto"
-		# Create goto menu every time the menu is opened. The slow way.
-		# This is what you want if you are using external tools to make
-		# the amount of workspaces something else than what you define in
-		# ~/.pekwm/config. You will know if you want this.
-		Entry = "" { Actions = "Dynamic /usr/localshare/pekwm/scripts/pekwm_ws_menu.sh goto dynamic" }
-	}
-
-	Entry = "Window.." { Actions = "ShowMenu GotoClient True" }
-	
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-	Separator {}
-
 	Entry = "Reload" { Actions = "Reload" }
 	Entry = "Restart" { Actions = "Restart" }
-	Submenu = "Exit to" {
-		Entry = "Xterm" { Actions = "RestartOther xterm" }
-		Entry = "TWM" { Actions = "RestartOther twm" }
-	}
 	Entry = "Exit" { Actions = "Exit" }
 }
 
@@ -47,7 +10,6 @@ WindowMenu = "Window Menu" {
 	Entry = "(Un)Stick" { Actions = "Toggle Sticky" }
 	Entry = "(Un)Shade" { Actions = "Toggle Shaded" }
 	Entry = "Iconify" { Actions = "Set Iconified" }
-	Entry = "Command.." { Actions = "ShowCmdDialog" }
 
 	Submenu = "Maximize" {
 		Entry = "Toggle Full" { Actions = "Toggle Maximized True True" }
@@ -74,16 +36,6 @@ WindowMenu = "Window Menu" {
 		Entry = "Toggle showing this frame in menus" { Actions = "Toggle Skip Menus" }
 		Entry = "Toggle including this frame in focus toggle" { Actions = "Toggle Skip FocusToggle" }
 		Entry = "Toggle if this frame snaps to other windows" { Actions = "Toggle Skip Snap" }
-	}
-	SubMenu = "Send To" {
-		# Create sendto menu once per pekwm config reload. The fast way that
-		# will work for most if not all users.
-		#COMMAND = "/usr/pkg/share/pekwm/scripts/pekwm_ws_menu.sh send"
-		# Create sendto menu every time the menu is opened. The slow way.
-		# This is what you want if you are using external tools to make
-		# the amount of workspaces something else than what you define in
-		# ~/.pekwm/config. You will know if you want this.
-		# Entry = "" { Actions = "Dynamic /usr/pkg/share/pekwm/scripts/pekwm_ws_menu.sh send" }
 	}
 	Separator {}
 	Entry = "Close" { Actions = "Close" }
