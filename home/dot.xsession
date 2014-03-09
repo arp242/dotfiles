@@ -15,8 +15,11 @@ _run xset -b
 _run xmodmap ~/.Xmodmap
 _run xbacklight -set 0
 _run xsetroot -solid "#3a6ea5"
+_run gtk-redshift
+_run redshift-gtk
+_run volumeicon
 _run xrdb ~/.Xdefaults
-[ -f ~/.wallpaper.png ] _run qiv -y ~/.wallpaper.png
+[ -f ~/.wallpaper.png ] && _run qiv -y ~/.wallpaper.png
 
 # moused does this on FreeBSD much better than X
 if [ $(uname -s) = FreeBSD ]; then
