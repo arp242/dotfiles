@@ -6,7 +6,7 @@ import os, subprocess, sys, shutil
 
 
 def usage():
-	print("%s diff | install" % sys.argv[0])
+	print("%s diff | merge | install" % sys.argv[0])
 
 
 def runcmd(cmd):
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 		sys.exit(0)
 	else:
 		cmd = sys.argv[1]
-		if cmd not in ['diff', 'install']:
+		if cmd not in ['diff', 'merge', 'install']:
 			usage()
 			sys.exit(1)
 
@@ -65,6 +65,9 @@ if __name__ == '__main__':
 					if dif != '': print(dif)
 				else:
 					print("==> %s doesn't exist" % destfile)
+			elif cmd == 'merge':
+				if os.path.exists(destfile) and dif != '':
+					subprocess.call(['vimdiff', destfile, origfile])
 			elif cmd == 'install' and dif.strip() != '':
 				if os.path.exists(destfile):
 					if not os.access(destfile, os.W_OK):

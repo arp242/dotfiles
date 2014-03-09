@@ -51,9 +51,6 @@ Screen {
 	# single row.
 	WorkspacesPerRow = "4"
 
-	# List of names for workspaces separated by ;.
-	WorkspaceNames = "Main;Web;Root;Glitch;Chat;Music;Misc1;Misc2"
-
 	# Controls whether a list of all available frames on the workspace is
 	# displayed during the NextFrame/PrevFrame actions.
 	ShowFrameList = "True"

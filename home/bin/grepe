@@ -1,0 +1,3 @@
+#!/bin/sh
+
+vim -p `grep $* | cut -d: -f1 | sort -u | xargs`

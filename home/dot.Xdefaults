@@ -18,5 +18,5 @@ XTerm*locale: UTF-8
 ! Nice font
 XTerm*faceName: DejaVu Sans Mono:pixelsize=16
 
-! Don't clear terminals after {man,vim,etc.}
+! Do not clear terminals after {man,vim,etc.}
 XTerm*titeInhibit: true

@@ -352,7 +352,7 @@ if ( -r "$HOME/.hosts" ) then
 endif
 
 if ( -r "$HOME/.ssh/known_hosts" ) then
--	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | cut -d, -f1 | sort -u`)
+	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | cut -d, -f1 | sort -u`)
 endif
 
 set noglob
