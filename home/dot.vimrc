@@ -50,11 +50,15 @@ else
 	let whoami = substitute(system("whoami"), '\n', '', '')
 endif
 
-if hostname =~ "COMPUTER13"
-	let env = "work"
-else
-	let env = "personal"
-endif
+try
+	let env = env
+catch /E121/
+	if hostname =~ "martin-xps"
+		let env = "work"
+	else
+		let env = "personal"
+	endif
+endtry
 
 
 execute pathogen#infect()
@@ -211,6 +215,10 @@ set smarttab
 " The tab settings for work
 if env == "work"
 	set expandtab
+	set ts=2
+	set sw=2
+	set sts=2
+	set fileformats=unix,dos
 endif
 
 " Set (& create if needed) a temp directory to keep backup & swap files
