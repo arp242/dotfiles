@@ -17,7 +17,7 @@ fun! MapToggle(key, opt)
 	exec 'nnoremap '.a:key.' '.cmd
 	exec 'inoremap '.a:key." \<C-O>".cmd
 endfun
-command -nargs=+ MapToggle call MapToggle(<f-args>)
+command! -nargs=+ MapToggle call MapToggle(<f-args>)
 
 " Replace `} else {' with `}<CR>else {'
 fun! SaneIndent()
@@ -393,19 +393,6 @@ fun! LastCommand()
 endfun
 
 nnoremap <Leader>r :call LastCommand()<CR>
-
-" http://stackoverflow.com/a/7053522/660921
-
-"if &term =~ "xtermTODO.*"
-"	let &t_ti = &t_ti . "\e[?2004h"
-"	let &t_te = "\e[?2004l" . &t_te
-"	function XTermPasteBegin(ret)
-"		set pastetoggle=<Esc>[201~
-"		set paste
-"		return a:ret
-"	endfunction
-"	map <expr> <Esc>[200~ XTermPasteBegin("i")
-"	imap <expr> <Esc>[200~ XTermPasteBegin("")
-"	cmap <Esc>[200~ <nop>
-"	cmap <Esc>[201~ <nop>
-"endif
+nnoremap <Leader>y "*y
+nnoremap <Leader>p "*p
+nnoremap <Leader>P "*P

@@ -24,11 +24,9 @@ endif
 
 if (-X uname) then
 	set uname = `uname`
+	# uname part of msysgit
+	if ($uname == MINGW32_NT-6.1) set uname = win32
 else
-	set uname = win32
-endif
-
-if ($uname == MINGW32_NT-6.1) then
 	set uname = win32
 endif
 
@@ -202,11 +200,12 @@ if ($uname == FreeBSD) then
 	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
 
 	# bsdgrep is FreeBSD >=9
-	if (-X bsdgrep) then
-		alias grep "bsdgrep --color"
-	else
+	# XXX bsdgrep doesn't seem stable/reliable
+	#if (-X bsdgrep) then
+	#	alias grep "bsdgrep --color"
+	#else
 		alias grep "grep --color"
-	endif
+	#endif
 else if ($uname == OpenBSD) then
 	if (-X colorls) then
 		alias ls "colorls -FG"
@@ -235,6 +234,9 @@ else if ($uname == Linux) then
 	alias grep "grep --color"
 
 	alias sockstat "netstat -lnptu"
+	alias zzz 'pm-hibernate'
+
+	if (-X bsdtar) alias tar bsdtar
 else if ($uname == win32) then
 	alias ls ls-F
 	alias la "ls -a"
@@ -255,9 +257,7 @@ if (-x /usr/bin/nice) then
 else if (-x /bin/nice) then
         alias nice "/bin/nice"
 endif
-if (-x /usr/bin/time) then
-	alias time "/usr/bin/time -h"
-endif
+if (-x /usr/bin/time) alias time "/usr/bin/time -h"
 
 # A few move aliases...
 alias cp "cp -i"
@@ -267,13 +267,8 @@ alias j "jobs -l"
 alias lman "groff -man -Tascii" # `local man' <file>.1
 
 # Third-party stuff
-if (-X mplayer) then
-	alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
-endif
-
-if (-X opera) then
-	alias opera "opera -nomail"
-endif
+if (-X mplayer) alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
+if (-X opera) alias opera "opera -nomail"
 
 # use title in filename
 alias youtube-dl 'youtube-dl -t'
