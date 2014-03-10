@@ -51,6 +51,10 @@ else
 endif
 
 try
+	" This allows doing:
+	" :let env = "personal"
+	" :source ~/.vimrc
+	" To re-set the settings
 	let env = env
 catch /E121/
 	if hostname =~ "martin-xps"
@@ -124,7 +128,7 @@ set backupext=.bak
 set listchars=tab:>-,trail:_
 
 " Default language for spell check
-set spelllang=en_us
+set spelllang=en_gb
 
 " Always use English in UI/help
 set helplang=en
@@ -211,6 +215,9 @@ set shiftround
 
 " Backspace at start of line remove shiftwidith worth of space
 set smarttab
+
+" Don't wrap search
+set nowrapscan
 
 " The tab settings for work
 if env == "work"
