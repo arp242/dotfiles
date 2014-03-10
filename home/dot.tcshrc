@@ -346,9 +346,16 @@ if ( -r "$HOME/.hosts" ) then
 	set hosts=($hosts `grep -Ev '(^#|^$)' $HOME/.hosts`)
 endif
 
-if ( -r "$HOME/.ssh/known_hosts" ) then
-	set hosts=($hosts `cut -d " " -f 1 ~/.ssh/known_hosts | cut -d, -f1 | sort -u`)
+if ( -r "$HOME/.ssh/config" ) then
+	set hosts=($hosts `grep ^Host ~/.ssh/config | cut -d' ' -f2`)
 endif
+
+if ( -r "$HOME/.ssh/known_hosts" ) then
+	set hosts=($hosts `cut -d' ' -f 1 ~/.ssh/known_hosts | cut -d, -f1`)
+endif
+
+set hosts = `echo "$hosts" | sort -u`
+
 
 set noglob
 
@@ -452,7 +459,11 @@ complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
 	'n/*/d/'
 
 # Only list make targets
-complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
+if ($uname == FreeBSD && `uname -r | cut -d. -f1` < 10) then
+	complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
+else
+	complete make 'n@*@`sh -c "make -dg1 -n 2>&1 | grep ,\ flags\ \[0-9\]\*,\ type\ \[0-9\]\* | cut -wf2 | tr -d , | sed /^\[^a-z\]/d | sort -u"`@'
+endif
 
 complete dd 'c/if=/f/' 'c/of=/f/' \
 	'c/conv=*,/(ascii block ebcdic lcase pareven noerror notrunc osync sparse swab sync unblock)/,' \

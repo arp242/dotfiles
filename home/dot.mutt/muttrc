@@ -7,6 +7,8 @@ set record=+"Sent Items"
 set postponed="+Drafts"
 set mask = "."
 
+source ~/.mutt/account
+
 set sendmail = /usr/local/sbin/ssmtp
 
 #set folder = !/INBOX		# Default folder ...
@@ -52,7 +54,6 @@ set index_format="%Z│ %{%b %d}│ %-20.20F│ %s"
 set index_format="%Z| %{%b %d}| %-20.20F| %s"
 
 source ~/.mutt/gpg
-source ~/.mutt/mailboxes
 source ~/.mutt/headers
 source ~/.mutt/color
 source ~/.mutt/keys
