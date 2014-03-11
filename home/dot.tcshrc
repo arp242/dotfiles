@@ -100,6 +100,7 @@ endif
 # Set editor
 if (-X vim) then
 	setenv EDITOR vim
+        alias vim 'vim -p'
 	alias vi "vim"
 else if (-X vi) then
 	setenv EDITOR vi
@@ -269,6 +270,14 @@ alias lman "groff -man -Tascii" # `local man' <file>.1
 # Third-party stuff
 if (-X mplayer) alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
 if (-X opera) alias opera "opera -nomail"
+
+if (-X curl) then
+        alias curl-post 'curl -X POST'
+        alias curl-put 'curl -X PUT'
+        alias curl-delete 'curl -X DELETE'
+endif
+
+alias dejson 'python -mjson.tool'
 
 # use title in filename
 alias youtube-dl 'youtube-dl -t'
