@@ -13,7 +13,7 @@ try
 catch /E121/
 	" I keep the company code in ~/code/, if we're outside of that, assume
 	" we're *not* using the company code style
-	if hostname() =~ "martin-xps" && strpart(getcwd(), 0, strlen($HOME) + 5) == "$HOME/code"
+	if hostname() =~ "martin-xps" && strpart(getcwd(), 0, strlen($HOME) + 5) == $HOME . "/code"
 		let env = "work"
 	else
 		let env = "personal"

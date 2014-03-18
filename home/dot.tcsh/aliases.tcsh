@@ -3,8 +3,8 @@ if ($uname != win32 && -f ~/.tcsh/cwdcmd) then
 	alias cwdcmd source ~/.tcsh/cwdcmd
 endif
 
-# Modestly color my ls. But not christmas tree Linux colors! (See environment
-# variable $LS_COLOR above)
+alias helpcommand man
+
 if ($uname == FreeBSD) then
 	alias ls "ls-F -I"
 	alias la "ls-F -A"
@@ -13,7 +13,7 @@ if ($uname == FreeBSD) then
 	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
 
 	# bsdgrep is FreeBSD >=9
-	# XXX bsdgrep doesn't seem stable/reliable
+	# bsdgrep doesn't seem stable/reliable (yet)
 	#if (-X bsdgrep) then
 	#	alias grep "bsdgrep --color"
 	#else
@@ -40,15 +40,22 @@ else if ($uname == SunOS) then
 	alias lac "/bin/ls -FlAho"
 else if ($uname == Linux) then
 	unalias ls
-	alias ls ls-F
+
+	# We need the LANG=C trick to unfuck GNU ls sorting crap. If I leave it as
+	# en_us.utf-8 it sorts like:
+	# afile #hash _startwithunderscore World
+	# Which is not what I call `alphabetical'
+	# (I also can't use ls-F builtin with this...)
+	alias ls 'env LANG=C ls -F --color'
 	alias lc ls -lh
 	alias la ls -A
 	alias lac ls -lhA
 	alias grep "grep --color"
 
-	alias sockstat "netstat -lnptu"
+	alias sockstat "netstat -lnptu --protocol=inet,unix"
 	alias zzz 'pm-hibernate'
 
+	# bsdtar/libarchive works with many file formats, not just tar
 	if (-X bsdtar) alias tar bsdtar
 else if ($uname == win32) then
 	alias ls ls-F
@@ -68,7 +75,7 @@ endif
 if (-x /usr/bin/nice) then
 	alias nice "/usr/bin/nice"
 else if (-x /bin/nice) then
-        alias nice "/bin/nice"
+	alias nice "/bin/nice"
 endif
 if (-x /usr/bin/time) alias time "/usr/bin/time -h"
 
@@ -84,26 +91,17 @@ if (-X mplayer) alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
 if (-X opera) alias opera "opera -nomail"
 
 if (-X curl) then
-        alias curl-post 'curl -X POST'
-        alias curl-put 'curl -X PUT'
-        alias curl-delete 'curl -X DELETE'
+	alias curl-post 'curl -X POST'
+	alias curl-put 'curl -X PUT'
+	alias curl-delete 'curl -X DELETE'
 endif
 
 alias dejson 'python -mjson.tool'
 alias ag 'ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 
-# use title in filename
+# Use title in filename
 alias youtube-dl 'youtube-dl -t'
 
-if (-X xtermset) then
-	alias xt "xtermset -title"
-	alias black "xtermset -fg white -bg black"
-	alias white "xtermset -fg black -bg white"
-else if (-X xtermcontrol) then
-	alias xt "xtermcontrol --title"
-	alias black "xtermcontrol --fg=white --bg=black"
-	alias white "xtermcontrol --fg=black --bg=white"
-endif
 
 # Typos
 alias sl "ls"
@@ -114,5 +112,7 @@ alias ci "vi" # ci already exists, but few people use it and it mangles files!
 alias grpe "grep"
 alias Grep "grep"
 
-alias helpcommand man
+alias firefox-music 'firefox -new-instance -P music'
 
+# Visual separator
+alias sep "echo '\033[1;34m=========================================\033[0m'"

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export PATH=$HOME/Local/bin:$PATH
 _run()
 {
 	local t=$(which $1 > /dev/null 2>&1)
@@ -12,12 +13,9 @@ cd ~
 
 # X settings
 _run xset -b
-_run xmodmap ~/.Xmodmap
-_run xbacklight -set 0
+#_run xmodmap ~/.Xmodmap
+_run xbacklight -set 20
 _run xsetroot -solid "#3a6ea5"
-_run gtk-redshift
-_run redshift-gtk
-_run volumeicon
 _run xrdb ~/.Xdefaults
 [ -f ~/.wallpaper.png ] && _run qiv -y ~/.wallpaper.png
 
@@ -28,11 +26,15 @@ else
 	_run xset m 4/8 1
 fi
 
-_run parcellite
 _run trayer --edge bottom --align right --widthtype request --expand true
+_run gtk-redshift
+_run redshift-gtk
+_run volumeicon
+_run battray
+_run parcellite
+_run pidgin
+_run parcellite
 
 if [ -f ~/.xsession_local ]; then
 	. ~/.xsession_local
 fi
-
-
