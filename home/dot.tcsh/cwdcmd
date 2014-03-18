@@ -7,14 +7,16 @@ unset printexitvalue
 # Only get the branch once, for the sake of efficiency
 if ( $?reporoot ) then
 	if ( "$cwd" =~ "$reporoot*" ) then
-		goto end
+		# TODO: Git specific
+		if ( $reporoot == `stat -c%Y "$reporoot"/.git/HEAD` ) then
+			goto end
+		endif
 	endif
 endif
 
 hg branch >& /dev/null
 if ( $? == 0 ) then
 	set repo = `hg branch`
-	#set prompt = "%{\033[35m%}(hg:$repo)%{\033[0m%}[%~]%# "
 	set prompt = "[%~]($repo)%# "
 	set reporoot = `hg root`
 	goto end
@@ -23,15 +25,17 @@ endif
 git rev-parse --abbrev-ref HEAD >& /dev/null
 if ( $? == 0 ) then
 	set repo = `git rev-parse --abbrev-ref HEAD`
-	#set prompt = "%{\033[35m%}(git:$repo)%{\033[0m%}[%~]%# "
 	set prompt = "[%~]($repo)%# "
 	set reporoot = `git rev-parse --show-toplevel`
+	set repochanged = `stat -c%Y "$reporoot"/.git/HEAD`
 	goto end
 endif 
 
 set prompt = "[%~]%# "
 unset reporoot
+unset repochanged
 
 
 end:
+	# TODO: Don't assume it was set
 	set printexitvalue

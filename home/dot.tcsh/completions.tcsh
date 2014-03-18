@@ -1,20 +1,19 @@
+set noglob
+
 set hosts
 if ( -r "$HOME/.hosts" ) then
 	set hosts=($hosts `grep -Ev '(^#|^$)' $HOME/.hosts`)
 endif
 
 if ( -r "$HOME/.ssh/config" ) then
-	set hosts=($hosts `grep ^Host ~/.ssh/config | cut -d' ' -f2`)
+	set hosts=($hosts `grep ^Host $HOME/.ssh/config | cut -d' ' -f2`)
 endif
 
 if ( -r "$HOME/.ssh/known_hosts" ) then
-	set hosts=($hosts `cut -d' ' -f 1 ~/.ssh/known_hosts | cut -d, -f1`)
+	set hosts=($hosts `cut -d' ' -f 1 $HOME/.ssh/known_hosts | cut -d, -f1`)
 endif
 
-set hosts = `echo "$hosts" | sort -u`
-
-
-set noglob
+set hosts = `echo "$hosts" | tr -d '[]' | sort -u`
 
 # Show directories only
 complete cd 'C/*/d/'
@@ -56,6 +55,7 @@ complete cc 'p/*/f:*.[cao]/'
 complete ssh 'p/1/$hosts/'
 complete pssh 'p/1/$hosts/'
 complete sftp 'p/1/$hosts/'
+complete ftp 'p/1/$hosts/'
 complete scp 'p/1/$hosts/'
 complete ping 'p/1/$hosts/'
 
@@ -98,7 +98,9 @@ complete git 'p/1/(add merge-recursive add--interactive merge-resolve am \
 	ls-files update-index ls-remote update-ref ls-tree update-server-info \
 	mailinfo upload-archive mailsplit upload-pack merge var merge-base \
 	verify-pack merge-file verify-tag merge-index web--browse \
-	merge-octopus whatchanged merge-one-file write-tree merge-ours)/'
+	merge-octopus whatchanged merge-one-file write-tree merge-ours)/' \
+	'n@checkout@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@' \
+	'n@branch@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||" /^HEAD/d | sort -u`@'
 
 complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
 	'n/-type/(c b d f p l s)/' \
@@ -142,9 +144,9 @@ if ($uname == FreeBSD) then
 else if  ($uname == Linux) then
 	complete service 'p@1@`/bin/ls /etc/init.d`@'
 	complete ifconfig 'p/1/`ifconfig -s | sed 1d | cut -d" " -f1`/'
-	
+	complete sysctl 'n/*/`sysctl -N -a`/'
+
 	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
 endif
 
 unset noglob
-
