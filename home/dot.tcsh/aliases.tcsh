@@ -1,6 +1,8 @@
 # Update xterm title on directory change (special alias)
-if ($uname != win32 && -f ~/.tcsh/cwdcmd) then
-	alias cwdcmd source ~/.tcsh/cwdcmd
+if ( $uname != win32 && -f ~/.tcsh/cwdcmd.tcsh ) then
+	alias cwdcmd source ~/.tcsh/cwdcmd.tcsh
+else
+	unalias cwdcmd
 endif
 
 alias helpcommand man

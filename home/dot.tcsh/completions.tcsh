@@ -100,7 +100,7 @@ complete git 'p/1/(add merge-recursive add--interactive merge-resolve am \
 	verify-pack merge-file verify-tag merge-index web--browse \
 	merge-octopus whatchanged merge-one-file write-tree merge-ours)/' \
 	'n@checkout@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@' \
-	'n@branch@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||" /^HEAD/d | sort -u`@'
+	'n@branch@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@'
 
 complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
 	'n/-type/(c b d f p l s)/' \
@@ -117,11 +117,21 @@ complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \
 		print0 printf not a and o or)/' \
 	'n/*/d/'
 
-# Only list make targets
-if ($uname == FreeBSD && `uname -r | cut -d. -f1` < 10) then
-	complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
-else
-	complete make 'n@*@`sh -c "make -dg1 -n 2>&1 | grep ,\ flags\ \[0-9\]\*,\ type\ \[0-9\]\* | cut -wf2 | tr -d , | sed /^\[^a-z\]/d | sort -u"`@'
+# pmake & GNU make
+if ( $uname == FreeBSD ) then
+	set backslash_quote
+	complete gmake 'n@*@`make -qp | awk -F: \'/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ { split($1,A,/ /); for(i in A)print A[i] }\' | sort -u`@'
+	unset backslash_quote
+
+	if ( `uname -r | cut -d. -f1` < 10 ) then
+		complete make 'n@*@`make -pn | sed -n -E "/^[#_.\/[:blank:]]+/d; /=/d; s/[[:blank:]]*:.*//gp;"`@'
+	else
+		complete make 'n/*/`make -V .ALLTARGETS`/'
+	endif
+else if ( $uname == Linux ) then
+	set backslash_quote
+	complete make 'n@*@`make -qp | awk -F: \'/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ { split($1,A,/ /); for(i in A)print A[i] }\' | sort -u`@'
+	unset backslash_quote
 endif
 
 complete dd 'c/if=/f/' 'c/of=/f/' \
