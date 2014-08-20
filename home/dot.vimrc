@@ -20,7 +20,6 @@ catch /E121/
 	endif
 endtry
 
-
 execute pathogen#infect()
 
 

@@ -13,6 +13,7 @@ if ( -r "$HOME/.ssh/known_hosts" ) then
 	set hosts=($hosts `cut -d' ' -f 1 $HOME/.ssh/known_hosts | cut -d, -f1`)
 endif
 
+# TODO: sort
 set hosts = `echo "$hosts" | tr -d '[]' | sort -u`
 
 # Show directories only
@@ -153,10 +154,12 @@ if ($uname == FreeBSD) then
 # Linux
 else if  ($uname == Linux) then
 	complete service 'p@1@`/bin/ls /etc/init.d`@'
-	complete ifconfig 'p/1/`ifconfig -s | sed 1d | cut -d" " -f1`/'
+	complete ifconfig 'p/1/`ifconfig -a -s | sed 1d | cut -d" " -f1`/'
 	complete sysctl 'n/*/`sysctl -N -a`/'
 
 	complete chkconfig 'c/--/(list add del)/' 'n@*@`/bin/ls /etc/init.d`@'
+
+	complete systemctl 'p@*@`systemctl list-units --all -t service,timer,socket,mount,automount,path,snapshot,swap --no-legend | cut -d\  -f1`@'
 endif
 
 unset noglob

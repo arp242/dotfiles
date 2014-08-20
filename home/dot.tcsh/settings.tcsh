@@ -61,4 +61,5 @@ set savehist = 8192 merge
 # Lists file name suffixes to be ignored by completion
 set fignore = (.pyc)
 
-
+# Allow ** for recursive glob
+set globstar

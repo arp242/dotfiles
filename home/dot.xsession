@@ -1,11 +1,13 @@
 #!/bin/sh
 
+export DISPLAY=:0
 export PATH=$HOME/Local/bin:$PATH
+
 _run()
 {
 	local t=$(which $1 > /dev/null 2>&1)
 	if [ $? -eq 0 ]; then
-		$* &
+		$* >> /tmp/xsession-output 2>&1 &
 	fi
 }
 
@@ -13,7 +15,7 @@ cd ~
 
 # X settings
 _run xset -b
-#_run xmodmap ~/.Xmodmap
+_run xmodmap ~/.Xmodmap
 _run xbacklight -set 20
 _run xsetroot -solid "#3a6ea5"
 _run xrdb ~/.Xdefaults
@@ -23,16 +25,14 @@ _run xrdb ~/.Xdefaults
 if [ $(uname -s) = FreeBSD ]; then
 	_run xset m 1/1 1
 else
-	_run xset m 4/8 1
+	:
+	# We use /etc/X11/xorg.conf.d/50-mouse.conf now
+	#_run xset m 4/8 1
 fi
 
 _run trayer --edge bottom --align right --widthtype request --expand true
-_run gtk-redshift
 _run redshift-gtk
-_run volumeicon
 _run battray
-_run parcellite
-_run pidgin
 _run parcellite
 
 if [ -f ~/.xsession_local ]; then

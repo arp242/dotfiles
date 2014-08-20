@@ -17,7 +17,7 @@
 	mnemonicprefix = true
 
 [push]
-	default = matching
+	default = simple
 
 [alias]
 	st = status --short

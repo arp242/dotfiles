@@ -162,6 +162,12 @@ if env == "work"
 	set sw=2
 	set sts=2
 	set fileformats=unix,dos
+else
+	set noexpandtab
+	set ts=4
+	set sw=4
+	set sts=4
+	set fileformats=unix
 endif
 
 " Set (& create if needed) a temp directory to keep backup & swap files
@@ -195,7 +201,7 @@ filetype plugin indent on
 
 aug init
 	" Go to the last cursor location when a file is opened
-	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")|execute("normal `\"")|endif
+	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &filetype != "gitcommit"|execute("normal `\"")|endif
 
 	" Syntax breaks less often, but it's a bit slower
 	au BufEnter * :syntax sync fromstart

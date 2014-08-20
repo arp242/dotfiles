@@ -8,7 +8,7 @@ nnoremap <F3> :BufExplorer<CR>
 nnoremap <F4> :jumps<CR>
 nnoremap <F5> :UndotreeToggle<cr>
 nnoremap <F6> :marks<CR>
-
+MapToggle <F7> cursorcolumn
 MapToggle <F10> list
 MapToggle <F12> paste
 
