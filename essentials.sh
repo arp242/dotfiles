@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# Quickly install essentials
-# curl -s http://code.arp242.net/config/src/tip/essentials.sh | sh
+# Quickly install essentials (tcsh, tmux, vim)
+# curl -s http://code.arp242.net/config/raw/tip/essentials.sh | sh
 
 cd ~
 wget http://code.arp242.net/config/get/tip.tar.gz
@@ -12,6 +12,8 @@ cd Carpetsmoker-config-*
 
 cp ./home/dot.tcshrc ~/.tcshrc
 cp -r ./home/dot.tcsh ~/.tcsh
-cp ./home/dot.tcshrc ~/.vimrc
-cp -r ./home/dot.tcsh ~/.vim
+
 cp -r ./home/dot.tmux.conf ~/.tmux.conf
+
+cp ./home/dot.vimrc ~/.vimrc
+cp -r ./home/dot.vim ~/.vim
