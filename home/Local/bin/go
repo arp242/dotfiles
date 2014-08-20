@@ -1,0 +1,25 @@
+#!/usr/bin/env python
+# $hgid:
+
+import sys, subprocess, os
+
+projects = os.listdir(os.path.expanduser('~/code/cust'))
+projects.sort()
+for i, p in enumerate(projects): print('%s %s' % (i + 1, p))
+try:
+    n = input('> ')
+except KeyboardInterrupt:
+    print('\n')
+    sys.exit(0)
+p = projects[int(n) - 1]
+
+subprocess.call('opera &', shell=True)
+subprocess.call('pidgin &', shell=True)
+
+subprocess.call(['ssh-add'])
+subprocess.call(['ssh-add', '/home/martin/.ssh/id_rsa.git'])
+
+subprocess.call(['sudo', 'true'])
+subprocess.call(['vagrant up'], shell=True, cwd='/home/martin/code/cust/%s' % p)
+
+print('\n\ncd /home/martin/code/cust/%s && tmux\n' % p)

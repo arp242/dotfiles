@@ -1,4 +1,5 @@
 #!/bin/sh -e
+# $hgid:
 #
 # Show outgoing commits to the tracked (or specified) branch
 # From: https://github.com/ddollar/git-utils

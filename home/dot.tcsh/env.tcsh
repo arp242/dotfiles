@@ -5,13 +5,17 @@ if ($uname != win32) then
 		setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
 	endif
 	if ($prefix != 0) then
-		setenv PATH ${PATH}:${prefix}/bin:/${prefix}/sbin
+		setenv PATH ${PATH}:${prefix}/bin:${prefix}/sbin
 	endif
 endif
 
 # Some commonly installed packages on OpenSolaris
 if ($uname == SunOS) then
 	setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
+endif
+
+if ( -d "$HOME/.gem/ruby/2.1.0/bin" ) then
+	setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
 endif
 
 # /var/ is a memory device on my laptop
@@ -23,18 +27,14 @@ setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 
 setenv BLOCKSIZE K
 setenv MANWIDTH 80
-setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=01;31:"
+setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=31:"
 setenv GREP_COLOR 31 # red
 # Also red, for just the matching part (as above)... Newer GNU greps seem to
 # "require" this to prevent x-mas tree syndrome
 setenv GREP_COLORS "ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0"
 
 if (($?TMUX)) then
-	if ($uname == Linux) then
-		setenv TERM xterm-color
-	else
-		setenv TERM screen
-	endif
+	setenv TERM screen
 else if ($uname == OpenBSD) then
 	# Seems to work better on OpenBSD ...
 	setenv TERM xterm-xfree86
@@ -54,6 +54,7 @@ endif
 if (-X locale) then
 	setenv LANG en_US.UTF-8
 	setenv LC_CTYPE en_US.UTF-8
+	setenv LC_COLLATE C
 endif
 
 if ($uname == OpenBSD) then
@@ -72,3 +73,6 @@ endif
 
 # Set browser
 if (-X opera) setenv BROWSER opera
+
+# https://www.pekwm.org/projects/pekwm/tasks/350
+setenv GDK_CORE_DEVICE_EVENTS 1

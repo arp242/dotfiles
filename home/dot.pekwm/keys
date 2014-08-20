@@ -3,14 +3,6 @@
 Global {
 	# Moving in frames
 	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
-	KeyPress = "Mod4 h" { Actions = "FocusDirectional Left" }
-	KeyPress = "Mod4 l" { Actions = "FocusDirectional Right" }
-	KeyPress = "Mod4 k" { Actions = "FocusDirectional Up" }
-	KeyPress = "Mod4 j" { Actions = "FocusDirectional Down" }
-	KeyPress = "Mod4 Left" { Actions = "FocusDirectional Left" }
-	KeyPress = "Mod4 Right" { Actions = "FocusDirectional Right" }
-	KeyPress = "Mod4 Up" { Actions = "FocusDirectional Up" }
-	KeyPress = "Mod4 Down" { Actions = "FocusDirectional Down" }
 
 	KeyPress = "Mod4 A" { Actions = "ActivateClientRel -1" }
 	KeyPress = "Mod4 S" { Actions = "ActivateClientRel 1" }
@@ -21,18 +13,12 @@ Global {
 	KeyPress = "Mod4 F3" { Actions = "GotoWorkspace 3" }
 	KeyPress = "Mod4 F4" { Actions = "GotoWorkspace 4" }
 	KeyPress = "Mod4 F5" { Actions = "GotoWorkspace 5" }
-	KeyPress = "Mod4 F6" { Actions = "GotoWorkspace 6" }
-	KeyPress = "Mod4 F7" { Actions = "GotoWorkspace 7" }
-	KeyPress = "Mod4 F8" { Actions = "GotoWorkspace 8" }
 
 	KeyPress = "Mod4 1" { Actions = "SendToWorkspace 1" }
 	KeyPress = "Mod4 2" { Actions = "SendToWorkspace 2" }
 	KeyPress = "Mod4 3" { Actions = "SendToWorkspace 3" }
 	KeyPress = "Mod4 4" { Actions = "SendToWorkspace 4" }
 	KeyPress = "Mod4 5" { Actions = "SendToWorkspace 5" }
-	KeyPress = "Mod4 6" { Actions = "SendToWorkspace 6" }
-	KeyPress = "Mod4 7" { Actions = "SendToWorkspace 7" }
-	KeyPress = "Mod4 8" { Actions = "SendToWorkspace 8" }
 
 	# Simple window management
 	KeyPress = "Mod4 M" { Actions = "Toggle Maximized True True" }
@@ -41,22 +27,17 @@ Global {
 	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
 	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
 	KeyPress = "Mod4 D" { Actions = "Detach" }
-	
-	Chain = "Mod4 Return" {
-		KeyPress = "h" { Actions = "MoveToEdge TopLeft" }
-		KeyPress = "l" { Actions = "MoveToEdge TopRight" }
-	}
-	
+
+	KeyPress = "Mod4 Left" { Actions = "MoveToEdge TopLeft" }
+	KeyPress = "Mod4 Right" { Actions = "MoveToEdge TopRight" }
+	KeyPress = "Mod4 Up" { Actions = "MoveToEdge TopLeft" }
+	KeyPress = "Mod4 Down" { Actions = "MoveToEdge BottomLeft" }
+
 	# External Commands
 	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 90x27" }
-	KeyPress = "Mod4 N" { Actions = "Exec xterm -geometry 90x27 -e ncmpc" }
-	KeyPress = "Mod4 P" { Actions = "Exec mpc toggle" }
-	KeyPress = "Mod4 U" { Actions = "Exec xterm -geometry 90x27 -e mutt" }
 
 	# Pekwm control
 	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
-	KeyPress = "Mod4 Q" { Actions = "ShowCmdDialog" }
-	KeyPress = "Mod4 T" { Actions = "Toggle HarbourHidden" }
 }
 
 # Keys for CmdDialog editing

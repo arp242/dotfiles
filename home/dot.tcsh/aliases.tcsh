@@ -43,12 +43,7 @@ else if ($uname == SunOS) then
 else if ($uname == Linux) then
 	unalias ls
 
-	# We need the LANG=C trick to unfuck GNU ls sorting crap. If I leave it as
-	# en_us.utf-8 it sorts like:
-	# afile #hash _startwithunderscore World
-	# Which is not what I call `alphabetical'
-	# (I also can't use ls-F builtin with this...)
-	alias ls 'env LANG=C ls -F --color'
+	alias ls 'ls-F'
 	alias lc ls -lh
 	alias la ls -A
 	alias lac ls -lhA
@@ -102,7 +97,7 @@ alias dejson 'python -mjson.tool'
 alias ag 'ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 
 # Use title in filename
-alias youtube-dl 'youtube-dl -t'
+alias youtube-dl 'youtube-dl --no-part -t'
 
 
 # Typos
@@ -113,8 +108,22 @@ alias vo "vi"
 alias ci "vi" # ci already exists, but few people use it and it mangles files!
 alias grpe "grep"
 alias Grep "grep"
+alias les less
 
-alias firefox-music 'firefox -new-instance -P music'
 
 # Visual separator
 alias sep "echo '\033[1;34m=========================================\033[0m'"
+
+alias decolor "sed 's/\x1b\[[;0-9]*m//g'"
+
+if (-X cmst) then
+	alias connman-qt cmst
+endif
+
+if (-X "$HOME/.rvm/scripts/rvm") then
+	alias rvm rvm.tcsh
+	alias rvm-rake 'rvm all do rake'
+	alias rvm-ruby 'rvm all do ruby'
+
+	setenv PATH ${PATH}:$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:$HOME/.rvm/bin/ 
+endif

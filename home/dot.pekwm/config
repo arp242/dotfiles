@@ -45,11 +45,11 @@ MoveResize {
 #######################################
 Screen {
 	# Number of workspaces enabled.
-	Workspaces = "8"
+	Workspaces = "5"
 
 	# Number of workspaces on each row. Value < 1 fits all workspaces on a
 	# single row.
-	WorkspacesPerRow = "4"
+	WorkspacesPerRow = "5"
 
 	# Controls whether a list of all available frames on the workspace is
 	# displayed during the NextFrame/PrevFrame actions.
