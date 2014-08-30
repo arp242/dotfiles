@@ -2,7 +2,11 @@
 # encoding:utf-8
 #
 
-import os, subprocess, sys, shutil
+import os, subprocess, sys, shutil, sys
+
+if sys.version_info.major < 3 or sys.version_info.minor < 3:
+	print('Needs Python 3.3')
+	sys.exit(1)
 
 
 def usage():
@@ -83,7 +87,9 @@ if __name__ == '__main__':
 				print('Installing %s ' % (destfile), end='')
 				if not os.path.exists(os.path.dirname(destfile)):
 					os.makedirs(os.path.dirname(destfile))
-				if istext(origfile):
+				if os.path.islink(origfile):
+					shutil.copy2(origfile, destfile, follow_symlinks=False)
+				elif istext(origfile):
 					try:
 						data = open(origfile, 'r').read()
 					# Not a UTF-8 file

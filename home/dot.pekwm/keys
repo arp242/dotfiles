@@ -1,11 +1,25 @@
 # vim:syntax=config
 
 Global {
-	# Moving in frames
+	# Focuses the next frame so that the last focused windows will get switched
+	# to first.
+	# endraise - raise the selected client on end, but not while having it
+	# pressed
 	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
 
+	# Switch to next/previous tab in a frame
 	KeyPress = "Mod4 A" { Actions = "ActivateClientRel -1" }
 	KeyPress = "Mod4 S" { Actions = "ActivateClientRel 1" }
+
+	# Attach new tabs to a frame
+	KeyPress = "Mod4 Z" { Actions = "Toggle Marked" }
+	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
+
+	# Detach from frame
+	KeyPress = "Mod4 D" { Actions = "Detach" }
+
+	# All new clients are opened in this frame
+	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
 
 	# Moving in workspaces
 	KeyPress = "Mod4 F1" { Actions = "GotoWorkspace 1" }
@@ -20,18 +34,30 @@ Global {
 	KeyPress = "Mod4 4" { Actions = "SendToWorkspace 4" }
 	KeyPress = "Mod4 5" { Actions = "SendToWorkspace 5" }
 
-	# Simple window management
+	# Set window sizes
 	KeyPress = "Mod4 M" { Actions = "Toggle Maximized True True" }
 	KeyPress = "Mod4 Shift M" { Actions = "Toggle FullScreen" }
-	KeyPress = "Mod4 Z" { Actions = "Toggle Marked" }
-	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
-	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
-	KeyPress = "Mod4 D" { Actions = "Detach" }
 
-	KeyPress = "Mod4 Left" { Actions = "MoveToEdge TopLeft" }
-	KeyPress = "Mod4 Right" { Actions = "MoveToEdge TopRight" }
-	KeyPress = "Mod4 Up" { Actions = "MoveToEdge TopLeft" }
-	KeyPress = "Mod4 Down" { Actions = "MoveToEdge BottomLeft" }
+	KeyPress = "Mod4 Shift J" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift K" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift Up" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift Down" { Actions = "Toggle Maximized False True" }
+
+	KeyPress = "Mod4 Shift H" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift L" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift Left" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift Right" { Actions = "Toggle Maximized True False" }
+
+	# Set window positions
+	KeyPress = "Mod4 H" { Actions = "MoveToEdge LeftEdge" }
+	KeyPress = "Mod4 J" { Actions = "MoveToEdge BottomEdge" }
+	KeyPress = "Mod4 K" { Actions = "MoveToEdge TopEdge" }
+	KeyPress = "Mod4 L" { Actions = "MoveToEdge RightEdge" }
+
+	KeyPress = "Mod4 Left" { Actions = "MoveToEdge LeftEdge" }
+	KeyPress = "Mod4 Right" { Actions = "MoveToEdge RightEdge" }
+	KeyPress = "Mod4 Up" { Actions = "MoveToEdge TopEdge" }
+	KeyPress = "Mod4 Down" { Actions = "MoveToEdge BottomEdge" }
 
 	# External Commands
 	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 90x27" }
@@ -40,32 +66,11 @@ Global {
 	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
 }
 
-# Keys for CmdDialog editing
-CmdDialog {
-	KeyPress = "Left" { Actions = "CursPrev" }
-	KeyPress = "Right" { Actions = "CursNext" }
-	KeyPress = "Ctrl A" { Actions = "CursBegin" }
-	KeyPress = "Ctrl E" { Actions = "CursEnd" }
-	KeyPress = "BackSpace" { Actions = "Erase" }
-	KeyPress = "Ctrl K" { Actions = "ClearFromCursor" }
-	KeyPress = "Ctrl C" { Actions = "Clear" }
-	KeyPress = "Return" { Actions = "Exec" }
-	KeyPress = "Escape" { Actions = "Close" }
-	KeyPress = "Up" { Actions = "HistPrev" }
-	KeyPress = "Down" { Actions = "HistNext" }
-	KeyPress = "Any Any" { Actions = "Insert" }
-}
-
-# Keys working in menus
 Menu {
 	KeyPress = "j" { Actions = "NextItem" }
 	KeyPress = "k" { Actions = "PrevItem" }
-	KeyPress = "h" { Actions = "LeaveSubmenu" }
-	KeyPress = "l" { Actions = "EnterSubmenu" }
 	KeyPress = "Down" { Actions = "NextItem" }
 	KeyPress = "Up" { Actions = "PrevItem" }
-	KeyPress = "Left" { Actions = "LeaveSubmenu" }
-	KeyPress = "Right" { Actions = "EnterSubmenu" }
 	KeyPress = "Return" { Actions = "Select" }
 	KeyPress = "space" { Actions = "Select" }
 	KeyPress = "Escape" { Actions = "Close" }

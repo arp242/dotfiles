@@ -47,7 +47,7 @@ set noding
 set nobeep
 
 # Don't allow > redirection on existing files (only >>)
-set noclobber
+set noclobber = (ask notempty)
 
 # Print exit value if >0
 set printexitvalue
@@ -63,3 +63,9 @@ set fignore = (.pyc)
 
 # Allow ** for recursive glob
 set globstar
+
+# No need for rehash
+set autorehash
+
+# Don't go to homedir when we use cd without arguments
+set noimplicithome

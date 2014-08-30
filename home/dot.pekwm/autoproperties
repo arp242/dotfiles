@@ -11,6 +11,4 @@ Property = ".*,^Opera" {
 Property = ".*,^Pidgin" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "4"
-	#Sticky = "True"
-	#Skip = "FocusToggle"
 }
