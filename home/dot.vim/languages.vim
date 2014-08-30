@@ -38,3 +38,11 @@ au BufNewFile,BufRead
 
 """ Markdown
 autocmd BufRead,BufNewFile *.md set filetype=markdown
+
+""" Sass
+aug sass
+	" indent/sass.vim overwrites this
+	if env == "personal"
+		au FileType sass setlocal expandtab sw=4 noexpandtab
+	end
+aug END
