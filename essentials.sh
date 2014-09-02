@@ -4,7 +4,9 @@
 # curl -s http://code.arp242.net/config/raw/tip/essentials.sh | sh
 
 cd ~
-wget http://code.arp242.net/config/get/tip.tar.gz
+
+curl -s fetch http://code.arp242.net/config/get/tip.tar.gz > tip.tar.gz
+
 tar xf tip.tar.gz
 rm tip.tar.gz
 
