@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ "$1" = "0" ]; then
+	mkdir -p .trash
+	mv "$2" .trash
+else
+	mkdir -p .okay
+	mv "$2" .okay
+fi

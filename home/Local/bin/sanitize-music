@@ -1,0 +1,63 @@
+#!/usr/bin/env python
+
+import os, sys
+
+if __name__ == '__main__':
+	if len(sys.argv) == 1:
+		walkdirs = ['.']
+	else:
+		walkdirs = sys.argv[1:]
+
+	useless = ['txt', 'nfo', 'm3u', 'm3u8', 'nfo', 'ds_store', 'db', 'rtf', 'md5']
+	music = ['flac', 'mp3', 'ogg']
+	to_remove = []
+	to_rename = []
+
+	# TODO: Warn on silly covers, such as bmp format, very large or small
+	for walkdir in walkdirs:
+		for root, dirs, files in os.walk(walkdir):
+			for f in files:
+				path = '%s/%s' % (root, f)
+				ext = path.split('.').pop()
+
+				# Remove useless files
+				if ext.lower() in useless:
+					to_remove.append(path)
+				# Lowercase all file extensions
+				# TODO: Also move non-music files starting with numbers
+				# TODO: Deal with files w/o extension
+				elif ext.lower() != ext:
+					npath = '.'.join(path.split('.')[:-1])
+					to_rename.append([path, '%s.%s' % (npath, ext.lower())])
+
+			for d in dirs:
+				if root == walkdir: continue
+
+				path = '%s/%s' % (root, d)
+
+				# TODO: Only works with 1 level
+				# TODO: rmdir
+				for f in os.listdir(path):
+					to_rename.append(['%s/%s' % (path, f), os.path.realpath('%s/../%s' % (path, f))])
+
+	if len(to_remove) > 0:
+		print('Files to be REMOVED:')
+		[ print('  %s' % f) for f in to_remove ]
+		print('')
+	
+	if len(to_rename) > 0:
+		print('Files to be RENAMED:')
+		[ print('  %s -> %s' % (s, d)) for s, d in to_rename ]
+		print('')
+
+	if len(to_remove) == 0 and len(to_rename) == 0:
+		print('Nothing to be done')
+		sys.exit(0)
+
+	try:
+		answer = input('Okay? [Y/n] ')
+	except KeyboardInterrupt:
+		sys.exit(0)
+	if answer.lower() in ['', 'y', 'ye', 'yes']:
+		[ os.unlink(f) for f in to_remove ]
+		[ os.rename(s, d) for s, d in to_rename ]

@@ -43,6 +43,20 @@ autocmd BufRead,BufNewFile *.md set filetype=markdown
 aug sass
 	" indent/sass.vim overwrites this
 	if env == "personal"
-		au FileType sass setlocal expandtab sw=4 noexpandtab
+		au FileType sass setlocal sw=4 noexpandtab
 	end
 aug END
+
+""" Python
+aug python
+	if env == "personal"
+		" ftype/python.vim overwrites this
+		au FileType python setlocal ts=4 sts=4 sw=4 noexpandtab
+	end
+aug end
+
+
+""" git syntax file is retarded
+au BufNewFile,BufRead *.git/COMMIT_EDITMSG set filetype=
+au BufNewFile,BufRead *.git/MERGE_MSG set filetype=
+au BufNewFile,BufRead *.git/modules/*/COMMIT_EDITMSG set filetype=

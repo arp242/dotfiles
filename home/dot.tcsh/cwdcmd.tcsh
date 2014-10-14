@@ -12,8 +12,6 @@ set backslash_quote
 # stat would be better/faster, but stat is about as unportable as it gets
 alias __pstat 'perl -e \'print((stat($ARGV[0]))[9])\''
 
-# TODO: alias precmd
-
 # Some games for the sake of efficiency
 if ( $?reporoot ) then
 	if ( "$cwd" =~ "$reporoot*" ) then

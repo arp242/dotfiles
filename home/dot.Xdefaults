@@ -20,3 +20,6 @@ XTerm*faceName: DejaVu Sans Mono:pixelsize=16
 
 ! Do not clear terminals after {man,vim,etc.}
 XTerm*titeInhibit: true
+
+! Triple-clicking a line does *not* copy the newline
+XTerm*cutNewline: off

@@ -82,3 +82,13 @@ if (-X opera) setenv BROWSER opera
 
 # https://www.pekwm.org/projects/pekwm/tasks/350
 setenv GDK_CORE_DEVICE_EVENTS 1
+
+# Set DISPLAY on remove login
+if ( $?REMOTEHOST && ! $?DISPLAY ) then 
+	setenv DISPLAY ${REMOTEHOST}:0
+endif
+
+# Run commands from this file; only run for interactive prompt
+if ( -f "$HOME/Local/python-startup" ) then
+	setenv PYTHONSTARTUP ~/Local/python-startup
+endif
