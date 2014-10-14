@@ -20,6 +20,6 @@ subprocess.call(['ssh-add'])
 subprocess.call(['ssh-add', '/home/martin/.ssh/id_rsa.git'])
 
 subprocess.call(['sudo', 'true'])
-subprocess.call(['vagrant up'], shell=True, cwd='/home/martin/code/cust/%s' % p)
+subprocess.call(['vagrant up --debug'], shell=True, cwd='/home/martin/code/cust/%s' % p)
 
 print('\n\ncd /home/martin/code/cust/%s && tmux\n' % p)

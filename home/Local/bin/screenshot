@@ -1,0 +1,8 @@
+#!/bin/sh
+
+mkdir -p ~/shots
+if [ ! -z "$1" ]; then
+	cd ~/shots && scrot -sb
+else
+	cd ~/shots && scrot
+fi

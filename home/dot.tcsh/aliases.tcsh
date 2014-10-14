@@ -54,6 +54,9 @@ else if ($uname == Linux) then
 
 	# bsdtar/libarchive works with many file formats, not just tar
 	if (-X bsdtar) alias tar bsdtar
+
+	# TODO: I'm not sure if all Linux systems use the same cal flavour?
+	alias cal 'cal -m3'
 else if ($uname == win32) then
 	alias ls ls-F
 	alias la "ls -a"
@@ -114,12 +117,19 @@ alias les less
 # Visual separator
 alias sep "echo '\033[1;34m=========================================\033[0m'"
 
-alias decolor "sed 's/\x1b\[[;0-9]*m//g'"
+# http://superuser.com/questions/380772/removing-ansi-color-codes-from-text-stream#380778
+# man Term::ANSIColor 
+# http://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+# http://www.andrewnoske.com/wiki/Unix_-_ANSI_colors
+alias decolor "sed 's|\x1b\[[;0-9]*m||g'"
+alias trcolor "sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 
 if (-X cmst) then
 	alias connman-qt cmst
 endif
 
+# TODO: This doesn't work...
+# http://po-ru.com/diary/using-rvm-with-tcsh/
 if (-X "$HOME/.rvm/scripts/rvm") then
 	alias rvm rvm.tcsh
 	alias rvm-rake 'rvm all do rake'
@@ -127,3 +137,8 @@ if (-X "$HOME/.rvm/scripts/rvm") then
 
 	setenv PATH ${PATH}:$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:$HOME/.rvm/bin/ 
 endif
+
+alias cd 'source ~/.tcsh/cd.tcsh'
+
+# Until I can find/make a colour scheme that works
+alias ipython 'ipython --colors=NoColor --no-confirm-exit'

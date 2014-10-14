@@ -33,7 +33,8 @@ fi
 _run trayer --edge bottom --align right --widthtype request --expand true
 _run redshift-gtk
 _run battray
-_run parcellite
+# TODO: Seems to have problems?
+#_run parcellite
 
 if [ -f ~/.xsession_local ]; then
 	. ~/.xsession_local

@@ -1,0 +1,18 @@
+from __future__ import print_function
+
+# Load modules
+modules = ('datetime', 'pprint', 'os', 'time', 're', 'sys')
+for m in modules: globals()[m] = __import__(m)
+print('\nLoaded modules: %s\n' % ', '.join(modules))
+del(modules)
+
+
+# Set aliases
+aliases = (
+	('pprint.pprint', 'pp'),
+)
+
+print('Aliases:')
+for src, dst in aliases:
+	globals()[dst] = exec(src)  # TODO
+	print('    %s -> %s' % (src, dst))

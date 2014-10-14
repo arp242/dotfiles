@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if [ -z $1 ]; then
+  echo "Usage: $0 [to-branch]"
+  exit 1
+fi
+
+to="$1"
+from="$(git rev-parse --abbrev-ref HEAD || exit $?)"
+
+echo "Merge $from to $to?"
+read a
+
+set -v
+git fetch origin || exit $?
+git rebase "origin/$to" || exit $?
+git rebase -i "origin/$to" || exit $?
+git checkout "$to" || exit $?
+git rebase "$from" || exit $to?
+set +v
+
+echo "Delete branch?"
+read a
+
+set -v
+git branch -D "$from" || exit $?
+git branch -D ":$from" || exit $?
+set +v
