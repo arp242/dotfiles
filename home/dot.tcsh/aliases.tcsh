@@ -1,10 +1,11 @@
-# Update xterm title on directory change (special alias)
+# Update xterm title & git/hg branch on directory change (special alias)
 if ( $uname != win32 && -f ~/.tcsh/cwdcmd.tcsh ) then
 	alias cwdcmd source ~/.tcsh/cwdcmd.tcsh
 else
 	unalias cwdcmd
 endif
 
+# What to run on F1
 alias helpcommand man
 
 if ($uname == FreeBSD) then
@@ -79,7 +80,7 @@ else if (-x /bin/nice) then
 endif
 if (-x /usr/bin/time) alias time "/usr/bin/time -h"
 
-# A few move aliases...
+# A few more aliases...
 alias cp "cp -i"
 alias mv "mv -i"
 alias make "nice -n 20 make"
@@ -137,8 +138,6 @@ if (-X "$HOME/.rvm/scripts/rvm") then
 
 	setenv PATH ${PATH}:$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:$HOME/.rvm/bin/ 
 endif
-
-alias cd 'source ~/.tcsh/cd.tcsh'
 
 # Until I can find/make a colour scheme that works
 alias ipython 'ipython --colors=NoColor --no-confirm-exit'

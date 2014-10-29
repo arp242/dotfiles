@@ -70,6 +70,7 @@ if __name__ == '__main__':
 				else:
 					print("==> %s doesn't exist" % destfile)
 			elif cmd == 'merge':
+				# TODO: detect binary files
 				if os.path.exists(destfile) and dif != '':
 					subprocess.call(['vimdiff', destfile, origfile])
 			elif cmd == 'install' and dif.strip() != '':

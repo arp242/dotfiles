@@ -33,6 +33,8 @@ fi
 _run trayer --edge bottom --align right --widthtype request --expand true
 _run redshift-gtk
 _run battray
+_run dunst
+_run connman-notify
 # TODO: Seems to have problems?
 #_run parcellite
 

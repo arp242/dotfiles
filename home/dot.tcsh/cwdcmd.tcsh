@@ -12,13 +12,15 @@ set backslash_quote
 # stat would be better/faster, but stat is about as unportable as it gets
 alias __pstat 'perl -e \'print((stat($ARGV[0]))[9])\''
 
+# TODO: alias precmd
+
 # Some games for the sake of efficiency
 if ( $?reporoot ) then
 	if ( "$cwd" =~ "$reporoot*" ) then
 		if ( $repotype == 'git' && $repochanged == `__pstat "$reporoot"/.git/HEAD` ) then
 			goto end
 		endif
-		if ( $repotype == 'hg' && $repochanged == `__pstat "$reporoot"/.hg/branch` ) then
+		if ( $repotype == 'hg' && $repochanged == `__pstat "$reporoot"/.hg/undo.branch` ) then
 			goto end
 		endif
 	else
@@ -36,8 +38,8 @@ if ( ! $?reporoot || $repotype == 'hg' ) then
 	if ( $? == 0 ) then
 		set reporoot = `hg root`
 		set repotype = 'hg'
-		set repochanged = `__pstat "$reporoot"/.hg/branch`
-		set prompt = "[%~](`cat $reporoot/.hg/branch`)%# "
+		set repochanged = `__pstat "$reporoot"/.hg/undo.branch`
+		set prompt = "[%~](`cat $reporoot/.hg/undo.branch`)%# "
 
 		goto end
 	endif
@@ -66,6 +68,8 @@ unset repochanged
 
 
 # Cleanup
+# TODO: Detect if these options were set in the first place, rather than setting
+# them here...
 end:
 	set printexitvalue
 	unset backslash_quote

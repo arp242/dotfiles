@@ -32,10 +32,10 @@ set ignorecase
 set nowrapscan
 
 " Add the /g flag to :s command; add /g manually to restore the default
-" behaviour
+" behaviour ...
 set gdefault
 
-" ... Unless the patern contains upper case letters
+" ... unless the patern contains upper case letters
 set smartcase
 
 " set 'text width' to 80 characters.
@@ -57,7 +57,12 @@ set backup
 set backupext=.bak
 
 " String to use in 'list' mode
-set listchars=tab:!·,trail:·
+" Using · only seems to work only in fairly recent Vim versions
+if v:version > 703
+	set listchars=tab:!·,trail:·
+else
+	set listchars=tab:!.,trail:.
+endif
 
 " Default language for spell check
 set spelllang=en_gb
@@ -96,7 +101,7 @@ set ttyfast
 " Update term title
 set title
 
-" .Restore old title after leaving Vim
+" Restore old title after leaving Vim
 set titleold=
 
 " Never beep
@@ -104,7 +109,7 @@ set titleold=
 
 " Use blowfish for encrypting files
 if has("cryptv")
-	set cryptmethod=blowfish
+	set cryptmethod=blowfish2
 endif
 
 " Show as much of the last line as possibe instead of @
@@ -138,10 +143,6 @@ set tabpagemax=50
 " TODO I need to look at this...
 "set formatoptions+=
 
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-
 " Round indent to multiple of shiftwidth when using < and >
 set shiftround
 
@@ -150,6 +151,9 @@ set smarttab
 
 " Also match < & > with %
 set matchpairs+=<:>
+
+" Persistent undo
+set undofile
 
 if executable('ag')
 	set grepprg="ag --nogroup --nocolor"
@@ -161,14 +165,15 @@ if env == "work"
 	set ts=2
 	set sw=2
 	set sts=2
-	set fileformats=unix,dos
 else
 	set noexpandtab
 	set ts=4
 	set sw=4
 	set sts=4
-	set fileformats=unix
 endif
+
+" Only use UNIX line endings
+set fileformats=unix
 
 " Set (& create if needed) a temp directory to keep backup & swap files
 if has('win32')
@@ -182,6 +187,7 @@ call MkdirIfNeeded(tmpdir, 'p', 0700)
 
 let &backupdir = tmpdir
 let &dir = tmpdir
+let &undodir = tmpdir
 
 " Switch syntax highlighting on
 syntax on
@@ -190,7 +196,7 @@ syntax on
 " global vimrc)
 colorscheme default
 
-" My terminal has a white backgrounf colour
+" My terminal has a white background colour
 set background=light
 
 " 16 colors are enough
@@ -200,7 +206,8 @@ set t_Co=16
 filetype plugin indent on
 
 aug init
-	" Go to the last cursor location when a file is opened
+	" Go to the last cursor location when a file is opened, unless this is a
+	" git commit (in which case it's annoying)
 	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &filetype != "gitcommit"|execute("normal `\"")|endif
 
 	" Syntax breaks less often, but it's a bit slower
