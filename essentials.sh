@@ -15,7 +15,6 @@ cd Carpetsmoker-config-*
 cp ./home/dot.tcshrc ~/.tcshrc
 cp -r ./home/dot.tcsh ~/.tcsh
 
-cp -r ./home/dot.tmux.conf ~/.tmux.conf
+cp ./home/dot.tmux.conf ~/.tmux.conf
 
-cp ./home/dot.vimrc ~/.vimrc
 cp -r ./home/dot.vim ~/.vim
