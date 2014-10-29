@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+
+sandbox=~/sandbox
+
+tmp=$(mktemp -d "$sandbox/_XXXXXXXX")
+cd "$tmp"
+export SANDBOX
+$SHELL
+
+echo "Press enter to scrap the sandbox, or type a directory name to rename it: "
+while :; do
+	echo -n "> "
+	read answer
+
+	if [ "$answer" != "" ] && [ -e "$sandbox/$answer" ]; then
+		echo "This directory already exists; try again" >&2
+	else
+		break
+	fi
+done
+
+if [ "$answer" = "" ]; then
+	mkdir -p "$sandbox/.scrap"
+	mv "$tmp" "$sandbox/.scrap/"
+else
+	mv "$tmp" "$sandbox/$answer"
+fi
