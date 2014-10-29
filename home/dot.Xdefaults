@@ -16,7 +16,20 @@ XTerm*scrollBar: False
 XTerm*locale: UTF-8
 
 ! Nice font
-XTerm*faceName: DejaVu Sans Mono:pixelsize=16
+XTerm.VT100.faceName: DejaVu Sans Mono
+XTerm.VT100.faceSize: 12
+XTerm.VT100.faceSize1: 12
+XTerm.VT100.faceSize2: 12
+XTerm.VT100.faceSize3: 12
+
+! Medium
+XTerm.VT100.faceSize4: 14
+
+! Large
+XTerm.VT100.faceSize5: 16
+
+! Huge
+XTerm.VT100.faceSize6: 18
 
 ! Do not clear terminals after {man,vim,etc.}
 XTerm*titeInhibit: true

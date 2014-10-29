@@ -38,4 +38,3 @@ endif
 # Insert
 bindkey ^[[L yank
 bindkey ^[[2 yank
-
