@@ -141,3 +141,5 @@ endif
 
 # Until I can find/make a colour scheme that works
 alias ipython 'ipython --colors=NoColor --no-confirm-exit'
+
+alias xvi xvim

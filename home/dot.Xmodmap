@@ -25,8 +25,6 @@ keycode 17 = asterisk 8 asterisk 8
 keycode 18 = parenleft 9 parenleft 9
 keycode 19 = parenright 0 parenright 0
 
-! Also switch brace & bracket, and tilde & grave; since we use the former more
-! often
+! Also switch brace & bracket, since we use the former more often
 keycode 34 = braceleft bracketleft braceleft bracketleft
 keycode 35 = braceright bracketright braceright bracketright
-keycode 49 = asciitilde grave asciitilde grave

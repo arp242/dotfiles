@@ -34,6 +34,13 @@ set listjobs
 # Show current dir
 set prompt = "[%~]%# "
 
+# Blue prompt if we're in a sandbox
+if ( ${?SANDBOX} == 1 ) then
+	set blue = "%{\033[34m%}"
+	set end = "%{\033[0m%}"
+	set prompt = "[%~]${blue}%#${end} "
+endif
+
 # Use % for normal user and # for super
 set promptchars = "%#"
 
@@ -46,8 +53,8 @@ set noding
 # Don't beep
 set nobeep
 
-# Don't allow > redirection on existing files (only >>)
-set noclobber = (ask notempty)
+# Ask before doing > redirection on non-empty existing files
+set noclobber = (notempty ask)
 
 # Print exit value if >0
 set printexitvalue
@@ -57,6 +64,9 @@ set rmstar
 
 # Save history
 set savehist = 8192 merge
+
+# Save history here
+set histfile=~/.tcsh/history
 
 # Lists file name suffixes to be ignored by completion
 set fignore = (.pyc)
