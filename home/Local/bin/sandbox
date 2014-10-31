@@ -1,14 +1,49 @@
 #!/bin/sh
 #
 
+set -euC
+
+# Location of your sandboxes
 sandbox=~/sandbox
 
-tmp=$(mktemp -d "$sandbox/_XXXXXXXX")
-cd "$tmp"
-export SANDBOX
-$SHELL
+programs="python py
+ruby rb
+sh sh"
 
-echo "Press enter to scrap the sandbox, or type a directory name to rename it: "
+progname="_"
+ext=""
+if [ "${1:-}" != "" ]; then
+	IFS="
+"
+	for p in $programs; do
+		n=${p% *}
+		e=${p#* }
+
+		if [ "$n" = "$1" -o "$e" = "$1" ]; then
+			progname=$n
+			ext=$e
+			break
+		fi
+	done
+fi
+
+tmp=$(mktemp -d "$sandbox/${progname}XXXXXXXX")
+cd "$tmp"
+if [ "$ext" != "" ]; then
+	echo "#!/usr/bin/env $progname" > "test.$ext"
+	echo >> "test.$ext"
+	echo >> "test.$ext"
+	chmod a+x "test.$ext"
+fi
+export SANDBOX=1
+
+if [ "$ext" != "" ]; then
+	$SHELL -c "$EDITOR \"test.$ext\""
+else
+	$SHELL
+fi
+
+echo "Press enter or ^D to scrap the sandbox, or type a directory name to rename it: "
 while :; do
 	echo -n "> "
 	read answer
