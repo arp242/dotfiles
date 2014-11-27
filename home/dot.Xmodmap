@@ -14,17 +14,17 @@ add Control = Control_L
 keysym Alt_R = Multi_key
 
 ! Use symbols on the number row, and shift for the numbers
-keycode 10 = exclam 1 exclam 1
-keycode 11 = at 2 at 2
-keycode 12 = numbersign 3 numbersign 3
-keycode 13 = dollar 4 dollar 4
-keycode 14 = percent 5 percent 5
-keycode 15 = asciicircum 6 asciicircum 6
-keycode 16 = ampersand 7 ampersand 7
-keycode 17 = asterisk 8 asterisk 8
-keycode 18 = parenleft 9 parenleft 9
-keycode 19 = parenright 0 parenright 0
+!keycode 10 = exclam 1 exclam 1
+!keycode 11 = at 2 at 2
+!keycode 12 = numbersign 3 numbersign 3
+!keycode 13 = dollar 4 dollar 4
+!keycode 14 = percent 5 percent 5
+!keycode 15 = asciicircum 6 asciicircum 6
+!keycode 16 = ampersand 7 ampersand 7
+!keycode 17 = asterisk 8 asterisk 8
+!keycode 18 = parenleft 9 parenleft 9
+!keycode 19 = parenright 0 parenright 0
 
 ! Also switch brace & bracket, since we use the former more often
-keycode 34 = braceleft bracketleft braceleft bracketleft
-keycode 35 = braceright bracketright braceright bracketright
+!keycode 34 = braceleft bracketleft braceleft bracketleft
+!keycode 35 = braceright bracketright braceright bracketright

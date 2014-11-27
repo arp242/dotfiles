@@ -1,5 +1,5 @@
-#!/usr/bin/env python
-# $hgid: 055165b10d3a
+#!/usr/bin/env python2
+# $hgid:
 
 from __future__ import print_function
 import cgi, sys

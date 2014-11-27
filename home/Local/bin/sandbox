@@ -10,7 +10,7 @@ programs="python py
 ruby rb
 sh sh"
 
-progname="_"
+progname=""
 ext=""
 if [ "${1:-}" != "" ]; then
 	IFS="
@@ -38,11 +38,13 @@ fi
 export SANDBOX=1
 
 if [ "$ext" != "" ]; then
+	# TODO: Drop back to shell, instead of quiting the sandbox!
 	$SHELL -c "$EDITOR \"test.$ext\""
 else
 	$SHELL
 fi
 
+end_run=0
 echo "Press enter or ^D to scrap the sandbox, or type a directory name to rename it: "
 while :; do
 	echo -n "> "
@@ -55,6 +57,10 @@ while :; do
 	fi
 done
 
+# TODO: Make this work
+#trap end_sandbox 0 1 2 3 6 9 14 15
+
+echo "->$answer<-"
 if [ "$answer" = "" ]; then
 	mkdir -p "$sandbox/.scrap"
 	mv "$tmp" "$sandbox/.scrap/"

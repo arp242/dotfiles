@@ -88,7 +88,11 @@ else if (-X vi) then
 endif
 
 # Set browser
-if (-X opera) setenv BROWSER opera
+if (-X dwb) then
+	setenv BROWSER dwb
+else if (-X opera) then
+	setenv BROWSER opera
+endif
 
 # Set DISPLAY on remote login
 if ( $?REMOTEHOST && ! $?DISPLAY ) then 
@@ -99,3 +103,6 @@ endif
 if ( -f "$HOME/Local/python-startup" ) then
 	setenv PYTHONSTARTUP ~/Local/python-startup
 endif
+
+# This makes font looks non-ugly in Java applications
+setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
