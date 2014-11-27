@@ -1,18 +1,22 @@
-from __future__ import print_function
+# vim:filetype=python
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 # Load modules
 modules = ('datetime', 'pprint', 'os', 'time', 're', 'sys')
 for m in modules: globals()[m] = __import__(m)
 print('\nLoaded modules: %s\n' % ', '.join(modules))
-del(modules)
-
+del m, modules
 
 # Set aliases
 aliases = (
-	('pprint.pprint', 'pp'),
+	(pprint.pprint, 'pp'),
 )
 
 print('Aliases:')
 for src, dst in aliases:
-	globals()[dst] = exec(src)  # TODO
-	print('    %s -> %s' % (src, dst))
+	setattr(__builtins__, dst, src)
+	print('  %s -> %s.%s' % (dst, src.__module__, src.__name__))
+
+del src, dst, aliases

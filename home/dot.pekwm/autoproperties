@@ -8,7 +8,22 @@ Property = ".*,^Opera" {
 	Workspace = "2"
 }
 
+Property = ".*,^dwb" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "2"
+}
+#Property = ".*,^merdeka" {
+#	ApplyOn = "New Start Reload Transient Workspace"
+#	Workspace = "2"
+#}
+
+
 Property = ".*,^Pidgin" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "4"
+}
+
+Property = ".*,^Gajim" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "4"
 }

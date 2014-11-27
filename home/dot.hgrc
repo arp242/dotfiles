@@ -9,3 +9,6 @@ username = Martin Tournoij <martin@arp242.net>
 
 [trusted]
 users = martin
+
+[tortoisehg]
+editor = xterm -e vim

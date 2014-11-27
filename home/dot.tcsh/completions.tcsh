@@ -16,6 +16,9 @@ endif
 # TODO: sort
 set hosts = `echo "$hosts" | tr -d '[]' | sort -u`
 
+# From src/tcsh/complete.tcsh
+# set hosts=(`echo $hosts | tr ' ' '\012' | sort -u`)
+
 # Show directories only
 complete cd 'C/*/d/'
 complete rmdir 'C/*/d/'
