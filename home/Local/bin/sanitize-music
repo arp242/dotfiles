@@ -8,12 +8,13 @@ if __name__ == '__main__':
 	else:
 		walkdirs = sys.argv[1:]
 
-	useless = ['txt', 'nfo', 'm3u', 'm3u8', 'nfo', 'ds_store', 'db', 'rtf', 'md5']
+	useless = ['txt', 'nfo', 'm3u', 'm3u8', 'nfo', 'ds_store', 'db', 'rtf', 'md5', 'sfv']
 	music = ['flac', 'mp3', 'ogg']
 	to_remove = []
 	to_rename = []
 
-	# TODO: Warn on silly covers, such as bmp format, very large or small
+	# TODO: Warn on silly covers, such as bmp format, and very large or small
+	# covers
 	for walkdir in walkdirs:
 		for root, dirs, files in os.walk(walkdir):
 			for f in files:
@@ -41,13 +42,13 @@ if __name__ == '__main__':
 					to_rename.append(['%s/%s' % (path, f), os.path.realpath('%s/../%s' % (path, f))])
 
 	if len(to_remove) > 0:
-		print('Files to be REMOVED:')
-		[ print('  %s' % f) for f in to_remove ]
+		print('==> Files to be REMOVED:')
+		[ print('    %s' % f) for f in to_remove ]
 		print('')
 	
 	if len(to_rename) > 0:
-		print('Files to be RENAMED:')
-		[ print('  %s -> %s' % (s, d)) for s, d in to_rename ]
+		print('==> Files to be RENAMED:')
+		[ print('    %s -> %s' % (s, d)) for s, d in to_rename ]
 		print('')
 
 	if len(to_remove) == 0 and len(to_rename) == 0:

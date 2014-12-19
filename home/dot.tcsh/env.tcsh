@@ -1,3 +1,4 @@
+# Setup PATH
 if ($uname != win32) then
 	setenv PATH ~/Local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/games
 
@@ -19,7 +20,6 @@ endif
 # TODO: Don't put 2.1.0 here
 if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
 
-
 # Various applications settings
 setenv BLOCKSIZE K
 setenv PAGER less
@@ -29,6 +29,7 @@ setenv LESS "--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 # not Linux
 setenv MANWIDTH 80
 
+# Colors for ls(1)
 setenv LS_COLORS "no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=31:"
 
 # Older GNU grep; BSD grep
@@ -106,3 +107,18 @@ endif
 
 # This makes font looks non-ugly in Java applications
 setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+
+# Special tricks for RVM
+# https://stackoverflow.com/questions/27380203/how-do-i-use-rvm-with-tcsh
+if (-X rvm) then
+	if ( ! $?ruby_version ) set ruby_version = 2.1.2
+
+	setenv rvm_bin_path $HOME/.rvm/bin
+	setenv GEM_HOME $HOME/.rvm/gems/ruby-$ruby_version
+	setenv IRBRC $HOME/.rvm/rubies/ruby-$ruby_version/.irbrc
+	setenv MY_RUBY_HOME $HOME/.rvm/rubies/ruby-$ruby_version
+	setenv rvm_path $HOME/.rvm
+	setenv rvm_prefix $HOME
+	setenv PATH $HOME/.rvm/gems/ruby-$ruby_version/bin:$HOME/.rvm/gems/ruby-$ruby_version@global/bin:$HOME/.rvm/rubies/ruby-$ruby_version/bin:${PATH}:$HOME/.rvm/bin
+	setenv GEM_PATH $HOME/.rvm/gems/ruby-${ruby_version}:$HOME/.rvm/gems/ruby-${ruby_version}@global
+endif
