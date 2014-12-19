@@ -6,11 +6,11 @@ set record=+"Sent Items"
 set postponed="+Drafts"
 set mask = "."
 
-set sendmail = /usr/local/sbin/ssmtp
+set maildir_trash=yes
+set wait_key=no
 
 #set folder = !/INBOX		# Default folder ...
 set mbox = !/INBOX		# ... And again
-set from = "martin@arp242.net"	# My mail
 set mbox_type = "Maildir"	# Mailbox type
 set editor = "vim"		# Editor
 set charset = "utf-8"		# Charset for reading
@@ -29,7 +29,6 @@ set include			# Include the message in replies
 set sort = threads		# Sort in threads
 set sort_aux = date-received	# Sort threads by date received
 set allow_8bit = no		# 8bit isn't safe via Demon
-set maildir_trash = yes		# Trash messages instead of really deleting them
 set copy			# Keep copies of outgoing mail ...
 #set record = "!Sent"		# ... Here
 set beep = no			# We don't need no beeping software.

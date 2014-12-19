@@ -129,16 +129,6 @@ if (-X cmst) then
 	alias connman-qt cmst
 endif
 
-# TODO: This doesn't work...
-# http://po-ru.com/diary/using-rvm-with-tcsh/
-if (-X "$HOME/.rvm/scripts/rvm") then
-	alias rvm rvm.tcsh
-	alias rvm-rake 'rvm all do rake'
-	alias rvm-ruby 'rvm all do ruby'
-
-	setenv PATH ${PATH}:$HOME/.rvm/gems/ruby-2.1.1/bin:$HOME/.rvm/gems/ruby-2.1.1@global/bin:$HOME/.rvm/rubies/ruby-2.1.1/bin:$HOME/.rvm/bin/ 
-endif
-
 # Until I can find/make a colour scheme that works
 alias ipython 'ipython --colors=NoColor --no-confirm-exit'
 

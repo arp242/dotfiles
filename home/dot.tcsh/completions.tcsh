@@ -13,8 +13,7 @@ if ( -r "$HOME/.ssh/known_hosts" ) then
 	set hosts=($hosts `cut -d' ' -f 1 $HOME/.ssh/known_hosts | cut -d, -f1`)
 endif
 
-# TODO: sort
-set hosts = `echo "$hosts" | tr -d '[]' | sort -u`
+set hosts = `echo "$hosts" | tr -d '[]' | tr ' ' '\012' | sort -u`
 
 # From src/tcsh/complete.tcsh
 # set hosts=(`echo $hosts | tr ' ' '\012' | sort -u`)

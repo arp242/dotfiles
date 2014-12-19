@@ -3,8 +3,7 @@
 
 [ -f ~/.xsession ] && . ~/.xsession
 
-t=$(which pekwm > /dev/null)
-if [ $? -eq 0 ]; then
+if which pekwm > /dev/null; then
 	exec ssh-agent pekwm
 else
 	exec ssh-agent twm
