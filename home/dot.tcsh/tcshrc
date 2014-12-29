@@ -32,9 +32,12 @@ endif
 
 umask 022
 
-
 source ~/.tcsh/env.tcsh
-source ~/.tcsh/settings.tcsh
-source ~/.tcsh/aliases.tcsh
-source ~/.tcsh/keybinds.tcsh
-source ~/.tcsh/completions.tcsh
+
+# Only load these for interactive shells
+if ( $?prompt ) then
+	source ~/.tcsh/settings.tcsh
+	source ~/.tcsh/aliases.tcsh
+	source ~/.tcsh/keybinds.tcsh
+	source ~/.tcsh/completions.tcsh
+endif

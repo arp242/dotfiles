@@ -11,14 +11,12 @@ if ($uname != win32) then
 endif
 
 # Some commonly installed packages on OpenSolaris
-# TODO: Add /opt/*/bin on Linux as well, since a lot of packages are installed
-# there, for whatever reason...
-if ($uname == SunOS) then
-	setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
-endif
+if ($uname == SunOS) setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 
-# TODO: Don't put 2.1.0 here
-if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
+# TODO: On my system, I have one dir here (2.1.0), but this may not be the only
+# one (it also doesn't correspond to my ruby or gem version ...) We should get
+# the '2.1.0' from somewhere...
+if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/*/bin/"
 
 # Various applications settings
 setenv BLOCKSIZE K
@@ -110,8 +108,11 @@ setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswi
 
 # Special tricks for RVM
 # https://stackoverflow.com/questions/27380203/how-do-i-use-rvm-with-tcsh
+if (-d $HOME/.rvm/bin) setenv PATH ${PATH}:$HOME/.rvm/bin
 if (-X rvm) then
-	if ( ! $?ruby_version ) set ruby_version = 2.1.2
+	if ( ! $?ruby_version ) then
+		set ruby_version = `grep RUBY_VERSION ~/.rvm/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
+	end
 
 	setenv rvm_bin_path $HOME/.rvm/bin
 	setenv GEM_HOME $HOME/.rvm/gems/ruby-$ruby_version

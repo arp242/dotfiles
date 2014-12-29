@@ -25,8 +25,6 @@ nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 " We don't need no stinkin' ex mode; use it for formatting
 map Q gq
 
-nnoremap <Leader>r :call LastCommand()<CR>
-
 " Interface with system clipboard
 nnoremap <Leader>y "*y
 nnoremap <Leader>p "*p
