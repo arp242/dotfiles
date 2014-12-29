@@ -5,6 +5,7 @@ fun! MkdirIfNeeded(dir, flags, permissions)
 	endif
 endfun
 
+
 " Map key to toggle an option on/off
 fun! MapToggle(key, opt)
 	let l:cmd = ':set ' . a:opt . '! \| set ' . a:opt . "?\<CR>"
@@ -13,11 +14,13 @@ fun! MapToggle(key, opt)
 endfun
 command! -nargs=+ MapToggle call MapToggle(<f-args>)
 
+
 " Replace `} else {' with `}<CR>else {'
 fun! SaneIndent()
 	silent! %s/\v(\s*)}\s*(else|catch)/\1}\r\1\2/g
 	execute "normal ''"
 endfun
+
 
 " Replace `}<CR>else {' with `} else {'
 fun! NotSoSaneIndent()
@@ -25,24 +28,6 @@ fun! NotSoSaneIndent()
 	execute "normal ''"
 endfun
 
-" Execute last shell command
-fun! LastCommand()
-	let l:i = -1
-
-	while l:i > -100
-		let l:cmd = histget("cmd", l:i)
-		if strpart(l:cmd, 0, 1) == "!"
-			let l:i = 1
-			execute l:cmd
-			break
-		endif
-		let l:i -= 1
-	endwhile
-
-	if l:i < 1
-		echoerr "No command found"
-	endif
-endfun
 
 " Open multiple tabs at one
 fun! OpenMultipleTabs(pattern)
@@ -51,4 +36,18 @@ fun! OpenMultipleTabs(pattern)
 		call map(l:files, "'tabe ' . v:val")
 		for c in l:files | exe c | endfor
 	endfor
+endfun
+
+
+" :retab changes *everything*, not just start of lines
+fun! Retab(expandtab)
+	let l:spaces = repeat(' ', &tabstop)
+
+	" Replace tabs with spaces
+	if a:expandtab
+		silent! execute '%substitute#^\%(' . l:spaces . '\)\+#\=repeat("\t", len(submatch(0)) / &tabstop)#e'
+	" Replace spaces with tabs
+	else
+		silent! execute '%substitute#^\%(\t\)\+#\=repeat("' . l:spaces . '", len(submatch(0)))#e'
+	endif
 endfun

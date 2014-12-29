@@ -4,7 +4,7 @@
 XTerm*pointerMode: 2
 
 ! Lines of scrollback.
-XTerm*saveLines: 1024
+XTerm*saveLines: 4096
 
 ! Run as login shell.
 XTerm*loginShell: True
@@ -36,3 +36,6 @@ XTerm*titeInhibit: true
 
 ! Triple-clicking a line does *not* copy the newline
 XTerm*cutNewline: off
+
+! <Alt> + key also works (and not just <Esc> key)
+XTerm*metaSendsEscape: true
