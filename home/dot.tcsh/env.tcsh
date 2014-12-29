@@ -112,7 +112,7 @@ if (-d $HOME/.rvm/bin) setenv PATH ${PATH}:$HOME/.rvm/bin
 if (-X rvm) then
 	if ( ! $?ruby_version ) then
 		set ruby_version = `grep RUBY_VERSION ~/.rvm/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
-	end
+	endif
 
 	setenv rvm_bin_path $HOME/.rvm/bin
 	setenv GEM_HOME $HOME/.rvm/gems/ruby-$ruby_version
