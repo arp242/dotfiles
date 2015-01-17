@@ -12,9 +12,12 @@ rm tip.tar.gz
 
 cd Carpetsmoker-config-*
 
+# tcsh
 cp ./home/dot.tcshrc ~/.tcshrc
 cp -r ./home/dot.tcsh ~/.tcsh
 
+# tmux
 cp ./home/dot.tmux.conf ~/.tmux.conf
 
+# Vim
 cp -r ./home/dot.vim ~/.vim

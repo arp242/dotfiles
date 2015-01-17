@@ -8,7 +8,8 @@ if __name__ == '__main__':
 	else:
 		walkdirs = sys.argv[1:]
 
-	useless = ['txt', 'nfo', 'm3u', 'm3u8', 'nfo', 'ds_store', 'db', 'rtf', 'md5', 'sfv']
+	useless = ['txt', 'nfo', 'm3u', 'm3u8', 'nfo', 'ds_store', 'db', 'rtf',
+		'md5', 'sfv', 'accurip']
 	music = ['flac', 'mp3', 'ogg']
 	to_remove = []
 	to_rename = []

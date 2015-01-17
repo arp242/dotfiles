@@ -16,7 +16,7 @@ if ($uname == SunOS) setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 # TODO: On my system, I have one dir here (2.1.0), but this may not be the only
 # one (it also doesn't correspond to my ruby or gem version ...) We should get
 # the '2.1.0' from somewhere...
-if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/*/bin/"
+if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
 
 # Various applications settings
 setenv BLOCKSIZE K
