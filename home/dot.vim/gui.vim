@@ -13,4 +13,7 @@ set clipboard=unnamed
 set selectmode=key,mouse
 
 " Set font
-set guifont=Dejavu_Sans_Mono:h10
+" This worked better on Windows, I think?
+"set guifont=Dejavu_Sans_Mono:h10
+set guifont=Dejavu\ Sans\ Mono\ 12
+

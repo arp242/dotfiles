@@ -1,8 +1,5 @@
 # vim:filetype=python
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-
 # Load modules
 modules = ('datetime', 'pprint', 'os', 'time', 're', 'sys')
 for m in modules: globals()[m] = __import__(m)
@@ -18,5 +15,8 @@ print('Aliases:')
 for src, dst in aliases:
 	setattr(__builtins__, dst, src)
 	print('  %s -> %s.%s' % (dst, src.__module__, src.__name__))
-
 del src, dst, aliases
+
+# Like dir, but only "public" attributes
+def pdir(obj):
+	return [ d for d in dir(obj) if d[0] != '_' ]
