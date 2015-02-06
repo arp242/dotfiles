@@ -1,5 +1,6 @@
 #!/bin/sh
 
-touch $@
-chmod a+x $@
-vim -p $@
+vim -p "$@"
+for f in "$@"; do
+	[ -f "$f" ] && chmod a+x "$f"
+done

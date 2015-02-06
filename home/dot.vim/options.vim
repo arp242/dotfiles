@@ -7,7 +7,7 @@ set backspace=indent,eol,start
 " Keep n lines of command line history
 set history=500
 
-" Show the cursor position all the time
+" Show the ruler all the time
 set ruler
 
 " %40 - 40 wide
@@ -17,7 +17,7 @@ set ruler
 " %c column of cursor
 " %o Byte pos of cursor
 " %B Byte value under cursor
-set rulerformat=%40(%=[%l/%L]\ [%c\ %o\ 0x%B]%)
+set rulerformat=%40(%=[line\ %l\ of\ %L]\ [c:%c\ p:%o\ 0x%B]%)
 
 " Jump to search word while typing
 set incsearch
@@ -28,6 +28,9 @@ set hlsearch
 " Case-insensitive searching ...
 set ignorecase
 
+" ... unless the patern contains upper case letters
+set smartcase
+
 " Don't wrap search
 set nowrapscan
 
@@ -35,14 +38,11 @@ set nowrapscan
 " behaviour ...
 set gdefault
 
-" ... unless the patern contains upper case letters
-set smartcase
-
 " set 'text width' to 80 characters.
 set textwidth=80
 
-" Show a + when wrapping a line
-set showbreak=+
+" Show a █ when wrapping a line
+set showbreak=█
 
 " Wrap at word
 set linebreak
@@ -71,9 +71,6 @@ set spelllang=en_gb
 set helplang=en
 set langmenu=en
 
-" Use pop-up menu for right button
-set mousemodel=popup_setpos
-
 " Disable folds
 set nofoldenable
 
@@ -86,7 +83,7 @@ set laststatus=2
 " '500  - Remember 500 marks
 " <500 - Save 500 lines for each register
 " :500  - Remember 500 items in commandline history
-" %     - Remeber buffer List 
+" %     - Remember buffer List 
 set viminfo='500,:500,%,<500,s10
 
 " Use UTF-8 by default
@@ -104,10 +101,7 @@ set title
 " Restore old title after leaving Vim
 set titleold=
 
-" Never beep
-"set visualbell
-
-" Use blowfish for encrypting files
+" Use blowfish2 for encrypting files; blowfish is *not* secure
 if has("cryptv")
 	set cryptmethod=blowfish2
 endif
@@ -140,6 +134,9 @@ set virtualedit=onemore
 " Max. number of tabs to be open with -p argument or :tab all"
 set tabpagemax=50
 
+" Show partial command in the last line of the screen
+set showcmd
+
 " TODO I need to look at this...
 "set formatoptions+=
 
@@ -165,7 +162,7 @@ if env == "work"
 	set ts=2
 	set sw=2
 	set sts=2
-else
+elseif env == "personal"
 	set noexpandtab
 	set ts=4
 	set sw=4
@@ -202,14 +199,43 @@ set background=light
 " 16 colors are enough
 set t_Co=16
 
+" Prevent clearing the terminal on exit
+set t_te=
+
 " Enable file type detection
 filetype plugin indent on
 
+
+" Go to the last cursor location when a file is opened, unless this is a
+" git commit (in which case it's annoying)
 aug init
-	" Go to the last cursor location when a file is opened, unless this is a
-	" git commit (in which case it's annoying)
-	au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") && &filetype != "gitcommit"|execute("normal `\"")|endif
+	au BufReadPost *
+		\ if line("'\"") > 0 && line("'\"") <= line("$") && &filetype != "gitcommit" |
+			\ execute("normal `\"") |
+		\ endif
 
 	" Syntax breaks less often, but it's a bit slower
 	au BufEnter * :syntax sync fromstart
 aug END
+
+
+" Set/unset some performance-related options if we're editing very large files
+augroup LargeFile
+	let g:large_file = 10485760 " 10MB
+	au BufReadPre *
+		\ let f=expand("<afile>") |
+		\ if getfsize(f) > g:large_file |
+			\ set eventignore+=FileType |
+			\ setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1 |
+		\ else |
+			\ set eventignore-=FileType |
+		\ endif
+augroup END
+
+
+" Make Vim ask for the password again if it's wrong
+" https://vi.stackexchange.com/questions/366/how-do-i-detect-ive-entered-a-wrong-password-when-using-cryptmethod-and-make-v
+augroup check_enc
+    autocmd!
+    autocmd BufRead * call Check_Enc()
+augroup END
