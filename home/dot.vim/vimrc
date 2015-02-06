@@ -20,9 +20,6 @@ catch /E121/
 	endif
 endtry
 
-execute pathogen#infect()
-
-
 source ~/.vim/functions.vim
 source ~/.vim/options.vim
 source ~/.vim/keys.vim
@@ -32,3 +29,5 @@ source ~/.vim/plugins.vim
 if has("gui_running")
 	source ~/.vim/gui.vim
 endif
+
+runtime macros/matchit.vim

@@ -43,6 +43,9 @@ setenv GDK_CORE_DEVICE_EVENTS 1
 setenv GTK_IM_MODULE xim
 setenv QT_IM_MODULE xim
 
+# Don't output to a pager
+setenv SYSTEMD_PAGER
+
 # /var/ is a memory device on my laptop
 if ($uname == FreeBSD && -d /pkgdb) setenv PKG_DBDIR /pkgdb/
 
@@ -80,7 +83,6 @@ endif
 # Set editor
 if (-X vim) then
 	setenv EDITOR vim
-	alias vim 'vim -p'
 	alias vi "vim"
 else if (-X vi) then
 	setenv EDITOR vi

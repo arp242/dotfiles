@@ -60,3 +60,8 @@ aug end
 au BufNewFile,BufRead *.git/COMMIT_EDITMSG set filetype=
 au BufNewFile,BufRead *.git/MERGE_MSG set filetype=
 au BufNewFile,BufRead *.git/modules/*/COMMIT_EDITMSG set filetype=
+
+" TODO: set tw to 72 for emails
+"
+" https://vi.stackexchange.com/questions/137/how-do-i-edit-crontab-files-with-vim-i-get-the-error-temp-file-must-be-edited
+au FileType crontab setlocal bkc=yes

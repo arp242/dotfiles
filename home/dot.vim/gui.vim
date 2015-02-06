@@ -5,9 +5,11 @@ set columns=120
 " Activate mouse
 set mouse=a
 
+" Use pop-up menu for right button
+set mousemodel=popup_setpos
+
 " Default clipboard is system clipboard
-"set clipboard=unnamedplus
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " Also use the mouse for selection
 set selectmode=key,mouse
@@ -17,3 +19,5 @@ set selectmode=key,mouse
 "set guifont=Dejavu_Sans_Mono:h10
 set guifont=Dejavu\ Sans\ Mono\ 12
 
+" Don't blink the cursor
+set guicursor+=a:blinkon0

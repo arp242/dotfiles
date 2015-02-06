@@ -1,26 +1,18 @@
-""" ShowMarks
-" Off by default
-let g:showmarks_enable=0
+call plug#begin('~/.vim/plugged')
 
+Plug 'kien/tabman.vim'
+Plug 'mbbill/undotree'
+Plug 'scrooloose/syntastic'
+Plug 'vim-scripts/AnsiEsc.vim'
 
-""" CtrlP
-let g:ctrlp_map = "<Leader>t"
-let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:100'
+" Languages
+Plug 'groenewege/vim-less'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'kchmck/vim-coffee-script'
+Plug 'rodjek/vim-puppet'
+Plug 'slim-template/vim-slim'
 
-" Open files in a tab
-let g:ctrlp_open_new_file = 't'
-
-" At my previous job, the project had lots 'o files and was on a fairly slow
-" network drive...
-"let g:ctrlp_clear_cache_on_exit = 0
-"let g:ctrlp_cache_dir = tmpdir
-
-" ...but not anymore! We don't need caching anymore...
-let g:ctrlp_use_caching = 0
-
-if executable('ag')
-	let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-endif
+call plug#end()
 
 
 """ Syntastic
