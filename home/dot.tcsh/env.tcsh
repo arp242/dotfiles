@@ -83,6 +83,7 @@ endif
 # Set editor
 if (-X vim) then
 	setenv EDITOR vim
+	alias vim "vim -p"
 	alias vi "vim"
 else if (-X vi) then
 	setenv EDITOR vi
