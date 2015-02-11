@@ -19,6 +19,9 @@
 [push]
 	default = simple
 
+[merge]
+	tool = vimdiff
+
 [alias]
 	st = status --short
 	ci = commit -a

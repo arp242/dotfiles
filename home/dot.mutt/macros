@@ -12,3 +12,6 @@ macro pager \e4 "<enter-command>set pager_index_lines=15<enter>"
 macro pager \e5 "<enter-command>set pager_index_lines=20<enter>"
 macro pager \e6 "<enter-command>set pager_index_lines=25<enter>"
 macro pager \e7 "<enter-command>set pager_index_lines=30<enter>"
+
+macro pager a "t;s=Archive$y<enter>"
+macro index a "t;s=Archive$y<enter>"

@@ -6,15 +6,6 @@ fun! MkdirIfNeeded(dir, flags, permissions)
 endfun
 
 
-" Map key to toggle an option on/off
-fun! MapToggle(key, opt)
-	let l:cmd = ':set ' . a:opt . '! \| set ' . a:opt . "?\<CR>"
-	exec 'nnoremap ' . a:key . ' ' . l:cmd
-	exec 'inoremap ' . a:key . " \<C-O>" . l:cmd
-endfun
-command! -nargs=+ MapToggle call MapToggle(<f-args>)
-
-
 " Replace `} else {' with `}<CR>else {'
 fun! SaneIndent()
 	silent! %s/\v(\s*)}\s*(else|catch)/\1}\r\1\2/g
@@ -29,7 +20,7 @@ fun! NotSoSaneIndent()
 endfun
 
 
-" Open multiple tabs at one
+" Open multiple tabs at once
 fun! OpenMultipleTabs(pattern)
 	for p in split(a:pattern, ' ')
 		let l:files = split(glob(l:p), '\n')
@@ -91,40 +82,60 @@ fun! SuperWrite()
 endfun
 
 
-" Make Vim ask for the password again if it's wrong
-fun! Check_Enc()
-	if &l:cm != ""
-		if getline(1) != '' && line("$") < 3 + (line2byte(line("$")) / 100)
-			set key=
-			edit
-			call Check_Enc()
-		endif
-	endif
+" 'Write mode' removed most IO chrome, and sets a margin on the left side. I
+" like it for writing emails and such.
+fun! WriteMode()
+	" Disable a lot of stuff
+	setlocal nocursorline nocursorcolumn statusline= showtabline=0 laststatus=0 noruler
+
+	" Hack a right margin with number
+	setlocal number
+	setlocal numberwidth=3
+
+	" Works better for me than my default of 80
+	setlocal textwidth=100
+
+	" White text, so it's 'invisible'
+	highlight LineNr ctermfg=15
+	" If you're using a black background:
+	" highlight LineNr ctermfg=1
 endfun
 
 
-fun! Paste_Func()
-	let s:inPaste = &paste
-	if !s:inPaste
-		set paste
+" Set a fancy start screen
+fun! Start()
+	" Don't run if: we have commandline arguments, we don't have an empty
+	" buffer, if we've not invoked as vim or gvim, or if we'e start in insert mode
+	if argc() || line2byte('$') != -1 || v:progname !~? '^[-gmnq]\=vim\=x\=\%[\.exe]$' || &insertmode
+		return
 	endif
 
-	echom s:inPaste
-	augroup paste_callback
-		autocmd!
-		autocmd InsertLeave <buffer> call Paste_End()
-	augroup END
+	" Start a new buffer ...
+	enew
 
-	startinsert
-endfun
+	" ... and set some options for it
+	setlocal
+		\ bufhidden=wipe
+		\ buftype=nofile
+		\ nobuflisted
+		\ nocursorcolumn
+		\ nocursorline
+		\ nolist
+		\ nonumber
+		\ noswapfile
+		\ norelativenumber
 
-fun! Paste_End()
-	augroup paste_callback
-		autocmd!
-	augroup END
-	augroup! paste_callback
+	" Now we can just write to the buffer, whatever you want.
+	call append('$', "")
+	for line in split(system('fortune -a'), '\n')
+		call append('$', '        ' . l:line)
+	endfor
 
-	if !s:inPaste
-		set nopaste
-	endif
+	" No modifications to this buffer
+	setlocal nomodifiable nomodified
+
+	" When we go to insert mode start a new buffer, and start insert
+	nnoremap <buffer><silent> e :enew<CR>
+	nnoremap <buffer><silent> i :enew <bar> startinsert<CR>
+	nnoremap <buffer><silent> o :enew <bar> startinsert<CR>
 endfun

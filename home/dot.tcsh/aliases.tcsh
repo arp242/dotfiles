@@ -133,3 +133,4 @@ endif
 alias ipython 'ipython --colors=NoColor --no-confirm-exit'
 
 alias xvi xvim
+alias write mlterm -e vim -c :WriteMode\ '&'

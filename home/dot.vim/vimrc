@@ -1,30 +1,30 @@
 " vim:noexpandtab:ts=8:sts=8:sw=8
-" $hgid: fa3e06dce8e5
-"
-" This vimrc has been compiled from many, *many* sources over the years, and
-" I've added a number of innovations of my own.
+" $hgid: 664fd628503a fa3e06dce8e5
 
-try
-	" This allows doing:
-	" :let env = "work"
-	" :source ~/.vimrc
-	" To re-set the settings to the new env
-	let env = env
-catch /E121/
-	" I keep the company code in ~/code/, if we're outside of that, assume
-	" we're *not* using the company code style
-	if hostname() =~ "martin-xps" && strpart(getcwd(), 0, strlen($HOME) + 5) == $HOME . "/code"
-		let env = "work"
-	else
-		let env = "personal"
-	endif
-endtry
+call plug#begin('~/.vim/plugged')
+
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'embear/vim-localvimrc'
+Plug 'kien/tabman.vim'
+Plug 'mbbill/undotree'
+Plug 'scrooloose/syntastic'
+Plug 'shinokada/dragvisuals.vim'
+Plug 'vim-scripts/AnsiEsc.vim'
+
+
+" Languages
+Plug 'groenewege/vim-less'
+Plug 'hail2u/vim-css3-syntax'
+Plug 'kchmck/vim-coffee-script'
+Plug 'rodjek/vim-puppet'
+Plug 'slim-template/vim-slim'
+
+call plug#end()
 
 source ~/.vim/functions.vim
 source ~/.vim/options.vim
 source ~/.vim/keys.vim
-source ~/.vim/languages.vim
-source ~/.vim/plugins.vim
+source ~/.vim/autocmd.vim
 
 if has("gui_running")
 	source ~/.vim/gui.vim

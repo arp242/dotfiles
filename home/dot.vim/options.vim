@@ -102,7 +102,7 @@ set title
 set titleold=
 
 " Use blowfish2 for encrypting files; blowfish is *not* secure
-if has("cryptv")
+if has("cryptv") && has("patch-7.4-399")
 	set cryptmethod=blowfish2
 endif
 
@@ -137,8 +137,8 @@ set tabpagemax=50
 " Show partial command in the last line of the screen
 set showcmd
 
-" TODO I need to look at this...
-"set formatoptions+=
+" j: Remove comment character when joining lines with J
+set formatoptions+=j
 
 " Round indent to multiple of shiftwidth when using < and >
 set shiftround
@@ -150,24 +150,19 @@ set smarttab
 set matchpairs+=<:>
 
 " Persistent undo
-set undofile
+if has('persistent_undo')
+	set undofile
+endif
 
 if executable('ag')
 	set grepprg="ag --nogroup --nocolor"
 endif
 
-" The tab settings for work
-if env == "work"
-	set expandtab
-	set ts=2
-	set sw=2
-	set sts=2
-elseif env == "personal"
-	set noexpandtab
-	set ts=4
-	set sw=4
-	set sts=4
-endif
+" Tab settings
+set noexpandtab
+set ts=4
+set sw=4
+set sts=4
 
 " Only use UNIX line endings
 set fileformats=unix
@@ -184,7 +179,9 @@ call MkdirIfNeeded(tmpdir, 'p', 0700)
 
 let &backupdir = tmpdir
 let &dir = tmpdir
-let &undodir = tmpdir
+if has('persistent_undo')
+	let &undodir = tmpdir
+endif
 
 " Switch syntax highlighting on
 syntax on
@@ -205,37 +202,9 @@ set t_te=
 " Enable file type detection
 filetype plugin indent on
 
+" Syntastic plugin
+let g:syntastic_check_on_open = 1
+let g:syntastic_auto_loc_list = 1
 
-" Go to the last cursor location when a file is opened, unless this is a
-" git commit (in which case it's annoying)
-aug init
-	au BufReadPost *
-		\ if line("'\"") > 0 && line("'\"") <= line("$") && &filetype != "gitcommit" |
-			\ execute("normal `\"") |
-		\ endif
-
-	" Syntax breaks less often, but it's a bit slower
-	au BufEnter * :syntax sync fromstart
-aug END
-
-
-" Set/unset some performance-related options if we're editing very large files
-augroup LargeFile
-	let g:large_file = 10485760 " 10MB
-	au BufReadPre *
-		\ let f=expand("<afile>") |
-		\ if getfsize(f) > g:large_file |
-			\ set eventignore+=FileType |
-			\ setlocal noswapfile bufhidden=unload buftype=nowrite undolevels=-1 |
-		\ else |
-			\ set eventignore-=FileType |
-		\ endif
-augroup END
-
-
-" Make Vim ask for the password again if it's wrong
-" https://vi.stackexchange.com/questions/366/how-do-i-detect-ive-entered-a-wrong-password-when-using-cryptmethod-and-make-v
-augroup check_enc
-    autocmd!
-    autocmd BufRead * call Check_Enc()
-augroup END
+" localvimrc
+let g:localvimrc_whitelist = '/home/martin/code/.lvimrc'
