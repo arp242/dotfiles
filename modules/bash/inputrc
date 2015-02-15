@@ -1,0 +1,23 @@
+# $dotid$
+
+# Complete on 1 tab
+set show-all-if-ambiguous on
+
+# Don't use pager
+set page-completions off
+
+# Don't match hidden files
+set match-hidden-files off
+
+# Never bug me for confirmation
+set completion-query-items 999999
+
+# Up arrow
+# TODO: Also make cursor go to end-of-line, like tcsh
+"\e[A": history-search-backward
+
+# Down arrow
+"\e[B": history-search-forward
+
+# Color completions as ls
+set colored-stats on

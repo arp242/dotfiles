@@ -1,0 +1,10 @@
+#!/bin/sh
+# $logid$
+
+[ -f ~/.xsession ] && . ~/.xsession
+
+if which pekwm > /dev/null; then
+	exec ssh-agent pekwm
+else
+	exec ssh-agent twm
+fi
