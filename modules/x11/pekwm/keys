@@ -1,0 +1,79 @@
+# vim:syntax=config
+# $logid$
+
+Global {
+	# Focuses the next frame so that the last focused windows will get switched
+	# to first.
+	# endraise - raise the selected client on end, but not while having it
+	# pressed
+	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
+
+	# Switch to next/previous tab in a frame
+	KeyPress = "Mod4 A" { Actions = "ActivateClientRel -1" }
+	KeyPress = "Mod4 S" { Actions = "ActivateClientRel 1" }
+
+	# Attach new tabs to a frame
+	KeyPress = "Mod4 Z" { Actions = "Toggle Marked" }
+	KeyPress = "Mod4 C" { Actions = "AttachMarked" }
+
+	# Detach from frame
+	KeyPress = "Mod4 D" { Actions = "Detach" }
+
+	# All new clients are opened in this frame
+	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
+
+	# Moving in workspaces
+	KeyPress = "Mod4 F1" { Actions = "GotoWorkspace 1" }
+	KeyPress = "Mod4 F2" { Actions = "GotoWorkspace 2" }
+	KeyPress = "Mod4 F3" { Actions = "GotoWorkspace 3" }
+	KeyPress = "Mod4 F4" { Actions = "GotoWorkspace 4" }
+	KeyPress = "Mod4 F5" { Actions = "GotoWorkspace 5" }
+
+	KeyPress = "Mod4 1" { Actions = "SendToWorkspace 1" }
+	KeyPress = "Mod4 2" { Actions = "SendToWorkspace 2" }
+	KeyPress = "Mod4 3" { Actions = "SendToWorkspace 3" }
+	KeyPress = "Mod4 4" { Actions = "SendToWorkspace 4" }
+	KeyPress = "Mod4 5" { Actions = "SendToWorkspace 5" }
+
+	# Set window sizes
+	KeyPress = "Mod4 M" { Actions = "Toggle Maximized True True" }
+	KeyPress = "Mod4 Shift M" { Actions = "Toggle FullScreen" }
+
+	KeyPress = "Mod4 Shift J" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift K" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift Up" { Actions = "Toggle Maximized False True" }
+	KeyPress = "Mod4 Shift Down" { Actions = "Toggle Maximized False True" }
+
+	KeyPress = "Mod4 Shift H" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift L" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift Left" { Actions = "Toggle Maximized True False" }
+	KeyPress = "Mod4 Shift Right" { Actions = "Toggle Maximized True False" }
+
+	# Set window positions
+	KeyPress = "Mod4 H" { Actions = "MoveToEdge LeftEdge" }
+	KeyPress = "Mod4 J" { Actions = "MoveToEdge BottomEdge" }
+	KeyPress = "Mod4 K" { Actions = "MoveToEdge TopEdge" }
+	KeyPress = "Mod4 L" { Actions = "MoveToEdge RightEdge" }
+
+	KeyPress = "Mod4 Left" { Actions = "MoveToEdge LeftEdge" }
+	KeyPress = "Mod4 Right" { Actions = "MoveToEdge RightEdge" }
+	KeyPress = "Mod4 Up" { Actions = "MoveToEdge TopEdge" }
+	KeyPress = "Mod4 Down" { Actions = "MoveToEdge BottomEdge" }
+
+	# External Commands
+	KeyPress = "Mod4 X" { Actions = "Exec xterm -geometry 90x27" }
+
+	# Pekwm control
+	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
+}
+
+Menu {
+	KeyPress = "j" { Actions = "NextItem" }
+	KeyPress = "k" { Actions = "PrevItem" }
+	KeyPress = "Down" { Actions = "NextItem" }
+	KeyPress = "Up" { Actions = "PrevItem" }
+	KeyPress = "Return" { Actions = "Select" }
+	KeyPress = "space" { Actions = "Select" }
+	KeyPress = "Escape" { Actions = "Close" }
+	KeyPress = "q" { Actions = "Close" }
+}

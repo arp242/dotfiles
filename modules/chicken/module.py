@@ -1,0 +1,3 @@
+files = {
+	'~/.csirc': 'csirc',
+}

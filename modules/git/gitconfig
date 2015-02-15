@@ -1,0 +1,27 @@
+# $dotid$
+
+[user]
+	name = Martin Tournoij
+
+[core]
+	pager =
+	eol = lf
+
+[color]
+	branch =
+	diff =
+	status =
+	grep =
+
+[diff]
+	mnemonicprefix = true
+
+[push]
+	default = simple
+
+[merge]
+	tool = vimdiff
+
+[alias]
+	st = status --short
+	ci = commit -a

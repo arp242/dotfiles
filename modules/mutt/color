@@ -1,0 +1,50 @@
+# $dotid$
+
+# attachment
+# body (match regexp in the body of messages)
+# bold (highlighting bold patterns in the body of messages)
+# error (error messages printed by Mutt-ng)
+# header (match regexp in the message header)
+# hdrdefault (default color of the message header in the pager)
+# index (match pattern in the message index)
+# indicator (arrow or bar used to indicate the current item in a menu)
+# markers (the ``+'' markers at the beginning of wrapped lines in the pager)
+# message (informational messages)
+# normal
+# quoted (text matching $quote_regexp in the body of a message)
+# quoted1, quoted2, ..., quotedN (higher levels of quoting)
+# search (highlighting of words in the pager)
+# signature
+# status (mode lines used to display info about the mailbox or message)
+# tilde (the ``~'' used to pad blank lines in the pager)
+# tree (thread tree drawn in the message index and attachment menu)
+# underline (highlighting underlined patterns in the body of messages)
+
+uncolor index *
+uncolor header *
+uncolor body *
+
+color attachment	black		green
+color hdrdefault	red		default
+color quoted		red		default
+color indicator		brightwhite	blue
+color error		red		default
+color search		default		yellow
+color status		brightwhite	black
+color tree		red		default
+color normal		default		default
+color tilde		blue		default
+color bold		blue		default
+color markers		red		default
+color index		brightblue	default ~N
+color index		blue		default ~O
+color index		brightwhite	black ~D
+color header		blue		default "^(From|Subject|Date):"
+
+color body	blue	default		"(http|https|ftp|news|telnet|finger)://[^ \">\t\r\n]*"
+color body	blue	default		"mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+color body	blue	default		"news:[^ \">\t\r\n]*"
+color body	blue	default		"[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+color body	blue	default		"(^|[[:space:]])\\*[^[:space:]]+\\*([[:space:]]|$)" # *Bold* text.
+color body	blue	default		"(^|[[:space:]])_[^[:space:]]+_([[:space:]]|$)"     # _Underlined_ text.
+color body	blue	default		"(^|[[:space:]])/[^[:space:]]+/([[:space:]]|$)"     # /Italic/ text.
