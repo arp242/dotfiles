@@ -1,4 +1,4 @@
-" $logid$
+" $dotid$
 
 " Default width & height
 set lines=55

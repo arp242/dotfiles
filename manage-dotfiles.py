@@ -1,90 +1,223 @@
 #!/usr/bin/env python
 # encoding:utf-8
 #
-#
+
 
 from __future__ import print_function
-import glob, os, subprocess, re, sys, shutil
+import hashlib, glob, os, pprint, tempfile, subprocess, re, sys, shutil
 
+input = getattr(__builtins__, 'raw_input', input) # In Python 2 input() evals code
+
+if sys.argv[0] in ['', '-']: sys.argv[0] = 'stdin'
 root = os.path.dirname(os.path.realpath(sys.argv[0]))
 
-
-class Hg:
-	def get_version_string(self, src):
-		#return runcmd(['hg', 'parents', '--template', '{rev}', src])
-		return runcmd(['hg', 'parents', '--template', '{rev}'])
+# TODO: These should all be commandline arguments
+verbose = True
+difftool = ['vimdiff', '-c source {}/diffexpr.vim'.format(root)]
 
 
-	def file_is_modified(self, src, dest):
-		data = open(dest, 'r').read()
-		dotid = re.match('^.*?\$dotid: (.*)\$', data)
-		if not dotid: return False
-		dotid = dotid.groups()[0]
-
-		data = data.replace('$dotid: {}$'.format(dotid), '$dotid$')
-		orig_data = runcmd(['hg', 'cat', '--rev', dotid, src])
-
-		return data == orig_data
-
-
-vcs = Hg()
-
-def runcmd(cmd):
-	p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-	return p.communicate()[0].decode()
-
-def manage_dirs(dirs):
-	# Ignore ./module.py
-	# If file exists in dest but not in config -> Ask to copy
-	# If file exists in config but not in dest -> copy
-	# Run manage_files for rest
-	#print(dirs)
-	pass
+### Various helpers
+def dbg(msg):
+	if verbose: print(msg)
 
 
 def install_file(src, dest):
-	print('{} -> {}'.format(src, dest))
+	""" Install (copy) the 'src' file to the 'dest'. Do sane things on
+	unexpected cases (such as 'dest' being a symlink). """
+
+	# The destination is a symlink, this is rather unexpected
+	# TODO: Ask what to do
+	if os.path.islink(dest):
+		print("`{} is a symlink".format(dest))
+		return
+
+	# Make dirs if required
+	if not os.path.exists(os.path.dirname(dest)):
+		os.makedirs(os.path.dirname(dest))
+
+	# Check for write access
+	if os.path.exists(dest) and not os.access(dest, os.W_OK):
+		print("`{}' not writable; skipping".format(dest))
+		return
+
+	# Copy!
+	dbg('{} -> {}'.format(src, dest))
 	shutil.copy2(src, dest)
 
+	# Add version string
 	data = open(dest, 'r').read()
 	with open(dest, 'w') as fp:
 		fp.write(data.replace('$dotid$', '$dotid: {}$'.format(vcs.get_version_string(src))))
 
 
+def runcmd(cmd):
+	p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	return p.communicate()[0].decode()
+
+
+def ask(question, options=['y', 'n'], default=None):
+	if default is None: default = options[0]
+	opt_str = '/'.join([ o.upper() if o == default else o for o in options ])
+	answer = input('{} [{}]? '.format(question, opt_str)).strip().lower()
+
+	if answer == '': return default
+	if answer in options: return answer
+	elif len(answer) == 1:
+		for o in options:
+			if o == answer or o[0] == answer[0]: return o
+	return ask(question, options, default)
+
+
+def expand_dict(d):
+	""" Expand pathnames in key => value of a dict to full paths """
+	# TODO: os.path.normpath?
+	e = lambda p: os.path.realpath(os.path.expanduser(p))
+	return { e(k): e(v) for (k, v) in d.items() }
+
+
+### VCS
+class Hg:
+	def get_version_string(self, src):
+		s = runcmd(['hg', 'parents', '--template', '{rev}', src])
+		if s.startswith('abort'): return ''
+		else: return s
+
+
+	def file_is_modified(self, src, dest):
+		'''
+		Returns an int:
+		0: File is not modified (False)
+		1: File is modified (True)
+		2: File is not modified and exactly the same version (False)
+
+		if src is unknown to the VCS, return 1 (so we merge, safest option)
+		'''
+		try:
+			data = open(dest, 'r').read()
+		except:
+			print(dest)
+			sys.exit(42)
+
+		dotid = re.match('^.*?\$dotid: (.*)\$', data)
+		if not dotid: return 1
+
+		dotid = dotid.groups()[0]
+
+		if dotid == self.get_version_string(src): return 2
+
+		data = data.replace('$dotid: {}$'.format(dotid), '$dotid$')
+		orig_data = runcmd(['hg', 'cat', '--rev', dotid, src])
+
+		return int(data != orig_data)
+
+
+vcs = Hg()
+
+
+### Main
+
+
+def manage_dirs(dirs):
+	mp = lambda a, b: '{}/{}'.format(a, b)
+
+	for dest, src in dirs.items():
+		# Destination exsists, but isn't a directory!
+		if os.path.exists(dest) and not os.path.isdir(dest):
+			print("Warning: `{}' exists, but is not a directory".format(dest))
+			action = ask('What shall we do', ['ignore', 'remove'])
+			if action == 'ignore': continue
+			if action == 'remove': os.unlink(dest) # TODO: What if dest is a dir?
+
+		# mkdir -p if required
+		if not os.path.exists(dest): os.makedirs(dest)
+
+		# Get list of all files we want to install and run manage_files() on that
+		for src_root, _, srcfiles in os.walk(src):
+			dest_root = src_root.replace(src, dest)
+			#srcfiles = { mp(dest, f): mp(src, f) for f in srcfiles if f != 'module.py' }
+			srcfiles = { mp(dest_root, f): mp(src_root, f) for f in srcfiles if f != 'module.py' }
+			manage_files(srcfiles)
+
+		# Get a list of files in the destination that's *not* already in the
+		# source and ask what we want to do with these files
+		for root, _, destfiles in os.walk(dest):
+			# TODO: Doesn't seem to work? (module vim)
+			continue
+			for f in destfiles:
+				full_f = mp(dest, f)
+				if full_f in srcfiles.keys(): continue
+
+				# TODO: Make sure dirs end with /
+				# TODO: Ass option "view" and/or "manual merge"
+				print("The file `{}' exists in `{}', but is not in `{}'".format(
+					f, dest, src))
+				action = ask('What shall we do', ['ignore', 'remove', 'copy'])
+				if action == 'ignore': continue
+				if action == 'remove': os.unlink(full_f)
+				if action == 'copy': shutil.copy2(full_f, mp(src, f))
+
+
+
 def manage_files(files):
-	"""
-	If files are same -> do nothing
-	If files differ, and installed copy is unmodified -> copy new
-	If files differ, and installed copy is modified -> merge
-	"""
-
 	for dest, src in files.items():
-		if not os.path.exists(dest):
+		# src is a binary file (we don't check dest); don't do anything
+		# TODO: ask what to do where
+		with open(src, 'rb') as fp:
+			if b'\x00' in fp.read(2048):
+				h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
+				h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
+				if h1 != h2:
+					print("`{}' is modified but looks like a binary file; skipping".format(src))
+				continue
+
+		# Files are same dotid, and not changes: we do nothing
+		if os.path.exists(src) and vcs.file_is_modified == 2:
+			continue
+			mod = vcs.file_is_modified(src, dest)
+			if vcs.file_is_modified == 2: continue
+
+		# File doesn't exist or unmodified since version string -> install
+		if not os.path.exists(dest) or vcs.file_is_modified(src, dest) == 0:
 			install_file(src, dest)
 			continue
 
-		# Check if the file is modified from the version string, if not, we can
-		# just copy
-		if not vcs.file_is_modified(src, dest):
-			install_file(src, dest)
+		# Larger than 1 MiB -> don't manually merge
+		if os.stat(src).st_size > 1048576 or os.stat(dest).st_size > 1048576:
+			print("Skipping merge of `{}' because it is larger than 1MiB".format(src))
 			continue
 
-		# Don't diff files over 1MiB
-		if os.stat(src).st_size > 1048576 or os.stat(dest).st_size > 1048576: continue
+		# Check again if the files differ, but this time ignoring lines with
+		# $dotignore$; this test is comparatively slow, which is why we do it
+		# here
+		dest_data = [ l for l in open(dest, 'r').readlines() if not ('$dotignore$' in l or '$dotid' in l)]
+		src_data = [ l for l in open(src, 'r').readlines() if not ('$dotignore$' in l or '$dotid' in l) ]
+		if src_data == dest_data: continue
 
-		# Check if files are the same; in which case a diff is useless
-		h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
-		h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
-		if h1 == h2: continue
+		# Else manually merge
+		run_diff(src, dest)
 
-		# Don't diff binary files
-		if open(src, 'rb').read().find(b'\000') >= 0: continue
 
-		# else manually merge
-		subprocess.call(['vimdiff', dest, src])
+def run_diff(src, dest):
+	subprocess.call(difftool + [dest, src])
+
+	# I don't like this solution because we're editing a temp file...
+	'''
+	with tempfile.NamedTemporaryFile(mode='w', prefix='manage-dotfiles_') as fp:
+		data = open(dest, 'r').read()
+		dotid = re.match('^.*?\$dotid: (.*)\$', data)
+		if dotid:
+			dotid = dotid.groups()[0]
+			data = data.replace('$dotid: {}$'.format(dotid), '$dotid$')
+		data = [ l for l in data.split('\n') if l.find('$dotignore$') == -1 ]
+		fp.write('\n'.join(data))
+		fp.flush()
+
+		subprocess.call([difftool, fp.name, src])
+	'''
 
 
 def manage_symlinks(symlinks):
+	# TODO
 	# If link exist and point to something else -> ask
 	# If link exists, and is not a file -> ask
 	# Else -> make link
@@ -100,17 +233,6 @@ def manage_symlinks(symlinks):
 		#print(link, ' -> ', dest)
 
 
-def run_code(fun):
-	#print(fun)
-	pass
-
-
-def expand_dict(d):
-	""" Expand pathnames in key => value of a dict to full paths """
-	e = lambda p: os.path.realpath(os.path.expanduser(p))
-	return { e(k): e(v) for (k, v) in d.items() }
-
-
 def proc_module(module, code):
 	""" exec() module code, do something with it """
 	assigns = {}
@@ -120,7 +242,7 @@ def proc_module(module, code):
 	if assigns.get('files'): manage_files(expand_dict(assigns['files']))
 	if assigns.get('dirs'): manage_dirs(expand_dict(assigns['dirs']))
 	if assigns.get('symlinks'): manage_symlinks(expand_dict(assigns['symlinks']))
-	if assigns.get('run'): run_code(assigns['run'])
+	if assigns.get('run'): fun()
 	os.chdir(root)
 
 
@@ -128,116 +250,15 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1: modules = [ '{}/modules/{}/module.py'.format(root, m) for m in sys.argv[1:] ]
 	else: modules = glob.glob(root + '/modules/*/module.py')
 
-	for module in modules:
-		with open(module, 'r') as fp: code = fp.read()
-		proc_module(module, code)
+	try:
+		for module in modules:
+			try:
+				with open(module, 'r') as fp: code = fp.read()
+			except FileNotFoundError:
+				print("Module `{}' doesn't exist".format(module))
+				sys.exit(1)
 
-
-
-'''
-import os, subprocess, sys, shutil, sys
-
-if sys.version_info.major < 3 or sys.version_info.minor < 3:
-	print('Needs Python 3.3')
-	sys.exit(1)
-
-
-def usage():
-	print("%s diff | merge | install" % sys.argv[0])
-
-
-def runcmd(cmd):
-	p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-	return p.communicate()[0].decode()
-
-
-def update():
-	runcmd('hg up')
-
-
-def diff(orig, new):
-	return runcmd(r'diff -I\$hgid: -u %s %s' % (orig, new)).strip()
-
-
-def istext(f):
-	return runcmd('file "%s"' % f).split(':')[1].find('text') > -1
-
-
-_version = '$hgid: %s' % (
-	runcmd("hg parents --template '{node|short}'").replace('\n', ''))
-
-
-if __name__ == '__main__':
-	cwd = os.path.dirname(os.path.realpath(sys.argv[0]))
-	cwdlen = len(cwd)
-	update()
-
-	if len(sys.argv) < 2:
-		usage()
+			proc_module(module, code)
+	except KeyboardInterrupt:
+		print()
 		sys.exit(0)
-	else:
-		cmd = sys.argv[1]
-		if cmd not in ['diff', 'merge', 'install']:
-			usage()
-			sys.exit(1)
-
-	for f in os.walk(cwd):
-		dirname = f[0].replace(cwd, '')
-		dirs = f[1]
-		files = f[2]
-
-		if dirname.startswith('/win32') and sys.platform != 'win32': continue
-		if dirname[:4] == '/.hg': continue
-		if dirname == '': dirname = '/'
-
-		for f in files:
-			if dirname == '/' and f == 'install.py': continue
-
-			origfile = '%s/%s/%s' % (cwd, dirname, f)
-			destfile = '%s/%s' % (dirname.replace('dot.', '.'), f.replace('dot.', '.'))
-			destfile = os.path.expanduser(destfile.replace('/home/', '~/')).replace('//', '/')
-			dif = diff(destfile, origfile)
-			if cmd == 'diff':
-				if os.path.exists(destfile):
-					if dif != '': print(dif)
-				else:
-					print("==> %s doesn't exist" % destfile)
-			elif cmd == 'merge':
-				# TODO: detect binary files
-				if os.path.exists(destfile) and dif != '':
-					subprocess.call(['vimdiff', destfile, origfile])
-			elif cmd == 'install' and dif.strip() != '':
-				if os.path.exists(destfile):
-					if not os.access(destfile, os.W_OK):
-						print('==> %s not writable, skipping' % destfile)
-						continue
-					parent = destfile
-					while not os.path.exists(parent):
-						parent = os.path.dirname(destfile)
-					if not os.access(destfile, os.W_OK):
-						print("==> %s not writable, skipping %s" % (parent, destfile))
-						continue
-
-				print('Installing %s ' % (destfile), end='')
-				if not os.path.exists(os.path.dirname(destfile)):
-					os.makedirs(os.path.dirname(destfile))
-				if os.path.islink(origfile):
-					shutil.copy2(origfile, destfile, follow_symlinks=False)
-				elif istext(origfile):
-					try:
-						data = open(origfile, 'r').read()
-					# Not a UTF-8 file
-					except UnicodeDecodeError:
-						shutil.copy2(origfile, destfile)
-						continue
-					data = data.replace('$hgid:', _version)
-					try:
-						open(destfile, 'w').write(data)
-					except IOError:
-						print('Error: %s' % sys.exc_info()[1])
-						continue
-					shutil.copystat(origfile, destfile)
-				else:
-					shutil.copy2(origfile, destfile)
-				print(' Okay')
-'''

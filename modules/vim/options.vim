@@ -1,6 +1,9 @@
-" $logid$
+" $dotid$
 
-" Use Vim settings, rather then Vi settings
+" TODO: Look at regexp options, now it's different from many other things, and
+" I think we can configure this?
+
+" Use Vim defaults, rather then Vi defaults
 set nocompatible
 
 " Allow backspacing over everything
@@ -14,12 +17,12 @@ set ruler
 
 " %40 - 40 wide
 " %= Right align
-" %l line num of cursor
-" %L Total lines in buf
+" %l line number of cursor
+" %L Total lines in buffer
 " %c column of cursor
-" %o Byte pos of cursor
 " %B Byte value under cursor
-set rulerformat=%40(%=[line\ %l\ of\ %L]\ [c:%c\ p:%o\ 0x%B]%)
+set rulerformat=%40(%=[line\ %l\ of\ %L]\ [col\ %c]\ [0x%B]%)
+
 
 " Jump to search word while typing
 set incsearch
@@ -40,7 +43,7 @@ set nowrapscan
 " behaviour ...
 set gdefault
 
-" set 'text width' to 80 characters.
+" Set 'text width' to 80 characters.
 set textwidth=80
 
 " Show a █ when wrapping a line
@@ -82,11 +85,9 @@ set showtabline=2
 " Always show statusline
 set laststatus=2
 
-" '500  - Remember 500 marks
-" <500 - Save 500 lines for each register
-" :500  - Remember 500 items in commandline history
-" %     - Remember buffer List 
-set viminfo='500,:500,%,<500,s10
+" ! Remember variables that are in ALL CAPS
+" % Remember buffer List 
+set viminfo+=!,%
 
 " Use UTF-8 by default
 set encoding=utf-8
@@ -108,14 +109,14 @@ if has("cryptv") && has("patch-7.4-399")
 	set cryptmethod=blowfish2
 endif
 
-" Show as much of the last line as possibe instead of @
+" Show as much of the last line as possible instead of @
 " Show unprintable chars as <xx>
 set display=lastline,uhex
 
 " Write to swap file every 50 characters
 set updatecount=50
 
-" Min num of lines to keep above/below cursor
+" Minimum number of lines to keep above/below cursor
 set scrolloff=5
 
 " Better tab completion at the Vim cmd
@@ -124,8 +125,8 @@ set wildmenu
 " Ignore these files in completion
 set wildignore=*.o,*.pyc,*.png,*.jpg
 
-" List all matches, only complete when it's unambigious
-set wildmode=list:longest,full
+" List all matches, and complete to the longest unambiguous string
+set wildmode=list:longest
 
 " Insert mode completion
 set completeopt=longest,menu
@@ -134,13 +135,21 @@ set completeopt=longest,menu
 set virtualedit=onemore
 
 " Max. number of tabs to be open with -p argument or :tab all"
-set tabpagemax=50
+set tabpagemax=9999
 
 " Show partial command in the last line of the screen
 set showcmd
 
+" n: Recognize numbered lists when formatting ...
+set formatoptions+=n
+
+" ... make it deal with non-numbered lists (-) as well
+set formatlistpat=^\\s*\\(\\d\\\|\-\\)\\+[\\]:.)}\\t\ ]\\s*
+
 " j: Remove comment character when joining lines with J
-set formatoptions+=j
+if v:version > 703
+	set formatoptions+=j
+endif
 
 " Round indent to multiple of shiftwidth when using < and >
 set shiftround
@@ -151,17 +160,15 @@ set smarttab
 " Also match < & > with %
 set matchpairs+=<:>
 
-" Persistent undo
-if has('persistent_undo')
-	set undofile
-endif
-
+" Use ag for searching
 if executable('ag')
 	set grepprg="ag --nogroup --nocolor"
 endif
 
-" Tab settings
+" Use real tabs...
 set noexpandtab
+
+" ...which are always 4 spaces wide
 set ts=4
 set sw=4
 set sts=4
@@ -170,19 +177,13 @@ set sts=4
 set fileformats=unix
 
 " Set (& create if needed) a temp directory to keep backup & swap files
-if has('win32')
-	let whoami = substitute(system("whoami /LOGONID"), '\n', '', '')
-	let tmpdir = 'C:/tmp/vim_' . whoami
-else
-	let whoami = substitute(system("whoami"), '\n', '', '')
-	let tmpdir = '/var/tmp/vim_' . whoami
-endif
-call MkdirIfNeeded(tmpdir, 'p', 0700)
+set backupdir=$HOME/.vim/tmp/backup
+set dir=$HOME/.vim/tmp/
+call MkdirIfNeeded(&backupdir, 'p', 0700)
 
-let &backupdir = tmpdir
-let &dir = tmpdir
 if has('persistent_undo')
-	let &undodir = tmpdir
+	set undodir=$HOME/.vim/tmp/undo
+	call MkdirIfNeeded(&undodir, 'p', 0700)
 endif
 
 " Switch syntax highlighting on
@@ -190,13 +191,13 @@ syntax on
 
 " Use standard color scheme (some Linuxes feel the need to overwrite this in
 " global vimrc)
-colorscheme default
+"colorscheme default
 
 " My terminal has a white background colour
 set background=light
 
 " 16 colors are enough
-set t_Co=16
+"set t_Co=16
 
 " Prevent clearing the terminal on exit
 set t_te=
@@ -204,9 +205,21 @@ set t_te=
 " Enable file type detection
 filetype plugin indent on
 
-" Syntastic plugin
+""" Zip
+" Disable the zip plugin that's shipped with Vim
+let g:loaded_zipPlugin = 1
+let g:loaded_zip = 1
+
+"""" Syntastic plugin
+" Open & check by default
 let g:syntastic_check_on_open = 1
+
+" ???
 let g:syntastic_auto_loc_list = 1
 
-" localvimrc
-let g:localvimrc_whitelist = '/home/martin/code/.lvimrc'
+""" indentLine
+" Don't enable by default
+let g:indentLine_enabled = 0
+
+" Use UTF-8 boxdrawing character; looks lots better than ugly ASCII |
+let g:indentLine_char = '│'

@@ -1,16 +1,28 @@
-" $logid$
+" $dotid$
 
-" Use ; for : in normal and visual mode, less keystrokes
-nnoremap ; :
-vnoremap ; :
+" Reload config
+nnoremap <Leader>r :source $MYVIMRC<CR>
 
+" Close help, rather than open help, on F1
+nnoremap <F1> :helpclose<CR>
+inoremap <F1> <Esc>:helpclose<CR>a
+
+" List all registers
 nnoremap <F2> :registers<CR>
-nnoremap <F3> :set cursorcolumn!<CR>
-nnoremap <F4> :jumps<CR>
-nnoremap <F5> :UndotreeToggle<cr>
-nnoremap <F6> :marks<CR>
+
+" Show undo tree
+nnoremap <F3> :UndotreeToggle<cr>
+
+" Set list
 nnoremap <F10> :set list!<CR>
+
+" Show indentation guides
+nnoremap <F11> :IndentLinesToggle<CR>
+
+" Set paste with ease
+" TODO: Could be better ... see :help paste, :help pastetoggle
 nnoremap <F12> :set paste!<CR>
+inoremap <F12> <Esc>:set paste!<CR>a
 
 " Enable spell check, switch languages
 nmap <Leader>ss :set spell!<CR>
@@ -20,7 +32,7 @@ nmap <Leader>se :set spelllang=en_gb<CR>
 " Show all matches of word under cursor
 map <Leader>f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
 
-" Use <C-L> to clear some hightlighting
+" Use <C-L> to clear some highlighting
 nnoremap <silent> <C-L> :nohlsearch<CR>:set nolist nospell<CR><C-L>
 
 " We don't need no stinkin' ex mode; use it for formatting
@@ -29,7 +41,8 @@ map Q gq
 " Interface with system clipboard
 nnoremap <Leader>y "*y
 nnoremap <Leader>p "*p
-nnoremap <Leader>P "*P
+nnoremap <Leader>Y "+y
+nnoremap <Leader>P "+p
 
 " Indent in visual and select mode automatically re-selects
 vnoremap > >gv
@@ -42,6 +55,7 @@ nmap <Leader>hr :%!xxd<CR> :set filetype=xxd<CR>
 nmap <Leader>hw :%!xxd -r<CR> :set binary<CR> :set filetype=<CR>
 
 " Use arrows keys for visual movement
+" TODO: Also set these for insert mode
 nnoremap <Up> gk
 nnoremap <Down> gj
 
@@ -49,18 +63,20 @@ nnoremap <Down> gj
 nnoremap <Leader>w! :call SuperWrite()<CR>
 
 " Visually move blocks of text
-vmap <expr> <C-Left> DVB_Drag('left')                     
-vmap <expr> <C-Right> DVB_Drag('right')                    
-vmap <expr> <C-Down> DVB_Drag('down')                     
-vmap <expr> <C-Up> DVB_Drag('up')                       
-vmap <expr> D DVB_Duplicate()                      
+vmap <expr> <C-Left> DVB_Drag('left')
+vmap <expr> <C-Right> DVB_Drag('right')
+vmap <expr> <C-Down> DVB_Drag('down')
+vmap <expr> <C-Up> DVB_Drag('up')
+vmap <expr> D DVB_Duplicate()
 
 " Make the directory tree to the current file; if it doesn't exist
 nmap <Leader>m :call mkdir(expand("%:p:h"), "p")<CR>
 
-" Easier :make
-noremap ,b :make<CR>
+" Easier :make (b for build)
+noremap <Leader>b :make<CR>
 
-" Open multiple tabs at one
-command! -bar -bang -nargs=+ -complete=file Tabedit call OpenMultipleTabs("<args>")
-command! WriteMode call WriteMode()
+" Join with no spaces
+nnoremap <Leader>J :call JoinSpaceless()<CR>
+
+" Browse
+nnoremap <Leader>o :browse oldfiles<CR>

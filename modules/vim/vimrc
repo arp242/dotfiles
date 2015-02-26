@@ -1,18 +1,37 @@
-" vim:noexpandtab:ts=8:sts=8:sw=8
-" $logid$
+" $dotid$
+
+" TODO: Look at cope/quickfix
 
 call plug#begin('~/.vim/plugged')
 
+" Add indentation 'guidelines' (:IndentLinesToggle or <F11>)
+Plug 'Yggdroot/indentLine'
+
+" Make it easy to make ASII tables (:TableModeToggle)
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'embear/vim-localvimrc'
+
+" Tab manager (TODO: How do I use this?)
 Plug 'kien/tabman.vim'
+
+" Easy visual undo tree (:UndotreeToggle or <F3>)
 Plug 'mbbill/undotree'
+
+" Warn on syntax errors (enabled by default, disable with :SyntasticToggleMode)
+" TODO: CoffeeScripts started giving errors?
+" TODO: Configure ruby to whine less about:
+"   a.rb|3 warning| statement not reached  
+"   a.rb|2 warning| assigned but unused variable - x
+"
+" TODO: Configure C so it doesn't whine so much about missing header files
 Plug 'scrooloose/syntastic'
+
+" Move blocks of text from visual mode (mapped to CTRL + arrow keys in Visual)
 Plug 'shinokada/dragvisuals.vim'
+
+" Interpret colour escape codes (:AnsiEsc)
 Plug 'vim-scripts/AnsiEsc.vim'
 
-
-" Languages
+" Filetypes
 Plug 'groenewege/vim-less'
 Plug 'hail2u/vim-css3-syntax'
 Plug 'kchmck/vim-coffee-script'
@@ -21,13 +40,16 @@ Plug 'slim-template/vim-slim'
 
 call plug#end()
 
-source ~/.vim/functions.vim
-source ~/.vim/options.vim
-source ~/.vim/keys.vim
+" Expanded % functionality
+runtime macros/matchit.vim
+
+" Load my vimrc files
 source ~/.vim/autocmd.vim
+source ~/.vim/functions.vim
+source ~/.vim/keys.vim
+source ~/.vim/options.vim
+source ~/.vim/undofile.vim
 
 if has("gui_running")
 	source ~/.vim/gui.vim
 endif
-
-runtime macros/matchit.vim
