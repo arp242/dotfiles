@@ -2,8 +2,8 @@
 #
 # Intended for easy (remote) install:
 #
-# curl https://../install.sh | sh -
-# curl https://../install.sh | sh - @group_name module_name
+# curl http://code.arp242.net/config/raw/tip/install.sh | sh -s
+# curl http://code.arp242.net/config/raw/tip/install.sh | sh -s @group_name module_name
 #
 
 set -euC
