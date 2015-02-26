@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # encoding:utf-8
 #
-
+# TODO: Give module.py the ability to add more ignore patterns
+#
 
 from __future__ import print_function
 import hashlib, glob, os, pprint, tempfile, subprocess, re, sys, shutil
