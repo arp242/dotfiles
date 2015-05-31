@@ -1,28 +1,16 @@
-" $dotid$
+" $dotid"
 
-" TODO: Look at regexp options, now it's different from many other things, and
-" I think we can configure this?
+" Set the encoding of this file
+scriptencoding utf-8
 
 " Use Vim defaults, rather then Vi defaults
 set nocompatible
 
-" Allow backspacing over everything
+" Allow backspacing over everything; http://vi.stackexchange.com/a/2163/51
 set backspace=indent,eol,start
 
 " Keep n lines of command line history
 set history=500
-
-" Show the ruler all the time
-set ruler
-
-" %40 - 40 wide
-" %= Right align
-" %l line number of cursor
-" %L Total lines in buffer
-" %c column of cursor
-" %B Byte value under cursor
-set rulerformat=%40(%=[line\ %l\ of\ %L]\ [col\ %c]\ [0x%B]%)
-
 
 " Jump to search word while typing
 set incsearch
@@ -86,31 +74,34 @@ set showtabline=2
 set laststatus=2
 
 " ! Remember variables that are in ALL CAPS
-" % Remember buffer List 
-set viminfo+=!,%
+set viminfo+=!
 
-" Use UTF-8 by default
+" Use utf-8
 set encoding=utf-8
 
-" Always use \n
+" Always use UNIX line endings \n
 set fileformats=unix
 
 " Faster redrawing
 set ttyfast
 
-" Update term title
+" Update term title...
 set title
 
-" Restore old title after leaving Vim
+" ...but restore old title after leaving Vim
 set titleold=
+
+" This will timeout only on key codes, and not mappings
+"set notimeout
+"set ttimeout
 
 " Use blowfish2 for encrypting files; blowfish is *not* secure
 if has("cryptv") && has("patch-7.4-399")
 	set cryptmethod=blowfish2
 endif
 
-" Show as much of the last line as possible instead of @
-" Show unprintable chars as <xx>
+" lastline: Show as much of the last line as possible instead of @
+" uhex: Show unprintable chars as <xx>
 set display=lastline,uhex
 
 " Write to swap file every 50 characters
@@ -135,7 +126,7 @@ set completeopt=longest,menu
 set virtualedit=onemore
 
 " Max. number of tabs to be open with -p argument or :tab all"
-set tabpagemax=9999
+set tabpagemax=50
 
 " Show partial command in the last line of the screen
 set showcmd
@@ -151,6 +142,9 @@ if v:version > 703
 	set formatoptions+=j
 endif
 
+" Interactively ask for confirmation when the buffer is unsaved & quiting
+set confirm
+
 " Round indent to multiple of shiftwidth when using < and >
 set shiftround
 
@@ -159,11 +153,6 @@ set smarttab
 
 " Also match < & > with %
 set matchpairs+=<:>
-
-" Use ag for searching
-if executable('ag')
-	set grepprg="ag --nogroup --nocolor"
-endif
 
 " Use real tabs...
 set noexpandtab
@@ -191,31 +180,38 @@ syntax on
 
 " Use standard color scheme (some Linuxes feel the need to overwrite this in
 " global vimrc)
-"colorscheme default
+colorscheme default
 
 " My terminal has a white background colour
 set background=light
 
-" 16 colors are enough
-"set t_Co=16
-
 " Prevent clearing the terminal on exit
 set t_te=
+
+" Use ^? as the backspace, and not ^H
+"set t_kb=
 
 " Enable file type detection
 filetype plugin indent on
 
-""" Zip
-" Disable the zip plugin that's shipped with Vim
-let g:loaded_zipPlugin = 1
-let g:loaded_zip = 1
+""" Netrw
+" Use whole "words" when opening URLs.
+" " This avoids cutting off parameters (after '?') and anchors (after '#'). 
+" " See http://vi.stackexchange.com/q/2801/1631
+let g:netrw_gx="<cWORD>"    
 
 """" Syntastic plugin
 " Open & check by default
 let g:syntastic_check_on_open = 1
-
-" ???
 let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_wq = 0
+
+" The default of -W2 is too verbose
+let g:syntastic_ruby_mri_args = "-W1 -T1"
+
+" Use the Bourne shell, and not tcsh
+let g:syntastic_shell = "/bin/sh"
+
 
 """ indentLine
 " Don't enable by default
@@ -223,3 +219,22 @@ let g:indentLine_enabled = 0
 
 " Use UTF-8 boxdrawing character; looks lots better than ugly ASCII |
 let g:indentLine_char = '│'
+
+
+""" vim-ruby
+" Indent functions after a private/protected/public one more
+let g:ruby_indent_access_modifier_style = 'indent'
+
+" Do spell checking in strings
+let ruby_spellcheck_strings = 1
+
+"let g:ctrlp_by_filename = 1
+"let g:ctrlp_match_func = {}
+let g:ctrlp_custom_ignore = { 'dir': '\v(spec|cache)' }
+
+" Parse ruby code for autocomplete; only for specific files
+" Not a buffer-variable, so not 100% safe...
+au BufNewFile,BufRead /home/martin/code/*
+	\ let g:rubycomplete_buffer_loading = 1 |
+	\ let g:rubycomplete_rails = 1 |
+    \ let g:rubycomplete_load_gemfile = 1
