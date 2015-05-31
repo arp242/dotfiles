@@ -55,7 +55,6 @@ fun! Retab(expandtab)
 endfun
 command! -nargs=1 Retab call Retab(<args>)
 
-
 " Write as root user; re-read file
 fun! SuperWrite()
 	silent write !sudo tee %
@@ -180,3 +179,31 @@ command! TrimWhitespace call TrimWhiteSpace()
 
 " Reverse order of lines
 command! -bar -range=% Reverse <line1>,<line2>global/^/m<line1>-1
+
+":ScratchBuffer makes current buffer disposable
+command! ScratchBuffer setlocal buftype=nofile bufhidden=hide noswapfile
+
+" Move a file & update buffer
+" TODO
+" TODO: Also Cp
+function! Mv(dst)
+	let l:src = expand('%:p')
+	if a:dst != ''
+		let l:dst = expand(a:dst)
+	else
+		let l:dst = expand(input('New file name: ', expand('%:p'), 'file'))
+	endif
+
+	echo l:dst
+	return
+
+	if l:dst != '' && l:dst != l:src
+		exec ':saveas ' . l:dst
+		exec ':silent !rm ' . l:src
+		redraw!
+	endif
+endfunction
+command! -nargs=? -complete=file Mv call Mv(<q-args>)
+
+
+command! -nargs=1 -complete=file WE write | edit <args>

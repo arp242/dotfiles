@@ -1,8 +1,9 @@
 " $dotid$
 
-" TODO: Look at cope/quickfix
-
 call plug#begin('~/.vim/plugged')
+
+" Easy visual undo tree (:UndotreeToggle or <F3>)
+Plug 'mbbill/undotree'
 
 " Add indentation 'guidelines' (:IndentLinesToggle or <F11>)
 Plug 'Yggdroot/indentLine'
@@ -10,46 +11,39 @@ Plug 'Yggdroot/indentLine'
 " Make it easy to make ASII tables (:TableModeToggle)
 Plug 'dhruvasagar/vim-table-mode'
 
-" Tab manager (TODO: How do I use this?)
-Plug 'kien/tabman.vim'
-
-" Easy visual undo tree (:UndotreeToggle or <F3>)
-Plug 'mbbill/undotree'
-
 " Warn on syntax errors (enabled by default, disable with :SyntasticToggleMode)
-" TODO: CoffeeScripts started giving errors?
-" TODO: Configure ruby to whine less about:
-"   a.rb|3 warning| statement not reached  
-"   a.rb|2 warning| assigned but unused variable - x
-"
 " TODO: Configure C so it doesn't whine so much about missing header files
-Plug 'scrooloose/syntastic'
-
-" Move blocks of text from visual mode (mapped to CTRL + arrow keys in Visual)
-Plug 'shinokada/dragvisuals.vim'
+"Plug 'scrooloose/syntastic'
 
 " Interpret colour escape codes (:AnsiEsc)
 Plug 'vim-scripts/AnsiEsc.vim'
 
-" Filetypes
-Plug 'groenewege/vim-less'
-Plug 'hail2u/vim-css3-syntax'
-Plug 'kchmck/vim-coffee-script'
-Plug 'rodjek/vim-puppet'
-Plug 'slim-template/vim-slim'
+" Useful unicode related stuff (:SearchUnicode, :UnicodeName)
+" TODO
+Plug 'chrisbra/unicode.vim'
+
+""" Filetypes
+Plug 'groenewege/vim-less'        " LessCSS
+Plug 'hail2u/vim-css3-syntax'     " Knows moar CSS rules
+Plug 'hdima/python-syntax'        " Better Python syntax highlighting
+Plug 'kchmck/vim-coffee-script'   " CoffeeScipt
+Plug 'rodjek/vim-puppet'          " Puppet
+Plug 'slim-template/vim-slim'     " Slim templates
+Plug 'vim-ruby/vim-ruby'          " Better ruby motions, completions
+
+"Plug 'SirVer/ultisnips'
+"Plug 'honza/vim-snippets'
+"Plug 'davidhalter/jedi-vim'
+"Plug 'pangloss/vim-javascript'
+"Plug 'mxw/vim-jsx'
 
 call plug#end()
+
 
 " Expanded % functionality
 runtime macros/matchit.vim
 
 " Load my vimrc files
-source ~/.vim/autocmd.vim
-source ~/.vim/functions.vim
-source ~/.vim/keys.vim
-source ~/.vim/options.vim
-source ~/.vim/undofile.vim
-
-if has("gui_running")
-	source ~/.vim/gui.vim
-endif
+for f in glob('~/.vim/*.vim', 0, 1)
+	exe 'source ' . f
+endfor

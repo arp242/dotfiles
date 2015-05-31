@@ -1,25 +1,32 @@
 " $dotid$
 
-" Trick from: http://vi.stackexchange.com/a/2150/51
+" Use the undo file
+set undofile
 
-" Manually write to the undo file on exit
-fun! WriteUndo()
-	let undofile = escape(undofile(expand('%')),'%')
-	exe "wundo " . undofile
-endfun
+" When loading a file, store the curent undo sequence
+augroup undo
+	autocmd!
+	autocmd BufReadPost,BufCreate,BufNewFile * let b:undo_saved = undotree()['seq_cur'] | let b:undo_warned = 0
+augroup end
 
+fun! Undo()
+	" Don't do anything if we can't modify the buffer or there's no filename
+	if !&l:modifiable || expand('%') == '' | return | endif
 
-" Manually read the undo file
-fun! ReadUndo()
-	let undofile = undofile(expand('%'))
-	if filereadable(undofile)
-		let undofile = escape(undofile,'%')
-		exe "rundo " . undofile
+	" Warn if the current undo sequence is lower (older) than whatever it was
+	" when openingthe file
+	if !b:undo_warned && undotree()['seq_cur'] <= b:undo_saved
+		let b:undo_warned = 1
+		echohl ErrorMsg | echo 'WARNING! Using undofile!' | echohl None
+		sleep 1
 	endif
 endfun
+noremap u :call Undo()<Cr>u
 
-
-if has('persistent_undo')
-	nnoremap <leader>u :call ReadUndo()<CR>
-	au BufWritePost * call WriteUndo()
-endif
+fun! Redo()
+	" Reset the warning flag
+	if &l:modifiable && b:undo_warned && undotree()['seq_cur'] >= b:undo_saved
+		let b:undo_warned = 0
+	endif
+endfun
+nnoremap <C-r> :call Redo()<Cr><C-r>
