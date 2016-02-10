@@ -17,13 +17,18 @@ alias __pstat 'perl -e \'print((stat($ARGV[0]))[9])\''
 
 # Some games for the sake of efficiency
 if ( $?reporoot ) then
-	if ( "$cwd" =~ "$reporoot*" ) then
+	# Always refresh when going to the repo-root (allows "refreshing" with 'cd.').
+	if ( "$cwd" == "$reporoot" ) then
+		: # Do nothing
+	# Repo is the same, and branch hasn't changed
+	else if ( "$cwd" =~ "$reporoot*" ) then
 		if ( $repotype == 'git' && $repochanged == `__pstat "$reporoot"/.git/HEAD` ) then
 			goto end
 		endif
 		if ( $repotype == 'hg' && $repochanged == `__pstat "$reporoot"/.hg/undo.branch` ) then
 			goto end
 		endif
+	# Do we need this?
 	else
 		unset repotype
 		unset reporoot
@@ -54,7 +59,7 @@ if ( ! $?reporoot || $repotype == 'git' ) then
 		set reporoot = `git rev-parse --show-toplevel`
 		set repotype = 'git'
 		set repochanged = `__pstat "$reporoot"/.git/HEAD`
-		set prompt = "[%~](`git rev-parse --abbrev-ref HEAD`)%# "
+		set prompt = "[%~](`git rev-parse --abbrev-ref HEAD | cut -d '-' -f 1`)%# "
 
 		goto end
 	endif

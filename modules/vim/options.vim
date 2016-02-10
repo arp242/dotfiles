@@ -1,5 +1,3 @@
-" $dotid"
-
 " Set the encoding of this file
 scriptencoding utf-8
 
@@ -92,6 +90,7 @@ set title
 set titleold=
 
 " This will timeout only on key codes, and not mappings
+"set timeoutlen=0
 "set notimeout
 "set ttimeout
 
@@ -118,6 +117,9 @@ set wildignore=*.o,*.pyc,*.png,*.jpg
 
 " List all matches, and complete to the longest unambiguous string
 set wildmode=list:longest
+
+" Case is ignored when completing file names and directories
+set wildignorecase
 
 " Insert mode completion
 set completeopt=longest,menu
@@ -162,17 +164,14 @@ set ts=4
 set sw=4
 set sts=4
 
-" Only use UNIX line endings
-set fileformats=unix
-
 " Set (& create if needed) a temp directory to keep backup & swap files
 set backupdir=$HOME/.vim/tmp/backup
 set dir=$HOME/.vim/tmp/
-call MkdirIfNeeded(&backupdir, 'p', 0700)
+"call MkdirIfNeeded(&backupdir, 'p', 0700)
 
 if has('persistent_undo')
 	set undodir=$HOME/.vim/tmp/undo
-	call MkdirIfNeeded(&undodir, 'p', 0700)
+	"call MkdirIfNeeded(&undodir, 'p', 0700)
 endif
 
 " Switch syntax highlighting on
@@ -201,8 +200,7 @@ filetype plugin indent on
 let g:netrw_gx="<cWORD>"    
 
 """" Syntastic plugin
-" Open & check by default
-let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_open = 0
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_wq = 0
 
@@ -230,7 +228,7 @@ let ruby_spellcheck_strings = 1
 
 "let g:ctrlp_by_filename = 1
 "let g:ctrlp_match_func = {}
-let g:ctrlp_custom_ignore = { 'dir': '\v(spec|cache)' }
+"let g:ctrlp_custom_ignore = { 'dir': '\v(spec|cache)' }
 
 " Parse ruby code for autocomplete; only for specific files
 " Not a buffer-variable, so not 100% safe...
@@ -238,3 +236,21 @@ au BufNewFile,BufRead /home/martin/code/*
 	\ let g:rubycomplete_buffer_loading = 1 |
 	\ let g:rubycomplete_rails = 1 |
     \ let g:rubycomplete_load_gemfile = 1
+
+
+""" vimfilter.vim
+let g:vimfiler_as_default_explorer = 1
+let g:vimfiler_directory_display_top = 0
+
+
+""" LargeFile.vim
+" Consider it to be a "large" file is larger than this amount of MB
+let g:LargeFile = 10
+
+
+""" SuperTab
+" <C-@> is <C-Space>
+let g:SuperTabMappingForward = '<C-@>'
+let g:SuperTabMappingBackward = '<S-C-@>'
+let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:SuperTabContextDefaultCompletionType = '<C-n>'

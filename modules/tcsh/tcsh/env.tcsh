@@ -19,6 +19,7 @@ if ($uname == SunOS) setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 # one (it also doesn't correspond to my ruby or gem version ...) We should get
 # the '2.1.0' from somewhere...
 if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
+#if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
 
 # Various applications settings
 setenv BLOCKSIZE K
@@ -58,7 +59,7 @@ endif
 
 # Do the $TERM dance; these options seem to work best on various systems...
 if (($?TMUX)) then
-	setenv TERM screen
+	setenv TERM screen-256color
 else if ($uname == OpenBSD) then
 	setenv TERM xterm-xfree86
 else if ($uname == FreeBSD) then
@@ -77,25 +78,26 @@ endif
 if (-X locale) then
 	setenv LANG en_US.UTF-8
 	setenv LC_CTYPE en_US.UTF-8
+	setenv LC_COLLATE en_US.UTF-8
 
-	# Sort in a "sane" manner, ie. with capitals first
-	setenv LC_COLLATE C
+	#setenv I18NPATH ~/.locale
+	#setenv LOCPATH ~/.locale
 endif
 
 # Set editor
 if (-X vim) then
 	setenv EDITOR vim
-	alias vim "vim -p"
+	# TODO: What if vim has no +clientserver?
+	alias vim "vim -p --servername vim"
 	alias vi "vim"
 else if (-X vi) then
 	setenv EDITOR vi
 endif
 
 # Set browser
-if (-X dwb) then
-	setenv BROWSER dwb
-else if (-X opera) then
-	setenv BROWSER opera
+#if (-X qutebrowser) then
+if (-X firefox) then
+	setenv BROWSER firefox
 endif
 
 # Set DISPLAY on remote login
@@ -111,20 +113,24 @@ endif
 # This makes font looks non-ugly in Java applications
 setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 
-# Special tricks for RVM
+# Stoopid tricks for stoopid RVM
 # https://stackoverflow.com/questions/27380203/how-do-i-use-rvm-with-tcsh
-if (-d $HOME/.rvm/bin) setenv PATH ${PATH}:$HOME/.rvm/bin
-if (-X rvm) then
-	if ( ! $?ruby_version ) then
-		set ruby_version = `grep RUBY_VERSION ~/.rvm/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
-	endif
+if (-d $HOME/.rvm/bin) set rvm_path = $HOME/.rvm
+if (-d /usr/local/rvm/bin) set rvm_path = /usr/local/rvm
 
-	setenv rvm_bin_path $HOME/.rvm/bin
-	setenv GEM_HOME $HOME/.rvm/gems/ruby-$ruby_version
-	setenv IRBRC $HOME/.rvm/rubies/ruby-$ruby_version/.irbrc
-	setenv MY_RUBY_HOME $HOME/.rvm/rubies/ruby-$ruby_version
-	setenv rvm_path $HOME/.rvm
-	setenv rvm_prefix $HOME
-	setenv PATH $HOME/.rvm/gems/ruby-$ruby_version/bin:$HOME/.rvm/gems/ruby-$ruby_version@global/bin:$HOME/.rvm/rubies/ruby-$ruby_version/bin:${PATH}:$HOME/.rvm/bin
-	setenv GEM_PATH $HOME/.rvm/gems/ruby-${ruby_version}:$HOME/.rvm/gems/ruby-${ruby_version}@global
+if ( $?rvm_path ) then
+    setenv PATH ${PATH}:$rvm_path/bin
+
+    if ( ! $?ruby_version ) then
+        set ruby_version = `grep RUBY_VERSION $rvm_path/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
+    endif
+
+    setenv rvm_bin_path $rvm_path/bin
+    setenv GEM_HOME $rvm_path/gems/ruby-$ruby_version
+    setenv IRBRC $rvm_path/rubies/ruby-$ruby_version/.irbrc
+    setenv MY_RUBY_HOME $rvm_path/rubies/ruby-$ruby_version
+    setenv rvm_path $rvm_path
+    setenv rvm_prefix $rvm_path/../
+    setenv PATH $rvm_path/gems/ruby-$ruby_version/bin:$rvm_path/gems/ruby-$ruby_version@global/bin:$rvm_path/rubies/ruby-$ruby_version/bin:${PATH}:$rvm_path/bin
+    setenv GEM_PATH $rvm_path/gems/ruby-${ruby_version}:$rvm_path/gems/ruby-${ruby_version}@global
 endif

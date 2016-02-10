@@ -1,28 +1,19 @@
-" $dotid"
-
 " Reload config
 nnoremap <Leader>r :source $MYVIMRC<CR>
 
 " Close help, rather than open help, on F1
 nnoremap <F1> :helpclose<CR>
-inoremap <F1> <Esc>:helpclose<CR>a
+inoremap <F1> <C-o>:helpclose<CR>
 
-" List all registers
 nnoremap <F2> :registers<CR>
-
-" Show undo tree
 nnoremap <F3> :UndotreeToggle<CR>
-
-" Toggle Syntastic (I have it enabled by default)
 nnoremap <F4> :SyntasticToggleMode<CR>
 
-" Set list
+" We need this to prevent the unicode plugin from overriding it
+nnoremap <F13> <Plug>(MakeDigraph) | vnoremap <F13> <Plug>(MakeDigraph)
+
 nnoremap <F10> :set list!<CR>
-
-" Show indentation guides
-nnoremap <F11> :IndentLinesToggle<CR>
-
-" Set paste with ease
+nnoremap <F11> :set cursorcolumn!<CR>
 nnoremap <F12> :set paste!<CR>
 
 " Make sure that <F12> also works when set paste is enabled
@@ -30,14 +21,16 @@ set pastetoggle=<F12>
 
 " Enable spell check, switch languages
 nnoremap <Leader>ss :set spell!<CR>
-nnoremap <Leader>snl :set spelllang=nl<CR>
-nnoremap <Leader>sen :set spelllang=en_gb<CR>
+nnoremap <Leader>sn :set spelllang=nl<CR>
+nnoremap <Leader>se :set spelllang=en_gb<CR>
+nnoremap <Leader>su :set spelllang=en_us<CR>
+nnoremap <Leader>sd :set spelllang=de_de<CR>
 
 " Show all matches of word under cursor
 nnoremap <Leader>f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
 
-" Use <C-L> to clear some highlighting
-nnoremap <silent> <C-L> :nohlsearch<CR>:set nolist nospell<CR><C-L>
+" Use <C-l> to clear some highlighting
+nnoremap <silent> <C-l> :nohlsearch<CR>:set nolist nospell<CR><C-l>
 
 " We don't need no stinkin' ex mode; use it for formatting
 noremap Q gq
@@ -59,22 +52,19 @@ nnoremap <Leader>hr :%!xxd<CR> :set filetype=xxd<CR>
 nnoremap <Leader>hw :%!xxd -r<CR> :set binary<CR> :set filetype=<CR>
 
 " Use arrows keys for visual movement
-nnoremap <C-k> gk
-nnoremap <C-j> gj
+nnoremap k gk
+nnoremap j gj
+nnoremap <Up> gk
+nnoremap <Down> gj
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
 
-"inoremap <C-h> <C-o>h
-inoremap <C-l> <C-o>l
-inoremap <C-k> <C-o>gk
-inoremap <C-j> <C-o>gj
+" Easier
+inoremap <C-k> <C-y>
+inoremap <C-j> <C-e>
 
 " Write as root user
-nnoremap <Leader>w! :call SuperWrite()<CR>
-
-" Make the directory tree to the current file; if it doesn't exist
-nnoremap <Leader>m :call mkdir(expand("%:p:h"), "p")<CR>
-
-" Easier :make (b for build)
-nnoremap <Leader>b :make<CR>
+"nnoremap <Leader>w! :call SuperWrite()<CR>
 
 " Join with no spaces
 nnoremap <Leader>J :call JoinSpaceless()<CR>
@@ -82,47 +72,77 @@ nnoremap <Leader>J :call JoinSpaceless()<CR>
 " Browse
 nnoremap <Leader>o :browse oldfiles<CR>
 
-" Increment only the digit underneath the cursor
-nnoremap <C-a> :call search('\d', 'c')<CR>a <Esc>h<C-a>lxh
-nnoremap <C-x> :call search('\d', 'c')<CR>a <Esc>h<C-x>lxh
-
 " gf opens in a tab
 nnoremap gf <C-w>gf
 vnoremap gf <C-w>gf
 
+" Better?
+" http://www.vim.org/scripts/script.php?script_id=2294
+nnoremap <C-q> :ToggleWord<CR>
+inoremap <C-q> <C-o>:ToggleWord<CR>
+
+let g:_toggle_words_dict = {'*': [
+    \ ['==', '!='], 
+    \ ['>', '<'], 
+    \ ['(', ')'], 
+    \ ['[', ']'], 
+    \ ['{', '}'], 
+    \ ['+', '-'], 
+    \ ['allow', 'deny'], 
+    \ ['before', 'after'], 
+    \ ['define', 'undef'], 
+    \ ['if', 'elseif'], 
+    \ ['in', 'out'], 
+    \ ['left', 'right'],
+    \ ['min', 'max'], 
+    \ ['on', 'off'], 
+    \ ['start', 'stop'], 
+    \ ['success', 'failure'], 
+    \ ['true', 'false'],
+    \ ['up', 'down'], 
+    \ ['left', 'right'],
+    \ ['yes', 'no'], 
+    \ ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'], 
+    \ ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'], 
+    \ ['1', '0'],
+    \ [],
+    \ ],  }
+
+" I often mistype this :-/
+cabbr Set set
+
+" Always open :help in a new tab
+"cabbr help tab help
+
 
 " https://github.com/tpope/vim-speeddating
-fun! Increment()
-	" Search for a number on the current line
+fun! Increment(dir, count)
+	" No number on the current line
 	if !search('\d', 'c', getline('.'))
 		return
 	endif
 
-	" Add spaces around the number
-	%s/\%#\d\+/ \0 /
+	" Store cursor position
+	let l:save_pos = getpos('.')
 
-	" Increment the number
-	execute "normal! \<C-a>"
+	" Add spaces around the number
+	s/\%#\d/ \0 /
+	call setpos('.', l:save_pos)
+	normal! l
+
+	" Increment or decrement the number
+	if a:dir == 'prev'
+		execute "normal! " . repeat("\<C-x>"), a:count
+	else
+		execute "normal! " . repeat("\<C-a>", a:count)
+	endif
 
 	" Remove the spaces
-	"call search(' ', 'b', getline('.'))
-	"%s/\%# \(\d\+\) /\1/
+	s/\v (\d{-})%#(\d) /\1\2/
 
-	"let b:current_search = matchadd('CurrentSearch', '\c\%#' . @/, 666)
-
-	"execute "normal! i "
-
-	" TODO: Don't add space at end of line
-
-	"call search('[^[:digit:]]', '', getline('.'))
-	"execute "normal! i "
-
-	"normal h
-	"execute "normal! \<C-a>"
+	" Restore cursor position
+	call setpos('.', l:save_pos)
 endfun
 
-"nnoremap <C-a> :call Increment()<CR>
-
-"a <Esc>h
-"<C-a>lxh
-"nnoremap <C-x> :call search('\d', 'c')<CR>a <Esc>h<C-x>lxh
+nnoremap <silent> g<C-a> :<C-u>call Increment('next', v:count1)<CR>
+nnoremap <silent> g<C-x> :<C-u>call Increment('prev', v:count1)<CR>

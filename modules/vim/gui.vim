@@ -7,7 +7,8 @@ if has("gui_running")
 	"set columns=120
 
 	" Activate mouse
-	set mouse=a
+	"set mouse=a
+	set mouse=
 
 	" Use pop-up menu for right button
 	set mousemodel=popup_setpos
