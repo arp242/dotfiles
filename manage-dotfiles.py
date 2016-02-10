@@ -15,6 +15,7 @@ root = os.path.dirname(os.path.realpath(sys.argv[0]))
 # TODO: These should all be commandline arguments
 verbose = True
 difftool = ['vimdiff', '-c source {}/diffexpr.vim'.format(root)]
+clobber_it_all = False
 
 
 ### Various helpers
@@ -194,8 +195,12 @@ def manage_files(files):
 		src_data = [ l for l in open(src, 'r').readlines() if not ('$dotignore$' in l or '$dotid' in l) ]
 		if src_data == dest_data: continue
 
+		# User asked to clobber it all
+		if clobber_it_all:
+			install_file(src, dest)
 		# Else manually merge
-		run_diff(src, dest)
+		else:
+			run_diff(src, dest)
 
 
 def run_diff(src, dest):
@@ -248,6 +253,10 @@ def proc_module(module, code):
 
 
 if __name__ == '__main__':
+	if 'CLOBBER_IT_ALL' in sys.argv:
+		clobber_it_all = True
+		sys.argv.remove('CLOBBER_IT_ALL')
+
 	if len(sys.argv) > 1: modules = [ '{}/modules/{}/module.py'.format(root, m) for m in sys.argv[1:] ]
 	else: modules = glob.glob(root + '/modules/*/module.py')
 
