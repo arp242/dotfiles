@@ -53,13 +53,13 @@ else if ($uname == Linux) then
 	alias grep "grep --color"
 
 	alias sockstat "netstat -lnptu --protocol=inet,unix"
-	alias zzz 'pm-hibernate'
+	alias zzz 'systemctl suspend'
 
 	# bsdtar/libarchive works with many file formats, not just tar
 	if (-X bsdtar) alias tar bsdtar
 
 	# TODO: I'm not sure if all Linux systems use the same cal flavour?
-	alias cal 'cal -m3'
+	#alias cal 'cal -m3'
 else if ($uname == win32) then
 	alias ls ls-F
 	alias la "ls -a"
@@ -90,8 +90,9 @@ alias j "jobs -l"
 alias lman "groff -man -Tascii" # `local man' <file>.1
 
 # Third-party stuff
-if (-X mplayer) alias music "mplayer -cache-min 0 $* *.{mp3,flac}"
-if (-X opera) alias opera "opera -nomail"
+if (-X mpv) alias music "mpv $* *.{mp3,flac}"
+# HipHop and no PHP
+if (-X hhvm && ! -X php) alias php hhvm
 
 if (-X curl) then
 	alias curl-post 'curl -X POST'
@@ -112,6 +113,7 @@ alias l "ls"
 alias c "cd"
 alias vo "vi"
 alias ci "vi" # ci already exists, but few people use it and it mangles files!
+alias iv "vi" # Some image viewer I never use, annoying
 alias grpe "grep"
 alias Grep "grep"
 alias les less
@@ -127,12 +129,18 @@ alias sep "echo '\033[1;34m=========================================\033[0m'"
 alias decolor "sed 's|\x1b\[[;0-9]*m||g'"
 alias trcolor "sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 
-if (-X cmst) then
-	alias connman-qt cmst
-endif
-
 # Until I can find/make a colour scheme that works
 alias ipython 'ipython --colors=NoColor --no-confirm-exit'
 
 alias xvi xvim
 alias write mlterm -e vim -c :WriteMode\ '&'
+alias vh 'vim -c ':help $1' -c :only'         
+alias vims 'vim -c ScratchBuffer'
+alias vim-basic 'vim -u ~/.vim/basic'
+alias tclsh 'rlwrap tclsh'
+
+alias mplayer mpv
+
+alias muttp /usr/bin/mutt -F ~/.mutt/muttrc-prive
+alias muttw /usr/bin/mutt -F ~/.mutt/muttrc-work
+alias mutt /usr/bin/mutt -F ~/.mutt/muttrc-prive

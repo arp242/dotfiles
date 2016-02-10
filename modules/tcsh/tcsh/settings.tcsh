@@ -12,6 +12,9 @@ set autoexpand
 # Never autologout
 set autologout
 
+# Makes tab-completion:
+# - ignore case, unless a capital is types
+# - difference between hyphen and underscore
 set complete=Enhance
 
 # Colorize ls-F

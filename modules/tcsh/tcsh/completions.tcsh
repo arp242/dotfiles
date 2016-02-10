@@ -105,6 +105,7 @@ complete git 'p/1/(add merge-recursive add--interactive merge-resolve am \
 	verify-pack merge-file verify-tag merge-index web--browse \
 	merge-octopus whatchanged merge-one-file write-tree merge-ours)/' \
 	'n@checkout@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@' \
+	'n@co@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@' \
 	'n@branch@`git branch -a | sed -r "s|^[\* ]+(remotes/origin/)?||; /^HEAD/d" | sort -u`@'
 
 complete find 'n/-fstype/"(nfs 4.2)"/' 'n/-name/f/' \

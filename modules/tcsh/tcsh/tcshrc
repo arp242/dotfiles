@@ -42,8 +42,10 @@ if ( $?prompt ) then
 	source ~/.tcsh/completions.tcsh
 
 	# We're ssh-ing into vagrant
-	if ( -f /vagrant/Gemfile ) then
+	if ( -f /vagrant ) then
 		cd /vagrant
 		setenv TERM xterm
+		# Don't logout too easily
+		bindkey -r ^D
 	endif
 endif

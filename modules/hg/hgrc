@@ -1,14 +1,10 @@
-; $dotid$
+; $hgid: e2fc3d58bcd4
 
 [ui]
 username = Martin Tournoij <martin@arp242.net>
 
-[web]
-; XXX: This is FreeBSD-specific
-;cacerts = /usr/local/share/certs/ca-root-nss.crt
-
 [trusted]
-users = martin
+users = martin, 1001
 
 [tortoisehg]
 editor = xterm -e vim
