@@ -165,7 +165,7 @@ def manage_files(files):
 		# src is a binary file (we don't check dest); don't do anything
 		# TODO: ask what to do where
 		with open(src, 'rb') as fp:
-			if b'\x00' in fp.read(2048):
+			if b'\x00' in fp.read(2048) and os.path.exists(dest):
 				h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
 				h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
 				if h1 != h2:
