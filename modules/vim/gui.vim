@@ -1,23 +1,20 @@
 " $dotid$
 
 if has("gui_running")
-	" Default width & height
-	" TODO: Only do this on startup, not when reloading
-	"set lines=55
-	"set columns=120
+	" Default width & height; autocmd to prevent resize when re-loading vimrc
+	autocmd VimEnter * set lines=55 columns=120
 
-	" Activate mouse
-	"set mouse=a
+	" Don't need a mouse by default
 	set mouse=
 
 	" Use pop-up menu for right button
 	set mousemodel=popup_setpos
 
-	" Default clipboard is system clipboard
-	set clipboard=unnamedplus
-
 	" Also use the mouse for selection
 	set selectmode=key,mouse
+
+	" Default clipboard is system clipboard
+	set clipboard=unnamedplus
 
 	" Set font
 	if has('gui_gtk')
@@ -28,4 +25,10 @@ if has("gui_running")
 
 	" Don't blink the cursor
 	set guicursor+=a:blinkon0
+
+	" Remove all the GUI cruft and make gVim look and behave like Vim
+	" a: copy-on-select
+	" i: Use icon
+	" M: No menu
+	set guioptions=aiM
 endif
