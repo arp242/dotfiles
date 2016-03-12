@@ -1,4 +1,6 @@
-Manage your dotfiles.
+My dotfiles. Mostly `vim`, `tcsh`, and `mutt`.
+
+`manage-dotfiles.py` is a tool to manage your dotfiles.
 
 Why another tool?
 
