@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding:utf-8
 #
 # TODO: Give module.py the ability to add more ignore patterns
 #
 
-from __future__ import print_function
 import hashlib, glob, os, pprint, tempfile, subprocess, re, sys, shutil
 
-input = getattr(__builtins__, 'raw_input', input) # In Python 2 input() evals code
+if sys.version_info[0] < 3:
+	print('Needs Python 3')
+	sys.exit(2)
 
 if sys.argv[0] in ['', '-']: sys.argv[0] = 'stdin'
 root = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -47,9 +48,10 @@ def install_file(src, dest):
 	shutil.copy2(src, dest)
 
 	# Add version string
-	data = open(dest, 'r').read()
-	with open(dest, 'w') as fp:
-		fp.write(data.replace('$dotid$', '$dotid: {}$'.format(vcs.get_version_string(src))))
+	data = open(dest, 'rb').read()
+	with open(dest, 'wb') as fp:
+		fp.write(data.replace(b'$dotid$',
+			bytes('$dotid: {}$'.format(vcs.get_version_string(src)), 'utf-8')))
 
 
 def runcmd(cmd):
@@ -162,6 +164,11 @@ def manage_dirs(dirs):
 
 def manage_files(files):
 	for dest, src in files.items():
+		# User asked to clobber it all
+		if clobber_it_all:
+			install_file(src, dest)
+			continue
+
 		# src is a binary file (we don't check dest); don't do anything
 		# TODO: ask what to do where
 		with open(src, 'rb') as fp:
@@ -195,12 +202,7 @@ def manage_files(files):
 		src_data = [ l for l in open(src, 'r').readlines() if not ('$dotignore$' in l or '$dotid' in l) ]
 		if src_data == dest_data: continue
 
-		# User asked to clobber it all
-		if clobber_it_all:
-			install_file(src, dest)
-		# Else manually merge
-		else:
-			run_diff(src, dest)
+		run_diff(src, dest)
 
 
 def run_diff(src, dest):

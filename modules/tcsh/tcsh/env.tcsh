@@ -70,7 +70,7 @@ else if ($uname == FreeBSD) then
 	if ($tty =~ ttyv*) then
 		setenv TERM cons25
 	else
-		setenv TERM xterm-color
+		setenv TERM xterm-256color
 	endif
 else if ($uname == Linux) then
 	setenv TERM xterm-256color
