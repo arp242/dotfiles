@@ -4,9 +4,6 @@ if has("gui_running")
 	" Default width & height; autocmd to prevent resize when re-loading vimrc
 	autocmd VimEnter * set lines=55 columns=120
 
-	" Don't need a mouse by default
-	set mouse=
-
 	" Use pop-up menu for right button
 	set mousemodel=popup_setpos
 

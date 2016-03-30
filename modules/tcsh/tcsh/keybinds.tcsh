@@ -1,4 +1,4 @@
-# $logid$
+# $dotid$
 
 if ($uname == win32) then
 	bindkey -b N-up history-search-backward

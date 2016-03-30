@@ -1,5 +1,5 @@
 #!/bin/sh
-# $hgid:
+# $dotid$
 # 
 # Rename all files in the current directory to lowercase
 #

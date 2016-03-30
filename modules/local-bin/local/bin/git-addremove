@@ -1,5 +1,6 @@
 #!/bin/sh -e
-# $hgid:
+#
+# $dotid$
 #
 # add/remove all changes from the index, similar to hg addremove
 # From: https://github.com/ddollar/git-utils

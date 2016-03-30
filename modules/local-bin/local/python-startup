@@ -1,4 +1,5 @@
 # vim:filetype=python
+# $dotid$
 
 # Load modules
 modules = ('datetime', 'pprint', 'os', 'time', 're', 'sys')

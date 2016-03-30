@@ -1,10 +1,10 @@
-; $hgid: e2fc3d58bcd4
+; $dotid$
 
 [ui]
 username = Martin Tournoij <martin@arp242.net>
 
 [trusted]
-users = martin, 1001
+users = martin, 1001, martin_firefox
 
 [tortoisehg]
 editor = xterm -e vim

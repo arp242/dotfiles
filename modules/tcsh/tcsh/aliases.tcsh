@@ -1,4 +1,4 @@
-# $logid$
+# $dotid$
 
 # Update xterm title & git/hg branch on directory change (special alias)
 if ( $uname != win32 && -f ~/.tcsh/cwdcmd.tcsh ) then

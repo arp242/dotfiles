@@ -1,4 +1,5 @@
 #!/bin/sh
+# $dotid$
 
 vim -p "$@"
 for f in "$@"; do
