@@ -1,7 +1,19 @@
 " $dotid$
 
-for f in split(glob('~/.vim/*.vim'), '\n')
-	" Neovim hack :-/
-	if fnamemodify(f, ':t') == "init.vim" | continue | endif
-	exe 'source ' . f
-endfor
+"for f in split(glob('~/.vim/*.vim'), '\n')
+"	" Neovim hack :-/
+"	if fnamemodify(f, ':t') == "init.vim" | continue | endif
+"	exe 'source ' . f
+"endfor
+
+" Make sure we load stuff in the correct order − e.g. loading autocmd.vim before
+" settings.vim can cause problems
+source ~/.vim/settings.vim
+source ~/.vim/plugins.vim
+source ~/.vim/dirvish.vim
+source ~/.vim/autocmd.vim
+source ~/.vim/commands.vim
+source ~/.vim/keys.vim
+source ~/.vim/gui.vim
+source ~/.vim/softwrap.vim
+source ~/.vim/experiments.vim

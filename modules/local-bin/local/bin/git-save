@@ -1,9 +1,11 @@
-#!/bin/sh -e
-# $hgid:
+#!/bin/sh
+# $dotid$
 #
 # Adapted from:
 # https://codingkilledthecat.wordpress.com/2012/04/27/git-stash-pop-considered-harmful/
 # 
+
+set -e
 
 prev=$(git symbolic-ref HEAD | cut -d/ -f3-)
 

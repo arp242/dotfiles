@@ -1,3 +1,5 @@
+" $dotid$
+
 " Quickly jump to recently used filed
 nnoremap <Leader>o :browse oldfiles<CR>
 
@@ -73,9 +75,10 @@ inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-n>" : "\<Up>"
 nnoremap <expr> <C-@> pumvisible() ?  "i\<C-n>" : 'i' . GuessType()
 
-" Run shell command with \c on visual selection
-" TODO: Pluginify
-xnoremap <expr> <Leader>c "\<Esc>:'<,'>:w !" . getbufvar('%', 'run_command', &filetype) . "\<CR>"
+" Home works like 0 if already at start of a line, and ^ otherwise
+" From: http://vim.wikia.com/wiki/VimTip315
+noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
+imap <silent> <Home> <C-O><Home>
 
 " I often mistype this :-/
 cabbr Set set

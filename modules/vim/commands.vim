@@ -15,7 +15,7 @@ fun! s:retab()
 	endif
 	call winrestview(l:save)
 endfun
-command! -nargs=1 Retab call s:retab(<args>)
+command! Retab call s:retab()
 
 
 " Write as root user; re-read file
@@ -28,7 +28,7 @@ command! SuperWrite call s:super_write()
 
 " Clean trailing whitespace
 fun! s:trim_whitespace()
-	let l:save = winsaveview('.')
+	let l:save = winsaveview()
 	%s/\s\+$//e
 	call winrestview(l:save)
 endfun
@@ -36,7 +36,7 @@ command! TrimWhitespace call s:trim_whitespace()
 
 
 " Move a file & update buffer
-function! s:mv(dest)
+fun! s:mv(dest)
 	let l:src = expand('%:p')
 	if a:dest != ''
 		let l:dest = expand(a:dest)
@@ -51,5 +51,45 @@ function! s:mv(dest)
     if rename(l:src, l:dest) == 0
 		execute 'edit ' . l:dest
 	endif
-endfunction
+endfun
 command! -nargs=? -complete=file Mv call s:mv(<q-args>)
+
+
+" vsplit the current buffer, move the right buffer a page down, and set
+" scrollbind.
+fun! s:scroll()
+	let l:save = &scrolloff
+
+	set scrolloff=0 noscrollbind
+	"nowrap nofoldenable
+	botright vsplit
+
+	normal L
+	normal j
+	normal zt
+
+	setlocal scrollbind
+	exe "normal \<c-w>p"
+	setlocal scrollbind
+
+	let &scrolloff = l:save
+endfun
+command! Scroll call s:scroll()
+
+
+" Make directory for current filename
+fun! s:mkdir()
+	let l:dir = expand('%:p:h')
+	if !isdirectory(l:dir)
+		call mkdir(l:dir, 'p')
+	endif
+endfun
+command! Mkdir call s:mkdir()
+
+
+" Set tabstop, softtabstop, and shiftwidth in one go
+command! -nargs=1 TS setlocal ts=<args> sts=<args> sw=<args>
+
+
+" Get the syntax name of character under the cursor
+command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')

@@ -1,4 +1,5 @@
 #!/bin/sh
+# $dotid$
 
 if [ -z $1 ]; then
   echo "Usage: $0 [to-branch]"

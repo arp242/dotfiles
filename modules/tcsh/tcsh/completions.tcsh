@@ -1,4 +1,4 @@
-# $logid$
+# $dotid$
 
 set noglob
 

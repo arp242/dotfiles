@@ -1,5 +1,5 @@
 # vim:syntax=config
-# $logid$
+# $dotid$
 
 Global {
 	# Focuses the next frame so that the last focused windows will get switched

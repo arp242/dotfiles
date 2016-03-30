@@ -248,7 +248,12 @@ def proc_module(module, code):
 	if assigns.get('files'): manage_files(expand_dict(assigns['files']))
 	if assigns.get('dirs'): manage_dirs(expand_dict(assigns['dirs']))
 	if assigns.get('symlinks'): manage_symlinks(expand_dict(assigns['symlinks']))
-	if assigns.get('run'): fun()
+	if assigns.get('run'):
+		try:
+			assigns['run']()
+		except:
+			print('Error in:', module)
+			raise
 	os.chdir(root)
 
 

@@ -1,9 +1,11 @@
-#!/bin/sh -e
-# $hgid:
+#!/bin/sh
+# $dotid$
 #
 # Show outgoing commits to the tracked (or specified) branch
 # From: https://github.com/ddollar/git-utils
 #
+
+set -e
 
 curbranch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$curbranch" = "" ]; then

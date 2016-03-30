@@ -1,5 +1,5 @@
 #!/usr/bin/env tcsh
-# $hgid:
+# $dotid$
 #
 # http://po-ru.com/diary/using-rvm-with-tcsh/
 

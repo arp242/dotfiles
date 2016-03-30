@@ -1,3 +1,5 @@
+" $dotid$
+"
 " mediawiki.vim (formerly named Wikipedia.vim)
 "
 " Vim syntax file

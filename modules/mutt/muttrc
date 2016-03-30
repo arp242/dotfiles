@@ -1,55 +1,121 @@
 # $dotid$
 
-source ~/.mutt/account
+#source ~/.mutt/account-work
+#source ~/.mutt/account-prive
 
-set record=+"Sent Items"
-set postponed="+Drafts"
-set mask = "."
+# Allow Mutt to open new imap connection automatically.
+unset imap_passive
 
-set maildir_trash=yes
-set wait_key=no
+# Keep IMAP connection alive by polling intermittently (time in seconds).
+set imap_keepalive = 300
 
-#set folder = !/INBOX		# Default folder ...
-set mbox = !/INBOX		# ... And again
-set mbox_type = "Maildir"	# Mailbox type
-set editor = "vim"		# Editor
-set charset = "utf-8"		# Charset for reading
-set send_charset="us-ascii:UTF-8"	# Charset for sending
-set certificate_file=~/.mutt/cert # TLS cert
-set alias_file=~/.mutt/aliases	# Keep aliases in this file.
-set mailcap_path=~/.mutt/mailcap # mailcap file
-set realname = "Martin Tournoij" # My name
-set postpone = ask-no		# Ask about postponing ....
-#set postponed = "!Drafts"	# ... And save postponed messages here
-set move = no			# Hold messages in $MAIL
-set mark_old = no		# Don't mark unread new msgs as old
-set print = ask-yes		# Ask before printing
-#set delete = yes		# Don't ask before doing a delete
-set include			# Include the message in replies
-set sort = threads		# Sort in threads
-set sort_aux = date-received	# Sort threads by date received
-set allow_8bit = no		# 8bit isn't safe via Demon
-set copy			# Keep copies of outgoing mail ...
-#set record = "!Sent"		# ... Here
-set beep = no			# We don't need no beeping software.
-set tilde			# Fill out messages with '~'.
-set pager_context = 5		# Show 5 lines of context when pressing space
-set pager_index_lines = 10	# Show 10 index lines in pages
-set pager_stop = yes		# Don't go to next message automaticly
-set quit = ask-yes		# Ask before exiting
-set followup_to = yes		# Add a Mail-Followup-To header to subcribed maillists
-set wait_key = no		# Don't press key after we're done with external program
-set help = no			# Don't show help bar
-set edit_headers = yes		# edit the header of your outgoing messages
-set mime_forward = yes		# Include forwarded mails as attachment instead of inline
-set confirmappend = no		# Just append, don't hassle me.
-set signature = "~/.mutt/signature.sh |"
+# How often to check for new mail (time in seconds).
+set mail_check = 120
+
+# ....
+
+# Store drafts here
+set postponed = "+Drafts"
+
+# Messages marked as deleted will be saved with the trashed flag instead of
+# unlinked.
+set maildir_trash = yes
+
+set mbox_type = "Maildir"
+set editor = "vim"
+set charset = "utf-8"
+set send_charset="us-ascii:UTF-8"
+
+
+# Hold messages in $MAIL
+set move = no
+
+# Don't mark unread new msgs as old
+set mark_old = no
+
+# Ask before printing
+set print = ask-yes
+
+# Don't ask before doing a delete
+set delete = yes
+
+# Include the message in replies
+set include
+
+# Don't show + when wrapping to the next line
+set nomarkers
+
+# Sort in threads
+set sort = threads
+
+# Sort threads by date received
+set sort_aux = date-received
+
+# 8bit isn't safe via Demon
+set allow_8bit = no
+
+# Keep copies of outgoing mail ...
+set copy
+
+# We don't need no beeping software.
+set beep = no
+
+# Fill out messages with '~' (like Vi)
+set tilde
+
+# Show 5 lines of context when pressing space
+set pager_context = 5
+
+set menu_context = 5
+set menu_scroll
+
+# Show 10 index lines in pages
+#set pager_index_lines = 10
+
+# Don't go to next message automaticly
+set pager_stop = yes
+
+# Ask before exiting
+set quit = ask-yes
+
+# Add a Mail-Followup-To header to subcribed maillists
+set followup_to = yes
+
+# Don't press key after we're done with external program
+set wait_key = no
+
+# Don't show help bar
+set help = no
+
+# edit the header of your outgoing messages
+set edit_headers = yes
+
+# Go directly to editor after pressing m
+set autoedit = yes
+
+# Include forwarded mails as attachment instead of inline
+set mime_forward = yes
+
+# Just append, don't hassle me.
+set confirmappend = no
+
+# Set terminal title
+# TODO: Doesn't get cleared after we leave mutt
+#set ts_enabled = yes
+
+# flags│ date│ from│ subject
+set index_format="%Z│ %{%b %d}│ %-20.20F│ %s"
+
+#set mask = "."
+#set signature = "~/.mutt/signature.sh |"
 alternative_order text/plain text/enriched text/html
 
-set index_format="%Z│ %{%b %d}│ %-20.20F│ %s"
-set index_format="%Z| %{%b %d}| %-20.20F| %s"
+set mailcap_path = ~/.mutt/mailcap
 
-source ~/.mutt/gpg
+# Cache
+set message_cachedir =~/.mutt/cache
+
+#source ~/.mutt/gpg
 source ~/.mutt/headers
 source ~/.mutt/color
 source ~/.mutt/macros

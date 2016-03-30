@@ -1,18 +1,19 @@
-" Set the encoding of this file
-scriptencoding utf-8
+" $dotid$
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
 
-" Keep n lines of command line history
+" Keep 500 lines of command line history
 set history=500
 
-" - '50 to save fewer marks
-" - <0 to prevent saving registers
-if has('nvim')
-	set viminfo='50,<0,s10,h,n~/.vim/tmp/viminfo.nvim
-else
-	set viminfo='50,<0,s10,h,n~/.vim/tmp/viminfo
+" '50  save fewer marks
+" <0   prevent saving registers
+" s10  max size of 10k
+"
+" Neovim also has a different viminfo format, so store that somewhere else
+set viminfo='50,<0,s10,n~/.vim/tmp/viminfo
+if has('nvim') 
+	let &viminfo .= '.nvim'
 endif
 
 " Jump to search word while typing
@@ -42,7 +43,9 @@ set linebreak
 set showbreak=█
 
 " When wrapping show next line on the same indent level
-if has('patch-7.4.338') | set breakindent | endif
+if has('patch-7.4.338')
+	set breakindent
+endif
 
 " Always set auto indenting on
 set autoindent
@@ -88,14 +91,17 @@ set ttyfast
 set title
 set titleold=
 
-" Use blowfish2 for encrypting files; blowfish is *not* secure
-if has('cryptv') && has('patch-7.4-399') | set cryptmethod=blowfish2 | :endif
+" Use blowfish2 for encrypting files; cryptmethod=blowfish is *not* secure
+if has('cryptv') && has('patch-7.4-399')
+	set cryptmethod=blowfish2
+endif
 
-" lastline: Show as much of the last line as possible instead of @
-" uhex: Always show unprintable chars as <xx> instead of ^C
+" lastline  Show as much of the last line as possible instead of @
+" uhex      Always show unprintable chars as <xx> instead of ^C
 set display=lastline,uhex
 
-" Write to swap file every 50 characters
+" Write to swap file every 50 characters; swap file is also written if nothing
+" happens for four seconds (as set by the 'updatetime' setting)
 set updatecount=50
 
 " Minimum number of lines to keep above/below cursor
@@ -116,6 +122,9 @@ set wildignorecase
 " Insert mode completion
 set completeopt=longest,menu
 
+" Don't make completion menu too high
+set pumheight=10
+
 " Allow cursor to go one character past the end of the line
 "set virtualedit=onemore
 
@@ -123,10 +132,15 @@ set completeopt=longest,menu
 set tabpagemax=50
 
 " Show partial command in the last line of the screen
-set showcmd
+"set showcmd
 
-" n: Recognize numbered lists when formatting ...
-set formatoptions+=n
+" n   Recognize numbered lists when formatting (see formatlistpat)
+" c   Wrap comments with textwidth
+" r   Insert comment char after enter
+" o   Insert comment char after o/O
+" q   Format comments with gq
+" l   Do not break lines when they were longer than 'textwidth' to start with
+set formatoptions+=ncroql
 
 " ... make it deal with non-numbered lists (-) as well
 set formatlistpat=^\\s*\\(\\d\\\|\-\\)\\+[\\]:.)}\\t\ ]\\s*
@@ -136,10 +150,15 @@ if v:version > 703
 	set formatoptions+=j
 endif
 
+" Don't add two spaces after interpunction when using J
+set nojoinspaces
+
 " Interactively ask for confirmation when the buffer is unsaved & quiting
 "set confirm
 
 " Round indent to multiple of shiftwidth when using < and >
+" Note that this can break some badly indented code when re-indenting whole
+" blocks
 set shiftround
 
 " Backspace at start of line remove shiftwidith worth of space
@@ -156,7 +175,7 @@ set ts=4
 set sw=4
 set sts=4
 
-" Set (& create if needed) a temp directory to keep backup & swap files
+" Set (& create if needed) a temp directory to keep backup, swap, and undo files
 set backupdir=$HOME/.vim/tmp/backup
 set dir=$HOME/.vim/tmp/swap
 if !isdirectory(&backupdir) | call mkdir(&backupdir, 'p', 0700) | endif
@@ -180,12 +199,8 @@ set background=light
 " Prevent clearing the terminal on exit
 set t_te=
 
-" Don't make completion menu too high
-set pumheight=10
-
 " Enable file type detection
 filetype plugin indent on
 
-if has('nvim')
-	set mouse=
-endif
+" I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim)
+set mouse=

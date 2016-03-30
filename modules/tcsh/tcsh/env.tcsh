@@ -1,4 +1,4 @@
-# $logid$
+# $dotid$
 
 # Setup PATH
 if ($uname != win32) then
@@ -18,8 +18,12 @@ if ($uname == SunOS) setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 # TODO: On my system, I have one dir here (2.1.0), but this may not be the only
 # one (it also doesn't correspond to my ruby or gem version ...) We should get
 # the '2.1.0' from somewhere...
-if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
-#if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
+#if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
+if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
+
+# Setup Go
+setenv GOPATH ~/gocode
+if ( -d "$HOME/gocode" ) setenv PATH "${PATH}:$HOME/gocode/bin/"
 
 # Various applications settings
 setenv BLOCKSIZE K
@@ -69,7 +73,8 @@ else if ($uname == FreeBSD) then
 		setenv TERM xterm-color
 	endif
 else if ($uname == Linux) then
-	setenv TERM xterm-color
+	setenv TERM xterm-256color
+	#setenv TERM xterm-color
 else
 	setenv TERM vt220
 endif
@@ -88,7 +93,8 @@ endif
 if (-X vim) then
 	setenv EDITOR vim
 	# TODO: What if vim has no +clientserver?
-	alias vim "vim -p --servername vim"
+	#alias vim "vim -p --servername vim"
+	alias vim "vim -p"
 	alias vi "vim"
 else if (-X vi) then
 	setenv EDITOR vi
@@ -111,26 +117,31 @@ if ( -f "$HOME/Local/python-startup" ) then
 endif
 
 # This makes font looks non-ugly in Java applications
-setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+#setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+
+# Stupid Android Sdk tricks
+setenv ANDROID_HOME /home/martin/milo/android-sdk-linux
+setenv PATH "${PATH}:/home/martin/milo/android-sdk-linux/tools:/home/martin/milo/android-sdk-linux/platform-tools"
 
 # Stoopid tricks for stoopid RVM
 # https://stackoverflow.com/questions/27380203/how-do-i-use-rvm-with-tcsh
-if (-d $HOME/.rvm/bin) set rvm_path = $HOME/.rvm
-if (-d /usr/local/rvm/bin) set rvm_path = /usr/local/rvm
+#if (-d $HOME/.rvm/bin) set rvm_path = $HOME/.rvm
+#if (-d /usr/local/rvm/bin) set rvm_path = /usr/local/rvm
+#
+#if ( $?rvm_path ) then
+#    setenv PATH ${PATH}:$rvm_path/bin
+#
+#    if ( ! $?ruby_version ) then
+#        set ruby_version = `grep RUBY_VERSION $rvm_path/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
+#    endif
+#
+#    setenv rvm_bin_path $rvm_path/bin
+#    setenv GEM_HOME $rvm_path/gems/ruby-$ruby_version
+#    setenv IRBRC $rvm_path/rubies/ruby-$ruby_version/.irbrc
+#    setenv MY_RUBY_HOME $rvm_path/rubies/ruby-$ruby_version
+#    setenv rvm_path $rvm_path
+#    setenv rvm_prefix $rvm_path/../
+#    setenv PATH $rvm_path/gems/ruby-$ruby_version/bin:$rvm_path/gems/ruby-$ruby_version@global/bin:$rvm_path/rubies/ruby-$ruby_version/bin:${PATH}:$rvm_path/bin
+#    setenv GEM_PATH $rvm_path/gems/ruby-${ruby_version}:$rvm_path/gems/ruby-${ruby_version}@global
+#endif
 
-if ( $?rvm_path ) then
-    setenv PATH ${PATH}:$rvm_path/bin
-
-    if ( ! $?ruby_version ) then
-        set ruby_version = `grep RUBY_VERSION $rvm_path/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
-    endif
-
-    setenv rvm_bin_path $rvm_path/bin
-    setenv GEM_HOME $rvm_path/gems/ruby-$ruby_version
-    setenv IRBRC $rvm_path/rubies/ruby-$ruby_version/.irbrc
-    setenv MY_RUBY_HOME $rvm_path/rubies/ruby-$ruby_version
-    setenv rvm_path $rvm_path
-    setenv rvm_prefix $rvm_path/../
-    setenv PATH $rvm_path/gems/ruby-$ruby_version/bin:$rvm_path/gems/ruby-$ruby_version@global/bin:$rvm_path/rubies/ruby-$ruby_version/bin:${PATH}:$rvm_path/bin
-    setenv GEM_PATH $rvm_path/gems/ruby-${ruby_version}:$rvm_path/gems/ruby-${ruby_version}@global
-endif

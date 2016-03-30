@@ -1,4 +1,4 @@
-# $logid$
+# $dotid$
 
 # Basic corrections when completing
 set autocorrect

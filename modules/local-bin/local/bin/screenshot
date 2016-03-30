@@ -1,4 +1,5 @@
 #!/bin/sh
+# $dotid$
 
 mkdir -p ~/shots
 if [ ! -z "$1" ]; then

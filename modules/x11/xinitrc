@@ -1,5 +1,5 @@
 #!/bin/sh
-# $logid$
+# $dotid$
 
 [ -f ~/.xsession ] && . ~/.xsession
 

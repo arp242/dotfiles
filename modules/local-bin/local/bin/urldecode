@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# $hgid:
+# $dotid$
 
 from __future__ import print_function
 import cgi, sys

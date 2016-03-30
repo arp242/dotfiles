@@ -1,5 +1,5 @@
 # default theme for pekwm, created for version 0.1.7
-# $logid$
+# $dotid$
 
 PDecor {
     Decor = "DEFAULT" {

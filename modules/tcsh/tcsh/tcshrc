@@ -1,8 +1,6 @@
 # vim:syntax=tcsh
 #
-# $FreeBSD: release/9.0.0/etc/csh.cshrc 50472 1999-08-27 23:37:10Z peter $
-#	$OpenBSD: csh.cshrc,v 1.2 1996/05/26 10:25:19 deraadt Exp $
-# $logid$
+# $dotid$
 #
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
@@ -37,6 +35,9 @@ source ~/.tcsh/aliases.tcsh
 
 # Only load these for interactive shells
 if ( $?prompt ) then
+	# Disable ^S/^Q
+	stty -ixon
+
 	source ~/.tcsh/settings.tcsh
 	source ~/.tcsh/keybinds.tcsh
 	source ~/.tcsh/completions.tcsh

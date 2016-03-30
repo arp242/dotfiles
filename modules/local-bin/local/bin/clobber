@@ -1,3 +1,4 @@
 #!/bin/sh
+# $dotid$
 
 for f in $*; do : > "$f"; done
