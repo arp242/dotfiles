@@ -1,5 +1,5 @@
 files = {
-	'~/.Xcompose': 'Xcompose',
+	'~/.XCompose': 'XCompose',
 	'~/.Xdefaults ': 'Xdefaults',
 	'~/.Xmodmap ': 'Xmodmap',
 	'~/.fonts.conf ': 'fonts.conf',
