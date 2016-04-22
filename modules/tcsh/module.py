@@ -4,7 +4,6 @@ dirs = {
 
 files = {
 	'~/.login': 'login',
-	'~/.logout': 'logout',
 }
 
 symlinks = {
