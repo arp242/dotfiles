@@ -1,4 +1,7 @@
 # $dotid$
+#
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
 
 # Just the cwd in the prompt
 export PS1="[\w]$ "

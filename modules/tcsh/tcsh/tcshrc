@@ -49,4 +49,6 @@ if ( $?prompt ) then
 		# Don't logout too easily
 		bindkey -r ^D
 	endif
+
+	tput smkx
 endif

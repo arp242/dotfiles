@@ -53,7 +53,11 @@ else if ($uname == Linux) then
 	alias grep "grep --color"
 
 	alias sockstat "netstat -lnptu --protocol=inet,unix"
-	alias zzz 'systemctl suspend'
+	if (-X systemctl)  then
+		alias zzz 'systemctl suspend'
+	else if (-X pm-suspend) then
+		alias zzz sudo pm-suspend
+	endif
 
 	# bsdtar/libarchive works with many file formats, not just tar
 	if (-X bsdtar) alias tar bsdtar
@@ -141,6 +145,6 @@ alias tclsh 'rlwrap tclsh'
 
 alias mplayer mpv
 
-alias muttp /usr/bin/mutt -F ~/.mutt/muttrc-prive
-alias muttw /usr/bin/mutt -F ~/.mutt/muttrc-work
-alias mutt /usr/bin/mutt -F ~/.mutt/muttrc-prive
+alias muttp mutt -F ~/.mutt/muttrc-prive
+alias muttw mutt -F ~/.mutt/muttrc-work
+#alias mutt /usr/bin/mutt -F ~/.mutt/muttrc-prive

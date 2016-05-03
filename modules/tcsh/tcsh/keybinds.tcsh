@@ -35,6 +35,10 @@ else
 	# Arrow keys
 	bindkey -k up history-search-backward
 	bindkey -k down history-search-forward
+
+	# Page Up, Page Down
+	bindkey "^[[5~" undefined-key
+	bindkey "^[[6~" undefined-key
 endif
 
 # Insert
