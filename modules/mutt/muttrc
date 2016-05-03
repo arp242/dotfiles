@@ -1,7 +1,7 @@
 # $dotid$
 
 #source ~/.mutt/account-work
-#source ~/.mutt/account-prive
+source ~/.mutt/account-prive
 
 # Allow Mutt to open new imap connection automatically.
 unset imap_passive

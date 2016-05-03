@@ -61,7 +61,8 @@ Global {
 	KeyPress = "Mod4 Down" { Actions = "MoveToEdge BottomEdge" }
 
 	# External Commands
-	KeyPress = "Mod4 X" { Actions = "Exec xterm -lc -geometry 90x27" }
+	#KeyPress = "Mod4 X" { Actions = "Exec xterm -lc -geometry 90x27" }
+	KeyPress = "Mod4 X" { Actions = "Exec st -g 90x27" }
 	KeyPress = "KP_Add" { Actions = "Exec /home/martin/Local/bin/find-cursor" }
 
 	# Pekwm control

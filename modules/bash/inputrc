@@ -12,6 +12,13 @@ set match-hidden-files off
 # Never bug me for confirmation
 set completion-query-items 999999
 
+# Color completions as ls
+set colored-stats on
+
+# No keypay, fixes some problems with DEL key and such (see st FAQ)
+set enable-keypad off
+
+
 # Up arrow
 # TODO: Also make cursor go to end-of-line, like tcsh
 "\e[A": history-search-backward
@@ -19,5 +26,14 @@ set completion-query-items 999999
 # Down arrow
 "\e[B": history-search-forward
 
-# Color completions as ls
-set colored-stats on
+# Home
+"\e[H": beginning-of-line
+"\e[1~": beginning-of-line
+
+# End
+"\e[F": end-of-line
+"\e[4~": end-of-line
+
+# Page Up, Page Down
+"\e[5~":
+"\e[6~":

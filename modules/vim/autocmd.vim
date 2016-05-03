@@ -126,6 +126,6 @@ augroup ftype_go
 	" Highlighting all trailing whitespace is annoying 
 	autocmd Filetype go let g:go_highlight_trailing_whitespace_error = 0
 	"autocmd BufWritePost *.go silent %!goimports %
-	autocmd BufWritePre *.go call s:go()
+	"autocmd BufWritePre *.go call s:go()
 augroup end
 
