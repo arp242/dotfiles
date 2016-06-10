@@ -1,7 +1,7 @@
 # $dotid$
 
 #source ~/.mutt/account-work
-source ~/.mutt/account-prive
+#source ~/.mutt/account-prive
 
 # Allow Mutt to open new imap connection automatically.
 unset imap_passive
@@ -108,6 +108,7 @@ set index_format="%Z│ %{%b %d}│ %-20.20F│ %s"
 
 #set mask = "."
 #set signature = "~/.mutt/signature.sh |"
+auto_view text/html
 alternative_order text/plain text/enriched text/html
 
 set mailcap_path = ~/.mutt/mailcap

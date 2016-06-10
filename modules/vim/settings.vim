@@ -125,6 +125,9 @@ set completeopt=longest,menu
 " Don't make completion menu too high
 set pumheight=10
 
+" Like smartcase for insert completion
+set infercase
+
 " Allow cursor to go one character past the end of the line
 "set virtualedit=onemore
 
@@ -132,7 +135,7 @@ set pumheight=10
 set tabpagemax=50
 
 " Show partial command in the last line of the screen
-"set showcmd
+set showcmd
 
 " n   Recognize numbered lists when formatting (see formatlistpat)
 " c   Wrap comments with textwidth

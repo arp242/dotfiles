@@ -34,8 +34,8 @@ source ~/.tcsh/env.tcsh
 source ~/.tcsh/aliases.tcsh
 
 # Only load these for interactive shells
-if ( $?prompt ) then
-	# Disable ^S/^Q
+if ($?prompt) then
+	# Disable ^S/^Q - I never use them and I can use those keys in Vim now
 	stty -ixon
 
 	source ~/.tcsh/settings.tcsh
@@ -43,12 +43,10 @@ if ( $?prompt ) then
 	source ~/.tcsh/completions.tcsh
 
 	# We're ssh-ing into vagrant
-	if ( -f /vagrant ) then
+	if (-d /vagrant) then
 		cd /vagrant
 		setenv TERM xterm
 		# Don't logout too easily
 		bindkey -r ^D
 	endif
-
-	tput smkx
 endif

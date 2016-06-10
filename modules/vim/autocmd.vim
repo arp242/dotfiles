@@ -52,7 +52,7 @@ augroup project_settings
 	autocmd!
 
 	" Tab settings for my job
-	"autocmd BufNewFile,BufRead /home/martin/code/* set expandtab ts=2 sts=2 sw=2
+	autocmd BufNewFile,BufRead /home/martin/code/TeamworkDesk/frontend/* set expandtab ts=4 sts=4 sw=4
 augroup end
 
 
@@ -114,18 +114,33 @@ augroup filetypes
 		\| setlocal fdm=expr
 augroup end
 
-fun s:go()
-	let l:save = winsaveview()
-	silent %!goimports
-	call winrestview(l:save)
+let g:go_def_mapping_enabled = 0
+fun! s:go()
+	let g:go_highlight_trailing_whitespace_error = 0
+	let g:go_fmt_command = "goimports"
+
+	nmap gd <Plug>(go-def-tab)
+    "nnoremap <buffer> <silent> gd :GoDef<cr>
+    nnoremap <buffer> <silent> <C-]> :GoDef<cr>
+    nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<cr>
 endfun
 
 augroup ftype_go
 	autocmd! 
 
 	" Highlighting all trailing whitespace is annoying 
-	autocmd Filetype go let g:go_highlight_trailing_whitespace_error = 0
-	"autocmd BufWritePost *.go silent %!goimports %
-	"autocmd BufWritePre *.go call s:go()
+	autocmd Filetype go call s:go()
 augroup end
 
+fun! s:desk()
+	call system('touch /home/martin/code/src/github.com/teamwork/desk/temp/restart.txt')
+	"let l:out = system('nc sunbeam.teamwork.dev 9112')
+	"if l:out != "Okay\n"
+	"	echoerr l:out
+	"endif
+endfun
+
+augroup restart_desk
+	autocmd!
+	autocmd BufWritePost /home/martin/code/src/github.com/teamwork/desk/*.go :call s:desk()
+augroup end
