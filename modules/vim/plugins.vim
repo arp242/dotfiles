@@ -79,6 +79,11 @@ if isdirectory('/home/martin/vim/startscreen.vim')
 	call vam#Scripts([{'activate_this_rtp': '~/vim/*'}], {})
 endif
 
+VAMActivate vim-go
+"VAMActivate neocomplete
+"VAMActivate neocomplcache
+VAMActivate github:majutsushi/tagbar
+"VAMActivate github:garyburd/go-explorer
 
 " Set my statusline
 set statusline=

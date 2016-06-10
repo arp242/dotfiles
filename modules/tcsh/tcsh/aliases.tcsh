@@ -47,7 +47,10 @@ else if ($uname == Linux) then
 	unalias ls
 
 	alias ls 'ls-F'
-	alias lc ls -lh
+	# -N disabled retarded GNU shit of quoting the filenames (which is suddenly
+	# the default?!)
+	# No idea how compatible it is...
+	alias lc ls -lhN
 	alias la ls -A
 	alias lac ls -lhA
 	alias grep "grep --color"
@@ -61,6 +64,9 @@ else if ($uname == Linux) then
 
 	# bsdtar/libarchive works with many file formats, not just tar
 	if (-X bsdtar) alias tar bsdtar
+
+	# Linux top is an unusable piece of shit after recent changes
+	if (-X htop) alias top htop
 
 	# TODO: I'm not sure if all Linux systems use the same cal flavour?
 	#alias cal 'cal -m3'
@@ -102,6 +108,12 @@ if (-X curl) then
 	alias curl-post 'curl -X POST'
 	alias curl-put 'curl -X PUT'
 	alias curl-delete 'curl -X DELETE'
+endif
+
+if (-X drill) then
+	alias dig drill
+else if (-X dig) then
+	alias drill dig
 endif
 
 alias dejson 'python -mjson.tool'
@@ -147,4 +159,5 @@ alias mplayer mpv
 
 alias muttp mutt -F ~/.mutt/muttrc-prive
 alias muttw mutt -F ~/.mutt/muttrc-work
+alias mutt-sunbeam mutt -F ~/.mutt/muttrc-sunbeam
 #alias mutt /usr/bin/mutt -F ~/.mutt/muttrc-prive

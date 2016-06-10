@@ -46,8 +46,11 @@ def install_file(src, dest):
 	# Copy!
 	dbg('{} -> {}'.format(src, dest))
 	shutil.copy2(src, dest)
+	add_version(src, dest)
 
-	# Add version string
+
+def add_version(src, dest):
+	""" Add version string """
 	data = open(dest, 'rb').read()
 	with open(dest, 'wb') as fp:
 		fp.write(data.replace(b'$dotid$',
@@ -114,8 +117,17 @@ class Hg:
 
 		return int(data != orig_data)
 
+class Date:
+	def get_version_string(self, src):
+		return str(int(time.time()))
 
-vcs = Hg()
+	def file_is_modified(self, src, dest):
+		return 1
+
+if True:
+	vcs = Hg()
+else:
+	vcs = Date()
 
 
 ### Main
@@ -207,6 +219,7 @@ def manage_files(files):
 
 def run_diff(src, dest):
 	subprocess.call(difftool + [dest, src])
+	add_version(src, dest)
 
 	# I don't like this solution because we're editing a temp file...
 	'''

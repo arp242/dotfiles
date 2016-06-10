@@ -62,17 +62,24 @@ vnoremap gf <C-w>gf
 " TODO: It looks like I'm reinventing the wheel
 " http://www.vim.org/scripts/script.php?script_id=5184
 fun! GuessType()
+	if &filetype == 'go'
+		let l:def = "\<C-x>\<C-o>"
+	else
+		let l:def = "\<C-x>\<C-n>"
+	endif
 	try
-		if spellbadword()[1] != '' | return "\<C-x>s"
-		else | return "\<C-x>\<C-n>"
+		if spellbadword()[1] != ''
+			return "\<C-x>s"
+		else
+			return l:def
 		endif
 	catch
-		return "\<C-x>\<C-n>"
+		return l:def
 	endtry
 endfun
 inoremap <expr> <C-@>  pumvisible() ?  "\<C-n>" : GuessType()
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <Up> pumvisible() ? "\<C-n>" : "\<Up>"
+inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 nnoremap <expr> <C-@> pumvisible() ?  "i\<C-n>" : 'i' . GuessType()
 
 " Home works like 0 if already at start of a line, and ^ otherwise

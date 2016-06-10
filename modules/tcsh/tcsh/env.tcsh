@@ -4,26 +4,30 @@
 if ($uname != win32) then
 	setenv PATH ~/Local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/games
 
-	if (-d /usr/local/bin) then
+	if (-d /usr/local/bin && $prefix != "/usr/local") then
 		setenv PATH ${PATH}:/usr/local/bin:/usr/local/sbin
 	endif
-	if ($prefix != 0) then
-		setenv PATH ${PATH}:${prefix}/bin:${prefix}/sbin
-	endif
+	if ($prefix != 0) setenv PATH ${PATH}:${prefix}/bin:${prefix}/sbin
+	if (-d /usr/X11R6/bin) setenv PATH ${PATH}:/usr/X11R6/bin:/usr/X11R6/sbin
 endif
 
 # Some commonly installed packages on OpenSolaris
 if ($uname == SunOS) setenv PATH ${PATH}:/opt/VirtualBox:/opt/csw/gcc4/bin
 
-# TODO: On my system, I have one dir here (2.1.0), but this may not be the only
-# one (it also doesn't correspond to my ruby or gem version ...) We should get
-# the '2.1.0' from somewhere...
-#if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
-if ( -d "$HOME/.gem/ruby" ) setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
+# Only use the newest Ruby
+if ( -d "$HOME/.gem/ruby/2.3.0/bin" ) then
+	setenv PATH "${PATH}:$HOME/.gem/ruby/2.3.0/bin/"
+else if ( -d "$HOME/.gem/ruby/2.2.0/bin" ) then
+	setenv PATH "${PATH}:$HOME/.gem/ruby/2.2.0/bin/"
+else if ( -d "$HOME/.gem/ruby/2.1.0/bin" ) then
+	setenv PATH "${PATH}:$HOME/.gem/ruby/2.1.0/bin/"
+endif
 
 # Setup Go
 setenv GOPATH ~/gocode
-if ( -d "$HOME/gocode" ) setenv PATH "${PATH}:$HOME/gocode/bin/"
+#setenv GOPATH ~/code/TeamworkDesk
+#setenv GOPATH ~/gocode:/home/martin/code/TeamworkDesk
+if ( -d "$HOME/gocode/bin" ) setenv PATH "${PATH}:$HOME/gocode/bin"
 
 # Various applications settings
 setenv BLOCKSIZE K
@@ -49,6 +53,9 @@ setenv GDK_CORE_DEVICE_EVENTS 1
 # Make compose key work for GTK, Qt
 setenv GTK_IM_MODULE xim
 setenv QT_IM_MODULE xim
+
+# Disable retarded "overlay scrollbar"
+setenv GTK_OVERLAY_SCROLLING 0
 
 # Don't output to a pager
 setenv SYSTEMD_PAGER
@@ -100,21 +107,15 @@ else if (-X vi) then
 	setenv EDITOR vi
 endif
 
-# Set browser
-#if (-X qutebrowser) then
-if (-X firefox) then
-	setenv BROWSER firefox
-endif
+if (-X firefox) setenv BROWSER firefox
 
 # Set DISPLAY on remote login
-if ( $?REMOTEHOST && ! $?DISPLAY ) then 
+if ($?REMOTEHOST && ! $?DISPLAY) then 
 	setenv DISPLAY ${REMOTEHOST}:0
 endif
 
 # Run commands from this file; only run for interactive prompt
-if ( -f "$HOME/Local/python-startup" ) then
-	setenv PYTHONSTARTUP ~/Local/python-startup
-endif
+if (-f "$HOME/Local/python-startup") setenv PYTHONSTARTUP ~/Local/python-startup
 
 # This makes font looks non-ugly in Java applications
 #setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
@@ -122,26 +123,3 @@ endif
 # Stupid Android Sdk tricks
 setenv ANDROID_HOME /home/martin/milo/android-sdk-linux
 setenv PATH "${PATH}:/home/martin/milo/android-sdk-linux/tools:/home/martin/milo/android-sdk-linux/platform-tools"
-
-# Stoopid tricks for stoopid RVM
-# https://stackoverflow.com/questions/27380203/how-do-i-use-rvm-with-tcsh
-#if (-d $HOME/.rvm/bin) set rvm_path = $HOME/.rvm
-#if (-d /usr/local/rvm/bin) set rvm_path = /usr/local/rvm
-#
-#if ( $?rvm_path ) then
-#    setenv PATH ${PATH}:$rvm_path/bin
-#
-#    if ( ! $?ruby_version ) then
-#        set ruby_version = `grep RUBY_VERSION $rvm_path/environments/default | cut -d= -f2 | tr -d \' | sed 's/^ruby-//'`
-#    endif
-#
-#    setenv rvm_bin_path $rvm_path/bin
-#    setenv GEM_HOME $rvm_path/gems/ruby-$ruby_version
-#    setenv IRBRC $rvm_path/rubies/ruby-$ruby_version/.irbrc
-#    setenv MY_RUBY_HOME $rvm_path/rubies/ruby-$ruby_version
-#    setenv rvm_path $rvm_path
-#    setenv rvm_prefix $rvm_path/../
-#    setenv PATH $rvm_path/gems/ruby-$ruby_version/bin:$rvm_path/gems/ruby-$ruby_version@global/bin:$rvm_path/rubies/ruby-$ruby_version/bin:${PATH}:$rvm_path/bin
-#    setenv GEM_PATH $rvm_path/gems/ruby-${ruby_version}:$rvm_path/gems/ruby-${ruby_version}@global
-#endif
-
