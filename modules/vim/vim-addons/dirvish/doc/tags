@@ -1,0 +1,10 @@
+dirvish	dirvish.txt	/*dirvish*
+dirvish-:Dirvish	dirvish.txt	/*dirvish-:Dirvish*
+dirvish-:Shdo	dirvish.txt	/*dirvish-:Shdo*
+dirvish-commands	dirvish.txt	/*dirvish-commands*
+dirvish-faq	dirvish.txt	/*dirvish-faq*
+dirvish-functions	dirvish.txt	/*dirvish-functions*
+dirvish-mappings	dirvish.txt	/*dirvish-mappings*
+dirvish-options	dirvish.txt	/*dirvish-options*
+dirvish.txt	dirvish.txt	/*dirvish.txt*
+g:dirvish_relative_paths	dirvish.txt	/*g:dirvish_relative_paths*

@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 92$
 "
 " mediawiki.vim (formerly named Wikipedia.vim)
 "

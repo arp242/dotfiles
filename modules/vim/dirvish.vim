@@ -1,7 +1,4 @@
-" $dotid$
-
-""" Directory browser
-VAMActivate github:justinmk/vim-dirvish
+" $dotid: 92$
 
 fun! s:dirvish() abort
 	" U for up

@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 96$
 
 augroup basic
 	autocmd!
@@ -52,7 +52,8 @@ augroup project_settings
 	autocmd!
 
 	" Tab settings for my job
-	autocmd BufNewFile,BufRead /home/martin/code/TeamworkDesk/frontend/* set expandtab ts=4 sts=4 sw=4
+	autocmd BufNewFile,BufRead /home/martin/code/TeamworkDesk/frontend/* setlocal expandtab ts=4 sts=4 sw=4
+	autocmd BufNewFile,BufRead /home/martin/code/src/github.com/teamwork/TeamworkDesk/frontend/* setlocal expandtab ts=4 sts=4 sw=4
 augroup end
 
 

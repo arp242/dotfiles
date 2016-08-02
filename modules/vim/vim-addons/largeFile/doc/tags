@@ -1,0 +1,6 @@
+:Large	LargeFile.txt	/*:Large*
+:Unlarge	LargeFile.txt	/*:Unlarge*
+LargeFile-copyright	LargeFile.txt	/*LargeFile-copyright*
+LargeFile.txt	LargeFile.txt	/*LargeFile.txt*
+largefile	LargeFile.txt	/*largefile*
+largefile-history	LargeFile.txt	/*largefile-history*

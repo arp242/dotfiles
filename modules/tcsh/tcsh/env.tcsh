@@ -107,7 +107,7 @@ else if (-X vi) then
 	setenv EDITOR vi
 endif
 
-if (-X firefox) setenv BROWSER firefox
+if (-X chromium) setenv BROWSER chromium
 
 # Set DISPLAY on remote login
 if ($?REMOTEHOST && ! $?DISPLAY) then 
@@ -121,5 +121,10 @@ if (-f "$HOME/Local/python-startup") setenv PYTHONSTARTUP ~/Local/python-startup
 #setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 
 # Stupid Android Sdk tricks
-setenv ANDROID_HOME /home/martin/milo/android-sdk-linux
-setenv PATH "${PATH}:/home/martin/milo/android-sdk-linux/tools:/home/martin/milo/android-sdk-linux/platform-tools"
+#setenv ANDROID_HOME /home/martin/milo/android-sdk-linux
+#setenv PATH "${PATH}:/home/martin/milo/android-sdk-linux/tools:/home/martin/milo/android-sdk-linux/platform-tools"
+
+foreach f ( /etc/profile.d/*.csh )
+	if ( -r $f ) source $f
+end
+unset f

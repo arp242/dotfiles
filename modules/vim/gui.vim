@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 92$
 
 if has("gui_running")
 	" Default width & height; autocmd to prevent resize when re-loading vimrc

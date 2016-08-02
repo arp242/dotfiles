@@ -34,22 +34,21 @@ PDecor {
             }
             Buttons {
                 Left {
-                    Button = "1" { Actions = "Close" }
-                    Button = "2" { Actions = "Kill" }
+                    Button = "3" { Actions = "Close" }
 
                     Focused = "Solid #ff790c 0x0"
                     Unfocused = "Solid #999999 0x0"
                     Pressed = "Solid #000000 0x0"
                 }
-                Right { 
-                    Button = "1" { Actions = "Toggle Maximized 1 1" }
-                    Button = "2" { Actions = "Toggle Maximized 0 1" }
-                    Button = "3" { Actions = "Toggle Maximized 1 0" }
+                #Right { 
+                #    Button = "1" { Actions = "Toggle Maximized 1 1" }
+                #    Button = "2" { Actions = "Toggle Maximized 0 1" }
+                #    Button = "3" { Actions = "Toggle Maximized 1 0" }
 
-                    Focused = "Solid #ff790c 0x0"
-                    Unfocused = "Solid #999999 0x0"
-                    Pressed = "Solid #000000 0x0"
-                }
+                #    Focused = "Solid #ff790c 0x0"
+                #    Unfocused = "Solid #999999 0x0"
+                #    Pressed = "Solid #000000 0x0"
+                #}
             }
             Border {
                 Focused {

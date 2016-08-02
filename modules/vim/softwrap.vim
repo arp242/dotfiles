@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 92$
 "
 " Very unobtrusively highlight column 81 to indicate that we may have to wrap
 " stuff − this is a "soft wrap".
@@ -16,6 +16,5 @@ augroup wrap
 	autocmd Colorscheme * call s:color()
 augroup end
 
-call matchadd('SoftWrap', '\%82c')
-call matchadd('HardWrap', '\%122c')
-
+call matchadd('SoftWrap', '\%82v')
+call matchadd('HardWrap', '\%122v')

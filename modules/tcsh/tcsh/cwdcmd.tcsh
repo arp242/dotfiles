@@ -1,5 +1,5 @@
 # vim:set syntax=tcsh
-# $dotid$
+# $dotid: $
 
 # Show the directory in the xterm title
 echo -n "\033]2;tcsh: $cwd\007"
@@ -25,7 +25,7 @@ if ( $?reporoot ) then
 		if ( $repotype == 'git' && $repochanged == `__pstat "$reporoot"/.git/HEAD` ) then
 			goto end
 		endif
-		if ( $repotype == 'hg' && $repochanged == `__pstat "$reporoot"/.hg/undo.branch` ) then
+		if ( $repotype == 'hg' && $repochanged == `__pstat "$reporoot"/.hg/branch` ) then
 			goto end
 		endif
 	# Do we need this?
@@ -44,8 +44,8 @@ if ( ! $?reporoot || $repotype == 'hg' ) then
 	if ( $? == 0 ) then
 		set reporoot = `hg root`
 		set repotype = 'hg'
-		set repochanged = `__pstat "$reporoot"/.hg/undo.branch`
-		set prompt = "[%~](`cat $reporoot/.hg/undo.branch`)%# "
+		set repochanged = `__pstat "$reporoot"/.hg/branch`
+		set prompt = "[%~](`cat $reporoot/.hg/branch`)%# "
 
 		goto end
 	endif
