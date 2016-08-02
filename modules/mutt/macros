@@ -3,11 +3,8 @@
 # http://dev.mutt.org/trac/wiki/MacroSamples
 
 # urlview
-macro index V "<pipe-message>urlview<enter>"
-macro pager V "<pipe-message>urlview<enter>"
-
-macro index B "<pipe-message>~/urlview-ng/urlview-ng<enter>"
-macro pager B "<pipe-message>~/urlview-ng/urlview-ng<enter>"
+macro index B "<pipe-message>urlview-ng<enter>"
+macro pager B "<pipe-message>urlview-ng<enter>"
 
 # general
 #macro pager \e1 "<enter-command>set pager_index_lines=0<enter>"

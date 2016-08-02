@@ -1,0 +1,2 @@
+Done:
+0.19: Add DigraphTable/UnicodeTable command -> shows all characters in a new window (useful for searching)

@@ -1,0 +1,114 @@
+*brace_wars.txt*: Fight the brace wars!
+
+==============================================================================
+INTRODUCTION                                                      *brace_wars*
+>
+ .                           .         .               .                 .
+
+     Not so long ago, at a programmer's convention far too close for comfort...
+ .        .          .    .    .            .            .                   .
+               .               ..       .       .   .             .
+
+ .                 A terrible civil war burns throughout the        .
+            .     galaxy: a rag-tag group of rogue programmers
+     .           has risen from beneath the dark shadow of the
+                evil monster that C style languages have become.              .
+               Imperial forces have instituted a reign of terror,      .
+      .      and every ugly crappy language in its arsenal has been
+ .         turned upon the Rebels and their allies: buffer overflows,
+          unwise APIs, overly verbose syntax, needless semicolons,
+   .    and group think. Group think keeps the individual systems in line,
+       and is the prime motivator people still use C.                         .
+           Outnumbered and outgunned, the rebellion burns  across the cast
+     reaches of the internet and a thousand-thousand websites, with only their
+    great courage - and the mystical  power known as Sanity - flaming a fire of
+    hope.
+      This is a galaxy is wondrous syntax, bizarre languages, strange fallacies,
+   powerful flame wars, great heroes, and terrible villains. It is a galaxy of fan-
+  tastic worlds, magical devices, vast codebases, awesome architectures, terrible con-
+  flict, and unending hope.                            .
+         .          .    .    .            .            .                   .
+               .               ..       .       .   .             .
+ .            .     T h i s   i s   t h e   g a l a x y   o f   . . .           .
+      .                           .         .               .                 .
+                   .                                   .            .
+      _________    __________           ____           ________  _____________
+     |         \  |          \ .       /    \      .  /        | |            |
+  .  |   ____   | |    ___    |       /      \       /    _____| |    ________|
+     |   |___>  / |   |___>   |      /   /\   \ .   |    /    .  |   |________
+     |   ____  | .|         _/   .  /   /__\   \    |   | .      |    ________|
+     |   |___> \  |   |\    \__    /            \   |    \____   |   |________
+     |          | |   | \      |  /    ______    \   \         | |            |
+     |__________/ |___|  \_____| /____/      \____\   \________| |____________|
+       .     ____    __  . _____   ____      .  __________   .  _________
+ .          \    \  /  \  /    /  /    \       |          \    /         |      .
+             \    \/    \/    /  /      \      |    ___    |  /    ______|  .
+              \              /  /   /\   \ .   |   |___>   |  \    \
+    .   .      \            /  /   /__\   \    |         _/.   \    \            +
+                \    /\    /  /            \   |   |\    \______>    |   .
+                 \  /  \  /  /    ______    \  |   | \              /          .
+      .       .   \/    \/  /____/      \____\ |___|  \____________/  LS
+                                    .                                        .
+   .      .                           .         .               .                 .
+                     .                                   .            .
+
+Silly overused clichéd intros I spent far too much time on aside, I've noticed
+that you can divide programmers in two groups: those who look at braces, and
+those who look at keywords.
+
+People who primarily look at keywords (like me) pretty much ignores the
+braces, and generally find this pretty annoying as it doesn't line up the
+keywords: >
+    if (foo) {
+        do();
+    } else {
+        moar_do();
+    }
+<
+So I (strongly) prefer: >
+    if (foo) {
+        do();
+    }
+    else {
+        moar_do();
+    }
+<
+But for someone who looks primarily at braces, there is now a useless newline.
+
+I don't do a lot of programming in languages with braces. I *do*, however,
+read quite a bit of these languages (chiefly C) and his helps me make sense of
+things.
+
+==============================================================================
+FAQ
+
+What languages does this support? ~
+C, C++, Java, PHP, JavaScript, and Perl.
+
+How do I use it with language foo? ~
+Use the second argument to the |:Bracewars| command to specify the file type;
+this defaults to the value of 'filetype'. Using {c} will probably work
+passably well with most languages.
+
+Or better yet: send me a patch :-)
+
+Can you guarantee this will actually work and won't mangle my code? ~
+It uses a bunch of regular expressions. Do the math. I believe this is
+reasonably safe, and I've used it for a few years without ill effects so far,
+but there is no guarantee whatsoever that it will not mangle code, mangle
+strings, delete files, take out a new mortgage on your house, sacrifice your
+first-born to Satan, etc.
+
+==============================================================================
+COMMANDS
+
+[range]:Bracewars [style] [filetype]                                *:Bracewars*
+
+    [style] is mandatory.
+    [filetype] 
+
+This sets the *b:brace_wars_filetype* to [style]. This is useful to toggle
+styles in mappings, for example:
+
+
+vim:tw=78:ts=8:ft=help:norl:expandtab

@@ -1,0 +1,6 @@
+*write_help.txt* Make it easier to write Vim help files.
+
+
+
+
+vim:tw=78:ts=8:ft=help:norl:expandtab

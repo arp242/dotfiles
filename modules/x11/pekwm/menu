@@ -38,4 +38,6 @@ WindowMenu = "Window Menu" {
 		Entry = "Toggle including this frame in focus toggle" { Actions = "Toggle Skip FocusToggle" }
 		Entry = "Toggle if this frame snaps to other windows" { Actions = "Toggle Skip Snap" }
 	}
+	Entry = "Close" { Actions = "Close" }
+	Entry = "Kill" { Actions = "Kill" }
 }

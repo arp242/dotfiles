@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 96$
 
 " Quickly jump to recently used filed
 nnoremap <Leader>o :browse oldfiles<CR>

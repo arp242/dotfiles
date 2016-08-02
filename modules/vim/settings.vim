@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: $
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
@@ -82,7 +82,7 @@ set showtabline=2
 set encoding=utf-8
 
 " Always use UNIX line endings \n
-set fileformats=unix
+"set fileformats=unix
 
 " Faster redrawing
 set ttyfast
@@ -120,7 +120,7 @@ set wildmode=list:longest
 set wildignorecase
 
 " Insert mode completion
-set completeopt=longest,menu
+set completeopt=longest,menuone
 
 " Don't make completion menu too high
 set pumheight=10

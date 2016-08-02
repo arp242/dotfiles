@@ -101,9 +101,9 @@ class Hg:
 		'''
 		try:
 			data = open(dest, 'r').read()
-		except:
-			print(dest)
-			sys.exit(42)
+		except Exception as e:
+			print('Unable to open {}'.format(dest))
+			raise e
 
 		dotid = re.match('^.*?\$dotid: (.*)\$', data)
 		if not dotid: return 1
@@ -183,13 +183,21 @@ def manage_files(files):
 
 		# src is a binary file (we don't check dest); don't do anything
 		# TODO: ask what to do where
-		with open(src, 'rb') as fp:
-			if b'\x00' in fp.read(2048) and os.path.exists(dest):
-				h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
-				h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
-				if h1 != h2:
-					print("`{}' is modified but looks like a binary file; skipping".format(src))
-				continue
+		if os.path.exists(src):
+			with open(src, 'rb') as fp:
+				is_binary = False
+				try:
+					with open(dest, 'r') as testfp:
+						testfp.read()
+				except UnicodeDecodeError:
+					is_binary = True
+
+				if is_binary or b'\x00' in fp.read(2048) and os.path.exists(dest):
+					h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
+					h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
+					if h1 != h2:
+						print("`{}' is modified but looks like a binary file; skipping".format(src))
+					continue
 
 		# Files are same dotid, and not changes: we do nothing
 		if os.path.exists(src) and vcs.file_is_modified == 2:
