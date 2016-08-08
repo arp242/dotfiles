@@ -3,5 +3,7 @@
 " Basic vimrc file for testing/debugging
 " vim -u ~/.vim/basic
 
+set nocompatible
+
 syntax on
 filetype plugin indent on

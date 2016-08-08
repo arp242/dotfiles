@@ -35,14 +35,8 @@ let g:syntastic_ruby_mri_args = "-W1 -T1"
 "" Use the Bourne shell, and not tcsh
 let g:syntastic_shell = "/bin/bash"
 
-let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
-"autocmd BufReadPost /home/martin/code/src/github.com/teamwork/TeamworkDesk/*.go let g:syntastic_go_checkers = ['govet', 'errcheck']
-
-"let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-
-
 " Set my statusline
-fun s:set_stl()
+fun! s:set_stl()
 	set statusline=
 
 	" Left part

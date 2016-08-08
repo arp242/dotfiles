@@ -23,9 +23,13 @@
 [merge]
 	tool = vimdiff
 
+[commit]
+	gpgSign = true
+
 [alias]
 	st = status --short
 	ci = commit -a
 	co = checkout
+
 [url "git@github.com:"]
 	insteadOf = https://github.com/

@@ -199,6 +199,10 @@ colorscheme default
 " My terminal has a white background colour
 set background=light
 
+" For testing...
+"colorscheme darkblue
+"set background=dark
+
 " Prevent clearing the terminal on exit
 set t_te=
 
