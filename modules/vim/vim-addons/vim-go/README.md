@@ -1,5 +1,3 @@
-# vim-go
-
 Go (golang) support for Vim, which comes with pre-defined sensible settings (like
 auto gofmt on save), with autocomplete, snippet support, improved syntax
 highlighting, go toolchain commands, and more.  If needed vim-go installs all

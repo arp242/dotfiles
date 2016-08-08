@@ -16,4 +16,5 @@ source ~/.vim/commands.vim
 source ~/.vim/keys.vim
 source ~/.vim/gui.vim
 source ~/.vim/softwrap.vim
+source ~/.vim/go.vim
 source ~/.vim/experiments.vim
