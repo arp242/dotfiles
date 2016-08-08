@@ -1,4 +1,4 @@
-" $dotid: 96$
+" $dotid$
 
 " Disable some of the default plugins that we don't use.
 let g:loaded_getscriptPlugin = 1

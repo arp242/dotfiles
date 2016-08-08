@@ -1,4 +1,4 @@
-" $dotid: 92$
+" $dotid$
 "
 " Very unobtrusively highlight column 81 to indicate that we may have to wrap
 " stuff − this is a "soft wrap".

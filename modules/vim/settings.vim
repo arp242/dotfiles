@@ -1,4 +1,4 @@
-" $dotid: $
+" $dotid$
 
 " Allow backspacing over everything
 set backspace=indent,eol,start

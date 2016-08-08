@@ -1,3 +1,5 @@
+# vim-go
+
 Go (golang) support for Vim, which comes with pre-defined sensible settings (like
 auto gofmt on save), with autocomplete, snippet support, improved syntax
 highlighting, go toolchain commands, and more.  If needed vim-go installs all
@@ -73,6 +75,8 @@ command.
   * `NeoBundle 'fatih/vim-go'`
 *  [Vundle](https://github.com/gmarik/vundle)
   * `Plugin 'fatih/vim-go'`
+*  [Vim packages](http://vimhelp.appspot.com/repeat.txt.html#packages) (since Vim 7.4.1528)
+  * `git clone https://github.com/fatih/vim-go.git ~/.vim/pack/plugins/start/vim-go`
 
 Please be sure all necessary binaries are installed (such as `gocode`, `godef`,
 `goimports`, etc.). You can easily install them with the included

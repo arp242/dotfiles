@@ -1,4 +1,4 @@
-" $dotid: 96$
+" $dotid$
 
 augroup basic
 	autocmd!
