@@ -1,4 +1,4 @@
-" $dotid: 92$
+" $dotid$
 
 "for f in split(glob('~/.vim/*.vim'), '\n')
 "	" Neovim hack :-/

@@ -1,4 +1,4 @@
-" $dotid: 92$
+" $dotid$
 
 fun! SelectCode() abort
 	if getline('.')[0] != "\t"

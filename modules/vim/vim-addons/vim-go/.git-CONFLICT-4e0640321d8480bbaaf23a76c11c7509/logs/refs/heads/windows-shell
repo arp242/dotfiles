@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470079878 +0200	branch: Created from HEAD
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 53261bc0a44fd6ca08d0ebafd4dc03219690f212 Martin Tournoij <martin@arp242.net> 1470080425 +0200	commit: More robust resetting of the shell.
+53261bc0a44fd6ca08d0ebafd4dc03219690f212 2dfd933c5d16f74c83bca110054707f66faa509a Martin Tournoij <martin@arp242.net> 1470080968 +0200	commit: Use go#util#IsWin

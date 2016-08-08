@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470025269 +0200	branch: Created from HEAD
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c c9fb722b644cadd0d2af86a2d71439fefc434439 Martin Tournoij <martin@arp242.net> 1470025270 +0200	commit: Fix :GoSameIds for light background and after changing colour schemes
+c9fb722b644cadd0d2af86a2d71439fefc434439 e64f1b91ca401adad08c3b9cc1998b069c98f8cd Martin Tournoij <martin@arp242.net> 1470025648 +0200	commit: Also set GUI

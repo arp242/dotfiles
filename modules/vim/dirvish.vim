@@ -1,4 +1,4 @@
-" $dotid: 92$
+" $dotid$
 
 fun! s:dirvish() abort
 	" U for up

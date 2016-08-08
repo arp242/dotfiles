@@ -2,3 +2,23 @@
 d54819ddc1fe6f7a71071f17108dae080aacdd08 b7ac76ad7ef469d45aa44d2209a3a61b46cb3b1a Martin Tournoij <martin@arp242.net> 1469575926 +0200	pull: Fast-forward
 b7ac76ad7ef469d45aa44d2209a3a61b46cb3b1a 13affe57da9efa67d20c9fa55be3fbaebd86c416 Martin Tournoij <martin@arp242.net> 1469934080 +0200	pull: Fast-forward
 13affe57da9efa67d20c9fa55be3fbaebd86c416 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470011520 +0200	pull: Fast-forward
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470025269 +0200	checkout: moving from master to GoSameIds
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c c9fb722b644cadd0d2af86a2d71439fefc434439 Martin Tournoij <martin@arp242.net> 1470025270 +0200	commit: Fix :GoSameIds for light background and after changing colour schemes
+c9fb722b644cadd0d2af86a2d71439fefc434439 e64f1b91ca401adad08c3b9cc1998b069c98f8cd Martin Tournoij <martin@arp242.net> 1470025648 +0200	commit: Also set GUI
+e64f1b91ca401adad08c3b9cc1998b069c98f8cd 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470073454 +0200	checkout: moving from GoSameIds to master
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470073516 +0200	checkout: moving from master to reset-shell
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470073521 +0200	checkout: moving from reset-shell to master
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470073649 +0200	checkout: moving from master to doc-cleanup
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c be3106708636b3717a5eac33088a54b5024e6775 Martin Tournoij <martin@arp242.net> 1470074107 +0200	commit (merge): Merge remote-tracking branch 'svanburen/patch-2' into doc-cleanup
+be3106708636b3717a5eac33088a54b5024e6775 ae0e65a9ebc3412d40abc4d91475140fad1b5da8 Martin Tournoij <martin@arp242.net> 1470074487 +0200	commit: Sync troubleshooting section with the wiki
+ae0e65a9ebc3412d40abc4d91475140fad1b5da8 f5d12d7cb6d1cf05238d3fa70758bfe1b7f11000 Martin Tournoij <martin@arp242.net> 1470075010 +0200	commit: Mention Vim packages
+f5d12d7cb6d1cf05238d3fa70758bfe1b7f11000 0c38f343991eea30894543131787c7b81adaecdf Martin Tournoij <martin@arp242.net> 1470075083 +0200	commit (amend): Mention Vim packages
+0c38f343991eea30894543131787c7b81adaecdf e7f409528504c97e5988824130395b53ee71d597 Martin Tournoij <martin@arp242.net> 1470079125 +0200	commit: Fix errors reported by vimhelplint
+e7f409528504c97e5988824130395b53ee71d597 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470079873 +0200	checkout: moving from doc-cleanup to master
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470079878 +0200	checkout: moving from master to windows-shell
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 53261bc0a44fd6ca08d0ebafd4dc03219690f212 Martin Tournoij <martin@arp242.net> 1470080425 +0200	commit: More robust resetting of the shell.
+53261bc0a44fd6ca08d0ebafd4dc03219690f212 2dfd933c5d16f74c83bca110054707f66faa509a Martin Tournoij <martin@arp242.net> 1470080968 +0200	commit: Use go#util#IsWin
+2dfd933c5d16f74c83bca110054707f66faa509a 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470082310 +0200	checkout: moving from windows-shell to master
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470082315 +0200	checkout: moving from master to sign-test
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470623911 +0200	checkout: moving from sign-test to master
+3030ecc86602b460cb4c1fcbd4ed210f32498c1c e7f5e5756e4722ec4998264a4344fa02c5820a75 Martin Tournoij <martin@arp242.net> 1470623919 +0200	pull: Fast-forward
