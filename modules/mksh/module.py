@@ -1,0 +1,3 @@
+files = {
+	'~/.mkshrc': 'mkshrc',
+}
