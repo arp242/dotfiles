@@ -1,8 +1,9 @@
 # $dotid$
+# TODO: alias precmd for branch stuff?
 
-# Update xterm title & git/hg branch on directory change (special alias)
 if ( $uname != win32 && -f ~/.tcsh/cwdcmd.tcsh ) then
 	alias cwdcmd source ~/.tcsh/cwdcmd.tcsh
+	cwdcmd
 else
 	unalias cwdcmd
 endif
@@ -15,7 +16,6 @@ if ($uname == FreeBSD) then
 	alias la "ls-F -A"
 	alias lc "ls-F -lThoI"
 	alias lac "ls-F -lThoA"
-	alias pdiff "diff -urN -x CVS -x .svn -I '^# .FreeBSD: '"
 
 	# bsdgrep is FreeBSD >=9
 	# bsdgrep doesn't seem stable/reliable (yet)
@@ -36,8 +36,6 @@ else if ($uname == OpenBSD) then
 		alias lc "ls -FlTho"
 		alias lac "ls -FAlTho"
 	endif
-
-	alias pdiff "diff -urN -x CVS -x .svn -I '^# .OpenBSD: '"
 else if ($uname == SunOS) then
 	alias ls "ls-F"
 	alias la "/bin/ls -FA"
@@ -161,3 +159,5 @@ alias muttp mutt -F ~/.mutt/muttrc-prive
 alias muttw mutt -F ~/.mutt/muttrc-work
 alias mutt-sunbeam mutt -F ~/.mutt/muttrc-sunbeam
 #alias mutt /usr/bin/mutt -F ~/.mutt/muttrc-prive
+
+alias rdiff "diff -urN -x CVS -x .svn -x .git -x .hg "

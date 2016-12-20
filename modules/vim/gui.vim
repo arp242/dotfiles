@@ -1,7 +1,7 @@
 " $dotid$
 
 if has("gui_running")
-	" Default width & height; autocmd to prevent resize when re-loading vimrc
+	" Default width & height; autocmd to prevent resize when reloading vimrc
 	autocmd VimEnter * set lines=55 columns=120
 
 	" Use pop-up menu for right button
@@ -28,4 +28,7 @@ if has("gui_running")
 	" i: Use icon
 	" M: No menu
 	set guioptions=aiM
+
+	" Don't iconfy on <C-z>
+	noremap <C-z> <NOP>
 endif

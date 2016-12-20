@@ -118,7 +118,7 @@ endif
 if (-f "$HOME/Local/python-startup") setenv PYTHONSTARTUP ~/Local/python-startup
 
 # This makes font looks non-ugly in Java applications
-#setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+setenv _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 
 # Stupid Android Sdk tricks
 #setenv ANDROID_HOME /home/martin/milo/android-sdk-linux

@@ -133,7 +133,7 @@
 <Multi_key>  <percent>      <percent>      :  "‰" U02030          # % % (PER MILLE SIGN)                              
 <Multi_key>  <o>            <o>            :  "∞" U0221e          # o o (INFINITY)                                    
 <Multi_key>  <s>            <r>            :  "√" U0221a          # s r (SQUARE ROOT)                                 
-<Multi_key>  <minus>        <minus>        :  "−" U02212          # - - (MINUS SIGN)                                  
+#<Multi_key>  <minus>        <minus>        :  "−" U02212          # - - (MINUS SIGN)                                  
 
 
 # Miscellaneous
@@ -343,6 +343,8 @@
 <Multi_key>  <greater>      <period>       :  "›" U0203a          # > . (SINGLE RIGHT-POINTING ANGLE QUOTATION MARK)  
 <Multi_key>  <minus>        <s>            :  "­" hyphen          # - s (SOFT HYPHEN)                                 
 <Multi_key>  <minus>        <n>            :  "–" U02013          # - n (EN DASH)                                     
+<Multi_key>  <minus>        <minus>        :  "–" U02013          # - - (EN DASH)                                  
+
 <Multi_key>  <minus>        <m>            :  "—" U02014          # - m (EM DASH)                                     
 <Multi_key>  <underscore>   <asciicircum>  :  "¯" macron          # _ ^ (MACRON)                                      
 <Multi_key>  <comma>        <minus>        :  "¬" notsign         # , - (NOT SIGN)                                    

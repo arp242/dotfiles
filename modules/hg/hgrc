@@ -4,7 +4,7 @@
 username = Martin Tournoij <martin@arp242.net>
 
 [trusted]
-users = martin, 1001, martin_firefox
+users = martin, 1001
 
 [tortoisehg]
 editor = xterm -e vim

@@ -4,7 +4,7 @@
 # TODO: Give module.py the ability to add more ignore patterns
 #
 
-import hashlib, glob, os, pprint, tempfile, subprocess, re, sys, shutil
+import hashlib, glob, os, pprint, tempfile, subprocess, re, sys, shutil, time
 
 if sys.version_info[0] < 3:
 	print('Needs Python 3')
@@ -124,7 +124,7 @@ class Date:
 	def file_is_modified(self, src, dest):
 		return 1
 
-if True:
+if False:
 	vcs = Hg()
 else:
 	vcs = Date()

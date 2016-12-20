@@ -64,4 +64,4 @@ echo "$html" \
 	| sed -n "s/.*TRANSLATED_TEXT='\(.*\)';INP.*/\1/p;" \
 	| sed 's/\\x3cbr\\x3e/\
 /g' \
-	| python -c 'import sys; print sys.stdin.read().replace(r"\x3cbr\x3e", "\n").strip()'
+	| python -c 'import sys; print(sys.stdin.read().replace(r"\x3cbr\x3e", "\n").strip())'

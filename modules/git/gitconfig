@@ -22,6 +22,7 @@
 
 [merge]
 	tool = vimdiff
+	renamelimit = 9001
 
 [commit]
 	gpgSign = true

@@ -1,9 +1,13 @@
-" $dotid$
+" $dotid: 101$
 
 " Basic vimrc file for testing/debugging
 " vim -u ~/.vim/basic
 
-set nocompatible
+"set nocompatible
+"set expandtab
+"set tabstop=4
+"set softtabstop=4
+"set shiftwidth=4
 
-syntax on
+"syntax on
 filetype plugin indent on

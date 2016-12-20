@@ -121,6 +121,7 @@ set wildignorecase
 
 " Insert mode completion
 set completeopt=longest,menuone
+"set completeopt=longest,menuone,noinsert
 
 " Don't make completion menu too high
 set pumheight=10
@@ -174,9 +175,9 @@ set matchpairs+=<:>
 set noexpandtab
 
 " ...which are always 4 spaces wide
-set ts=4
-set sw=4
-set sts=4
+set tabstop=4
+set shiftwidth=0    " Use tabstop
+set softtabstop=-1  " Use shiftwidth
 
 " Set (& create if needed) a temp directory to keep backup, swap, and undo files
 set backupdir=$HOME/.vim/tmp/backup
@@ -192,16 +193,15 @@ endif
 " Switch syntax highlighting on
 syntax on
 
+" Maximum column in which to search for syntax items.
+set synmaxcol=500
+
 " Use standard color scheme (some Linuxes feel the need to overwrite this in
 " global vimrc)
 colorscheme default
 
 " My terminal has a white background colour
 set background=light
-
-" For testing...
-"colorscheme darkblue
-"set background=dark
 
 " Prevent clearing the terminal on exit
 set t_te=
@@ -211,3 +211,6 @@ filetype plugin indent on
 
 " I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim)
 set mouse=
+
+" Don't increment octal numbers
+set nrformats=bin,hex

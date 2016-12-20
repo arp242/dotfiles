@@ -10,10 +10,12 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 nnoremap <F1> :helpclose<CR>
 inoremap <F1> <C-o>:helpclose<CR>
 
+nnoremap <F1> :buffers<CR>
 nnoremap <F2> :registers<CR>
 nnoremap <F3> :UndotreeToggle<CR>
 nnoremap <F4> :SyntasticToggleMode<CR>
 
+nnoremap <F9> :set shiftround!<CR>:set shiftround?<CR>
 nnoremap <F10> :set list!<CR>:set list?<CR>
 nnoremap <F11> :set cursorcolumn!<CR>:set cursorcolumn?<CR>
 nnoremap <F12> :set paste!<CR>:set paste?<CR>
@@ -87,11 +89,10 @@ inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 nnoremap <expr> <C-@> pumvisible() ?  "i\<C-n>" : 'i' . GuessType()
 
-
 " Home works like 0 if already at start of a line, and ^ otherwise
-" From: http://vim.wikia.com/wiki/VimTip315
-" TODO: Can be improved
-noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
+" Adapted from: http://vim.wikia.com/wiki/VimTip315
+noremap <expr> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
+"noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
 " I often mistype this :-/

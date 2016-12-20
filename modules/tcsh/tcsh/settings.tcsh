@@ -39,17 +39,10 @@ set listlinks
 set listjobs
 
 # Show current dir
-set prompt = "[%~]%# "
-
-# Blue prompt if we're in a sandbox
-if ( ${?SANDBOX} == 1 ) then
-	set blue = "%{\033[34m%}"
-	set end = "%{\033[0m%}"
-	set prompt = "[%~]${blue}%#${end} "
-endif
+#set prompt = "[%~]%# "
 
 # Use % for normal user and # for super
-set promptchars = "%#"
+#set promptchars = "%#"
 
 # Show date & hostname on right side
 set rprompt = "%B%U%m%b%u:%T"

@@ -77,16 +77,6 @@ endfun
 command! Scroll call s:scroll()
 
 
-" Make directory for current filename
-fun! s:mkdir()
-	let l:dir = expand('%:p:h')
-	if !isdirectory(l:dir)
-		call mkdir(l:dir, 'p')
-	endif
-endfun
-command! Mkdir call s:mkdir()
-
-
 " Set tabstop, softtabstop, and shiftwidth in one go
 command! -nargs=1 TS setlocal ts=<args> sts=<args> sw=<args>
 

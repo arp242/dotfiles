@@ -11,10 +11,13 @@ fun! s:color()
 	highlight HardWrap ctermbg=225 guibg=lightyellow
 endfun
 call s:color()
-augroup wrap
+augroup softwrap
 	autocmd!
 	autocmd Colorscheme * call s:color()
-augroup end
 
-call matchadd('SoftWrap', '\%82v')
-call matchadd('HardWrap', '\%122v')
+	" I don't know why this needs to be in this autocmd, but sometimes it won't
+	" work if it's not...
+	autocmd BufReadPost,BufNew *
+		\  call matchadd('SoftWrap', '\%82v')
+		\| call matchadd('HardWrap', '\%122v')
+augroup end

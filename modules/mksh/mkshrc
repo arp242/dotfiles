@@ -203,4 +203,7 @@ fi
 \bind '^[[A'=search-history-up
 \bind '^[[B'=search-history-down
 
+#\bind -m '^[[A'='^[[5~^E'
+#\bind -m '^[[B'='^[[6~^E'
+
 # vim:filetype=sh

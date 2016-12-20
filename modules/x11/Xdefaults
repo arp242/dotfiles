@@ -17,6 +17,7 @@ XTerm*locale: UTF-8
 
 ! Nice font
 XTerm*faceName: DejaVu Sans Mono
+!XTerm*faceName: Go Mono
 XTerm*faceSize: 12
 XTerm*faceSize1: 12
 XTerm*faceSize2: 12
@@ -39,3 +40,7 @@ XTerm*cutNewline: off
 
 ! <Alt> + key also works (and not just <Esc> key)
 XTerm*metaSendsEscape: true
+
+! https://lukas.zapletalovi.com/2013/07/hidden-gems-of-xterm.html
+XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+XTerm*translations: #override Shift <Btn1Up>: exec-formatted("chromium '%t'", PRIMARY)
