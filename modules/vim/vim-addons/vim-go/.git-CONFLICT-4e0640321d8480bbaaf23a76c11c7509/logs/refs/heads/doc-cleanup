@@ -1,6 +1,0 @@
-0000000000000000000000000000000000000000 3030ecc86602b460cb4c1fcbd4ed210f32498c1c Martin Tournoij <martin@arp242.net> 1470073649 +0200	branch: Created from HEAD
-3030ecc86602b460cb4c1fcbd4ed210f32498c1c be3106708636b3717a5eac33088a54b5024e6775 Martin Tournoij <martin@arp242.net> 1470074107 +0200	commit (merge): Merge remote-tracking branch 'svanburen/patch-2' into doc-cleanup
-be3106708636b3717a5eac33088a54b5024e6775 ae0e65a9ebc3412d40abc4d91475140fad1b5da8 Martin Tournoij <martin@arp242.net> 1470074487 +0200	commit: Sync troubleshooting section with the wiki
-ae0e65a9ebc3412d40abc4d91475140fad1b5da8 f5d12d7cb6d1cf05238d3fa70758bfe1b7f11000 Martin Tournoij <martin@arp242.net> 1470075010 +0200	commit: Mention Vim packages
-f5d12d7cb6d1cf05238d3fa70758bfe1b7f11000 0c38f343991eea30894543131787c7b81adaecdf Martin Tournoij <martin@arp242.net> 1470075083 +0200	commit (amend): Mention Vim packages
-0c38f343991eea30894543131787c7b81adaecdf e7f409528504c97e5988824130395b53ee71d597 Martin Tournoij <martin@arp242.net> 1470079125 +0200	commit: Fix errors reported by vimhelplint
