@@ -83,3 +83,25 @@ command! -nargs=1 TS setlocal ts=<args> sts=<args> sw=<args>
 
 " Get the syntax name of character under the cursor
 command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')
+
+fun! s:toggle_qmode()
+	if !exists('b:qmode')
+		let b:qmode = 1
+		inoremap ' ’
+		inoremap ` ‘
+		inoremap `` “
+		inoremap '' ”
+		inoremap " ”
+		echo "Using smart quotes"
+	else
+		unlet b:qmode
+		iunmap '
+		iunmap `
+		iunmap ``
+		iunmap ''
+		iunmap "
+		echo "Using regular quotes"
+	endif
+endfun
+
+command! ToggleQuotes call s:toggle_qmode()

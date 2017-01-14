@@ -98,3 +98,6 @@ imap <silent> <Home> <C-O><Home>
 " I often mistype this :-/
 cabbr Set set
 cabbr Help help
+
+" My fingers just can't get this stupid thing right :-/
+iabbr teh the

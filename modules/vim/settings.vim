@@ -214,3 +214,6 @@ set mouse=
 
 " Don't increment octal numbers
 set nrformats=bin,hex
+
+" Don't include nroff stuff
+set paragraphs=

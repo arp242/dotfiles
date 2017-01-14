@@ -3,6 +3,8 @@
 "let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 "let g:go_list_type = "quickfix"
 
+let g:go_fmt_experimental = 1
+
 fun! s:setup()
 	let g:go_highlight_trailing_whitespace_error = 0
 	let g:go_highlight_fold_blocks = 0
@@ -19,7 +21,7 @@ fun! s:setup()
 
 	" Fix christmas tree bullshit
 	" https://github.com/fatih/vim-go/pull/1030
-	:highlight link goPredefinedIdentifiers goBoolean
+	highlight link goPredefinedIdentifiers goBoolean
 endfun
 
 fun! s:path(pkg)
