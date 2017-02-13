@@ -1,0 +1,26 @@
+umask 022
+
+_exists() { hash $1 2>/dev/null }
+
+prefix=0
+if [[ -d /usr/pkg/bin ]]; then      # NetBSD
+	prefix=/usr/pkg
+elif [[ -d /usr/local/bin ]]; then  # FreeBSD, OpenBSD
+	set prefix = /usr/local
+fi
+
+_exists uname && uname=$(uname) || uname=win32
+
+source ~/.zsh/settings.zsh
+source ~/.zsh/completion.zsh
+source ~/.zsh/commands.zsh
+source ~/.zsh/keys.zsh
+
+unfunction _exists
+
+# We're ssh-ing into vagrant
+if [[ -d /vagrant ]]; then
+	#cd /vagrant
+	#export TERM=xterm
+	setopt ignoreeof         # Don't logout on ^D
+fi

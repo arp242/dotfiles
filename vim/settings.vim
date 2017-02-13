@@ -111,7 +111,7 @@ set scrolloff=5
 set wildmenu
 
 " Ignore these files in completion
-set wildignore=*.o,*.pyc,*.png,*.jpg
+set wildignore=*.o,*.pyc,*.png,*.jpg,*_test.go
 
 " List all matches, and complete to the longest unambiguous string
 set wildmode=list:longest

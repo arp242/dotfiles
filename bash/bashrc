@@ -1,6 +1,6 @@
-# $dotid$
-#
-# If not running interactively, don't do anything
+# $dotid: 95$
+
+# Don't do anything if not running interactively
 [[ $- != *i* ]] && return
 
 # Just the cwd in the prompt
@@ -18,8 +18,8 @@ if [ -x vim ]; then
 fi
 
 # Aliases
-alias ls='ls -F --color'
+alias ls='ls -NF --color'
 alias l='ls'
 alias la='ls -a'
 alias lc='ls -lh'
-alias lac='ls -Falh'
+alias lac='ls -alh'
