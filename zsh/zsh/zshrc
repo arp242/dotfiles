@@ -1,15 +1,13 @@
+ZDOTDIR=~/.zsh
 umask 022
 
 _exists() { hash $1 2>/dev/null }
-
-prefix=0
-if [[ -d /usr/pkg/bin ]]; then      # NetBSD
-	prefix=/usr/pkg
-elif [[ -d /usr/local/bin ]]; then  # FreeBSD, OpenBSD
-	set prefix = /usr/local
-fi
-
 _exists uname && uname=$(uname) || uname=win32
+
+source ~/.zsh/env.zsh
+
+# Our work here is done if not an interactive shell
+[[ -o zle ]] || exit 0
 
 source ~/.zsh/settings.zsh
 source ~/.zsh/completion.zsh
@@ -17,6 +15,12 @@ source ~/.zsh/commands.zsh
 source ~/.zsh/keys.zsh
 
 unfunction _exists
+
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dircycle/dircycle.plugin.zsh
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirhistory/dirhistory.plugin.zsh
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirpersist/dirpersist.plugin.zsh
+# https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/tmux
+source ~/.zsh/plugins/*.zsh
 
 # We're ssh-ing into vagrant
 if [[ -d /vagrant ]]; then

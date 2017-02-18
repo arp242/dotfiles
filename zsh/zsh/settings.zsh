@@ -3,15 +3,19 @@
 ### Various
 setopt nomatch               # Show error if globbing fails
 setopt notify                # Report status of bg jobs immediately
-unsetopt beep                # Don't beep
 setopt nohup                 # Don't kill background jobs when exiting
 setopt noclobber             # Don't clobber existing files with >
-setopt printexitvalue        # Show exit code if non-zero
+# TODO: too noise; would prefer it to just print "Exit n"
+#setopt printexitvalue        # Show exit code if non-zero
+unsetopt beep                # Don't beep
+unsetopt bgnice              # Don't frob with nicelevels
+unsetopt autoremoveslash     # Too magic for my liking
 
 #setopt extendedglob
 
 # https://wiki.archlinux.org/index.php/Zsh#Dirstack
 #setopt autopushd
+#setopt pushdminus
 #setopt pushdignoredups
 
 # Disable ^S/^Q - I never use them and I can use those keys in Vim now
@@ -36,7 +40,8 @@ zstyle ':vcs_info:*' formats '(%b)'
 
 set_prompt() {
 	vcs_info
-	echo "[%~]${vcs_info_msg_0_}%# "
+	# TODO: Ignore 130 (^C)
+	echo "%(?..%S %? %s)[%~]${vcs_info_msg_0_}%# "
 }
 
 set_rprompt() {

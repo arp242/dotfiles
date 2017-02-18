@@ -129,3 +129,17 @@ fun! s:mail()
 			\| endif
 	augroup end
 endfun
+
+" Show formatting characters in insert mode
+augroup help_start
+    autocmd!
+    autocmd FileType help call s:help()
+augroup end
+
+fun! s:help()
+    augroup help_insert
+        autocmd!
+        autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore
+        autocmd InsertLeave <buffer> setlocal conceallevel=2
+    augroup end
+endfun

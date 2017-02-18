@@ -18,7 +18,7 @@
 	mnemonicprefix = true
 
 [push]
-	default = simple
+	default = current
 
 [merge]
 	tool = vimdiff

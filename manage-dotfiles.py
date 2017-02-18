@@ -186,11 +186,12 @@ def manage_files(files):
         if os.path.exists(src):
             with open(src, 'rb') as fp:
                 is_binary = False
-                try:
-                    with open(dest, 'r') as testfp:
-                        testfp.read()
-                except UnicodeDecodeError:
-                    is_binary = True
+                if os.path.exists(dest):
+                    try:
+                        with open(dest, 'r') as testfp:
+                            testfp.read()
+                    except UnicodeDecodeError:
+                        is_binary = True
 
                 if is_binary or b'\x00' in fp.read(2048) and os.path.exists(dest):
                     h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
