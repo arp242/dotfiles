@@ -45,8 +45,11 @@ let g:syntastic_check_on_wq = 0
 " The default of -W2 is too verbose
 let g:syntastic_ruby_mri_args = "-W1 -T1"
 
-"" Use the Bourne shell, and not tcsh
+" Use the Bourne shell, and not tcsh
 let g:syntastic_shell = "/bin/bash"
+
+
+let g:syntastic_mode_map = {'passive_filetypes': ['go', 'python']}
 
 " Set my statusline
 fun! s:set_stl()
@@ -89,8 +92,7 @@ autocmd Filetype * call s:set_stl()
 " Check these out, maybe
 " https://github.com/gioele/vim-autoswap
 " https://github.com/justinmk/vim-sneak
-" https://github.com/machakann/vim-vimhelplint
-" https://guthub.com/godlygeek/tabular
 
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
+" Don't enable by default
+let g:gitgutter_enabled = 0
+
