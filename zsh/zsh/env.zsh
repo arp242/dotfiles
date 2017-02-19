@@ -1,36 +1,51 @@
-# http://zsh.sourceforge.net/Doc/Release/Files.html#SEC26
-_exists() { hash $1 2>/dev/null }
-uname=$(uname)
-prefix=0
-
 # Setup PATH
-typeset -U path
-path=(~/Local/bin /sbin /bin /usr/sbin /usr/bin /usr/games $path[@])
-[[ "$prefix" != 0 ]] && path=($path[@] "${prefix}/bin" "${prefix}/sbin")
-[[ -d "/usr/X11R6/bin" ]] && path=($path[@] /usr/X11R6/bin /usr/X11R6/sbin)
+typeset -U path  # No duplicates
 
-if [[ -d "/usr/local/bin" && $prefix != "/usr/local" ]]; then
-	path=(/usr/local/bin /usr/local/sbin $path[@])
-fi
+# On Arch and some other systems some of these are links, so use the full path
+# to prevent dupes.
+_prepath() {
+	local dir=$1
+	[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
+	[[ ! -d "$dir" ]] && return
+	path=("$dir" $path[@])
+}
+_postpath() {
+	local dir=$1
+	[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
+	[[ ! -d "$dir" ]] && return
+	path=($path[@] "$dir")
+}
 
-# Only use the newest Ruby
-if [[ -d "$HOME/.gem/ruby/2.4.0/bin" ]]; then
-	path=($path[@] "${PATH}:$HOME/.gem/ruby/2.4.0/bin")
-elif [[ -d "$HOME/.gem/ruby/2.3.0/bin" ]]; then
-	path=($path[@] "${PATH}:$HOME/.gem/ruby/2.3.0/bin")
-elif [[ -d "$HOME/.gem/ruby/2.2.0/bin" ]]; then
-	path=($path[@] "${PATH}:$HOME/.gem/ruby/2.2.0/bin")
-elif [[ -d "$HOME/.gem/ruby/2.1.0/bin" ]]; then
-	path=($path[@] "${PATH}:$HOME/.gem/ruby/2.1.0/bin")
-fi
+_prepath /bin
+_prepath /sbin
+_prepath /usr/bin
+_prepath /usr/sbin
+_prepath /usr/games
+_prepath /usr/pkg/bin    # NetBSD
+_prepath /usr/pkg/sbin
+_prepath /usr/X11R6/bin  # OpenBSD
+_prepath /usr/X11R6/sbin
+_prepath /usr/local/bin
+_prepath /usr/local/sbin
 
-# Setup Go
-export GOPATH=$HOME/gocode:$HOME/code:$HOME/go
-[[ -d "$HOME/gocode/bin" ]] && path=($path[@] "${PATH}:$HOME/gocode/bin")
-[[ -d "$HOME/code/bin" ]] && path=($path[@] "${PATH}:$HOME/gocode/bin")
+# Ruby
+_postpath "$HOME/.gem/ruby/2.1.0/bin"
+_postpath "$HOME/.gem/ruby/2.2.0/bin"
+_postpath "$HOME/.gem/ruby/2.3.0/bin"
+_postpath "$HOME/.gem/ruby/2.4.0/bin"
+
+# Go
+_postpath "$HOME/go/bin"
+_postpath "$HOME/code/bin"
+
+_prepath "$HOME/Local/bin"
+
+unfunction _prepath
+unfunction _postpath
 
 # Various applications settings
-#export=BLOCKSIZE K
+export GOPATH=$HOME/go:$HOME/code
+export BLOCKSIZE=K
 export PAGER=less
 export LESS="--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 
@@ -109,5 +124,3 @@ _exists firefox && export BROWSER=firefox
 
 # This makes font looks non-ugly in Java applications
 export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
-
-unfunction _exists

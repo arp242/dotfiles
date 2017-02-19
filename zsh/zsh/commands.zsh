@@ -66,6 +66,8 @@ alias Grep="grep"
 alias les=less
 alias les=less
 alias Less=less
+alias cd.='cd .'
+alias cd..='cd ..'
 
 # Global aliases
 alias -g /t='| tail'
