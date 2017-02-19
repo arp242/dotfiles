@@ -1,7 +1,0 @@
-#!/bin/sh
-# $dotid$
-
-vim -p "$@"
-for f in "$@"; do
-	[ -f "$f" ] && chmod a+x "$f"
-done

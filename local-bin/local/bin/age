@@ -1,4 +1,0 @@
-#!/bin/sh
-# $dotid$
-
-vim -p `ag "$@" | cut -d: -f1 | sort -u | xargs`

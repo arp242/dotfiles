@@ -1,0 +1,35 @@
+#!/bin/sh
+# $dotid$
+
+set -eC
+
+#displays=$(xrandr --verbose | grep ' connected ')
+#IFS="
+#"
+#names=""
+#for d in displays; do
+#	name=$(echo "$d" | cut -d ' ' -f 1)
+#	names="$names $name"
+#done
+
+
+hdmi() {
+	xrandr \
+		--output HDMI1 --primary --mode 1920x1080 --pos 0x0 \
+		--output eDP1 --off
+}
+
+laptop() {
+	xrandr \
+		--output eDP1 --primary --mode 1920x1080 --pos 0x0 \
+		--output HDMI1 --off
+}
+
+if [ "$1" = "hdmi" ]; then
+	hdmi
+elif [ "$1" = "laptop" ]; then
+	laptop
+else
+	echo "Unknown screen"
+	exit 1
+fi

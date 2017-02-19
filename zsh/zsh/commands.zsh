@@ -73,3 +73,27 @@ alias cd..='cd ..'
 alias -g /t='| tail'
 alias -g /v='| vim -'
 alias -g /l='| less'
+
+# Functions
+
+# csh habit...
+setenv() {
+	typeset -x "${1}${1:+=}${(@)argv[2,$#]}"
+}
+
+# "ag edit" and "grep edit".
+age() {
+	vim -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
+}
+grepe() {
+	vim -p $(grep $@ | cut -d: -f1 | sort -u | xargs)
+}
+
+# Rename all files in the current directory to lowercase
+lwr() {
+	for f in ./*; do
+		nf="$(echo "${f}" | tr '[:upper:]' '[:lower:]')"
+		echo "mv -v \"${f}\" \"${nf}\""
+		#mv -v "${f}" "${nf}"
+	done
+}

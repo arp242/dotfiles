@@ -1,5 +1,4 @@
 #!/bin/sh
-#
 # $dotid$
 
 set -euC

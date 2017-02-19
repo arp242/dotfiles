@@ -5,7 +5,7 @@
 # Adapted from: https://github.com/ddollar/git-utils
 #
 
-set -e
+set -euC
 
 curbranch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$curbranch" = "" ]; then

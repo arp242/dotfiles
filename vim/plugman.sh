@@ -67,11 +67,16 @@ for repo in $want; do
 		(
 			cd "$dirname"
 			git pull --quiet
+			[ -d doc ] && vim -u NONE --noplugins +':helptags doc' +:q >/dev/null 2>&1 &
 		)
 	# Install new
 	else
 		[ "$mode" = "update" ] && continue
 		printf "cloning '$repo' to '$dirname'"
 		git clone --quiet "git@github.com:$repo" "$dirname"
+		(
+			cd "$dirname"
+			[ -d doc ] && vim -u NONE --noplugins +':helptags doc' +:q >/dev/null 2>&1 &
+		)
 	fi
 done

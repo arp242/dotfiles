@@ -1,0 +1,4 @@
+#!/bin/sh
+# $dotid$
+
+wine /home/martin/Local/foobar2000/foobar2000.exe &
