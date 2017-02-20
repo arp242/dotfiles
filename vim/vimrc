@@ -8,6 +8,7 @@ source ~/.vim/dirvish.vim
 source ~/.vim/autocmd.vim
 source ~/.vim/commands.vim
 source ~/.vim/keys.vim
+source ~/.vim/macros.vim
 source ~/.vim/gui.vim
 source ~/.vim/softwrap.vim
 source ~/.vim/go.vim

@@ -8,10 +8,9 @@ set history=500
 
 " '50  save fewer marks
 " <0   prevent saving registers
-" s10  max size of 10k
 "
 " Neovim also has a different viminfo format, so store that somewhere else
-set viminfo='50,<0,s10,n~/.vim/tmp/viminfo
+set viminfo='50,<0,n~/.vim/tmp/viminfo
 if has('nvim') 
 	let &viminfo .= '.nvim'
 endif
@@ -217,3 +216,6 @@ set nrformats=bin,hex
 
 " Don't include nroff stuff
 set paragraphs=
+
+" Use ~ as an operator; e.g. ~w
+set tildeop

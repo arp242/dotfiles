@@ -86,7 +86,11 @@ fun! s:set_stl()
 	"let &stl .= '(${InsertLeave system("date")[:-2]})'
 	call helpline#process()
 endfun
-autocmd Filetype * call s:set_stl()
+augroup stl
+	autocmd!
+	autocmd Filetype * call s:set_stl()
+	autocmd BufEnter * call s:set_stl()
+augroup end
 
 
 " Check these out, maybe

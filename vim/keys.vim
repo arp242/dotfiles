@@ -15,6 +15,7 @@ nnoremap <F2> :registers<CR>
 nnoremap <F3> :UndotreeToggle<CR>
 nnoremap <F4> :SyntasticToggleMode<CR>
 nnoremap <F5> :GitGutterToggle<CR>
+nnoremap <F6> :TricycleToggle<CR>
 
 nnoremap <F9> :set shiftround!<CR>:set shiftround?<CR>
 nnoremap <F10> :set list!<CR>:set list?<CR>
@@ -102,3 +103,4 @@ cabbr Help help
 
 " My fingers just can't get this stupid thing right :-/
 iabbr teh the
+iabbr Teh The

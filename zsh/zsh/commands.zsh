@@ -51,9 +51,6 @@ elif _exists dig; then
 	alias drill=dig
 fi
 
-# CSH habit...
-setenv() { typeset -x "${1}${1:+=}${(@)argv[2,$#]}" }
-
 # Typos
 alias sl="ls"
 alias l="ls"
@@ -70,9 +67,9 @@ alias cd.='cd .'
 alias cd..='cd ..'
 
 # Global aliases
-alias -g /t='| tail'
-alias -g /v='| vim -'
-alias -g /l='| less'
+alias -g /t='|& tail'
+alias -g /v='|& vim -'
+alias -g /l='|& less'
 
 # Functions
 

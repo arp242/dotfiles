@@ -1,9 +1,9 @@
 " $dotid$
 
-fun! s:dirvish() abort
-	" Make paths in the Dirvish buffer relative to getcwd().
-	let g:dirvish_relative_paths = 1
+" Make paths in the Dirvish buffer relative to getcwd().
+let g:dirvish_relative_paths = 1
 
+fun! s:dirvish() abort
 	" U for up
 	nnoremap <buffer> <silent> U :Dirvish %:h:h<CR>
 
@@ -17,6 +17,7 @@ fun! s:dirvish() abort
 	" Launch shell in cwd
 	nnoremap <buffer> <C-t> :lcd %<CR>:silent exec '!' . (has('gui_running') ? 'xterm -e ' : '') . $SHELL<CR>:lcd<CR><C-l>
 
+	" Hide dotfiles/wildignore
 	nnoremap <nowait> <buffer> <silent> gw :call ToggleFilter('dirvish_wildignore', '/\v\.(png<Bar>jpg<Bar>jpeg<Bar>pyc)$/')<CR>
 	nnoremap <nowait> <buffer> <silent> gh :call ToggleFilter('dirvish_dotfiles', '@\v/\.[^\/]+/?$@')<CR>
 
