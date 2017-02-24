@@ -7,7 +7,7 @@ _exists uname && uname=$(uname) || uname=win32
 source ~/.zsh/env.zsh
 
 # Our work here is done if not an interactive shell
-[[ -o zle ]] || exit 0
+[[ -o interactive ]] || exit 0
 
 source ~/.zsh/settings.zsh
 source ~/.zsh/completion.zsh
@@ -28,3 +28,5 @@ if [[ -d /vagrant ]]; then
 	#export TERM=xterm
 	setopt ignoreeof         # Don't logout on ^D
 fi
+
+fortune -a

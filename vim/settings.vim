@@ -1,4 +1,4 @@
-" $dotid$
+" $dotid: 101$
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
@@ -110,7 +110,8 @@ set scrolloff=5
 set wildmenu
 
 " Ignore these files in completion
-set wildignore=*.o,*.pyc,*.png,*.jpg,*_test.go
+"set wildignore=*.o,*.pyc,*.png,*.jpg,*_test.go
+set wildignore=*.o,*.pyc,*.png,*.jpg
 
 " List all matches, and complete to the longest unambiguous string
 set wildmode=list:longest

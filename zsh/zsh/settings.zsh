@@ -1,34 +1,41 @@
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
 
-### Various
+# Disable ^S/^Q - I never use that and I can actually use those keys now
+stty -ixon
+setopt noflowcontrol
+
 setopt nomatch               # Show error if globbing fails
 setopt notify                # Report status of bg jobs immediately
 setopt nohup                 # Don't kill background jobs when exiting
 setopt noclobber             # Don't clobber existing files with >
-# TODO: too noise; would prefer it to just print "Exit n"
-#setopt printexitvalue        # Show exit code if non-zero
-unsetopt beep                # Don't beep
-unsetopt bgnice              # Don't frob with nicelevels
-unsetopt autoremoveslash     # Too magic for my liking
+setopt nobeep                # Don't beep
+setopt nobgnice              # Don't frob with nicelevels
+setopt noautoremoveslash     # Too magic for my liking
+setopt interactivecomments   # Allow comments in interactive shells
+#setopt extendedglob          # More globbing characters
 
-#setopt extendedglob
+### Directory
+setopt cdablevars            # Allow "go/desk" instead "~go/desk"
+setopt autopushd             # Automatically keep a history
+setopt pushdminus            # -0 counts from top, +0 from bottom
+setopt pushdsilent           # Don't show stack after using pushd
+setopt pushdignoredups       # Don't store duplicate entries
 
-# https://wiki.archlinux.org/index.php/Zsh#Dirstack
-#setopt autopushd
-#setopt pushdminus
-#setopt pushdignoredups
-
-# Disable ^S/^Q - I never use them and I can use those keys in Vim now
-stty -ixon
-setopt noflowcontrol
+# I go here a lot; "cd ~tw/project"
+tw=/home/martin/work/src/github.com/teamwork
+go=/home/martin/go/src/arp242.net
+code=/data/code
 
 ### History
 setopt hist_ignore_dups      # Ignore duplicate in history.
-setopt interactivecomments   # Allow comments in interactive shells
 setopt appendhistory         # Append to history, rather than overwriting
-HISTFILE=~/.zsh/history
-HISTSIZE=8000
-SAVEHIST=4000
+setopt incappendhistory      # Append immediately rather than only at exit
+#setopt sharehistory          # Also read back new commands when writing history
+setopt extendedhistory       # Store some metadata as well
+setopt histnostore           # Don't store history or fc commands
+HISTFILE=~/.zsh/history      # Store history here
+HISTSIZE=8000                # Max. entries to keep in memory
+SAVEHIST=8000                # Max. entries to save to file
 
 ### Prompt
 setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT

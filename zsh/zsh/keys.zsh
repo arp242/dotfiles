@@ -10,16 +10,19 @@ zle -N edit-command-line
 zle -N insert-sudo insert_sudo
 
 bindkey '^[[A'  up-line-or-beginning-search    # Arrow up
+bindkey '^[OA'  up-line-or-beginning-search
 bindkey '^[[B'  down-line-or-beginning-search  # Arrow down
+bindkey '^[OB'  down-line-or-beginning-search
 bindkey '^[[H'  beginning-of-line              # Home
-bindkey '^[[1~' beginning-of-line              # Home
+bindkey '^[[1~' beginning-of-line
 bindkey '^[[F'  end-of-line                    # End
-bindkey '^[[4~' end-of-line                    # End
+bindkey '^[[4~' end-of-line
 bindkey '^[[3~' delete-char                    # Delete
 bindkey '^[[5~' up-line-or-history             # Page up
 bindkey '^[[6~' down-line-or-history           # Page down
-bindkey '^Xe'   edit-command-line              # ^Xe
 bindkey '^[OP'  run-help                       # F1
+
+bindkey '^Xe'   edit-command-line              # ^Xe
 bindkey '^S'    insert-sudo
 bindkey '^I'    complete-word                  # complete on tab, leave expansion to _expand
                                                # Useful for going back in menu completion

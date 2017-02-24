@@ -44,7 +44,7 @@ unfunction _prepath
 unfunction _postpath
 
 # Various applications settings
-export GOPATH=$HOME/go:$HOME/code
+export GOPATH=$HOME/go:$HOME/work
 export BLOCKSIZE=K
 export PAGER=less
 export LESS="--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
