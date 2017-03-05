@@ -10,3 +10,4 @@
 " Not so bright
 hi LineNr ctermfg=253
 hi CursorLineNr ctermfg=253
+hi qfLineNr ctermfg=4

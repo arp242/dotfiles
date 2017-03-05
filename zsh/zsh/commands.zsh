@@ -94,8 +94,7 @@ grepe() {
 lwr() {
 	for f in ./*; do
 		nf="$(echo "${f}" | tr '[:upper:]' '[:lower:]')"
-		echo "mv -v \"${f}\" \"${nf}\""
-		#mv -v "${f}" "${nf}"
+		mv -v "${f}" "${nf}"
 	done
 }
 

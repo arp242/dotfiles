@@ -41,15 +41,23 @@ let g:LargeFile = 10
 let g:syntastic_check_on_open = 0
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_always_populate_loc_list = 1
+function! SyntasticCheckHook(errors)
+	if !empty(a:errors)
+		let g:syntastic_loc_list_height = min([len(a:errors), 10])
+	endif
+endfunction
 
 " The default of -W2 is too verbose
 let g:syntastic_ruby_mri_args = "-W1 -T1"
 
+let g:syntastic_go_checkers = ['go', 'golint', 'govet']
+
 " Use the Bourne shell, and not tcsh
 let g:syntastic_shell = "/bin/bash"
 
-
-let g:syntastic_mode_map = {'passive_filetypes': ['go', 'python']}
+"let g:syntastic_mode_map = {'passive_filetypes': ['go', 'python']}
+let g:syntastic_mode_map = {'passive_filetypes': ['python']}
 
 " Set my statusline
 fun! s:set_stl()
@@ -64,8 +72,8 @@ fun! s:set_stl()
 
 	" Right/ruler
 	if &ft == 'go'
-		setlocal updatetime=800
-		call helpline#define_color('grey', 'ctermbg=0 ctermfg=251 cterm=bold')
+		"setlocal updatetime=800
+		"call helpline#define_color('grey', 'ctermbg=0 ctermfg=251 cterm=bold')
 		"highlight StatuslineGrey ctermbg=0 ctermfg=251 cterm=bold
 		"autocmd ColorScheme *
 		"	\ highlight StatuslineGrey ctermbg=0 ctermfg=251 cterm=bold
@@ -84,7 +92,7 @@ fun! s:set_stl()
 
 	"let &stl .= '[${InsertEnter system("date")[:-2]}]'
 	"let &stl .= '(${InsertLeave system("date")[:-2]})'
-	call helpline#process()
+	"call helpline#process()
 endfun
 augroup stl
 	autocmd!
