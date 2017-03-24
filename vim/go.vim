@@ -28,6 +28,6 @@ augroup my_go_settings
 	autocmd FileType go call s:setup()
 
 	" Restart desk
-	autocmd BufWritePost ~/code/src/github.com/teamwork/desk/*.go
+	autocmd BufWritePost ~/work/src/github.com/teamwork/desk/*.go
 		\ call system('echo "\04" | telnet sunbeam.teamwork.dev 9112')
 augroup end

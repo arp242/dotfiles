@@ -49,7 +49,13 @@ function! SyntasticCheckHook(errors)
 endfunction
 
 " The default of -W2 is too verbose
-let g:syntastic_ruby_mri_args = "-W1 -T1"
+let g:syntastic_ruby_mri_args = '-W1 -T1'
+
+let g:syntastic_python_checkers = ['pep8', 'pylint']
+"let g:syntastic_python_pep8_args = '--ignore=E501'
+"let g:syntastic_python_flake8_args = '--ignore=E501'
+"let g:syntastic_python_pylint_args = '-d wrong-import-position,missing-docstring,invalid-name,import-self'
+let g:syntastic_python_pylint_args = '-j 4'
 
 let g:syntastic_go_checkers = ['go', 'golint', 'govet']
 
@@ -57,7 +63,7 @@ let g:syntastic_go_checkers = ['go', 'golint', 'govet']
 let g:syntastic_shell = "/bin/bash"
 
 "let g:syntastic_mode_map = {'passive_filetypes': ['go', 'python']}
-let g:syntastic_mode_map = {'passive_filetypes': ['python']}
+"let g:syntastic_mode_map = {'passive_filetypes': ['python']}
 
 " Set my statusline
 fun! s:set_stl()
@@ -107,4 +113,4 @@ augroup end
 
 " Don't enable by default
 let g:gitgutter_enabled = 0
-
+let g:gitgutter_override_sign_column_highlight = 0

@@ -37,7 +37,7 @@ _postpath "$HOME/.gem/ruby/2.4.0/bin"
 # Go
 _postpath "/usr/local/go/bin"
 _postpath "$HOME/go/bin"
-_postpath "$HOME/code/bin"
+_postpath "$HOME/work/bin"
 
 _prepath "$HOME/Local/bin"
 
@@ -76,7 +76,6 @@ export GTK_OVERLAY_SCROLLING=0
 # Don't output to a pager
 export SYSTEMD_PAGER
 
-# Do the $TERM dance; these options seem to work best on various systems...
 # Do the $TERM dance; these options seem to work best on various systems...
 if [[ -n "$TMUX" ]]; then
 	export TERM=screen-256color

@@ -107,6 +107,11 @@ finddep() {
 	grep --exclude-dir .git -r "$1" | grep '\.go:' | grep -v "vendor/$1"
 }
 
+# "Short awk"
+sawk() {
+	awk "{print \$$1}"
+}
+
 # pushd function to emulate the old zsh behaviour.
 # With this, pushd +/-n lifts the selected element
 # to the top of the stack instead of cycling

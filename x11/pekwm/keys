@@ -62,11 +62,11 @@ Global {
 
 	# External Commands
 	KeyPress = "Mod4 X" { Actions = "Exec xterm -lc -geometry 90x27" }
-	#KeyPress = "Mod4 D" { Actions = "Exec dmenu_run" }
-	KeyPress = "KP_Add" { Actions = "Exec /home/martin/Local/bin/find-cursor" }
+	KeyPress = "Mod4 R" { Actions = "Exec dmenu_run -i -b -nb '#fff' -nf '#000' -sb '#000' -sf '#fff'" }
+	KeyPress = "KP_Add" { Actions = "Exec /bin/find-cursor" }
 
 	# Pekwm control
-	KeyPress = "Mod4 R" { Actions = "ShowMenu Root" }
+	KeyPress = "Mod4 P" { Actions = "ShowMenu Root" }
 }
 
 Menu {

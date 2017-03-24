@@ -20,6 +20,9 @@ augroup end
 " Indentation preferences for various filetypes
 augroup filetypes
 	autocmd!
+
+	" Don't like this
+	autocmd FileType gitcommit setlocal tw=80
 	
 	" Reset some settings that these ftplugins or syntax files reset :-/
 	autocmd FileType python setlocal ts=4
@@ -89,8 +92,8 @@ augroup end
 " Some project settings
 augroup projects
 	autocmd!
-	autocmd BufNewFile,BufRead /home/martin/code/src/github.com/teamwork/desk/frontend/* setlocal expandtab
-	autocmd BufNewFile,BufRead /home/martin/code/src/github.com/teamwork/deskadmin/*.html setlocal expandtab
+	autocmd BufNewFile,BufRead /home/martin/work/src/github.com/teamwork/desk/frontend/* setlocal expandtab
+	"autocmd BufNewFile,BufRead /home/martin/work/src/github.com/teamwork/deskadmin/*.html setlocal expandtab
 augroup end
 
 " Set up ft=mail

@@ -16,6 +16,7 @@ source ~/.zsh/keys.zsh
 
 unfunction _exists
 
+# Other stuff to look at:
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dircycle/dircycle.plugin.zsh
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirhistory/dirhistory.plugin.zsh
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirpersist/dirpersist.plugin.zsh
@@ -29,4 +30,8 @@ if [[ -d /vagrant ]]; then
 	setopt ignoreeof         # Don't logout on ^D
 fi
 
+# Don't really need coredumps
+limit coredumpsize 0
+
+# I like fortunes!
 fortune -a

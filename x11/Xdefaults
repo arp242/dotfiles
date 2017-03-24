@@ -7,7 +7,7 @@ XTerm*pointerMode: 2
 XTerm*saveLines: 4096
 
 ! Run as login shell.
-XTerm*loginShell: True
+!XTerm*loginShell: True
 
 ! No scollbar
 XTerm*scrollBar: False
@@ -44,3 +44,22 @@ XTerm*metaSendsEscape: true
 ! https://lukas.zapletalovi.com/2013/07/hidden-gems-of-xterm.html
 XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
 XTerm*translations: #override Shift <Btn1Up>: exec-formatted("chromium '%t'", PRIMARY)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! rxvt-unicode
+
+! Hide pointer when typing.
+urxvt*pointerBlank: true
+
+! Lines of scrollback.
+urxvt*saveLines: 4096
+
+! Run as login shell.
+!urxvt*loginShell: True
+
+! No scollbar
+urxvt*scrollBar: False
+
+! Nice font
+urxvt*font: xft:DejaVu Sans Mono:pixelsize=16

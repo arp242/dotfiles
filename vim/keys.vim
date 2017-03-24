@@ -97,6 +97,18 @@ noremap <expr> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 "noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
+" Make ; and , wrap around
+fun! RepeatFind(reverse)
+	let l:pos = col('.')
+	let l:reverse = a:reverse == getcharsearch()['forward']
+	exe 'normal! ' . (l:reverse ? ',' : ';')
+	if col('.') == l:pos
+		exe 'normal! ' . (l:reverse ? '$' : '0') . ';,'[l:reverse]
+	endif
+endfun
+nnoremap <silent> ; :call RepeatFind(0)<CR>
+nnoremap <silent> , :call RepeatFind(1)<CR>
+
 " I often mistype this :-/
 cabbr Set set
 cabbr Help help

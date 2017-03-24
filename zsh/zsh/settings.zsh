@@ -45,10 +45,20 @@ zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' formats '(%b)'
 #zstyle ':vcs_info:*' check-for-changes true
 
+# Set mode variable for prompt
+function zle-line-init zle-keymap-select {
+	mode="${${KEYMAP/vicmd/n}/(main|viins)/i}"
+	zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
 set_prompt() {
 	vcs_info
-	# TODO: Ignore 130 (^C)
-	echo "%(?..%S %? %s)[%~]${vcs_info_msg_0_}%# "
+	[[ $mode = n ]] && print -n "%S"
+	print -n "%(?..%S %? %s)[%~]${vcs_info_msg_0_}%#"
+	[[ $mode = n ]] && print -n "%s"
+	print -n ' '
 }
 
 set_rprompt() {
@@ -56,8 +66,7 @@ set_rprompt() {
 	if [[ -n "${SSH_CLIENT}${SSH2_CLIENT}${SSH_CONNECTION}" ]]; then 
 		host="%F{red}${host}%f"
 	fi
-	#echo "%(?..%S%?%s )${host}:%T"
-	echo "${host}:%T"
+	print "${mode}:${host}:%T"
 }
 
 PROMPT=$'$(set_prompt)'

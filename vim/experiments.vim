@@ -11,3 +11,4 @@
 hi LineNr ctermfg=253
 hi CursorLineNr ctermfg=253
 hi qfLineNr ctermfg=4
+"hi SignColumn ctermbg=grey
