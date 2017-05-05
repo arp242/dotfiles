@@ -1,4 +1,10 @@
-" $dotid: 101$
+" $dotid$
+
+" Switch syntax highlighting on
+syntax on
+
+" Enable file type detection
+filetype plugin indent on
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
@@ -182,16 +188,15 @@ set softtabstop=-1  " Use shiftwidth
 " Set (& create if needed) a temp directory to keep backup, swap, and undo files
 set backupdir=$HOME/.vim/tmp/backup
 set dir=$HOME/.vim/tmp/swap
+set viewdir=$HOME/.vim/tmp/view
 if !isdirectory(&backupdir) | call mkdir(&backupdir, 'p', 0700) | endif
 if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
+if !isdirectory(&viewdir) | call mkdir(&viewdir, 'p', 0700) | endif
 
 if has('persistent_undo')
 	set undodir=$HOME/.vim/tmp/undo
 	if !isdirectory(&undodir) | call mkdir(&undodir, 'p', 0700) | endif
 endif
-
-" Switch syntax highlighting on
-syntax on
 
 " Maximum column in which to search for syntax items.
 set synmaxcol=500
@@ -206,9 +211,6 @@ set background=light
 " Prevent clearing the terminal on exit
 set t_te=
 
-" Enable file type detection
-filetype plugin indent on
-
 " I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim)
 set mouse=
 
@@ -220,3 +222,17 @@ set paragraphs=
 
 " Use ~ as an operator; e.g. ~w
 set tildeop
+
+" Set my statusline
+set statusline=
+let &stl .= '%<%f'                " Filename, truncate right
+let &stl .= ' %h%m%r'             " [Help] [modified] [read-only]
+let &stl .= '%='                  " Right-align from here on
+
+" Right/ruler
+let &stl .= ' [line %l of %L]'    " current line, total lines
+let &stl .= ' [col %v]'           " column
+let &stl .= ' [0x%B]'             " Byte value under cursor
+
+" Width is 17 characters
+let &rulerformat = '%l/%L %c 0x%B'

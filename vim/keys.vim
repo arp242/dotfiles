@@ -63,51 +63,21 @@ inoremap <Up> <C-o>gk
 nnoremap gf <C-w>gf
 vnoremap gf <C-w>gf
 
-" TODO: It looks like I'm reinventing the wheel
-" http://www.vim.org/scripts/script.php?script_id=5184
-fun! GuessType()
-	" Use omnicomplete for Go
-	if &filetype == 'go'
-		let l:def = "\<C-x>\<C-o>"
-	" Keyword complete for anything else
-	else
-		let l:def = "\<C-x>\<C-n>"
-	endif
-
-	" If we have spell suggestions for the current work, use that. Otherwise use
-	" whatever we figured out above.
-	try
-		if spellbadword()[1] != ''
-			return "\<C-x>s"
-		else
-			return l:def
-		endif
-	catch
-		return l:def
-	endtry
-endfun
-inoremap <expr> <C-@>  pumvisible() ?  "\<C-n>" : GuessType()
-inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
-nnoremap <expr> <C-@> pumvisible() ?  "i\<C-n>" : 'i' . GuessType()
-
-" Home works like 0 if already at start of a line, and ^ otherwise
+" Home works like 0 if already at start of a line, and ^ otherwise.
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
 noremap <expr> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
-"noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
-" Make ; and , wrap around
-fun! RepeatFind(reverse)
-	let l:pos = col('.')
-	let l:reverse = a:reverse == getcharsearch()['forward']
-	exe 'normal! ' . (l:reverse ? ',' : ';')
-	if col('.') == l:pos
-		exe 'normal! ' . (l:reverse ? '$' : '0') . ';,'[l:reverse]
-	endif
-endfun
-nnoremap <silent> ; :call RepeatFind(0)<CR>
-nnoremap <silent> , :call RepeatFind(1)<CR>
+" Workaround to map <Home> in xterm outside of tmux
+" TODO: Doesn't work?!
+"if &term == "xterm-256color"
+"	set <Home>=OH
+"	set t_kh=OH
+"endif
+
+" Replace the current line with the unnamed register without affecting any
+" register.
+nnoremap RR "_ddP
 
 " I often mistype this :-/
 cabbr Set set

@@ -1,0 +1,23 @@
+func Test(t *testing.T) {
+	cases := []struct {
+	}{
+		{},
+	}
+
+	for i, tc := range cases {
+		//t.Run(fmt.Sprintf("%v", tc.in), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%v", i), func(t *testing.T) {
+			//out := ...
+			if out != tc.expected {
+				t.Errorf("\nout:      %#v\nexpected: %#v\n", out, tc.expected)
+			}
+
+			//if !reflect.DeepEqual(tc.expected, out) {
+			//	t.Errorf("\nout:      %#v\nexpected: %#v\n", out, tc.expected)
+			//}
+			//if diff.Diff(tc.expected, out) != "" {
+			//	t.Errorf(diff.Cmp(tc.expected, out))
+			//}
+		})
+	}
+}

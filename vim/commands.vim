@@ -18,7 +18,7 @@ endfun
 command! Retab call s:retab()
 
 
-" Write as root user; re-read file
+" Write as root user; re-read file.
 fun! s:super_write()
 	silent write !sudo tee %
 	edit!
@@ -26,7 +26,7 @@ endfun
 command! SuperWrite call s:super_write()
 
 
-" Clean trailing whitespace
+" Clean trailing whitespace.
 fun! s:trim_whitespace()
 	let l:save = winsaveview()
 	%s/\s\+$//e
@@ -35,7 +35,7 @@ endfun
 command! TrimWhitespace call s:trim_whitespace()
 
 
-" Move a file & update buffer
+" Move a file & update buffer.
 fun! s:mv(dest)
 	let l:src = expand('%:p')
 	if a:dest != ''

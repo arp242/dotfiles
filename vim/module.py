@@ -4,7 +4,7 @@ dirs = {
 
 symlinks = {
 	# Required for some older versions of Vim
-	'~/.vim/vimrc': '~/.vimrc',
+	#'~/.vim/vimrc': '~/.vimrc',
 
 	# Neovim
 	#'~/.vim/vimrc': '~/.vim/init.vim',

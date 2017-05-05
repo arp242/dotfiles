@@ -1,12 +1,16 @@
 " $dotid$
-
-" This helper allows us to define macros in a maintainable manner; it's a
-" (slightly simpler) version of the re.X flag:
+"
+" This helper allows us to define macros in a maintainable manner without all
+" sorts of escaping madness. It's a (slightly simpler) version of the re.X flag:
 "
 " - whitespace at the start and end of lines is ignored.
 " - everything after # is ignored.
 "
 " Use "\x23" if you want a literal #.
+
+if !has('python3')
+	finish
+end
 
 python3 << EOF
 import re, vim
@@ -21,5 +25,17 @@ macro('t', '''
 	f>l                                              # Put cursor after >
 	vt<xh                                            # Remove everything insde the tag
 	i data-bind=\"text: app.tl('\<Esc>pa')\"\<Esc>"  # Put what we yanked in KO syntax
+''')
+EOF
+
+" Wrap error
+python3 << EOF
+macro('w', '''
+    ^                  # Start of line
+	w                  # Skip past return
+	ierrors.Wrap(\<Esc>      # Insert
+	$            # Skip past err
+	a)\<Esc>           # Insert, leaving cursor on closing )
+	i, ""\<C-o>h
 ''')
 EOF
