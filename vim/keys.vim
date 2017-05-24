@@ -69,11 +69,10 @@ noremap <expr> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
 " Workaround to map <Home> in xterm outside of tmux
-" TODO: Doesn't work?!
-"if &term == "xterm-256color"
-"	set <Home>=OH
-"	set t_kh=OH
-"endif
+if &term == "xterm-256color"
+	set <Home>=OH
+	set <xHome>=OH
+endif
 
 " Replace the current line with the unnamed register without affecting any
 " register.
@@ -86,3 +85,4 @@ cabbr Help help
 " My fingers just can't get this stupid thing right :-/
 iabbr teh the
 iabbr Teh The
+iabbr 1= !=

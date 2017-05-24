@@ -42,8 +42,14 @@ XTerm*cutNewline: off
 XTerm*metaSendsEscape: true
 
 ! https://lukas.zapletalovi.com/2013/07/hidden-gems-of-xterm.html
-XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
-XTerm*translations: #override Shift <Btn1Up>: exec-formatted("chromium '%t'", PRIMARY)
+! XTerm*on3Clicks: regex ([[:alpha:]]+://)?([[:alnum:]!#+,./=?@_~-]|(%[[:xdigit:]][[:xdigit:]]))+
+! XTerm*translations: #override Shift <Btn1Up>: exec-formatted("chromium '%t'", PRIMARY)
+
+! TODO: Messes up backgrounds... But the problem is that braindead applications
+! set color7 as the foreground, which is nigh-unreadable with a white bg.
+! However, this will do the reverse: make black on color7 unreadable :-/
+! XTerm*color7: gray20
+! XTerm*color8: gray40
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
