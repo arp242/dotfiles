@@ -31,6 +31,9 @@ augroup my_filetypes
 	autocmd FileType python setlocal ts=4
 	autocmd FileType sass setlocal noexpandtab sw=4
 
+	" 2 spaces is almost universal.
+	autocmd FileType yaml setlocal expandtab ts=2 sts=2 sw=2
+
 	" C files are almost always ts=8, and very often mix tabs & spaces
 	autocmd FileType c,cpp setlocal ts=8
 
@@ -69,6 +72,9 @@ augroup my_filetypes
 	autocmd BufReadPost authorized_keys,known_hosts
 		\ setlocal nowrap noautoindent nosmartindent textwidth=0 formatoptions=
 
+	" Works better most of the time.
+	autocmd FileType json,xml setlocal nowrap
+
 	" Use a function for sanity!
 	autocmd FileType mail call s:mail()
     autocmd FileType help call s:help()
@@ -96,3 +102,12 @@ fun! s:help()
         autocmd InsertLeave <buffer> setlocal conceallevel=2
     augroup end
 endfun
+
+" Remove Python 2 keywords.
+augroup angering_zed_shaw
+	autocmd!
+	autocmd Syntax python
+		\ syn keyword pythonTwoBuiltin basestring cmp execfile file long
+		\                              raw_input reduce reload unichr unicode
+		\                              xrange apply buffer coerce intern
+augroup end

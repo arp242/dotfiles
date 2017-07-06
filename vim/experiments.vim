@@ -63,6 +63,6 @@ fun! FindSyntax(name) abort
 endfun
 
 " Next section
-nnoremap <Leader>ns :call FindSyntax('manSectionHeading')<CR>
+" nnoremap <Leader>ns :call FindSyntax('manSectionHeading')<CR>
 " Next option
-nnoremap <Leader>no :call FindSyntax('manOptionDesc')<CR>
+" nnoremap <Leader>no :call FindSyntax('manOptionDesc')<CR>

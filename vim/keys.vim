@@ -86,3 +86,17 @@ cabbr Help help
 iabbr teh the
 iabbr Teh The
 iabbr 1= !=
+
+" Make it easier to deal with the location list; these are right, left, up, and
+" down arrow keys with Control. Using <C-Up> etc. doesn't seem to work.
+nnoremap [C :lnext<CR>
+nnoremap [D :lprev<CR>
+nnoremap [A :lopen<CR>
+nnoremap [B :lclose<CR>
+nnoremap [1;5C :lnext<CR>
+nnoremap [1;5D :lprev<CR>
+nnoremap [1;5A :lopen<CR>
+nnoremap [1;5B :lclose<CR>
+
+" I never use the commandline window.
+"nnoremap :q :q
