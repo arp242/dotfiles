@@ -6,5 +6,5 @@ I split off quite a bit of my vimrc to plugins; [see them here][plugins].
 Here's a [nice guide to getting started with a vimrc file][start].
 
 
-[plugins]: http://arp242.net/code/#filter=viml,sort=name
+[plugins]: https://arp242.net/#vim
 [start]: https://gist.github.com/romainl/9ecd7b09a693816997ba
