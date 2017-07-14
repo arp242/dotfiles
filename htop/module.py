@@ -1,3 +1,3 @@
 files = {
-	'~/.config/htop/hoprc': 'htoprc',
+	'~/.config/htop/htoprc': 'htoprc',
 }
