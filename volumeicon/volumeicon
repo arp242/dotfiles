@@ -19,7 +19,7 @@ use_transparent_background=false
 [Hotkeys]
 up_enabled=true
 down_enabled=true
-mute_enabled=false
+mute_enabled=true
 up=XF86AudioRaiseVolume
 down=XF86AudioLowerVolume
 mute=XF86AudioMute

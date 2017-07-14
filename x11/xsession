@@ -4,8 +4,7 @@
 export DISPLAY=:0
 export PATH=$HOME/Local/bin:$PATH
 
-_run()
-{
+_run() {
 	local t=$(which $1 > /dev/null 2>&1)
 	if [ $? -eq 0 ]; then
 		$* >> /tmp/xsession-output 2>&1 &
@@ -20,7 +19,6 @@ _run xmodmap ~/.Xmodmap
 _run xbacklight -set 20
 _run xsetroot -solid "#3a6ea5"
 _run xrdb ~/.Xdefaults
-[ -f ~/.wallpaper.png ] && _run qiv -y ~/.wallpaper.png
 
 # moused does this on FreeBSD much better than X
 if [ $(uname -s) = FreeBSD ]; then
@@ -38,6 +36,7 @@ _run volumeicon
 _run dunst
 # TODO: Seems to have problems?
 #_run parcellite
+xcape -e 'Control_L=Escape;Shift_L=KP_Add'
 
 if [ -f ~/.xsession_local ]; then
 	. ~/.xsession_local

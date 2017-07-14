@@ -45,7 +45,7 @@ set textwidth=80
 set linebreak
 
 " Show a █ when wrapping a line
-set showbreak=█
+"set showbreak=█
 
 " When wrapping show next line on the same indent level
 if has('patch-7.4.338')

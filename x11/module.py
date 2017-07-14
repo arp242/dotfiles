@@ -6,6 +6,7 @@ files = {
 	'~/.xinitrc': 'xinitrc',
 	'~/.xsession': 'xsession',
 	'~/.wallpaper.png': 'wallpaper.png',
+    '~/.cwmrc': 'cwmrc',
 }
 
 dirs = {

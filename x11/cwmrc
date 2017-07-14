@@ -1,0 +1,109 @@
+# General settings
+#-----------------
+fontname "sans-serif:pixelsize=20"
+
+borderwidth 3
+snapdist 20
+#gap 0 24 0 0                     # Top bottom left right
+
+color activeborder   blue
+color inactiveborder grey 
+color urgencyborder  red
+#color groupborder
+#color ungroupborder
+
+# Menu colours
+color font     white
+color selfont  white
+color menubg   black
+color menufg   blue               # Border and selected items
+
+sticky yes                        # New windows will be in current group
+moveamount 10                     # Pixels to move when using keyboard.
+
+
+# Application properties
+#-----------------------
+ignore panel                      # Trayer
+
+autogroup 1 XTerm                 # Automatically group some stuff
+autogroup 2 Firefox
+autogroup 5 Pidgin
+
+command chromium chromium         # For menu-cmd
+command firefox firefox
+command gimp gimp
+command pidgin pidgin
+command xterm xterm
+
+
+# Key bindings
+#--------------
+unbind-key all
+
+bind-key KP_Add "find-cursor"
+bind-key 4-x     "xterm"
+bind-key 4-Tab   window-cycle
+bind-key 4M-Tab  window-rcycle
+
+bind-key 4-m     window-maximize  # Change window size.
+bind-key 4S-J    window-vmaximize
+bind-key 4S-K    window-vmaximize
+bind-key 4S-Up   window-vmaximize
+bind-key 4S-Down window-vmaximize
+bind-key 4S-H    window-hmaximize
+bind-key 4S-L    window-hmaximize
+bind-key 4S-Left window-hmaximize
+bind-key 4S-Right window-hmaximize
+
+bind-key 4-h     move-window left    # Move window to side of the screen.
+bind-key 4-j     move-window bottom
+bind-key 4-k     move-window top
+bind-key 4-l     move-window right
+bind-key 4-Left  move-window left
+bind-key 4-Down  move-window bottom
+bind-key 4-Up    move-window top
+bind-key 4-Right move-window right
+
+bind-key 4-t     window-vtile     # Tile windows.
+
+bind-key 4S-P    restart
+bind-key 4S-Q    quit
+
+bind-key 4-r     menu-cmd         # Launch "command" entries defined above.
+bind-key 4S-R    menu-exec        # Launch anything in PATH.
+
+bind-key 4-slash menu-window      # Window search.
+bind-key 4-g     menu-group       # Group selection.
+
+bind-key 4-F1    group-only-1     # Display *only* these groups, hiding
+bind-key 4-F2    group-only-2     # everything else.
+bind-key 4-F3    group-only-3
+bind-key 4-F4    group-only-4
+bind-key 5-F5    group-only-5     # Toggle visibility; useful for e.g. chat
+bind-key 6-F6    group-only-6     # and other "temporary" windows.
+bind-key 7-F7    group-only-7
+bind-key 8-F8    group-only-8
+
+bind-key 4-1     window-movetogroup-1 # Assign windows to a group.
+bind-key 4-2     window-movetogroup-2
+bind-key 4-3     window-movetogroup-3
+bind-key 4-4     window-movetogroup-4
+bind-key 4-5     window-movetogroup-5
+bind-key 4-6     window-movetogroup-6
+bind-key 4-7     window-movetogroup-7
+bind-key 4-8     window-movetogroup-8
+
+#bind-key 4-l    window-menu-label   # Assign label to window for searching.
+#window-stick # Stick window to all groups.
+
+# Mouse bindings
+#---------------
+unbind-mouse all
+bind-mouse 4-1  window-move
+bind-mouse 4-3  window-resize
+bind-mouse 4-2  window-raise
+bind-mouse 4S-2 window-lower
+
+
+# vim:ft=config
