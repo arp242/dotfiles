@@ -1,0 +1,3 @@
+dirs = {
+	'~/.config/ranger': '.',
+}
