@@ -4,10 +4,13 @@
 export DISPLAY=:0
 export PATH=$HOME/Local/bin:$PATH
 
+:>/tmp/xsession-output
+
 _run() {
 	local t=$(which $1 > /dev/null 2>&1)
 	if [ $? -eq 0 ]; then
-		$* >> /tmp/xsession-output 2>&1 &
+		echo "Starting $@" >> /tmp/xsession-output
+		$@ >> /tmp/xsession-output 2>&1 &
 	fi
 }
 
@@ -34,10 +37,6 @@ _run redshift-gtk
 _run battray
 _run volumeicon
 _run dunst
-# TODO: Seems to have problems?
-#_run parcellite
-xcape -e 'Control_L=Escape;Shift_L=KP_Add'
+_run xcape -e 'Control_L=Escape;Shift_L=KP_Add'
 
-if [ -f ~/.xsession_local ]; then
-	. ~/.xsession_local
-fi
+[ -f ~/.xsession_local ] && . ~/.xsession_local

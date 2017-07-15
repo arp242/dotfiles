@@ -1,0 +1,24 @@
+#!/bin/zsh
+
+set -x
+
+cur=$(xbacklight -get)
+case "$1" in
+	"up")
+		if [[ $cur -eq 0 ]]; then
+			xbacklight -set 1
+		else
+			xbacklight -inc 5%
+		fi
+	;;
+	"down")
+		if [[ $cur -le 5 ]]; then
+			xbacklight -set 1
+		else
+			xbacklight -dec 5%
+		fi
+	;;
+	*)
+		echo "Unsupported: \"$1\""
+		exit 1
+esac

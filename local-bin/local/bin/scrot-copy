@@ -1,0 +1,3 @@
+#!/bin/sh
+
+scrot -bs --exec 'xclip -t image/png -selection clipboard -in < $f && rm $f'

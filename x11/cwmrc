@@ -1,37 +1,32 @@
 # General settings
 #-----------------
-fontname "sans-serif:pixelsize=20"
+borderwidth 4
+snapdist    20
+gap         0 0 0 0               # Gap when maximizing. Top bottom left right.
+sticky      yes                   # New windows will be in current group.
+moveamount  10                    # Pixels to move when using keyboard.
 
-borderwidth 3
-snapdist 20
-#gap 0 24 0 0                     # Top bottom left right
+color activeborder   "#a5633a"
+color inactiveborder lightgrey 
+color font           white        # Menu colours.
+color selfont        white
+color menubg         black
+color menufg         blue         # Border and selected items.
 
-color activeborder   blue
-color inactiveborder grey 
-color urgencyborder  red
-#color groupborder
-#color ungroupborder
-
-# Menu colours
-color font     white
-color selfont  white
-color menubg   black
-color menufg   blue               # Border and selected items
-
-sticky yes                        # New windows will be in current group
-moveamount 10                     # Pixels to move when using keyboard.
+fontname "sans-serif:pixelsize=20" # Menu font.
 
 
 # Application properties
 #-----------------------
 ignore panel                      # Trayer
 
-autogroup 1 XTerm                 # Automatically group some stuff
+#autogroup 1 XTerm                 # Automatically group some stuff.
 autogroup 2 Firefox
 autogroup 5 Pidgin
 
 command chromium chromium         # For menu-cmd
 command firefox firefox
+command scrot-copy scrot-copy
 command gimp gimp
 command pidgin pidgin
 command xterm xterm
@@ -39,71 +34,79 @@ command xterm xterm
 
 # Key bindings
 #--------------
-unbind-key all
+unbind-key all                    # Remove all defaults.
 
-bind-key KP_Add "find-cursor"
-bind-key 4-x     "xterm"
-bind-key 4-Tab   window-cycle
-bind-key 4M-Tab  window-rcycle
+bind-key 4-x      "xterm -geometry 86x24"  # Run some programs.
+bind-key 4-c      "xterm -geometry 86x47"
+bind-key KP_Add  "find-cursor"    # xcape
+bind-key XF86MonBrightnessDown cwm-brightness down
+bind-key XF86MonBrightnessUp   cwm-brightness up
+# bind-key Print   "scrot-copy" # Hm, doesn't work as a keybind?
 
-bind-key 4-m     window-maximize  # Change window size.
-bind-key 4S-J    window-vmaximize
-bind-key 4S-K    window-vmaximize
-bind-key 4S-Up   window-vmaximize
-bind-key 4S-Down window-vmaximize
-bind-key 4S-H    window-hmaximize
-bind-key 4S-L    window-hmaximize
-bind-key 4S-Left window-hmaximize
+bind-key C4M-r    restart         # CWM controls
+bind-key C4M-q    quit
+
+bind-key 4-r      menu-cmd        # Launch "command" entries defined above.
+bind-key 4S-R     menu-exec       # Launch anything in PATH.
+bind-key 4S-slash menu-window     # Window search.
+bind-key 4-slash  menu-window-hidden
+bind-key 4-g      menu-group      # Group selection.
+bind-key 4-b      window-menu-label # Assign label to window for searching.
+
+bind-key 4-Tab    window-cycle #-ingroup
+bind-key 4M-Tab   window-rcycle
+bind-key 4-comma  window-hide
+
+bind-key 4-m      window-maximize # Change window size.
+bind-key 4S-J     window-vmaximize
+bind-key 4S-K     window-vmaximize
+bind-key 4S-Up    window-vmaximize
+bind-key 4S-Down  window-vmaximize
+bind-key 4S-H     window-hmaximize
+bind-key 4S-L     window-hmaximize
+bind-key 4S-Left  window-hmaximize
 bind-key 4S-Right window-hmaximize
 
-bind-key 4-h     move-window left    # Move window to side of the screen.
-bind-key 4-j     move-window bottom
-bind-key 4-k     move-window top
-bind-key 4-l     move-window right
-bind-key 4-Left  move-window left
-bind-key 4-Down  move-window bottom
-bind-key 4-Up    move-window top
-bind-key 4-Right move-window right
+bind-key 4-h      cwm-w-mv left   # Move window to side of the screen.
+bind-key 4-j      cwm-w-mv bottom
+bind-key 4-k      cwm-w-mv top
+bind-key 4-l      cwm-w-mv right
+bind-key 4-Left   cwm-w-mv left
+bind-key 4-Down   cwm-w-mv bottom
+bind-key 4-Up     cwm-w-mv top
+bind-key 4-Right  cwm-w-mv right
 
-bind-key 4-t     window-vtile     # Tile windows.
+bind-key 4-t      window-vtile    # Tile windows.
 
-bind-key 4S-P    restart
-bind-key 4S-Q    quit
+bind-key 4-F1     group-only-1    # Display *only* these groups, hiding
+bind-key 4-F2     group-only-2    # everything else.
+bind-key 4-F3     group-only-3
+bind-key 4-F4     group-only-4
+bind-key 4-F5     group-toggle-5  # Toggle visibility; useful for e.g. chat
+bind-key 4-F6     group-toggle-6  # and other "temporary" windows.
+bind-key 4-F7     group-toggle-7
+bind-key 4-F8     group-toggle-8
 
-bind-key 4-r     menu-cmd         # Launch "command" entries defined above.
-bind-key 4S-R    menu-exec        # Launch anything in PATH.
+bind-key 4-1      window-movetogroup-1 # Assign windows to a group.
+bind-key 4-2      window-movetogroup-2
+bind-key 4-3      window-movetogroup-3
+bind-key 4-4      window-movetogroup-4
+bind-key 4-5      window-movetogroup-5
+bind-key 4-6      window-movetogroup-6
+bind-key 4-7      window-movetogroup-7
+bind-key 4-8      window-movetogroup-8
 
-bind-key 4-slash menu-window      # Window search.
-bind-key 4-g     menu-group       # Group selection.
+#bind-key 4-s      window-stick    # Stick window to all groups.
 
-bind-key 4-F1    group-only-1     # Display *only* these groups, hiding
-bind-key 4-F2    group-only-2     # everything else.
-bind-key 4-F3    group-only-3
-bind-key 4-F4    group-only-4
-bind-key 4-F5    group-only-5     # Toggle visibility; useful for e.g. chat
-bind-key 4-F6    group-only-6     # and other "temporary" windows.
-bind-key 4-F7    group-only-7
-bind-key 4-F8    group-only-8
-
-bind-key 4-1     window-movetogroup-1 # Assign windows to a group.
-bind-key 4-2     window-movetogroup-2
-bind-key 4-3     window-movetogroup-3
-bind-key 4-4     window-movetogroup-4
-bind-key 4-5     window-movetogroup-5
-bind-key 4-6     window-movetogroup-6
-bind-key 4-7     window-movetogroup-7
-bind-key 4-8     window-movetogroup-8
-
-#bind-key 4-l    window-menu-label   # Assign label to window for searching.
-#window-stick # Stick window to all groups.
 
 # Mouse bindings
 #---------------
-unbind-mouse all
-bind-mouse 4-1  window-move
-bind-mouse 4-3  window-resize
-bind-mouse 4-2  window-raise
-bind-mouse 4S-2 window-lower
+unbind-mouse all                  # Remove all defaults.
+
+bind-mouse 4-1    window-move     # Holding Win+left mouse moves window.
+bind-mouse 4-3    window-resize   # Right mouse resizes.
+bind-mouse 4-2    window-raise
+bind-mouse 4S-2   window-lower
 
 
 # vim:ft=config
