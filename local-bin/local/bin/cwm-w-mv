@@ -4,8 +4,8 @@
 case "$1" in
 	"left") xdotool getactivewindow windowmove 0 y ;;
 	"top")  xdotool getactivewindow windowmove x 0 ;;
-
 	"right")
+		# TODO: xdotool getdisplaygeometry
 		screen_width=$(xwininfo -root | grep Width | cut -d: -f2 | tr -d ' ')
 		win_width=$(xdotool getactivewindow  getwindowgeometry --shell | grep WIDTH | cut -d= -f2)
 		xdotool getactivewindow windowmove $(( $screen_width - $win_width )) y

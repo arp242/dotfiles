@@ -1,8 +1,103 @@
 #!/bin/sh
-# Tile windows.
+#
+# Rotate tiling of windows.
+#
+# This assumes windows are tiled like so, which is what window-vtile does:
+#   +---------+---------+
+#   | main    | second  |
+#   | window  | window  |
+#   | full    +---------+
+#   | height  | third   |
+#   |         | window  |
+#   +---------+---------+
+#
+# This script will "rotate" the second window to the main window, the main
+# window to the third window, and the third window to the main window:
+#   +---------+---------+
+#   | second  | third   |
+#   |         |         |
+#   |         +---------+
+#   |         | main    |
+#   |         |         |
+#   +---------+---------+
+#
+# And pressing it again will rotate it once more in the same direction:
+#   +---------+---------+
+#   | third   | main    |
+#   |         |         |
+#   |         +---------+
+#   |         | second  |
+#   |         |         |
+#   +---------+---------+
+#
+# And a third press will restore the original situation.
 
-case "$1" in 
-	*)
-		echo "Unsupported: \"$1\""
-		exit 1
-esac
+set -euC
+IFS="
+"
+
+# Find the main window by position
+all_windows=$(xdotool search --name --desktop $(xdotool get_desktop) '')
+main_window=0
+for win in $all_windows; do
+	eval $(xdotool getwindowgeometry --shell $win)
+	# TODO: Check of lower than 0
+	if [ "$X,$Y" = "0,0" ]; then
+		main_window=$win
+	fi
+done
+
+# No main window found; use the active window.
+[ $main_window -eq 0 ] && main_window=$(xdotool getactivewindow)
+
+# Now sort all the other windows in an array by Y-position, which means they're
+# the same order as on the screen
+other_windows=""
+for win in $all_windows; do
+	[ $win -eq $main_window ] && continue
+
+	eval $(xdotool getwindowgeometry --shell $win)
+	other_windows=$(printf "$Y $win\n$other_windows")
+done
+
+# Sort and remove Y variable.
+sorted=$(echo "$other_windows" | sort -n)
+other_windows=""
+for w in $sorted; do
+	other_windows=$(printf "$other_windows\n$(echo "$w" | cut -d ' ' -f 2)")
+done
+other_windows=$(echo "$other_windows" | tail -n+2)
+
+# Put main window to the bottom of the others.
+other_windows=$(printf "$other_windows\n$main_window")
+
+# Top window is new "main" window.
+main_window=$(echo "$other_windows" | head -n 1)
+other_windows=$(echo "$other_windows" | tail -n+2)
+
+# Now we can set the positions and resize!
+screen_width=$(xwininfo -root | grep Width | cut -d: -f2 | tr -d ' ')
+screen_height=$(xwininfo -root | grep Height | cut -d: -f2 | tr -d ' ')
+border=4 # TODO: See if we can get this?
+width=$(( $screen_width / 2 - ($border * 2) ))
+height=$(( $screen_height - ($border * 2) ))
+
+# Main window
+echo xdotool windowmove $main_window 0 0
+xdotool windowmove $main_window 0 0
+echo xdotool windowsize $main_window $width $height
+xdotool windowsize $main_window $width $height
+echo
+
+n_wins=$(echo "$other_windows" | wc -l)
+i=0
+for win in $other_windows; do
+	echo xdotool windowmove $win $(( $width + $border * 2 )) \
+		$(( $height / $n_wins * $i ))
+	xdotool windowmove $win $(( $width + $border * 2 )) \
+		$(( $height / $n_wins * $i ))
+
+	echo xdotool windowsize $win $width $(( $height / $n_wins ))
+	xdotool windowsize $win $width $(( $height / $n_wins ))
+	i=$(( $i + 1 ))
+done
