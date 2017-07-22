@@ -1,21 +1,41 @@
 #!/bin/sh
+#
 # Move a window to the side of a screen.
 
+border=8
+#border=2
+#if [ -f ~/.cwmrc ]; then
+#	border=$(( 2 *
+#		$( (grep ^borderwidth ~/.cwmrc || echo "1 1") | awk '{print $2}' )
+#	))
+#fi
+
+win=$(xdotool getactivewindow)
+
 case "$1" in
-	"left") xdotool getactivewindow windowmove 0 y ;;
-	"top")  xdotool getactivewindow windowmove x 0 ;;
+	"left") xdotool getactivewindow windowmove --sync 0 y ;;
+	"top")  xdotool getactivewindow windowmove --sync x 0 ;;
 	"right")
-		# TODO: xdotool getdisplaygeometry
-		screen_width=$(xwininfo -root | grep Width | cut -d: -f2 | tr -d ' ')
-		win_width=$(xdotool getactivewindow  getwindowgeometry --shell | grep WIDTH | cut -d= -f2)
-		xdotool getactivewindow windowmove $(( $screen_width - $win_width )) y
+		eval $(xdotool getdisplaygeometry --shell)
+		screen_width=$WIDTH
+		eval $(xdotool getactivewindow  getwindowgeometry --shell)
+		xdotool getactivewindow windowmove --sync \
+			$(( $screen_width - $WIDTH - $border )) y
 		;;
 	"bottom")
-		screen_height=$(xwininfo -root | grep Height | cut -d: -f2 | tr -d ' ')
-		win_height=$(xdotool getactivewindow  getwindowgeometry --shell | grep HEIGHT | cut -d= -f2)
-		xdotool getactivewindow windowmove x $(( $screen_height - $win_height ))
+		eval $(xdotool getdisplaygeometry --shell)
+		screen_height=$HEIGHT
+		eval $(xdotool getactivewindow  getwindowgeometry --shell)
+		xdotool getactivewindow windowmove --sync x \
+			$(( $screen_height - $HEIGHT - $border ))
 		;;
 	*)
 		echo "Unsupported: \"$1\""
 		exit 1
 esac
+
+# Move the cursor to make sure the window keeps focus; using xdotool windowfocus
+# doesn't seem to work.
+eval $(xdotool getwindowgeometry --shell $win)
+xdotool mousemove \
+	$(( $X + ($WIDTH / 2) )) $(( $Y + ($HEIGHT / 2) ))

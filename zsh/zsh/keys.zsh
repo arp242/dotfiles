@@ -31,6 +31,7 @@ bindkey '^[OP'  run-help                       # F1
 bindkey '^h'    backward-delete-char           # Backspace
 bindkey '^?'    backward-delete-char
 
+bindkey '^a'    beginning-of-line
 bindkey '^k'    kill-line
 bindkey '^p'    up-line-or-beginning-search
 bindkey '^n'    down-line-or-beginning-search

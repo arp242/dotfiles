@@ -26,21 +26,24 @@ autogroup 9 trayer
 autogroup 2 Firefox
 autogroup 5 Pidgin
 
-command chromium chromium         # For menu-cmd
-command firefox firefox
-command scrot-copy scrot-copy
-command gimp gimp
-command pidgin pidgin
-command xterm xterm
+command chromium     chromium     # For menu-cmd
+command firefox      firefox
+command gimp         gimp
+command pavucontrol  pavucontrol
+command pidgin       pidgin
+command scrot-copy   scrot-copy
+command xterm        xterm
 
 
 # Key bindings
 #--------------
 unbind-key all                    # Remove all defaults.
 
-bind-key 4-x      "xterm -geometry 86x24"  # Run some programs.
-bind-key 4-c      "xterm -geometry 86x47"
-bind-key KP_Add  "find-cursor"    # xcape
+#bind-key 4-x      "xterm -geometry 86x24"  # Run some programs.
+#bind-key 4-c      "xterm -geometry 86x47"
+bind-key 4-x      "cwm-w-place xterm -geometry 86x24"  # Run some programs.
+bind-key 4-c      "cwm-w-place xterm -geometry 86x47"
+bind-key KP_Add   "find-cursor"    # xcape
 bind-key XF86MonBrightnessDown cwm-brightness down
 bind-key XF86MonBrightnessUp   cwm-brightness up
 # bind-key Print   "scrot-copy" # Hm, doesn't work as a keybind?
@@ -57,7 +60,7 @@ bind-key 4-b      window-menu-label # Assign label to window for searching.
 
 bind-key 4-Tab    window-cycle #-ingroup
 bind-key 4M-Tab   window-rcycle
-bind-key 4-comma  window-hide
+#bind-key 4-comma  window-hide
 
 bind-key 4-m      window-maximize # Change window size.
 bind-key 4S-J     window-vmaximize
@@ -78,8 +81,9 @@ bind-key 4-Down   cwm-w-mv bottom
 bind-key 4-Up     cwm-w-mv top
 bind-key 4-Right  cwm-w-mv right
 
-bind-key 4-t      window-vtile    # Tile windows.
-bind-key 4-e      cwm-w-tile
+#bind-key 4-t      window-vtile    # Tile windows.
+#bind-key 4-e      cwm-w-tile
+bind-key 4-t      cwm-w-tile
 
 bind-key 4-F1     group-only-1    # Display *only* these groups, hiding
 bind-key 4-F2     group-only-2    # everything else.
