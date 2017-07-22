@@ -89,11 +89,11 @@ iabbr 1= !=
 
 " Make it easier to deal with the location list; these are right, left, up, and
 " down arrow keys with Control. Using <C-Up> etc. doesn't seem to work.
-nnoremap [C :lnext<CR>
+nnoremap <expr> [C len(filter(getloclist(0), {i, l -> l['lnum'] == line('.')})) ? ":lnext<CR>" : ":ll<CR>"
 nnoremap [D :lprev<CR>
 nnoremap [A :lopen<CR>
 nnoremap [B :lclose<CR>
-nnoremap [1;5C :lnext<CR>
+nnoremap <expr> [1;5C len(filter(getloclist(0), {i, l -> l['lnum'] == line('.')})) ? ":lnext<CR>" : ":ll<CR>"
 nnoremap [1;5D :lprev<CR>
 nnoremap [1;5A :lopen<CR>
 nnoremap [1;5B :lclose<CR>
