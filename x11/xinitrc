@@ -4,7 +4,7 @@
 [ -f ~/.xsession ] && . ~/.xsession
 
 if hash pekwm > /dev/null; then
-	exec ssh-agent cwm
+	exec ssh-agent pekwm
 else
 	exec ssh-agent twm
 fi

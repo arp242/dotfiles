@@ -23,6 +23,9 @@ Global {
 	# All new clients are opened in this frame
 	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
 
+	# All new clients are opened in this frame
+	KeyPress = "Mod4 E" { Actions = "Exec cwm-w-tile" }
+
 	# Moving in workspaces
 	KeyPress = "Mod4 F1" { Actions = "GotoWorkspace 1" }
 	KeyPress = "Mod4 F2" { Actions = "GotoWorkspace 2" }

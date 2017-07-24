@@ -36,7 +36,8 @@ set -euC
 IFS="
 "
 
-border=8
+border=2
+titlebar=16
 #border=2
 #if [ -f ~/.cwmrc ]; then
 #	border=$(( 2 *
@@ -83,7 +84,7 @@ n_wins=$(echo "$other_windows" | wc -l)
 screen_width=$(xwininfo -root | grep Width | cut -d: -f2 | tr -d ' ')
 screen_height=$(xwininfo -root | grep Height | cut -d: -f2 | tr -d ' ')
 width=$(( $screen_width / 2 - $border ))
-height=$(( $screen_height - $border ))
+height=$(( $screen_height - $border - $titlebar ))
 
 # Position and size the main window.
 xdotool windowmove $main_window 0 0

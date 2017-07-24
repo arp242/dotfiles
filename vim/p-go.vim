@@ -3,6 +3,7 @@
 let g:go_fmt_experimental = 1
 let g:go_highlight_trailing_whitespace_error = 0
 let g:go_highlight_fold_blocks = 0
+let g:go_highlight_build_constraints = 1
 let g:go_fmt_command = "goimports"
 let g:go_autodetect_gopath = 0
 
@@ -14,21 +15,21 @@ let g:go_gocode_unimported_packages = 1
 let g:go_list_type = "locationlist"
 let g:go_doc_max_height = 10
 
-"let g:go_highlight_types = 1
-let g:go_fold_enable = ['import']
+let g:go_fold_enable = ['import', 'package_comment']
 
 augroup my_go_settings
 	autocmd!
 
-	"autocmd FileType go 
-	"	\  setlocal foldmethod=syntax
-	"	\| normal! zM
+	" Folding.
+	autocmd FileType go 
+		\  setlocal foldmethod=syntax
+		\| normal! zM
 
 	" Open gd in a new tab with gd
 	autocmd FileType go nmap gd <Plug>(go-def-tab)
 	" Need to map these defaults because go_def_mapping_enabled is off.
 	autocmd FileType go
-		\ nnoremap <buffer> <silent> <C-]> :GoDef<CR>
+		\  nnoremap <buffer> <silent> <C-]> :GoDef<CR>
 		\| nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<CR>
 
 	" Don't focus new window with K
