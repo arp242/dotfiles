@@ -53,7 +53,7 @@ Screen {
 
 	# Controls whether a list of all available frames on the workspace is
 	# displayed during the NextFrame/PrevFrame actions.
-	ShowFrameList = "False"
+	ShowFrameList = "True"
 
 	# Controls whether a size/position info window is shown when moving or
 	# resizing windows.

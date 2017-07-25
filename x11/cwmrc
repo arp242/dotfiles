@@ -22,7 +22,6 @@ ignore panel                      # Trayer
 autogroup 9 panel
 autogroup 9 trayer
 
-#autogroup 1 XTerm                 # Automatically group some stuff.
 autogroup 2 Firefox
 autogroup 5 Pidgin
 
@@ -114,6 +113,5 @@ bind-mouse 4-1    window-move     # Holding Win+left mouse moves window.
 bind-mouse 4-3    window-resize   # Right mouse resizes.
 bind-mouse 4-2    window-raise
 bind-mouse 4S-2   window-lower
-
 
 # vim:ft=config

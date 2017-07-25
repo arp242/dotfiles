@@ -34,8 +34,7 @@ case "$1" in
 		exit 1
 esac
 
-# Move the cursor to make sure the window keeps focus; using xdotool windowfocus
-# doesn't seem to work.
+xdotool windowactivate $win
 eval $(xdotool getwindowgeometry --shell $win)
 xdotool mousemove \
 	$(( $X + ($WIDTH / 2) )) $(( $Y + ($HEIGHT / 2) ))

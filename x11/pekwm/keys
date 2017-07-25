@@ -6,8 +6,8 @@ Global {
 	# to first.
 	# endraise - raise the selected client on end, but not while having it
 	# pressed
-	#KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
-	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU AlwaysRaise" }
+	KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU EndRaise" }
+	#KeyPress = "Mod4 Tab" { Actions = "NextFrameMRU AlwaysRaise" }
 
 	# Switch to next/previous tab in a frame
 	KeyPress = "Mod4 A" { Actions = "ActivateClientRel -1" }
@@ -21,7 +21,7 @@ Global {
 	KeyPress = "Mod4 D" { Actions = "Detach" }
 
 	# All new clients are opened in this frame
-	KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
+	#KeyPress = "Mod4 T" { Actions = "Toggle Tagged" }
 
 	# All new clients are opened in this frame
 	KeyPress = "Mod4 E" { Actions = "Exec cwm-w-tile" }
