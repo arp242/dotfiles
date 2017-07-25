@@ -5,7 +5,6 @@ files = {
 	'~/.fonts.conf': 'fonts.conf',
 	'~/.xinitrc': 'xinitrc',
 	'~/.xsession': 'xsession',
-	'~/.wallpaper.png': 'wallpaper.png',
     '~/.cwmrc': 'cwmrc',
     '~/.icons/default/index.theme': 'icons',
     '~/.config/gtk-3.0/settings.ini': 'gtk3-settings.ini',

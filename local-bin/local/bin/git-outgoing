@@ -1,5 +1,4 @@
 #!/bin/sh
-# $dotid$
 #
 # Show outgoing commits to the tracked (or specified) branch
 # From: https://github.com/ddollar/git-utils

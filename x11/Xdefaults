@@ -1,5 +1,3 @@
-! $dotid$
-
 ! Hide pointer when typing.
 XTerm*pointerMode: 2
 

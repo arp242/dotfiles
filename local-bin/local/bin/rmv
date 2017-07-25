@@ -1,4 +1,3 @@
 #!/bin/sh
-# $dotid$
 
 mv -v "$2" "$1"

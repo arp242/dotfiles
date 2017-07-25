@@ -1,5 +1,4 @@
 # vim:syntax=config
-# $dotid$
 
 FrameTitle {
 	ButtonRelease = "1" { Actions = "Raise; Focus; ActivateClient" }

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# $dotid$
 #
 # https://wiki.archlinux.org/index.php/Desktop_notifications
 #

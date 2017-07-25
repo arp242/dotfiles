@@ -1,5 +1,4 @@
 #!/bin/sh
-# $dotid$
 #
 # Shows incoming commits from the tracked (or specified) branch
 # Adapted from: https://github.com/ddollar/git-utils

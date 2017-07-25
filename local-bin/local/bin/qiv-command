@@ -1,5 +1,4 @@
 #!/bin/sh
-# $dotid$
 
 if [ "$1" = "0" ]; then
 	mkdir -p .trash

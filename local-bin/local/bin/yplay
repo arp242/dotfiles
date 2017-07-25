@@ -1,4 +1,3 @@
 #!/bin/sh
-# $dotid$
 
 youtube-dl -qo- "$*" | mplayer -cache 2048 -cache-min 99 -

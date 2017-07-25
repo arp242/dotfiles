@@ -1,5 +1,4 @@
 #!/bin/sh
-# $dotid$
 
 export DISPLAY=:0
 export PATH=$HOME/Local/bin:$PATH

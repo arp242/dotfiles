@@ -1,5 +1,4 @@
 # vim:syntax=config
-# $dotid$
 
 RootMenu = "Pekwm" {
 	Entry = "Reload" { Actions = "Reload" }
