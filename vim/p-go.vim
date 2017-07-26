@@ -1,4 +1,4 @@
-" $dotid$
+" Settings for Vim-go
 
 let g:go_fmt_experimental = 1
 let g:go_highlight_trailing_whitespace_error = 0
@@ -26,6 +26,7 @@ augroup my_go_settings
 		\| normal! zM
 
 	" Open gd in a new tab with gd
+	" TODO: Doesn't show buffer name?
 	autocmd FileType go nmap gd <Plug>(go-def-tab)
 	" Need to map these defaults because go_def_mapping_enabled is off.
 	autocmd FileType go
@@ -103,13 +104,21 @@ endfun
 "
 "   if err := e(); err != nil {
 fun! s:switch_if()
-	let l:indent = repeat("\t", indent('.') / 4)
-	let l:line = substitute(getline('.'), "^\\s*", "", "")
-
+	let l:line = getline('.')
 	if match(l:line, "if ") == -1
-		echohl Error | echom "No 'if' in current line" | echohl Normal
-		return
+		" Try line below current one too.
+		let l:line = getline(line('.') + 1)
+
+		if match(l:line, "if ") == -1
+			echohl Error | echom "No 'if' in current line" | echohl Normal
+			return
+		endif
+
+		normal! j
 	endif
+
+	let l:line = substitute(l:line, "^\\s*", "", "")
+	let l:indent = repeat("\t", indent('.') / 4)
 
 	" Convert "if .. {" to "if ..; err != nil {".
 	if match(l:line, ";") == -1
@@ -125,3 +134,22 @@ fun! s:switch_if()
 	endif
 endfun
 nnoremap <Leader>e :call <SID>switch_if()<CR>
+
+
+" For testing/development of vim-go's syntax file.
+fun s:all()
+	let g:go_highlight_array_whitespace_error = 1
+	let g:go_highlight_chan_whitespace_error = 1
+	let g:go_highlight_extra_types = 1
+	let g:go_highlight_space_tab_error = 1
+	let g:go_highlight_trailing_whitespace_error = 1
+	let g:go_highlight_operators = 1
+	let g:go_highlight_functions = 1
+	let g:go_highlight_methods = 1
+	let g:go_highlight_fields = 1
+	let g:go_highlight_types = 1
+	let g:go_highlight_build_constraints = 1
+	let g:go_highlight_generate_tags = 1
+	let g:go_fold_enable = ['import', 'package_comment', 'block', 'varconst']
+endfun
+"call s:all()

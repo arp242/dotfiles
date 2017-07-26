@@ -1,4 +1,3 @@
-" $dotid$
 
 augroup basic
 	autocmd!
@@ -96,6 +95,7 @@ endfun
 
 " Show formatting characters in insert mode.
 fun! s:help()
+	packadd vim-vimhelplint
     augroup help_insert
         autocmd!
         autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore
