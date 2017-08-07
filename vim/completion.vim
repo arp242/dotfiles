@@ -1,5 +1,3 @@
-" $dotid$
-
 " TODO: It looks like I'm reinventing the wheel
 " http://www.vim.org/scripts/script.php?script_id=5184
 fun! GuessType()

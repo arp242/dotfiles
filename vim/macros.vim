@@ -1,5 +1,3 @@
-" $dotid$
-"
 " Predefined macros.
 
 " Add KO translation string; expect cursor to be anywhere in opening tag.

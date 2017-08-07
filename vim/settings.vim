@@ -1,5 +1,3 @@
-" $dotid$
-
 " Switch syntax highlighting on
 syntax on
 

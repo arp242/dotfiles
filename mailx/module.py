@@ -1,0 +1,3 @@
+files = {
+	'~/.mailrc': 'mailrc',
+}

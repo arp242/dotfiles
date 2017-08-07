@@ -1,5 +1,3 @@
-" $dotid$
-
 " Disable some of the default plugins that we don't use.
 let g:loaded_2html_plugin = 1
 let g:loaded_LogiPat = 1

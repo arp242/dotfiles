@@ -1,5 +1,3 @@
-" $dotid$
-"
 " Very unobtrusively highlight column 81 to indicate that we may have to wrap
 " stuff − this is a "soft wrap".
 " Column 121 is highlighted a bit more obvious, as this is really getting too long!

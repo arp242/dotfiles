@@ -44,7 +44,9 @@ augroup my_go_settings
 		\| :silent :GoPath /home/martin/work
 
 	" Set makeprg to go install instead of go build.
-	autocmd FileType go setlocal makeprg=go\ install
+	autocmd FileType go
+		\ let &l:makeprg = 'go install' .
+		\     (expand('%:p') =~ "^/home/martin/work/" ? ' -race' : '')
 
 	" Build/Test on save.
 	"autocmd BufWritePost *.go :GoBuild

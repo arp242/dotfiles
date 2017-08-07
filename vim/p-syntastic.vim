@@ -1,5 +1,3 @@
-" $dotid$
-
 " Syntastic
 
 let g:syntastic_check_on_open = 0
@@ -22,6 +20,8 @@ let g:syntastic_python_checkers = ['pep8', 'pylint']
 let g:syntastic_python_pylint_args = '-j 4'
 
 let g:syntastic_go_checkers = ['go', 'golint', 'govet']
+
+let g:syntastic_markdown_checkers = ['proselint']
 
 " Use the Bourne shell, and not tcsh
 let g:syntastic_shell = "/bin/bash"

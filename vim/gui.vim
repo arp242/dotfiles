@@ -1,5 +1,3 @@
-" $dotid$
-
 if has("gui_running")
 	" Default width & height; autocmd to prevent resize when reloading vimrc
 	autocmd VimEnter * set lines=55 columns=120

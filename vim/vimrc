@@ -1,5 +1,3 @@
-" $dotid$
-
 " Make sure we load stuff in the correct order − e.g. loading autocmd.vim before
 " settings.vim can cause problems
 source ~/.vim/settings.vim
@@ -11,6 +9,7 @@ source ~/.vim/gui.vim
 source ~/.vim/softwrap.vim
 source ~/.vim/completion.vim
 source ~/.vim/experiments.vim
+source ~/.vim/words.vim
 
 " Plugin configs can be in any order.
 for s:f in glob("$HOME/.vim/p-*.vim", 0, 1)

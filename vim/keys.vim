@@ -1,5 +1,3 @@
-" $dotid$
-
 " Quickly jump to recently used filed
 nnoremap <Leader>o :browse oldfiles<CR>
 
@@ -36,7 +34,7 @@ nnoremap <Leader>sd :set spelllang=de_de<CR>
 nnoremap <Leader>f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
 
 " Use <C-l> to clear some highlighting
-nnoremap <silent> <C-l> :nohlsearch<CR>:set nolist nospell<CR><C-l>
+nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 
 " We don't need no stinkin' ex mode; use it for formatting
 noremap Q gq
@@ -76,6 +74,7 @@ endif
 
 " Replace the current line with the unnamed register without affecting any
 " register.
+" TODO: Check out: http://www.vim.org/scripts/script.php?script_id=2703
 nnoremap RR "_ddP
 
 " I often mistype this :-/
@@ -98,5 +97,6 @@ nnoremap [1;5D :lprev<CR>
 nnoremap [1;5A :lopen<CR>
 nnoremap [1;5B :lclose<CR>
 
-" I never use the commandline window.
-"nnoremap :q :q
+" From https://github.com/mhinz/vim-galore#tips-1
+" Edit macro: "q<leader>m to edit q.
+nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>

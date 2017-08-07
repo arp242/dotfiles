@@ -1,5 +1,3 @@
-" $dotid$
-
 " Make paths in the Dirvish buffer relative to getcwd().
 let g:dirvish_relative_paths = 1
 

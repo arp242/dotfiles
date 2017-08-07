@@ -1,13 +1,13 @@
 # vim:syntax=config
-#
-# http://www.pekwm.org/files/pekwm/doc/0.1.7/html/config/autoprops.html
 
-
+Property = ".*,^Firefox" {
+	ApplyOn = "New Start Reload Transient Workspace"
+	Workspace = "2"
+}
 Property = ".*,^Pidgin" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "4"
 }
-
 Property = ".*,^Gajim" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "4"

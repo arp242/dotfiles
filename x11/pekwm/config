@@ -1,130 +1,53 @@
 # vim:syntax=config
 
-#######################################
-# Files
-#######################################
 Files {
-	Keys = "~/.pekwm/keys"
-	Mouse = "~/.pekwm/mouse"
-	Menu = "~/.pekwm/menu"
-	Start = "~/.pekwm/start"
+	Keys      = "~/.pekwm/keys"
+	Mouse     = "~/.pekwm/mouse"
+	Menu      = "~/.pekwm/menu"
 	AutoProps = "~/.pekwm/autoproperties"
-	Theme = "~/.pekwm/themes/carpet"
+	Theme     = "~/.pekwm/themes/carpet"
 }
 
-#######################################
-# MoveResize
-#######################################
 MoveResize {
-	# The distance from screen edge required for the window to snap against it
-	# in pixels.
-	EdgeAttract = "20"
+	EdgeAttract   = "20"   # Snap against screen edge when this close.
+	EdgeResist    = "20"   # Move window this far before window actually moves form edge.
+	WindowAttract = "20"   # Snap against other windows when this close.
+	WindowResist  = "20"   # Move from win this far before window actually moves.
 
-	# The distance from screen edge required for the window moving to start
-	# being resisted in pizels.
-	EdgeResist = "20"
-
-	# The distance from other clients that a window will snap against them to in
-	# pixels.
-	WindowAttract = "20"
-
-	# The distance from other clients that a window movement will start being
-	# resisted.
-	WindowResist = "20"
-
-	# If true, turns on opaque Moving
-	OpaqueMove = "True"
-
-	# If true, turns on opaque Resizing
-	OpaqueResize = "True"
+	OpaqueMove    = "True" # Show contents while dragging...
+	OpaqueResize  = "True" # ... and resizing.
 }
 
-#######################################
-# Screen
-#######################################
 Screen {
-	# Number of workspaces enabled.
-	Workspaces = "5"
+	Workspaces       = "8"
+	WorkspacesPerRow = "4"
 
-	# Number of workspaces on each row. Value < 1 fits all workspaces on a
-	# single row.
-	WorkspacesPerRow = "5"
-
-	# Controls whether a list of all available frames on the workspace is
-	# displayed during the NextFrame/PrevFrame actions.
-	ShowFrameList = "True"
-
-	# Controls whether a size/position info window is shown when moving or
-	# resizing windows.
-	ShowStatusWindow = "True"
-
-	# Should Client IDs be displayed in window titles.
-	ShowClientID = "False"
-
-	# Show WorkspaceIndicator for seconds. If set to < 1 the WorkspaceIndicator is
-	# disabled.
-	ShowWorkspaceIndicator = "0"
-
-	# Toggles if new windows should be placed using the rules found in the
-	# Placement subsection, or just opened on the top left corner of your
-	# screen.
-	PlaceNew = "True"
-
-	# Toggles if new windows should be focused when they pop up.
-	FocusNew = "True"
-
-	# This string contains what pekwm uses to trim down overlong window titles.
-	# If it's empty, no trimming down is performed at all.
-	TrimTitle = ".."
-
-	# How many pixels from the edge of the screen should screen edges be.
-	# Paremeters correspond to the following edges: top bottom left right. A
-	# value of 0 disables edges.
-	EdgeSize = "0"
-
-	# Toggles if the screen edge should be reserved space.
-	EdgeIndent = "False"
-
-	# Determines how many unused pixmaps are stored on the image cache for
-	# future use.
-	PixmapCacheSize = "20"
-
-	# Time, in milliseconds, between clicks to be counted as a doubleclick.
-	DoubleClickTime = "250"
+	ShowFrameList    = "True"    # Show list of frames when using {Next,Prev}Frame*
+	ShowStatusWindow = "True"    # Show size/position when moving or resizing.
+	ShowClientID     = "False"   # Display client ID in window title.
+	ShowWorkspaceIndicator = "0" # Show indicator for n ms after switching workspace
+	PlaceNew = "True"            # Use rules in "Placement" section (otherwise it just opens in top-left)
+	FocusNew = "True"            # New windows should be focused when they pop up.
+	TrimTitle = ".."             # Trim long titles with this
+	EdgeIndent = "False"         # Margin for screen edge.
+	EdgeSize = "0 0 0 0"         # Margin size; top bottom left right.
+	DoubleClickTime = "250"      # MS betwee clicks to be counted as double click.
+	PixmapCacheSize = "20"       # Amount of unused pixmaps to store in cache.
 
 	Placement {
-		# o Smart - Tries to place windows where no other window is present
-		# 
-		# o MouseCentered - Places the center of the window underneath the current mouse
-		#   pointer position
+		# CenteredOnParent places transient windows at center of their parent
+		# window.
 		#
-		# o MouseTopLeft - Places the top-left corner of the window under the pointer
-		#
-		# o MouseNotUnder - Places windows on screen corners avoiding the current mouse
-		#   cursor position.
-		#
-		# o CenteredOnParent - Places transient windows at center of their parent
-		#   window.
+		# Smart tries to place windows where no other window is present
 		Model = "CenteredOnParent Smart"
 
 		# Describes how pekwm computes where to place a new window in smart mode.
 		Smart {
-			# Whether to use row or column placement, if true, uses row.
-			Row = "True"
-
-			# If false, the window is placed starting from the bottom.
-			TopToBottom = "True"
-
-			# If false, the window is placed starting from the right.
-			LeftToRight = "True"
-
-			# Pixels to leave between new and old windows and screen edges. When 0,
-			# no space is reserved.
-			OffsetX = "0"
-
-			# Pixels to leave between new and old windows and screen edges. When 0,
-			# no space is reserved.
-			OffsetY = "0"
+			Row = "True"         # Whether to use row or column placement, if true, uses row.
+			TopToBottom = "True" # If false, the window is placed starting from the bottom.
+			LeftToRight = "True" # If false, the window is placed starting from the right.
+			OffsetX = "0"        # Pixels to leave between new and old windows and screen edges.
+			OffsetY = "0"        # Pixels to leave between new and old windows and screen edges.
 		}
 	}
 
@@ -133,47 +56,26 @@ Screen {
 	# "terminal" and "terminal", you would end up with something like "terminal"
 	# and "terminal [2]".
 	UniqueNames  {
-		# Decides if the feature is used or not. False or True.
-		SetUnique = "False";
-
-		# String to place before the unique client number.
-		Pre = " ";
-
-		# String to place after the unique client number.
-		Post = "#";
+		SetUnique = "False"; # Enable this feature.
+		Pre = " ";           # String to place before the unique client number.
+		Post = "#";          # String to place after the unique client number.
 	}
 }
 
-#######################################
-# Menu
-#######################################
 Menu {
-	# Decides on what mouse events to select a menu entry. String is one of
-	# "ButtonPress, ButtonRelease, DoubleClick, Motion"
-	Select = "Motion"
+	DisplayIcons = "False"
 
-	# Decides on what mouse events to enter a submenu. String is one of
-	# "ButtonPress, ButtonRelease, DoubleClick, Motion"
-	Enter = "Motion"
-
-	# Decides on what mouse events to execute an entry. String is one of
-	# "ButtonPress, ButtonRelease, DoubleClick, Motion"
-	Exec = "ButtonPress"
+	# Mouse events for the menus; possible values are ButtonPress,
+	# ButtonRelease, DoubleClick, and Motion.
+	Select = "Motion"      # Select a meny entry.
+	Enter  = "Motion"      # Enter a submenu.
+	Exec   = "ButtonPress" # Execute an entry.
 }
 
-#######################################
-# Harbour
-#######################################
 Harbour {
-	# Which edge to place the harbour on. One of Right, Left, Top, or Bottom.
-	Placement = "Right"
-	
-	# From what to which direction the harbour expands. One of TopToBottom,
-	# BottomToTop, RightToLeft, LeftToRight.
-	Orientation = "BottomToTop"
-
-	# Whether or not the harbour is "always on top"
-	OnTop = "False"
+	Placement = "Right"         # Where to place it. Left, Right, Top, or Bottom.
+	Orientation = "BottomToTop" # Expand in this direction. TopToBottom, BottomToTop, RightToLeft, LeftToRight.
+	OnTop = "False"             # Whether or not the harbour is "always on top"
 
 	# Controls whether maximized clients will cover the harbour (true), or if
 	# they will stop at the edge of the harbour (false).

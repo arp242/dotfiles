@@ -4,23 +4,22 @@ FrameTitle {
 	ButtonRelease = "1" { Actions = "Raise; Focus; ActivateClient" }
 	ButtonRelease = "2" { Actions = "ShowMenu Window" }
 	ButtonRelease = "3" { Actions = "Lower" }
-	Motion = "1" { Threshold = "4"; Actions = "Raise; Move" }
-	Motion = "2" { Threshold = "4"; Actions = "GroupingDrag True" }
-	Motion = "Mod4 1" { Threshold = "4"; Actions = "Raise; Move" }
-	Motion = "Mod4 3" { Actions = "Resize" }
-	Enter = "Any Any" { Actions = "Focus" }
+	Motion = "1"        { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "2"        { Threshold = "4"; Actions = "GroupingDrag True" }
+	Motion = "Mod4 1"   { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "Mod4 3"   { Actions = "Resize" }
+	Enter = "Any Any"   { Actions = "Focus" }
 }
 
 OtherTitle {
-	ButtonRelease = "1" { Actions = "Raise; Focus" }
-	ButtonRelease = "2" { Actions = "Focus" }
-	ButtonRelease = "3" { Actions = "Close" }
+	ButtonRelease = "1"      { Actions = "Raise; Focus" }
+	ButtonRelease = "2"      { Actions = "Focus" }
+	ButtonRelease = "3"      { Actions = "Close" }
 	ButtonRelease = "Mod4 3" { Actions = "ShowMenu Window" }
-	Motion = "1" { Threshold = "4"; Actions = "Raise; Move" }
-	Motion = "Mod4 1" { Threshold = "4"; Actions = "Raise; Move" }
-	Enter = "Any Any" { Actions = "Focus" }
+	Motion = "1"             { Threshold = "4"; Actions = "Raise; Move" }
+	Motion = "Mod4 1"        { Threshold = "4"; Actions = "Raise; Move" }
+	Enter = "Any Any"        { Actions = "Focus" }
 }
-
 
 Client {
 	ButtonPress = "1" { Actions = "Focus; Raise" }

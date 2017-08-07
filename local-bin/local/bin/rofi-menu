@@ -1,0 +1,14 @@
+#!/bin/sh
+
+eval $(echo "\
+arandr
+chromium
+firefox
+foobar2000
+gimp
+pavucontrol
+pidgin
+scrot-copy
+xterm -e alsamixer
+xterm\
+" | rofi -dmenu)

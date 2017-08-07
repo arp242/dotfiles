@@ -1,4 +1,3 @@
-
 augroup basic
 	autocmd!
 
@@ -62,6 +61,7 @@ augroup my_filetypes
 		\| call matchadd('MarkdownTrailingSpaces', '\s\+$', 100)
 
 	" Set textwidth to 76 for emails.
+	autocmd BufReadPost /tmp/mail-* setlocal ft=mail | normal! 0Go
 	autocmd FileType mail setlocal textwidth=76
 
 	" These emails are usually DOS formatted (as should be, per RFC).
@@ -95,7 +95,7 @@ endfun
 
 " Show formatting characters in insert mode.
 fun! s:help()
-	packadd vim-vimhelplint
+	packadd! vim-vimhelplint
     augroup help_insert
         autocmd!
         autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore

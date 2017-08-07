@@ -2,13 +2,7 @@
 #
 # Move a window to the side of a screen.
 
-border=8
-#border=2
-#if [ -f ~/.cwmrc ]; then
-#	border=$(( 2 *
-#		$( (grep ^borderwidth ~/.cwmrc || echo "1 1") | awk '{print $2}' )
-#	))
-#fi
+border=0
 
 win=$(xdotool getactivewindow)
 

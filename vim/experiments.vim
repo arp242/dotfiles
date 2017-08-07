@@ -1,5 +1,3 @@
-" $dotid$
-
 " Show line number relative to the cursor
 "set relativenumber
 "set number

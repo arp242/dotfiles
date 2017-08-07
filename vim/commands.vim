@@ -1,5 +1,3 @@
-" $dotid$
-
 " :retab changes *everything*; this changes *only* indentation (and not stuff
 " inside strings or for alignment)
 fun! s:retab()

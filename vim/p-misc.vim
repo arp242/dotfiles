@@ -1,5 +1,3 @@
-" $dotid$
-
 " unicode: prevent overriding thing mapping 
 nnoremap <F13> <Plug>(MakeDigraph) | vnoremap <F13> <Plug>(MakeDigraph)
 
