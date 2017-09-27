@@ -1,0 +1,212 @@
+# Comments start with #. 
+# 
+# All options are in the form of "key value1 [value2 ...]"
+# 
+# All options can be split over multiple lines by indenting the next lines with
+# one or more spaces or tabs (the amount don't matter). So this:
+#
+# user
+#   _trackwall
+#
+# is the same as:
+#
+# user _trackwall
+#
+# Note that option keys *must not* have leading whitespace, this:
+#
+# user _trackwall
+#  chroot /var/trackwall
+#
+# is seen as:
+#
+# user _trackwall chroot /var/trackwall
+#
+# Which is an error, since the user option takes only one argument.
+#
+
+#####################
+### Basic options ###
+#####################
+
+# Used for controlling the server
+control-listen 127.0.0.53:4242
+
+# Listens on TCP and UDP
+dns-listen 127.0.0.53:53
+
+# Forward allowed requests to this nameserver.
+#dns-forward 127.0.1.1:53
+# Get first nameserver value from /etc/resolv.conf that is not dns-listen
+# NOTE: you don't want to do this if you're using musl libc, since that sends a
+# query to *all* nameservers and uses whichever one responds fastest.
+#dns-forward auto
+dns-forward 127.0.0.1
+
+# We serve no-op or "surrogate" scripts from a HTTP server
+http-listen 127.0.0.53:80
+https-listen 127.0.0.53:443
+
+# Root cert; relative to chroot()
+# Keep these private!
+root-cert /rootCA.pem
+root-key /rootCA.key
+
+# Run as this user
+user _trackwall
+
+# Chroot directory
+chroot /var/trackwall
+
+# Cache DNS responses. Note that trackwall does *not* cache the actual DNS
+# responses (that's the resolver's job), it merly caches whatever action is
+# taken (forward or spoof).
+cache-dns 1h
+
+# Show some colours in the output; to guarantee readability text is never
+# coloured, only some whitespace is shown with a different background colour.
+color yes
+
+####################
+### Adding hosts ###
+####################
+
+# Cache remote hosts files for a week, this is especially useful for desktops
+# and such which may be turned on and off several times a day.
+cache-hosts 1w
+
+# The format is:
+#   hostlist format url
+#
+# Where format is any of:
+#   plain − One host per line. No comments
+#   hosts − /etc/hosts, comments and the destination address are ignored.
+#
+# All subdomains are also blocked, so an entry like:
+#   example.net
+# would block:
+#   example.net
+#   track.doubleclick.net
+#   really.track.doubleclick.net
+#   ...etc...
+#
+# Don't worry about redundant or duplicate entries from different lists. Those
+# are automatically removed.
+
+# These domains are used for serving malware, phising, and other outright crap.
+# You probably want to keep them. Many browsers already have some built-in
+# protection for this these days, but some extra protection can't hurt.
+hostlist plain http://malwaredomains.lehigh.edu/files/justdomains
+hostlist hosts http://www.malwaredomainlist.com/hostslist/hosts.txt
+
+# These are a mix of ad domains, malware domains, "shock sites", and other stuff
+# that most people don't want to need to visit.
+hostlist plain http://pgl.yoyo.org/adservers/serverlist.php?hostformat=plain&showintro=0&mimetype=plaintext 
+hostlist hosts http://winhelp2002.mvps.org/hosts.txt
+hostlist hosts http://someonewhocares.org/hosts/hosts
+
+# You can also use a local file; remember that trackwall uses chroot()!
+#hostlist hosts file:///hosts
+
+# If you just want to block a few hosts, you can add rules here as well
+#host conservapedia.com
+
+# Or multiple work as well
+#host facebook.com twitter.com
+
+###############################################
+### Blocking hosts from regular expressions ###
+###############################################
+
+# You can also block hosts with regular expressions.
+#
+# Note that this is a lot slower than using a static hosts file (which is a
+# constant-time map lookup), since we need to iterate over the entire array and
+# see if an expression matches on every DNS lookup (we do some caching to speed
+# up subsequent lookups though).
+#
+
+# Regexps
+# Only plain is supported
+#regexplist plain file:///home/martin/regexps
+
+# Or just here; multiple regexps can be separated by whitespace.
+regexp
+	^count(er)?[0-9]+?\.
+	^banners?[0-9]+?\.
+	^ad(s|srv|serv|serve|server|v|vert)?[0-9]+?\.
+
+#########################
+### Customizing hosts ###
+#########################
+
+# Does a hostlist have hosts you would like to keep? Remove them! unhost takes a
+# regexp and removes all hosts that match it. It's always executed *after*
+# loading all the hostsfile (so putting this at the top of this file would work
+# just as well).
+
+# Listed in someonewhocares, but seems okay?
+unhost grokbase.com
+
+# You can also load it from a file (which can be remote).
+#unhostlist plain file:///myunhosts
+
+# The same can be done for regexps. Note that this is *not* a regexp (matching
+# regexps with a regexp is a bit of a mindfuck).
+#unregexp ^count(er)?[0-9]+?\.
+
+# And again, from a file
+#unregexplist file:///unregexps
+
+
+#########################
+### Surrogate scripts ###
+#########################
+
+# Some sites will break when they can't load some JavaScript. It'll error out
+# and none of the JavaScript works (which in some cases means the entire site
+# stops working).
+# To fix this, trackwall can serve surrogate scripts, the format is simple:
+#
+#   surrogate domain_regex JavaScript to serve
+#
+# @@ will be replaced by function(){}
+
+# AddThis
+surrogate ^s\d+\.addthis\.com$
+	addthis={init:@@,layers:@@,toolbox:@@,button:@@,counter:@@}
+
+# Google tag manager
+surrogate .*googletag(manager|services)\.com$
+	var googletag;
+	googletag={
+	enableServices:@@, refresh:@@, defineOutOfPageSlot:@@, setTargeting:@@,
+	display:@@, setRefreshUnfilledSlots:@@, enableAsyncRendering:@@,
+	enableSyncRendering:@@, enableSingleRequest:@@, collapseEmptyDivs:@@,
+	cmd:{push:@@},
+	defineSlot:function(){return googletag},
+	addService:function(){return googletag},
+	companionAds:function(){return googletag},
+	pubads:function(){return googletag},
+	publish:function(){return googletag}
+	}
+
+# http://ak.sail-horizon.com/horizon/v1.js
+surrogate ak\.sail-horizon\.com$
+	window.Sailthru={setup:@@}
+
+#???
+# http://tags.bkrtx.com/js/bk-coretag.js
+# http://regdev.idge.int/api/"
+# "http://reg.idgenterprise.com/api/";
+surrogate .*bkrtx\.com$
+	window.bk_addPageCtx=@@;
+	window.bk_doJSTag=@@
+
+###########################
+### Add your own config ###
+###########################
+
+source /etc/trackwall/config.added
+#source /etc/trackwall/config.local
+
+# vim:ft=config

@@ -1,9 +1,9 @@
 # vim:syntax=config
 
-Property = ".*,^Firefox" {
-	ApplyOn = "New Start Reload Transient Workspace"
-	Workspace = "2"
-}
+#Property = ".*,^Firefox" {
+#	ApplyOn = "New Start Reload Transient Workspace"
+#	Workspace = "2"
+#}
 Property = ".*,^Pidgin" {
 	ApplyOn = "New Start Reload Transient Workspace"
 	Workspace = "4"

@@ -175,6 +175,9 @@ set smarttab
 " Also match < & > with %
 set matchpairs+=<:>
 
+" Use open tab (if any) when trying to jump to a quickfix error.
+set switchbuf=usetab
+
 " Real men use real tabs...
 set noexpandtab
 

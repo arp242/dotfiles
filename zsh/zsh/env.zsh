@@ -36,8 +36,10 @@ _postpath "$HOME/.gem/ruby/2.4.0/bin"
 
 # Go
 _postpath "/usr/local/go/bin"
+#_postpath "/usr/local/gotools/bin"
 _postpath "$HOME/go/bin"
 _postpath "$HOME/work/bin"
+_postpath "$HOME/work/martin-dev-env/bin"
 
 _prepath "$HOME/Local/bin"
 
@@ -75,6 +77,12 @@ export GTK_OVERLAY_SCROLLING=0
 
 # Don't output to a pager
 export SYSTEMD_PAGER
+
+# Setup pass
+export PASSWORD_STORE_DIR=/data/stuff/password-store
+export PASSWORD_STORE_X_SELECTION=primary
+export PASSWORD_STORE_CLIP_TIME=10
+export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
 # Do the $TERM dance; these options seem to work best on various systems...
 if [[ -n "$TMUX" ]]; then

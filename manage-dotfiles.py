@@ -166,6 +166,16 @@ def manage_files(files):
             print("Skipping merge of `{}' because it is larger than 1MiB".format(src))
             continue
 
+        # TODO: temporarily until I implement font-scale
+        # Check again if the files differ, but this time ignoring lines with
+        # $dotignore$; this test is comparatively slow, which is why we do it
+        # here
+        #dest_data = [ l for l in open(dest, 'r').readlines() if not 'dot-ignore' in l]
+        #src_data = [ l for l in open(src, 'r').readlines() if not 'dot-ignore' in l ]
+        #if src_data == dest_data:
+        #    continue
+        # End temp code
+
         h1 = hashlib.sha256(open(src, 'rb').read()).hexdigest()
         h2 = hashlib.sha256(open(dest, 'rb').read()).hexdigest()
 
@@ -200,6 +210,11 @@ def proc_module(module, code):
     """ exec() module code, do something with it """
     assigns = {}
     exec(code, assigns)
+
+    if assigns.get('requires_root', False):
+        # TODO
+        print('{} requires root -> skiping'.format(module))
+        return
 
     os.chdir(os.path.dirname(module))
     if assigns.get('files'):

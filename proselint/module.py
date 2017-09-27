@@ -1,0 +1,3 @@
+files = {
+	'~/.proselintrc': 'proselintrc'
+}

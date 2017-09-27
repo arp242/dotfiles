@@ -22,7 +22,7 @@ unfunction _exists
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirpersist/dirpersist.plugin.zsh
 # https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/tmux
 fpath=($fpath ~/.zsh/plugins)
-source ~/.zsh/plugins/*.zsh
+for f in ~/.zsh/plugins/*.zsh; do source "$f"; done
 
 # We're ssh-ing into vagrant
 if [[ -d /vagrant ]]; then

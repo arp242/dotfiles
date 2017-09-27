@@ -26,4 +26,3 @@ let g:loaded_confirm_quit = 1
 
 " Expanded % functionality
 packadd! matchit
-

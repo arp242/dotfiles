@@ -1,5 +1,6 @@
 func Test(t *testing.T) {
 	cases := []struct {
+		in, want string
 	}{
 		{},
 	}
@@ -8,15 +9,15 @@ func Test(t *testing.T) {
 		//t.Run(fmt.Sprintf("%v", tc.in), func(t *testing.T) {
 		t.Run(fmt.Sprintf("%v", i), func(t *testing.T) {
 			//out := ...
-			if out != tc.expected {
-				t.Errorf("\nout:      %#v\nexpected: %#v\n", out, tc.expected)
+			if out != tc.want {
+				t.Errorf("\nout:      %#v\nwant: %#v\n", out, tc.want)
 			}
 
-			//if !reflect.DeepEqual(tc.expected, out) {
-			//	t.Errorf("\nout:      %#v\nexpected: %#v\n", out, tc.expected)
+			//if !reflect.DeepEqual(tc.want, out) {
+			//	t.Errorf("\nout:  %#v\nwant: %#v\n", out, tc.want)
 			//}
-			//if diff.Diff(tc.expected, out) != "" {
-			//	t.Errorf(diff.Cmp(tc.expected, out))
+			//if diff.Diff(tc.want, out) != "" {
+			//	t.Errorf(diff.Cmp(tc.want, out))
 			//}
 		})
 	}

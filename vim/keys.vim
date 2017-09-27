@@ -11,8 +11,9 @@ inoremap <F1> <C-o>:helpclose<CR>
 nnoremap <F1> :buffers<CR>
 nnoremap <F2> :registers<CR>
 nnoremap <F3> :UndotreeToggle<CR>
-nnoremap <F4> :SyntasticToggleMode<CR>
-nnoremap <F5> :GitGutterToggle<CR>
+"nnoremap <F4> :SyntasticToggleMode<CR>
+nnoremap <F4> :ALEToggle<CR>
+"nnoremap <F5> :GitGutterToggle<CR>
 nnoremap <F6> :TricycleToggle<CR>
 
 nnoremap <F9> :set shiftround!<CR>:set shiftround?<CR>

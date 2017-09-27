@@ -22,8 +22,8 @@ augroup my_filetypes
 	" Don't like the default one at all; it's far too opinionated on all sorts
 	" of stupid stuff.
 	autocmd FileType gitcommit 
-		\  setlocal tw=80 filetype=mygitcommit
-		\| syn match   gitcommitComment    "^#.*"
+		\  setlocal ft=mygitcommit ts=8 tw=72
+		\| syn match gitcommitComment "^#.*"
 
 	" Reset some settings that these ftplugins or syntax files reset :-/
 	autocmd FileType python setlocal ts=4
@@ -110,4 +110,9 @@ augroup angering_zed_shaw
 		\ syn keyword pythonTwoBuiltin basestring cmp execfile file long
 		\                              raw_input reduce reload unichr unicode
 		\                              xrange apply buffer coerce intern
+augroup end
+
+augroup init_new_file
+	autocmd!
+	autocmd BufNewFile *.py exe "normal O#!/usr/bin/env python" | exe "normal j"
 augroup end

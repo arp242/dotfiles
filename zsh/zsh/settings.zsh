@@ -13,9 +13,10 @@ setopt nobgnice              # Don't frob with nicelevels
 setopt noautoremoveslash     # Too magic for my liking
 setopt interactivecomments   # Allow comments in interactive shells
 #setopt extendedglob          # More globbing characters
+LISTMAX=0                    # Disable 'do you wish to see all %d possibilities'
 
 ### Directory
-setopt cdablevars            # Allow "go/desk" instead "~go/desk"
+#setopt cdablevars            # Allow "go/desk" instead "~go/desk"
 setopt autopushd             # Automatically keep a history
 setopt pushdminus            # -0 counts from top, +0 from bottom
 setopt pushdsilent           # Don't show stack after using pushd
@@ -32,7 +33,7 @@ setopt appendhistory         # Append to history, rather than overwriting
 setopt incappendhistory      # Append immediately rather than only at exit
 #setopt sharehistory          # Also read back new commands when writing history
 setopt extendedhistory       # Store some metadata as well
-setopt histnostore           # Don't store history or fc commands
+setopt histnostore           # Do not store history or fc commands
 HISTFILE=~/.zsh/history      # Store history here
 HISTSIZE=8000                # Max. entries to keep in memory
 SAVEHIST=8000                # Max. entries to save to file
@@ -55,9 +56,11 @@ zle -N zle-keymap-select
 
 set_prompt() {
 	vcs_info
-	[[ $mode = n ]] && print -n "%S"
-	print -n "%(?..%S %? %s)[%~]${vcs_info_msg_0_}%#"
-	[[ $mode = n ]] && print -n "%s"
+
+	print -n "%(?..%S %? %s)"           # Exit code in "standout" if non-0.
+	[[ $mode = n ]] && print -n "%S"    # Directory as "standout" in normal mode.
+	print -n "[%~]${vcs_info_msg_0_}%#" # Directory and VCS info (if any).
+	[[ $mode = n ]] && print -n "%s"    # End standout.
 	print -n ' '
 }
 

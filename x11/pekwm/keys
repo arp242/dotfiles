@@ -75,6 +75,8 @@ Global {
 	KeyPress = "XF86MonBrightnessDown" { Actions = "Exec cwm-brightness down" }
 	KeyPress = "XF86MonBrightnessUp"   { Actions = "Exec cwm-brightness up" }
 	KeyPress = "Mod4 E" { Actions = "Exec cwm-w-tile" }
+	
+	KeyPress = "Mod4 V" { Actions = "Exec xdotool getactivewindow key --window %@ XF86Back" }
 
 	# Rofi menus
 	KeyPress = "Mod4 W"       { Actions = "Exec rofi -show windowcd -modi windowcd,window" }
