@@ -16,7 +16,6 @@ setopt interactivecomments   # Allow comments in interactive shells
 LISTMAX=0                    # Disable 'do you wish to see all %d possibilities'
 
 ### Directory
-#setopt cdablevars            # Allow "go/desk" instead "~go/desk"
 setopt autopushd             # Automatically keep a history
 setopt pushdminus            # -0 counts from top, +0 from bottom
 setopt pushdsilent           # Don't show stack after using pushd
@@ -25,7 +24,6 @@ setopt pushdignoredups       # Don't store duplicate entries
 # I go here a lot; "cd ~tw/project"
 tw=/home/martin/work/src/github.com/teamwork
 go=/home/martin/go/src/arp242.net
-code=/data/code
 
 ### History
 setopt hist_ignore_dups      # Ignore duplicate in history.

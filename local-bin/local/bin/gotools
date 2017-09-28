@@ -1,0 +1,31 @@
+#!/bin/sh
+
+export GOPATH=/usr/local/gotools
+
+repos="
+github.com/alecthomas/gometalinter
+github.com/davidrjenni/reftools/cmd/fillstruct
+github.com/derekparker/delve/cmd/dlv
+github.com/dominikh/go-tools/cmd/keyify
+github.com/fatih/gomodifytags
+github.com/fatih/motion
+github.com/golang/dep/cmd/dep
+github.com/golang/lint/golint
+github.com/josharian/impl
+github.com/jstemmer/gotags
+github.com/kisielk/errcheck
+github.com/klauspost/asmfmt/cmd/asmfmt
+github.com/motemen/gore
+github.com/nsf/gocode
+github.com/rogpeppe/godef
+github.com/stapelberg/expanderr
+github.com/zmb3/gogetdoc
+golang.org/x/tools/cmd/goimports
+golang.org/x/tools/cmd/gorename
+golang.org/x/tools/cmd/guru
+"
+
+for r in $repos; do
+	echo $r
+	go get -u $r
+done

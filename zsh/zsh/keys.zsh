@@ -7,7 +7,7 @@ bindkey -v
 export KEYTIMEOUT=10
 
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
-insert_sudo () { zle beginning-of-line; zle -U "sudo " }
+insert_sudo () { zle beginning-of-line; zle -U "doas " }
 
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search

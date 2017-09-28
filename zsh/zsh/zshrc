@@ -24,15 +24,17 @@ unfunction _exists
 fpath=($fpath ~/.zsh/plugins)
 for f in ~/.zsh/plugins/*.zsh; do source "$f"; done
 
-# We're ssh-ing into vagrant
-if [[ -d /vagrant ]]; then
-	#cd /vagrant
-	#export TERM=xterm
-	setopt ignoreeof         # Don't logout on ^D
-fi
+# We're ssh-ing into vagrant; don't logout on ^D
+[[ -d /vagrant ]] && setopt ignoreeof
 
-# Don't really need coredumps
+# Don't really need coredumps.
 limit coredumpsize 0
+
+# Use the "shortcut directory" when starting a new shell.
+[[ $PWD =~ "^/home/martin/work/src/github.com/teamwork" ]] && \
+	cd ~tw/${PWD#/home/martin/work/src/github.com/teamwork}
+[[ $PWD =~ "^/home/martin/go/src/arp242.net" ]] && \
+	cd ~tw/${PWD#/home/martin/go/src/arp242.net}
 
 # I like fortunes!
 fortune -a

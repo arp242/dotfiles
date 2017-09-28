@@ -18,7 +18,7 @@ command! Retab call s:retab()
 
 " Write as root user; re-read file.
 fun! s:super_write()
-	silent write !sudo tee %
+	silent write !doas tee %
 	edit!
 endfun
 command! SuperWrite call s:super_write()

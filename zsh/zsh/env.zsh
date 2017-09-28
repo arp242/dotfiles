@@ -36,7 +36,7 @@ _postpath "$HOME/.gem/ruby/2.4.0/bin"
 
 # Go
 _postpath "/usr/local/go/bin"
-#_postpath "/usr/local/gotools/bin"
+_postpath "/usr/local/gotools/bin"
 _postpath "$HOME/go/bin"
 _postpath "$HOME/work/bin"
 _postpath "$HOME/work/martin-dev-env/bin"
