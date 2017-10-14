@@ -13,6 +13,7 @@ github.com/golang/dep/cmd/dep
 github.com/golang/lint/golint
 github.com/josharian/impl
 github.com/jstemmer/gotags
+github.com/kardianos/govendor
 github.com/kisielk/errcheck
 github.com/klauspost/asmfmt/cmd/asmfmt
 github.com/motemen/gore
@@ -29,3 +30,5 @@ for r in $repos; do
 	echo $r
 	go get -u $r
 done
+
+gometalinter --install --update

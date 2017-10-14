@@ -1,5 +1,3 @@
-# $dotid$
-
 # F1
 bindkey ^[[M run-help
 bindkey ^[OP run-help

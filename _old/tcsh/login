@@ -1,5 +1,3 @@
-# $dotid$
-
 if ( -X fortune ) then
 	fortune -a
 endif

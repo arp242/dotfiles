@@ -1,5 +1,3 @@
-# $dotid$
-
 set noglob
 
 set hosts

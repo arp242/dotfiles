@@ -1,5 +1,4 @@
 # vim:set syntax=tcsh
-# $dotid$
 
 # Show the directory in the xterm title
 echo -n "\033]2;tcsh: $cwd\007"

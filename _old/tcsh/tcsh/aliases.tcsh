@@ -1,4 +1,3 @@
-# $dotid$
 # TODO: alias precmd for branch stuff?
 
 if ( $uname != win32 && -f ~/.tcsh/cwdcmd.tcsh ) then

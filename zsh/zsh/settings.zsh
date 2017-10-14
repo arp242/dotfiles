@@ -13,7 +13,7 @@ setopt nobgnice              # Don't frob with nicelevels
 setopt noautoremoveslash     # Too magic for my liking
 setopt interactivecomments   # Allow comments in interactive shells
 #setopt extendedglob          # More globbing characters
-LISTMAX=0                    # Disable 'do you wish to see all %d possibilities'
+LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
 
 ### Directory
 setopt autopushd             # Automatically keep a history
@@ -31,7 +31,7 @@ setopt appendhistory         # Append to history, rather than overwriting
 setopt incappendhistory      # Append immediately rather than only at exit
 #setopt sharehistory          # Also read back new commands when writing history
 setopt extendedhistory       # Store some metadata as well
-setopt histnostore           # Do not store history or fc commands
+setopt histnostore           # Don't store history or fc commands
 HISTFILE=~/.zsh/history      # Store history here
 HISTSIZE=8000                # Max. entries to keep in memory
 SAVEHIST=8000                # Max. entries to save to file

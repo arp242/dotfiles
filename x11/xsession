@@ -36,6 +36,7 @@ _run redshift-gtk
 _run battray
 _run volumeicon
 _run dunst
-_run xcape -e 'Control_L=Escape;Shift_L=KP_Add'
+#_run xcape -e 'Control_L=Escape;Shift_L=KP_Add'
+_run xcape -e 'Shift_L=KP_Add'
 
 [ -f ~/.xsession_local ] && . ~/.xsession_local

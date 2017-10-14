@@ -23,9 +23,5 @@ So, how do you use it:
   You can also use the `-i` to switch to ask confirmation for everything, and
   the `-f` switch to override all local files regardless of any changes.
 
-Optional:
-- Add `$dotid$` or in a comment to better keep track which files are modified.
-  You need to keep your files in a `hg` or `git` repo.
-
 Alternatives: [dotfiles.github.io](http://dotfiles.github.io/) lists some.
 

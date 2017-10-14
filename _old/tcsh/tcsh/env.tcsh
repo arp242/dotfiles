@@ -1,5 +1,3 @@
-# $dotid$
-
 # Setup PATH
 if ($uname != win32) then
 	setenv PATH ~/Local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/games

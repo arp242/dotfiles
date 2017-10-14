@@ -42,7 +42,7 @@ alias decolor="sed 's|\x1b\[[;0-9]*m||g'"
 alias trcolor="sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 
 alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
-alias youtube-dl='youtube-dl --no-part --title'
+alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
 alias mplayer='mpv'
 
 if _exists drill; then

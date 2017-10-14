@@ -1,7 +1,5 @@
 # vim:syntax=tcsh
 #
-# $dotid$
-#
 # tcsh configuration
 # Martin Tournoij <martin@arp242.net>
 # Should work on: FreeBSD, OpenBSD, Linux (CentOS, Ubuntu, Arch), OpenSolaris, Windows 7

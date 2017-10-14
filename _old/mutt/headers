@@ -1,5 +1,3 @@
-# $dotid$
-
 ignore *
 
 unignore To:
