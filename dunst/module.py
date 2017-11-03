@@ -1,3 +1,0 @@
-files = {
-	'~/.config/dunstrc': 'dunstrc'
-}
