@@ -1,4 +1,0 @@
-#!/bin/sh
-
-git fetch origin --prune
-git branch --merged master | grep -v 'master$' | xargs git branch -d

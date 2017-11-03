@@ -1,3 +1,0 @@
-dirs = {
-	'~/.config/ranger': '.',
-}

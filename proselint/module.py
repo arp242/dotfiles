@@ -1,3 +1,0 @@
-files = {
-	'~/.proselintrc': 'proselintrc'
-}

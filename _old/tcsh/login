@@ -1,7 +1,0 @@
-if ( -X fortune ) then
-	fortune -a
-endif
-
-if ( -f ~/.tcsh/cwdcmd ) then
-	source ~/.tcsh/cwdcmd
-endif
