@@ -84,10 +84,10 @@ setenv() {
 # "ag edit" and "grep edit".
 age() {
 	#vim +'normal! gg' +"/$1" +n -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
-	vim +"/$1" -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
+	vim +"/$1" -p $(ag "$@" | cut -d: -f1 | sort -u)
 }
 grepe() {
-	vim -p $(grep $@ | cut -d: -f1 | sort -u | xargs)
+	vim -p $(grep "$@" | cut -d: -f1 | sort -u)
 }
 
 # Rename all files in the current directory to lowercase
@@ -100,7 +100,7 @@ lwr() {
 
 # It's pathetic that we need this but we do :-/
 repulse() {
-	pulseaudio -k && volumeicon &   
+	pulseaudio -k && volumeicon &
 }
 
 finddep() {
@@ -110,6 +110,10 @@ finddep() {
 # "Short awk"
 sawk() {
 	awk "{print \$$1}"
+}
+
+godeps() {
+    go list -f '{{range $f := .Imports}}{{$f}}{{printf "\n"}}{{end}}' ./...
 }
 
 # pushd function to emulate the old zsh behaviour.

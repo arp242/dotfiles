@@ -1,4 +1,4 @@
-func Test(t *testing.T) {
+func Test{{++}}(t *testing.T) {
 	cases := []struct {
 		in, want string
 	}{
@@ -10,7 +10,7 @@ func Test(t *testing.T) {
 		t.Run(fmt.Sprintf("%v", i), func(t *testing.T) {
 			//out := ...
 			if out != tc.want {
-				t.Errorf("\nout:      %#v\nwant: %#v\n", out, tc.want)
+				t.Errorf("\nout:  %#v\nwant: %#v\n", out, tc.want)
 			}
 
 			//if !reflect.DeepEqual(tc.want, out) {

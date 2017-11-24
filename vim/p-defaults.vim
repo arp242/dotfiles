@@ -1,4 +1,4 @@
-" Disable some of the default plugins that we don't use.
+" Disable some of the default plugins that I don't use.
 let g:loaded_2html_plugin = 1
 let g:loaded_LogiPat = 1
 let g:loaded_getscript = 1
@@ -25,4 +25,6 @@ let g:did_install_default_menus = 1
 let g:loaded_confirm_quit = 1
 
 " Expanded % functionality
-packadd! matchit
+if exists(':packadd')
+	packadd! matchit
+endif

@@ -4,14 +4,37 @@ source ~/.vim/settings.vim
 source ~/.vim/autocmd.vim
 source ~/.vim/commands.vim
 source ~/.vim/keys.vim
-source ~/.vim/macros.vim
 source ~/.vim/gui.vim
 source ~/.vim/softwrap.vim
 source ~/.vim/completion.vim
+source ~/.vim/highlight.vim
 source ~/.vim/experiments.vim
-source ~/.vim/words.vim
 
 " Plugin configs can be in any order.
 for s:f in glob("$HOME/.vim/p-*.vim", 0, 1)
 	execute 'source ' . s:f
 endfor
+
+
+fun! Matchjump(group, dir)
+    let l:matches = filter(getmatches(), printf('v:val["group"] is "%s"', a:group))
+
+    let l:curpos = getcurpos()
+    let current_idx = 0
+    for l:match in l:matches
+        " TODO: Do this better.
+        let itempos = l:match['pos1']
+        if l:curpos[1] is itempos[0] && l:curpos[2] >= l:itempos[1] && l:curpos[2] < l:itempos[1] + l:itempos[2]
+            break
+        endif
+        let current_idx += 1
+    endfor
+
+     if l:current_idx + 1 < len(l:matches)
+        let l:next_id = same_ids[current_idx + 1]
+        call setpos('.', [0] + l:next_id['pos1'])
+     endif
+endfun
+
+nnoremap [i :call Matchjump('goSameId', 'prev')
+nnoremap ]i :call Matchjump('goSameId', 'next')

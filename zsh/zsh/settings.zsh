@@ -33,8 +33,8 @@ setopt incappendhistory      # Append immediately rather than only at exit
 setopt extendedhistory       # Store some metadata as well
 setopt histnostore           # Don't store history or fc commands
 HISTFILE=~/.zsh/history      # Store history here
-HISTSIZE=8000                # Max. entries to keep in memory
-SAVEHIST=8000                # Max. entries to save to file
+HISTSIZE=80000               # Max. entries to keep in memory
+SAVEHIST=80000               # Max. entries to save to file
 
 ### Prompt
 setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT
@@ -64,7 +64,7 @@ set_prompt() {
 
 set_rprompt() {
 	local host='%U%B%m%b%u'
-	if [[ -n "${SSH_CLIENT}${SSH2_CLIENT}${SSH_CONNECTION}" ]]; then 
+	if [[ -n "${SSH_CLIENT}${SSH2_CLIENT}${SSH_CONNECTION}" ]]; then
 		host="%F{red}${host}%f"
 	fi
 	print "${mode}:${host}:%T"

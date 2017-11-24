@@ -1,60 +1,25 @@
 " Settings for Vim-go
 
-let g:go_fmt_experimental = 1            " Preserves undo etc. a bit better.
-let g:go_fmt_command = "goimports"       " Use goimports instead of gofmt.
+let g:go_fmt_autosave = 0                " We use ALE.
 let g:go_highlight_build_constraints = 1 " Highlight // +build tag.
-let g:go_autodetect_gopath = 0           " Don't play games with my GOPATH.
 let g:go_def_mapping_enabled = 0         " Don't map GoDef related stuff (we do this ourselves later).
 let g:go_gocode_unimported_packages = 1  " Include suggestions for unimported packages.
-let g:go_list_type = "locationlist"      " Always use location list.
 let g:go_template_autocreate = 0         " Doesn't always work quite right for me (TODO: investigate and fix!)
 let g:go_doc_max_height = 10             " Don't make the godoc window too high.
+let g:go_addtags_transform = "camelcase" " Use camelCase for tags.
 let g:go_fold_enable = ['import', 'package_comment'] " Fold import blocks and package comments, but nothing else.
 
-"let g:go_jump_to_error = 0
-"let g:go_debug_windows = {'output': 'leftabove 60vnew'}
-
-" TODO: Pressing K while window is active should close it (and do nothing else)
-" TODO: Running this a second time makes window go at top?!
-fun! s:k() abort
-	"silent! call go#doc#Open('botright new', 'split')
-	"silent! :GoDoc
-
-	" On error save the cursor position and try to find docs for the function
-	" declaration.
-	"if go#util#ShellError()
-		let l:pos = getpos('.')
-		try
-			normal! ^f(h
-			"silent! call go#doc#Open('botright new', 'split')
-			silent! :GoDoc
-			if go#util#ShellError()
-				call go#util#EchoError("No docs found. Sorry :-(")
-				return
-			endif
-		finally
-			call setpos('.', l:pos)
-		endtry
-	"endif
-
-	" godoc adds an "import" line at the top which is pretty redundant IMHO;
-	" remove if present.
-	setl modifiable
-	:0g/^import /d
-	:%s/\%^\n\+//
-	:%s/\n\+\%$//
-	setl nomodifiable
-	:1
-
-	" Set statusline to something that makes more sense.
-	setlocal stl=%f\ %P
-
-	" Focus previous window.
-	exe "normal! \<C-w>w"
-endfun
+" TODO: This will make the cursor go to the {quickfix,loc}list :-/ Even worse!
+"let g:go_jump_to_error = 0               " Don't move my cursor!
 
 augroup my_go_settings
 	autocmd!
+
+	" Because I use ALE these commands are useless to me.
+	autocmd FileType go
+				\  delc GoErrCheck | delc GoLint | delc GoVet
+				\| delc GoFmt | delc GoImports | delc GoFmtAutoSaveToggle
+				\| delc GoMetaLinter
 
 	" Enable syntax-based folding and close all folds.
 	autocmd FileType go setlocal foldmethod=syntax | normal! zM
@@ -69,32 +34,29 @@ augroup my_go_settings
 	autocmd FileType go nnoremap <buffer> <silent> <C-]> :GoDef<CR>
 	autocmd FileType go nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<CR>
 
-	" Set makeprg to go install instead of go build.
-	autocmd FileType go
-		\ let &l:makeprg = 'go install' .
-		\     (expand('%:p') =~ "^/home/martin/work/" ? ' -race' : '')
+	" Set makeprg to go install instead of go build -i.
+	autocmd FileType go let &l:makeprg = 'go install'
 
 	" Correct filetype and makeprg for Go templates.
-	autocmd BufRead /home/martin/work/*.html 
-		\ set ft=gohtmltmpl makeprg=go\ install\ -race
-
-
-	" Use "botright new" instead of "new"
-	autocmd FileType go 
-	 \ command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc
-		\ call go#doc#Open('botright new', 'split', <f-args>)
-
-	" Don't focus new window with K
-	" TODO: make it work from completion too
-	autocmd FileType go nnoremap <buffer> <silent> K :call <SID>k()<CR>
-	autocmd FileType go inoremap <buffer> <silent> <C-k> <C-o>:call <SID>k()<CR>
+	autocmd BufRead /home/martin/work/*.html
+		\ setl ft=gohtmltmpl makeprg=go\ install
 
 	" Make sure guru scope is set correct.
-	autocmd BufRead /home/martin/work/src/*.go 
+	autocmd BufRead /home/martin/work/src/*.go
 				\  let s:tmp = matchlist(expand('%:p'),
 					\ '/home/martin/work/src/\(github.com/teamwork/[^/]\+\)')
 				\| if len(s:tmp) > 1 | exe 'silent :GoGuruScope ' . s:tmp[1] | endif
 				\| unlet s:tmp
+
+	" Use "botright new" instead of "new"
+	"autocmd FileType go
+	" \ command! -nargs=* -range -complete=customlist,go#package#Complete GoDoc
+	"	\ call go#doc#Open('botright new', 'split', <f-args>)
+
+	"" Don't focus new window with K
+	"" TODO: make it work from completion too
+	"autocmd FileType go nnoremap <buffer> <silent> K :call <SID>k()<CR>
+	"autocmd FileType go inoremap <buffer> <silent> <C-k> <C-o>:call <SID>k()<CR>
 augroup end
 
 
@@ -202,6 +164,47 @@ fun! s:wrap_err()
 	exe "normal! i, \"\"\<C-o>h"
 endfun
 nnoremap <Leader>w :call <SID>wrap_err()<CR>
+
+
+" TODO: Pressing K while window is active should close it (and do nothing else)
+" TODO: Running this a second time makes window go at top?!
+fun! s:k() abort
+	silent! call go#doc#Open('botright new', 'split')
+	"silent! :GoDoc
+
+	" On error save the cursor position and try to find docs for the function
+	" declaration.
+	"if go#util#ShellError()
+		let l:pos = getpos('.')
+		try
+			normal! ^f(h
+			"silent! call go#doc#Open('botright new', 'split')
+			silent! :GoDoc
+			if go#util#ShellError()
+				call go#util#EchoError("No docs found. Sorry :-(")
+				return
+			endif
+		finally
+			call setpos('.', l:pos)
+		endtry
+	"endif
+
+	" godoc adds an "import" line at the top which is pretty redundant IMHO;
+	" remove if present.
+	setl modifiable
+	:0g/^import /d
+	:%s/\%^\n\+//
+	:%s/\n\+\%$//
+	setl nomodifiable
+	:1
+
+	" Set statusline to something that makes more sense.
+	setlocal stl=%f\ %P
+
+	" Focus previous window.
+	exe "normal! \<C-w>w"
+endfun
+
 
 
 " For testing/development of vim-go's syntax file.

@@ -15,7 +15,7 @@ set history=500
 "
 " Neovim also has a different viminfo format, so store that somewhere else
 set viminfo='50,<0,n~/.vim/tmp/viminfo
-if has('nvim') 
+if has('nvim')
 	let &viminfo .= '.nvim'
 endif
 
@@ -216,7 +216,9 @@ set t_te=
 set mouse=
 
 " Don't increment octal numbers
-set nrformats=bin,hex
+if v:version > 800
+	set nrformats=bin,hex
+endif
 
 " Don't include nroff stuff
 set paragraphs=

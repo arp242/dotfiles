@@ -21,7 +21,7 @@ augroup my_filetypes
 
 	" Don't like the default one at all; it's far too opinionated on all sorts
 	" of stupid stuff.
-	autocmd FileType gitcommit 
+	autocmd FileType gitcommit
 		\  setlocal ft=mygitcommit ts=8 tw=72
 		\| syn match gitcommitComment "^#.*"
 
@@ -65,7 +65,7 @@ augroup my_filetypes
 	autocmd FileType mail setlocal textwidth=76
 
 	" These emails are usually DOS formatted (as should be, per RFC).
-	autocmd BufReadPost *.eml setlocal fileformats+=dos fileformat=dos | edit
+	"autocmd BufReadPost *.eml setlocal fileformats+=dos fileformat=dos | edit!
 
 	" Make editing SSH authorized_keys & known_hosts less painful
 	autocmd BufReadPost authorized_keys,known_hosts
@@ -95,7 +95,8 @@ endfun
 
 " Show formatting characters in insert mode.
 fun! s:help()
-	packadd! vim-vimhelplint
+	"packadd! vim-vimhelplint
+	setl cc=78
     augroup help_insert
         autocmd!
         autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore
@@ -115,4 +116,12 @@ augroup end
 augroup init_new_file
 	autocmd!
 	autocmd BufNewFile *.py exe "normal O#!/usr/bin/env python" | exe "normal j"
+augroup end
+
+" Until this gets fixed: https://github.com/vim/vim/pull/2285
+augroup fix_vimscript
+    autocmd!
+    autocmd FileType vim syn match vimOper
+                \ "\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\|isnot\|is\)[?#]\{0,2}"
+                \ skipwhite nextgroup=vimString,vimSpecFile
 augroup end
