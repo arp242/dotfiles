@@ -18,7 +18,7 @@ nnoremap <silent> [1;5B :call <SID>listtoggle('close')<CR>
 command! -bar -count=1 ListNext call <SID>listmove('next', <count>)
 command! -bar -count=1 ListPrev call <SID>listmove('prev', <count>)
 
-" Move to the next or previos item, depending on cursor position.
+" Move to the next or previous item, depending on cursor position.
 " Based on: https://vi.stackexchange.com/a/14359/51
 fun! s:listmove(dir, count) abort
     " Try location list first, and fall back to location list if it doesn't
