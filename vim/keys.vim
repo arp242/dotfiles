@@ -87,20 +87,9 @@ iabbr teh the
 iabbr Teh The
 iabbr 1= !=
 
-" Make it easier to deal with the location list; these are right, left, up, and
-" down arrow keys with Control. Using <C-Up> etc. doesn't seem to work.
-" TODO: Use cursor position at starting point
-nnoremap <expr> [C len(filter(getloclist(0), {i, l -> l['lnum'] == line('.')})) ? ":lnext<CR>" : ":ll<CR>"
-nnoremap [D :lprev<CR>
-nnoremap [A :lopen<CR>
-nnoremap [B :lclose<CR>
-nnoremap <expr> [1;5C len(filter(getloclist(0), {i, l -> l['lnum'] == line('.')})) ? ":lnext<CR>" : ":ll<CR>"
-nnoremap [1;5D :lprev<CR>
-nnoremap [1;5A :lopen<CR>
-nnoremap [1;5B :lclose<CR>
-
 " From https://github.com/mhinz/vim-galore#tips-1
 " Edit macro: "q<leader>m to edit q.
 nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
 
+" Bloody annoying.
 nnoremap q: :q

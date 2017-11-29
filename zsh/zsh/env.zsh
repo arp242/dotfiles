@@ -123,7 +123,7 @@ fi
 _exists firefox && export BROWSER=firefox
 
 ## Set DISPLAY on remote login
-#if ($?REMOTEHOST && ! $?DISPLAY) then 
+#if ($?REMOTEHOST && ! $?DISPLAY) then
 #	export DISPLAY=${REMOTEHOST}:0
 #fi
 
@@ -132,3 +132,8 @@ _exists firefox && export BROWSER=firefox
 
 # This makes font looks non-ugly in Java applications
 export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+
+# Set up Node Version Manager
+export NVM_DIR="$HOME/.nvm"
+export NVM_SOURCE="/usr/share/nvm"
+[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"

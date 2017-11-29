@@ -8,6 +8,7 @@ source ~/.vim/gui.vim
 source ~/.vim/softwrap.vim
 source ~/.vim/completion.vim
 source ~/.vim/highlight.vim
+source ~/.vim/list.vim
 source ~/.vim/experiments.vim
 
 " Plugin configs can be in any order.

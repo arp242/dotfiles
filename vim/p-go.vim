@@ -9,6 +9,10 @@ let g:go_doc_max_height = 10             " Don't make the godoc window too high.
 let g:go_addtags_transform = "camelcase" " Use camelCase for tags.
 let g:go_fold_enable = ['import', 'package_comment'] " Fold import blocks and package comments, but nothing else.
 
+let go_alternate_mode = 'tab'
+
+let g:go_snippet_engine = "minisnip"
+
 " TODO: This will make the cursor go to the {quickfix,loc}list :-/ Even worse!
 "let g:go_jump_to_error = 0               " Don't move my cursor!
 
