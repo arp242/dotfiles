@@ -3,6 +3,7 @@
 export GOPATH=/usr/local/gotools
 
 repos="
+arp242.net/goimport
 github.com/alecthomas/gometalinter
 github.com/davidrjenni/reftools/cmd/fillstruct
 github.com/derekparker/delve/cmd/dlv
@@ -20,15 +21,17 @@ github.com/motemen/gore
 github.com/nsf/gocode
 github.com/rogpeppe/godef
 github.com/stapelberg/expanderr
+github.com/stapelberg/expanderr
 github.com/zmb3/gogetdoc
+golang.org/x/review/git-codereview
 golang.org/x/tools/cmd/goimports
 golang.org/x/tools/cmd/gorename
 golang.org/x/tools/cmd/guru
 "
 
 for r in $repos; do
-	echo $r
-	go get -u $r
+	echo "$r"
+	go get -u "$r"
 done
 
-gometalinter --install --update
+gometalinter --install

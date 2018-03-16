@@ -15,14 +15,12 @@ fun! s:retab()
 endfun
 command! Retab call s:retab()
 
-
 " Write as root user; re-read file.
 fun! s:super_write()
 	silent write !doas tee %
 	edit!
 endfun
 command! SuperWrite call s:super_write()
-
 
 " Clean trailing whitespace.
 fun! s:trim_whitespace()
@@ -31,7 +29,6 @@ fun! s:trim_whitespace()
 	call winrestview(l:save)
 endfun
 command! TrimWhitespace call s:trim_whitespace()
-
 
 " Move a file & update buffer.
 fun! s:mv(dest)
@@ -51,7 +48,6 @@ fun! s:mv(dest)
 	endif
 endfun
 command! -nargs=? -complete=file Mv call s:mv(<q-args>)
-
 
 " vsplit the current buffer, move the right buffer a page down, and set
 " scrollbind.
@@ -74,6 +70,8 @@ fun! s:scroll()
 endfun
 command! Scroll call s:scroll()
 
-
 " Get the syntax name of character under the cursor
 command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')
+
+" Easier diff copy
+command! DG :1,$+1diffget

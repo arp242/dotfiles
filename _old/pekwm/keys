@@ -70,12 +70,17 @@ Global {
 	#KeyPress = "Mod4 Down"  { Actions = "exec cwm-w-mv bottom" }
 
 	# External Commands
-	KeyPress = "Mod4 X" { Actions = "Exec xterm -lc -geometry 90x27" }
+	KeyPress = "Mod4 X" { Actions = "Exec st -g 90x27" }
 	KeyPress = "KP_Add" { Actions = "Exec /bin/find-cursor" }
-	KeyPress = "XF86MonBrightnessDown" { Actions = "Exec cwm-brightness down" }
-	KeyPress = "XF86MonBrightnessUp"   { Actions = "Exec cwm-brightness up" }
+	KeyPress = "XF86AudioRaiseVolume" { Actions = "Exec cwm-volume up" }
+	KeyPress = "XF86AudioLowerVolume" { Actions = "Exec cwm-volume down" }
+	KeyPress = "XF86AudioMute"        { Actions = "" }
+	KeyPress = "XF86AudioMicMute"     { Actions = "" }
+
 	KeyPress = "Mod4 E" { Actions = "Exec cwm-w-tile" }
-	
+	KeyPress = "XF86MonBrightnessUp"   { Actions = "Exec cwm-brightness up" }
+	KeyPress = "XF86MonBrightnessDown" { Actions = "Exec cwm-brightness down" }
+
 	KeyPress = "Mod4 V" { Actions = "Exec xdotool getactivewindow key --window %@ XF86Back" }
 
 	# Rofi menus

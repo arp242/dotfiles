@@ -1,6 +1,12 @@
 " Switch syntax highlighting on
 syntax on
 
+" True colors.
+"set termguicolors
+" Set correct escape codes for st.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
 " Enable file type detection
 filetype plugin indent on
 
@@ -62,7 +68,7 @@ set backupext=.bak
 " String to use in 'list' mode
 " Using · only seems to work only in fairly recent Vim versions
 if v:version > 703
-	set listchars=tab:!·,trail:·
+	silent! set listchars=tab:!·,trail:·
 else
 	set listchars=tab:!.,trail:.
 endif
@@ -210,6 +216,7 @@ colorscheme default
 set background=light
 
 " Prevent clearing the terminal on exit
+"set t_ti= t_te=
 set t_te=
 
 " I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim)
@@ -226,16 +233,37 @@ set paragraphs=
 " Use ~ as an operator; e.g. ~w
 set tildeop
 
+" Never automatically interface with system clipboard.
+set clipboard=
+
+" Use ag
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor\ --ignore-case\ --column
+    set grepformat=%f:%l:%c:%m,%f:%l:%m
+endif
+
 " Set my statusline
+let g:ale_linting = 0
+let g:ale_fixing = 0
 set statusline=
-let &stl .= '%<%f'                " Filename, truncate right
-let &stl .= ' %h%m%r'             " [Help] [modified] [read-only]
-let &stl .= '%='                  " Right-align from here on
+let &statusline .= '%<%f'                " Filename, truncate right
+let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
+let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
+let &statusline .= '%{g:ale_fixing ? "[F]" : ""}'
+let &statusline .= '%='                  " Right-align from here on
 
 " Right/ruler
-let &stl .= ' [line %l of %L]'    " current line, total lines
-let &stl .= ' [col %v]'           " column
-let &stl .= ' [0x%B]'             " Byte value under cursor
+let &statusline .= ' [line %l of %L]'    " current line, total lines
+let &statusline .= ' [col %v]'           " column
+let &statusline .= ' [0x%B]'             " Byte value under cursor
+
+augroup ALEProgress
+    autocmd!
+    autocmd User ALELintPre  let g:ale_linting = 1 | redrawstatus
+    autocmd User ALELintPost let g:ale_linting = 0 | redrawstatus
+    autocmd User ALEFixPre   let g:ale_fixing = 1 | redrawstatus
+    autocmd User ALEFixPost  let g:ale_fixing = 0 | redrawstatus
+augroup end
 
 " Width is 17 characters
 let &rulerformat = '%l/%L %c 0x%B'

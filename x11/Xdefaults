@@ -16,19 +16,17 @@ XTerm*locale: UTF-8
 ! Nice font
 XTerm*faceName: DejaVu Sans Mono
 !XTerm*faceName: Go Mono
-XTerm*faceSize: %(12 * font-scale)
-XTerm*faceSize1: %(12 * font-scale)
-XTerm*faceSize2: %(12 * font-scale)
-XTerm*faceSize3: %(12 * font-scale)
+XTerm*faceSize: 12
+XTerm*faceSize1: 12
+XTerm*faceSize2: 12
+XTerm*faceSize3: 12
 
 ! Medium
-XTerm*faceSize4: %(14 * font-scale)
-
+XTerm*faceSize4: 14
 ! Large
-XTerm*faceSize5: %(16 * font-scale)
-
+XTerm*faceSize5: 16
 ! Huge
-XTerm*faceSize6: %(18 * font-scale)
+XTerm*faceSize6: 18
 
 ! Do not clear terminals after {man,vim,etc.}
 XTerm*titeInhibit: true
@@ -67,3 +65,6 @@ urxvt*scrollBar: False
 
 ! Nice font
 urxvt*font: xft:DejaVu Sans Mono:pixelsize=16
+
+! Do not clear terminals after {man,vim,etc.}
+urxvt*secondaryScreen: false

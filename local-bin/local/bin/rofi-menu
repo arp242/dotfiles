@@ -6,9 +6,11 @@ chromium
 firefox
 foobar2000
 gimp
+heidisql
 pavucontrol
 pidgin
 scrot-copy
+slock
 xterm -e alsamixer
 xterm\
 " | rofi -dmenu)

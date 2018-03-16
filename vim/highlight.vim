@@ -7,10 +7,14 @@ fun! s:hi()
 	" Not so dark.
 	hi SignColumn ctermbg=254
 
+	" Same as CursorColumn
+	hi CursorLine ctermbg=7 cterm=NONE
+
 	" Not so bright
-	hi LineNr ctermfg=253
-	hi CursorLineNr ctermfg=253
-	hi qfLineNr ctermfg=4
+	"hi LineNr ctermfg=253
+	"hi CursorLineNr ctermfg=253
+	"hi qfLineNr ctermfg=4
+	"MatchParen     xxx term=reverse ctermbg=14 guibg=Cyan
 endfun
 
 augroup my_highlight

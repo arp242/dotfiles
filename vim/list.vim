@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 " Navigate the quickfix or location list.
 "
 " These are right, left, up, and down arrow keys with Control.
@@ -18,7 +20,7 @@ nnoremap <silent> [1;5B :call <SID>listtoggle('close')<CR>
 command! -bar -count=1 ListNext call <SID>listmove('next', <count>)
 command! -bar -count=1 ListPrev call <SID>listmove('prev', <count>)
 
-" Move to the next or previous item, depending on cursor position.
+" Move to the next or previos item, depending on cursor position.
 " Based on: https://vi.stackexchange.com/a/14359/51
 fun! s:listmove(dir, count) abort
     " Try location list first, and fall back to location list if it doesn't
@@ -32,7 +34,7 @@ fun! s:listmove(dir, count) abort
         let l:cmd = 'cc'
     endif
     if len(l:list) is 0
-        echohl ErrorMsg | echom "E42: No Errors" | echohl None
+        echohl ErrorMsg | echom 'E42: No Errors' | echohl None
         return
     endif
 
@@ -45,15 +47,17 @@ fun! s:listmove(dir, count) abort
     if a:dir is? 'next'
         " Remove all items before the current entry.
         call filter(l:list, {i, v -> l:v.bufnr is# bufnr('') && line('.') < l:v.lnum})
-        let l:idx = get(get(l:list, 0, {}), 'idx', current)
+        "call filter(l:list, {i, v -> l:v.bufnr is# bufnr('') && line('.') < l:v.lnum && col('.') <= l:v.col})
+        let l:idx = get(get(l:list, 0, {}), 'idx', l:current)
     else
         " Remove all items after the current entry.
         call filter(l:list, {i, v -> l:v.bufnr == bufnr('') && line('.') > l:v.lnum})
-        let l:idx = get(get(l:list, len(l:list)-1, {}), 'idx', current)
+        "call filter(l:list, {i, v -> l:v.bufnr == bufnr('') && line('.') > l:v.lnum && col('.') >= l:v.col})
+        let l:idx = get(get(l:list, len(l:list)-1, {}), 'idx', l:current)
     endif
 
     if len(l:list) is 0
-        echohl ErrorMsg | echom "E553: No more items" | echohl None
+        echohl ErrorMsg | echom 'E553: No more items' | echohl None
         return
     endif
 
@@ -70,7 +74,7 @@ fun! s:listtoggle(dir) abort
         let l:len = len(getqflist())
     endif
     if l:len is 0
-        echohl ErrorMsg | echom "E42: No Errors" | echohl None
+        echohl ErrorMsg | echom 'E42: No Errors' | echohl None
         return
     endif
 

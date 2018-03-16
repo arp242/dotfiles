@@ -4,7 +4,7 @@ augroup basic
 	" Go to the last cursor location when a file is opened, unless this is a git
 	" commit (in which case it's annoying).
 	autocmd BufReadPost *
-		\ if line("'\"") > 1 && line("'\"") <= line("$") && &filetype != 'mygitcommit'
+		\ if line("'\"") > 1 && line("'\"") <= line("$") && &filetype != 'gitcommit'
 			\| exe 'normal! g`"'
 		\| endif
 
@@ -15,15 +15,15 @@ augroup basic
 	autocmd BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 augroup end
 
-" Indentation preferences for various filetypes
+" Preferences for various filetypes
 augroup my_filetypes
 	autocmd!
 
-	" Don't like the default one at all; it's far too opinionated on all sorts
-	" of stupid stuff.
+	" Don't need the syntax highlighting for git commits; don't like it at all.
 	autocmd FileType gitcommit
-		\  setlocal ft=mygitcommit ts=8 tw=72
-		\| syn match gitcommitComment "^#.*"
+                \  setlocal syntax=OFF
+                \| syn match gitcommitComment "^#.*"
+                \| setlocal ts=8
 
 	" Reset some settings that these ftplugins or syntax files reset :-/
 	autocmd FileType python setlocal ts=4
@@ -32,14 +32,11 @@ augroup my_filetypes
 	" 2 spaces is almost universal.
 	autocmd FileType yaml setlocal expandtab ts=2 sts=2 sw=2
 
-	" C files are almost always ts=8, and very often mix tabs & spaces
+	" C files are almost always ts=8, and very often mix tabs & spaces.
 	autocmd FileType c,cpp setlocal ts=8
 
 	" Set tabstop for Makefile, config files, etc.
 	autocmd BufNewFile,BufRead [Mm]akefile*,crontab*,*rc,*.conf,*.ini,*.cfg,*.rc setlocal ts=8
-
-	" Using tabs with Haskell doesn't seem to work well.
-	autocmd FileType haskell setlocal expandtab
 
 	" Set larger textwidth for HTML.
 	autocmd FileType html,htmldjango,eruby,haml setlocal textwidth=120
@@ -60,12 +57,15 @@ augroup my_filetypes
 		\  highlight MarkdownTrailingSpaces ctermbg=green guibg=green
 		\| call matchadd('MarkdownTrailingSpaces', '\s\+$', 100)
 
+    " Don't conceal * etc. in Markdown. So anoying.
+    autocmd FileType markdown setlocal conceallevel=0
+
 	" Set textwidth to 76 for emails.
 	autocmd BufReadPost /tmp/mail-* setlocal ft=mail | normal! 0Go
 	autocmd FileType mail setlocal textwidth=76
 
 	" These emails are usually DOS formatted (as should be, per RFC).
-	"autocmd BufReadPost *.eml setlocal fileformats+=dos fileformat=dos | edit!
+	autocmd BufReadPost *.eml setlocal fileformats+=dos fileformat=dos | edit!
 
 	" Make editing SSH authorized_keys & known_hosts less painful
 	autocmd BufReadPost authorized_keys,known_hosts
@@ -73,6 +73,9 @@ augroup my_filetypes
 
 	" Works better most of the time.
 	autocmd FileType json,xml setlocal nowrap
+
+	" Disable 'number' from vim-qf.
+	autocmd FileType qf setlocal nonumber
 
 	" Use a function for sanity!
 	autocmd FileType mail call s:mail()
@@ -95,8 +98,10 @@ endfun
 
 " Show formatting characters in insert mode.
 fun! s:help()
-	"packadd! vim-vimhelplint
-	setl cc=78
+	silent! packadd! vim-vimhelplint
+	if &modifiable
+		setlocal colorcolumn=78
+	endif
     augroup help_insert
         autocmd!
         autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore
@@ -111,11 +116,6 @@ augroup angering_zed_shaw
 		\ syn keyword pythonTwoBuiltin basestring cmp execfile file long
 		\                              raw_input reduce reload unichr unicode
 		\                              xrange apply buffer coerce intern
-augroup end
-
-augroup init_new_file
-	autocmd!
-	autocmd BufNewFile *.py exe "normal O#!/usr/bin/env python" | exe "normal j"
 augroup end
 
 " Until this gets fixed: https://github.com/vim/vim/pull/2285

@@ -1,28 +1,20 @@
-" Quickly jump to recently used filed
-nnoremap <Leader>o :browse oldfiles<CR>
-
-" Reload config
+" Reload config.
 nnoremap <Leader>r :source $MYVIMRC<CR>
 
-" Close help, rather than open help
+" Close help, rather than open help.
 nnoremap <F1> :helpclose<CR>
 inoremap <F1> <C-o>:helpclose<CR>
-
-nnoremap <F1> :buffers<CR>
-nnoremap <F2> :registers<CR>
-nnoremap <F3> :UndotreeToggle<CR>
-"nnoremap <F4> :SyntasticToggleMode<CR>
 nnoremap <F4> :ALEToggle<CR>
-"nnoremap <F5> :GitGutterToggle<CR>
-nnoremap <F6> :TricycleToggle<CR>
 
-nnoremap <F9> :set shiftround!<CR>:set shiftround?<CR>
+" Some useful-ish toggles.
+nnoremap <F9>  :set shiftround!<CR>:set shiftround?<CR>
+inoremap <F9>  <C-o>:set shiftround!<CR>
 nnoremap <F10> :set list!<CR>:set list?<CR>
+inoremap <F10> <C-o>:set list!<CR>
 nnoremap <F11> :set cursorcolumn!<CR>:set cursorcolumn?<CR>
-nnoremap <F12> :set paste!<CR>:set paste?<CR>
-
-" Make sure that <F12> also works when set paste is enabled
-set pastetoggle=<F12>
+inoremap <F11> <C-o>:set cursorcolumn!<CR>
+nnoremap <F12> :set cursorline!<CR>:set cursorline?<CR>
+inoremap <F12> <C-o>:set cursorline!<CR>
 
 " Enable spell check, switch languages
 nnoremap <Leader>ss :set spell!<CR>:set spell?<CR>
@@ -31,14 +23,14 @@ nnoremap <Leader>se :set spelllang=en_gb<CR>
 nnoremap <Leader>su :set spelllang=en_us<CR>
 nnoremap <Leader>sd :set spelllang=de_de<CR>
 
-" Show all matches of word under cursor
-nnoremap <Leader>f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr . "[\t"<CR>
-
-" Use <C-l> to clear some highlighting
+" Use <C-l> to clear some highlighting.
 nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
 
 " We don't need no stinkin' ex mode; use it for formatting
 noremap Q gq
+
+" Bloody annoying.
+nnoremap q: :q
 
 " Interface with system clipboard
 noremap <Leader>y "*y
@@ -64,10 +56,10 @@ vnoremap gf <C-w>gf
 
 " Home works like 0 if already at start of a line, and ^ otherwise.
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
-noremap <expr> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
+noremap <expr> <Home> col('.') is# match(getline('.'), '\S') + 1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
-" Workaround to map <Home> in xterm outside of tmux
+" Workaround to map <Home> in xterm outside of tmux on my system.
 if &term == "xterm-256color"
 	set <Home>=OH
 	set <xHome>=OH
@@ -75,7 +67,6 @@ endif
 
 " Replace the current line with the unnamed register without affecting any
 " register.
-" TODO: Check out: http://www.vim.org/scripts/script.php?script_id=2703
 nnoremap RR "_ddP
 
 " I often mistype this :-/
@@ -85,11 +76,25 @@ cabbr Help help
 " My fingers just can't get this stupid thing right :-/
 iabbr teh the
 iabbr Teh The
+iabbr taht that
+
+" Makes Go a bit easier to program.
 iabbr 1= !=
+iabbr ;= :=
 
-" From https://github.com/mhinz/vim-galore#tips-1
-" Edit macro: "q<leader>m to edit q.
-nnoremap <leader>m  :<c-u><c-r><c-r>='let @'. v:register .' = '. string(getreg(v:register))<cr><c-f><left>
-
-" Bloody annoying.
-nnoremap q: :q
+" Basic context completion with Ctrl-Space
+fun! s:guessType()
+	if &spell && spellbadword()[1] isnot# ''
+		" TODO: Show word somewhere
+		" TODO: Make completion start even if word is after badly spelled word.
+		return "\<C-x>s"
+	elseif &omnifunc isnot# ''
+		return "\<C-x>\<C-o>"
+	else
+		return "\<C-x>\<C-n>"
+	endif
+endfun
+inoremap <expr> <C-@>  pumvisible() ? "\<C-n>"  : <SID>guessType()
+inoremap <expr> <Down> pumvisible() ? "\<C-n>"  : "\<Down>"
+inoremap <expr> <Up>   pumvisible() ? "\<C-p>"  : "\<Up>"
+nnoremap <expr> <C-@>  pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()

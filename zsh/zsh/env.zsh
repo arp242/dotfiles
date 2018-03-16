@@ -28,18 +28,23 @@ _prepath /usr/X11R6/sbin
 _prepath /usr/local/bin
 _prepath /usr/local/sbin
 
-# Ruby
-_postpath "$HOME/.gem/ruby/2.1.0/bin"
+# Ruby; TODO: do this better
 _postpath "$HOME/.gem/ruby/2.2.0/bin"
 _postpath "$HOME/.gem/ruby/2.3.0/bin"
 _postpath "$HOME/.gem/ruby/2.4.0/bin"
+_postpath "$HOME/.gem/ruby/2.5.0/bin"
+_postpath "$HOME/.gem/ruby/2.6.0/bin"
+_postpath "$HOME/.gem/ruby/2.7.0/bin"
 
 # Go
+_postpath "$HOME/go/bin"
 _postpath "/usr/local/go/bin"
 _postpath "/usr/local/gotools/bin"
-_postpath "$HOME/go/bin"
 _postpath "$HOME/work/bin"
-_postpath "$HOME/work/martin-dev-env/bin"
+_postpath "$HOME/work/dev-env-martin/bin"
+
+# Python
+_postpath "$HOME/.local/bin"
 
 _prepath "$HOME/Local/bin"
 
@@ -47,7 +52,9 @@ unfunction _prepath
 unfunction _postpath
 
 # Various applications settings
+#export GOPATH=$HOME/go:$HOME/work:/data/code/go
 export GOPATH=$HOME/go:$HOME/work
+export GOTMPDIR=/tmp/gotmpdir
 export BLOCKSIZE=K
 export PAGER=less
 export LESS="--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
@@ -76,7 +83,7 @@ export QT_IM_MODULE=xim
 export GTK_OVERLAY_SCROLLING=0
 
 # Don't output to a pager
-export SYSTEMD_PAGER
+export SYSTEMD_PAGER=
 
 # Setup pass
 export PASSWORD_STORE_DIR=/data/stuff/password-store
@@ -130,10 +137,10 @@ _exists firefox && export BROWSER=firefox
 # Run commands from this file; only run for interactive prompt
 [[ -f "$HOME/Local/python-startup" ]] && export PYTHONSTARTUP=~/Local/python-startup
 
-# This makes font looks non-ugly in Java applications
-export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+# Makes it easier to write configs specific to just my laptop.
+export HOSTNAME=$(hostname)
 
-# Set up Node Version Manager
-export NVM_DIR="$HOME/.nvm"
-export NVM_SOURCE="/usr/share/nvm"
-[ -s "$NVM_SOURCE/nvm.sh" ] && . "$NVM_SOURCE/nvm.sh"
+# This makes font looks non-ugly in Java applications
+#export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
+export _JAVA_AWT_WM_NONREPARENTING=1
+export JAVA_HOME=/opt/android-studio/jre

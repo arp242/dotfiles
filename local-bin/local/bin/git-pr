@@ -8,6 +8,24 @@ git fetch origin pull/$n/head:pr_$n
 git checkout pr_$n
 
 
+# hub checkout
+
+# https://help.github.com/articles/checking-out-pull-requests-locally/
+# git push origin BRANCHNAME
+
+
+
+# * branch            refs/pull/3/head -> FETCH_HEAD
+
+
+#git push -u origin my_branch
+#git branch --set-upstream-to origin/my_branch
+
+
+#git rev-parse --abbrev-ref pr_18@{upstream}           i:arch:0:3-
+#fatal: no upstream configured for branch 'pr_18'
+
+
 exit 0
 
 #git fetch origin pull/$n/head:pr_$n
@@ -20,5 +38,5 @@ exit 0
 # --
 #
 # git remote add otheruser https://github.com/otheruser/yourrepo.git
-# git checkout -b otheruser-master otheruser/master 
+# git checkout -b otheruser-master otheruser/master
 # git push otheruser HEAD:master

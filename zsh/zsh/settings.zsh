@@ -2,6 +2,8 @@
 
 # Disable ^S/^Q - I never use that and I can actually use those keys now
 stty -ixon
+# Disable ^\; I sometimes confuse Mod4+\ with it, which is annoying.
+stty quit undef
 setopt noflowcontrol
 
 setopt nomatch               # Show error if globbing fails
@@ -32,6 +34,7 @@ setopt incappendhistory      # Append immediately rather than only at exit
 #setopt sharehistory          # Also read back new commands when writing history
 setopt extendedhistory       # Store some metadata as well
 setopt histnostore           # Don't store history or fc commands
+setopt histignorespace       # Don't add commands starting with space to history.
 HISTFILE=~/.zsh/history      # Store history here
 HISTSIZE=80000               # Max. entries to keep in memory
 SAVEHIST=80000               # Max. entries to save to file

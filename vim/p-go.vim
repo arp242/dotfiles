@@ -1,20 +1,23 @@
 " Settings for Vim-go
 
 let g:go_fmt_autosave = 0                " We use ALE.
+let g:go_list_type = 'locationlist'      " Always use location list.
 let g:go_highlight_build_constraints = 1 " Highlight // +build tag.
+let g:go_test_show_name = 1              " Add test name in :GoTest.
 let g:go_def_mapping_enabled = 0         " Don't map GoDef related stuff (we do this ourselves later).
 let g:go_gocode_unimported_packages = 1  " Include suggestions for unimported packages.
-let g:go_template_autocreate = 0         " Doesn't always work quite right for me (TODO: investigate and fix!)
 let g:go_doc_max_height = 10             " Don't make the godoc window too high.
 let g:go_addtags_transform = "camelcase" " Use camelCase for tags.
+let g:go_alternate_mode = 'tabe'         " Use :tabedit for :GoAlternate
 let g:go_fold_enable = ['import', 'package_comment'] " Fold import blocks and package comments, but nothing else.
+let g:go_highlight_format_strings = 1    " Highlight fmt formatting strings.
 
-let go_alternate_mode = 'tab'
-
-let g:go_snippet_engine = "minisnip"
+let g:go_build_tags = 'testdb'
 
 " TODO: This will make the cursor go to the {quickfix,loc}list :-/ Even worse!
 "let g:go_jump_to_error = 0               " Don't move my cursor!
+
+let g:go_debug = ['debugger-commands', 'debugger-state']
 
 augroup my_go_settings
 	autocmd!
@@ -31,12 +34,13 @@ augroup my_go_settings
 	" Shortcut to write and install.
 	autocmd FileType go nmap MM :wa<CR><Plug>(go-install)
 
-	" Open gd in a new tab.
-	autocmd FileType go nmap gd <Plug>(go-def-tab)
-
 	" Need to map these defaults because go_def_mapping_enabled is off.
 	autocmd FileType go nnoremap <buffer> <silent> <C-]> :GoDef<CR>
 	autocmd FileType go nnoremap <buffer> <silent> <C-t> :<C-U>call go#def#StackPop(v:count1)<CR>
+
+	" Open gd in a new tab.
+	autocmd FileType go nmap gd <Plug>(go-def-tab)
+	autocmd FileType go nnoremap <Leader>a :<C-u>call go#alternate#Switch(1, '')<CR>
 
 	" Set makeprg to go install instead of go build -i.
 	autocmd FileType go let &l:makeprg = 'go install'
@@ -230,3 +234,10 @@ fun! s:all_syntax()
 	let g:go_fold_enable = ['import', 'package_comment', 'block', 'varconst', 'comment']
 endfun
 "call s:all_syntax()
+
+function! s:create_go_doc_comment()
+  norm "zyiw
+  execute ":put! z"
+  execute ":norm I// \<Esc>$"
+endfunction
+nnoremap <leader>ui :<C-u>call <SID>create_go_doc_comment()<CR>

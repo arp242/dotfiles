@@ -10,18 +10,30 @@ let g:ale_fix_on_save = 1                 " Format code for me on :w
 let g:ale_fixers = {'go': ['goimports']}
 
 " Linters
-let g:ale_linters = {'go': ['gometalinter']}
-let g:ale_go_gometalinter_options = '--disable-all'
+let g:ale_linters = {'go': ['go build', 'gometalinter']}
+
+let g:gometalinter_fast = ''
 			\ . ' --enable=vet'
-			\ . ' --enable=golint'
 			\ . ' --enable=errcheck'
 			\ . ' --enable=ineffassign'
-			\ . ' --enable=goconst'
 			\ . ' --enable=goimports'
 			\ . ' --enable=lll --line-length=120'
-            " These are slow (>2s)
-            " \ . ' --enable=varcheck'
-            " \ . ' --enable=interfacer'
-            " \ . ' --enable=unconvert'
-            " \ . ' --enable=structcheck'
-            " \ . ' --enable=megacheck'
+
+" These are slow (>2s)
+let g:gometalinter_slow = ''
+            \ . ' --enable=varcheck'
+            \ . ' --enable=interfacer'
+            \ . ' --enable=unconvert'
+            \ . ' --enable=structcheck'
+            \ . ' --enable=megacheck'
+
+let g:ale_go_gometalinter_options = '--disable-all' . g:gometalinter_fast . ' --enable=golint'
+
+command! NoGolint let g:ale_go_gometalinter_options = '--disable-all' . g:gometalinter_fast
+
+"let g:ale_go_gometalinter_options = '--disable-all' . g:gometalinter_fast . g:gometalinter_slow
+"augroup ale_gometalinter
+"    autocmd!
+"    autocmd User ALELintPre  let   b:ale_go_gometalinter_options = '--disable-all' . g:gometalinter_fast
+"    autocmd User ALELintPost unlet b:ale_go_gometalinter_options
+"augroup end

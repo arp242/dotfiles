@@ -25,6 +25,7 @@ bindkey '^[[F'  end-of-line                    # End
 bindkey '^[[4~' end-of-line
 bindkey '^[[8~' end-of-line
 bindkey '^[[3~' delete-char                    # Delete
+bindkey '^[[P'  delete-char
 bindkey '^[[5~' up-line-or-history             # Page up
 bindkey '^[[6~' down-line-or-history           # Page down
 bindkey '^[OP'  run-help                       # F1
