@@ -10,14 +10,9 @@ let g:go_doc_max_height = 10             " Don't make the godoc window too high.
 let g:go_addtags_transform = "camelcase" " Use camelCase for tags.
 let g:go_alternate_mode = 'tabe'         " Use :tabedit for :GoAlternate
 let g:go_fold_enable = ['import', 'package_comment'] " Fold import blocks and package comments, but nothing else.
-let g:go_highlight_format_strings = 1    " Highlight fmt formatting strings.
-
-let g:go_build_tags = 'testdb'
 
 " TODO: This will make the cursor go to the {quickfix,loc}list :-/ Even worse!
 "let g:go_jump_to_error = 0               " Don't move my cursor!
-
-let g:go_debug = ['debugger-commands', 'debugger-state']
 
 augroup my_go_settings
 	autocmd!
@@ -26,13 +21,22 @@ augroup my_go_settings
 	autocmd FileType go
 				\  delc GoErrCheck | delc GoLint | delc GoVet
 				\| delc GoFmt | delc GoImports | delc GoFmtAutoSaveToggle
-				\| delc GoMetaLinter
+                \| delc GoMetaLinterAutoSaveToggle | delc GoMetaLinter
+                \| delc GoAsmFmtAutoSaveToggle
+
+    " I simply never use these.
+	autocmd FileType go
+                \  delc GoAutoTypeInfoToggle | delc GoBuildTags | delc GoSameIdsAutoToggle | delc GoTemplateAutoCreateToggle | delc GoSameIdsToggle
+                \| delc GoReportGitHubIssue
+                \| delc GoDecls | delc GoDeclsDir
+                \| silent! delc GoInstallBinaries | silent! delc GoUpdateBinaries
 
 	" Enable syntax-based folding and close all folds.
 	autocmd FileType go setlocal foldmethod=syntax | normal! zM
 
 	" Shortcut to write and install.
 	autocmd FileType go nmap MM :wa<CR><Plug>(go-install)
+	autocmd FileType go nmap TT :wa<CR><Plug>(go-test)
 
 	" Need to map these defaults because go_def_mapping_enabled is off.
 	autocmd FileType go nnoremap <buffer> <silent> <C-]> :GoDef<CR>
@@ -49,12 +53,24 @@ augroup my_go_settings
 	autocmd BufRead /home/martin/work/*.html
 		\ setl ft=gohtmltmpl makeprg=go\ install
 
+	" Set makeprg to go install instead of go build.
+	autocmd FileType go
+        \  if expand('%:p') =~# '^/home/martin/work/src/github.com/teamwork/desk'
+        \|   let &l:makeprg = 'go install github.com/teamwork/desk/cmd/desk'
+        \| else
+        \|   let &l:makeprg = 'go install'
+        \| endif
+
 	" Make sure guru scope is set correct.
 	autocmd BufRead /home/martin/work/src/*.go
 				\  let s:tmp = matchlist(expand('%:p'),
 					\ '/home/martin/work/src/\(github.com/teamwork/[^/]\+\)')
 				\| if len(s:tmp) > 1 | exe 'silent :GoGuruScope ' . s:tmp[1] | endif
 				\| unlet s:tmp
+
+    " Set build tags.
+    autocmd BufRead /home/martin/work/src/github.com/teamwork/desk/*.go
+                \ let g:go_build_tags = 'testdb'
 
 	" Use "botright new" instead of "new"
 	"autocmd FileType go
@@ -231,7 +247,8 @@ fun! s:all_syntax()
 	let g:go_highlight_generate_tags = 1
 	let g:go_highlight_variable_declarations = 1
 	let g:go_highlight_variable_assignments = 1
-	let g:go_fold_enable = ['import', 'package_comment', 'block', 'varconst', 'comment']
+    let g:go_highlight_function_arguments = 1
+	"let g:go_fold_enable = ['import', 'package_comment', 'block', 'varconst', 'comment']
 endfun
 "call s:all_syntax()
 

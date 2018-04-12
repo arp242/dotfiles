@@ -250,6 +250,7 @@ let &statusline .= '%<%f'                " Filename, truncate right
 let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
 let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
 let &statusline .= '%{g:ale_fixing ? "[F]" : ""}'
+let &statusline .= '%{go#statusline#Show()}'
 let &statusline .= '%='                  " Right-align from here on
 
 " Right/ruler
@@ -261,8 +262,8 @@ augroup ALEProgress
     autocmd!
     autocmd User ALELintPre  let g:ale_linting = 1 | redrawstatus
     autocmd User ALELintPost let g:ale_linting = 0 | redrawstatus
-    autocmd User ALEFixPre   let g:ale_fixing = 1 | redrawstatus
-    autocmd User ALEFixPost  let g:ale_fixing = 0 | redrawstatus
+    autocmd User ALEFixPre   let g:ale_fixing = 1  | redrawstatus
+    autocmd User ALEFixPost  let g:ale_fixing = 0  | redrawstatus
 augroup end
 
 " Width is 17 characters

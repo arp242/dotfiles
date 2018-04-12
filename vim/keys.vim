@@ -82,6 +82,10 @@ iabbr taht that
 iabbr 1= !=
 iabbr ;= :=
 
+" Make these common shortcuts work in the commandline.
+cnoremap <C-a> <Home>
+"cnoremap <C-k>  TODO
+
 " Basic context completion with Ctrl-Space
 fun! s:guessType()
 	if &spell && spellbadword()[1] isnot# ''

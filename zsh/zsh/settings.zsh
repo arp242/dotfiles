@@ -14,7 +14,7 @@ setopt nobeep                # Don't beep
 setopt nobgnice              # Don't frob with nicelevels
 setopt noautoremoveslash     # Too magic for my liking
 setopt interactivecomments   # Allow comments in interactive shells
-#setopt extendedglob          # More globbing characters
+setopt extendedglob          # More globbing characters
 LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
 
 ### Directory

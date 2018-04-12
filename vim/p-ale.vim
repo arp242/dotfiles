@@ -11,6 +11,7 @@ let g:ale_fixers = {'go': ['goimports']}
 
 " Linters
 let g:ale_linters = {'go': ['go build', 'gometalinter']}
+let g:ale_go_gobuild_options = '-tags testdb'
 
 let g:gometalinter_fast = ''
 			\ . ' --enable=vet'
