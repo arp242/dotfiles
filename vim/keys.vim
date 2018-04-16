@@ -50,9 +50,11 @@ nnoremap <Down> gj
 inoremap <Down> <C-o>gj
 inoremap <Up> <C-o>gk
 
-" gf opens in a tab
+" gf and gF opens in a tab.
 nnoremap gf <C-w>gf
 vnoremap gf <C-w>gf
+nnoremap gF <C-w>gF
+vnoremap gF <C-w>gF
 
 " Home works like 0 if already at start of a line, and ^ otherwise.
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
@@ -72,8 +74,6 @@ nnoremap RR "_ddP
 " I often mistype this :-/
 cabbr Set set
 cabbr Help help
-
-" My fingers just can't get this stupid thing right :-/
 iabbr teh the
 iabbr Teh The
 iabbr taht that
@@ -85,20 +85,3 @@ iabbr ;= :=
 " Make these common shortcuts work in the commandline.
 cnoremap <C-a> <Home>
 "cnoremap <C-k>  TODO
-
-" Basic context completion with Ctrl-Space
-fun! s:guessType()
-	if &spell && spellbadword()[1] isnot# ''
-		" TODO: Show word somewhere
-		" TODO: Make completion start even if word is after badly spelled word.
-		return "\<C-x>s"
-	elseif &omnifunc isnot# ''
-		return "\<C-x>\<C-o>"
-	else
-		return "\<C-x>\<C-n>"
-	endif
-endfun
-inoremap <expr> <C-@>  pumvisible() ? "\<C-n>"  : <SID>guessType()
-inoremap <expr> <Down> pumvisible() ? "\<C-n>"  : "\<Down>"
-inoremap <expr> <Up>   pumvisible() ? "\<C-p>"  : "\<Up>"
-nnoremap <expr> <C-@>  pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()

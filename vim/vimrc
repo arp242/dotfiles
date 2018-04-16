@@ -5,9 +5,7 @@ source ~/.vim/autocmd.vim
 source ~/.vim/commands.vim
 source ~/.vim/keys.vim
 source ~/.vim/gui.vim
-source ~/.vim/softwrap.vim
 source ~/.vim/highlight.vim
-source ~/.vim/list.vim
 
 " Plugin configs can be in any order.
 for s:f in glob('$HOME/.vim/p-*.vim', 0, 1)

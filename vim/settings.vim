@@ -1,14 +1,26 @@
 " Switch syntax highlighting on
 syntax on
 
-" True colors.
-"set termguicolors
+" Enable file type detection
+filetype plugin indent on
+
+" Use true colors.
+set termguicolors
 " Set correct escape codes for st.
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-" Enable file type detection
-filetype plugin indent on
+" Load my color scheme if it exists.
+colorscheme default2
+
+" Use standard color scheme (some Linuxes feel the need to overwrite this in
+" global vimrc)
+if get(g:, 'colors_name', 'default2') isnot# 'default2'
+	colorscheme default
+endif
+
+" My terminal has a white background colour
+set background=light
 
 " Allow backspacing over everything
 set backspace=indent,eol,start
@@ -196,24 +208,14 @@ set softtabstop=-1  " Use shiftwidth
 set backupdir=$HOME/.vim/tmp/backup
 set dir=$HOME/.vim/tmp/swap
 set viewdir=$HOME/.vim/tmp/view
+set undodir=$HOME/.vim/tmp/undo
 if !isdirectory(&backupdir) | call mkdir(&backupdir, 'p', 0700) | endif
-if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
-if !isdirectory(&viewdir) | call mkdir(&viewdir, 'p', 0700) | endif
-
-if has('persistent_undo')
-	set undodir=$HOME/.vim/tmp/undo
-	if !isdirectory(&undodir) | call mkdir(&undodir, 'p', 0700) | endif
-endif
+if !isdirectory(&dir)       | call mkdir(&dir, 'p', 0700)       | endif
+if !isdirectory(&viewdir)   | call mkdir(&viewdir, 'p', 0700)   | endif
+if !isdirectory(&undodir)   | call mkdir(&undodir, 'p', 0700)   | endif
 
 " Maximum column in which to search for syntax items.
 set synmaxcol=500
-
-" Use standard color scheme (some Linuxes feel the need to overwrite this in
-" global vimrc)
-colorscheme default
-
-" My terminal has a white background colour
-set background=light
 
 " Prevent clearing the terminal on exit
 "set t_ti= t_te=
@@ -223,9 +225,7 @@ set t_te=
 set mouse=
 
 " Don't increment octal numbers
-if v:version > 800
-	set nrformats=bin,hex
-endif
+set nrformats=bin,hex
 
 " Don't include nroff stuff
 set paragraphs=
@@ -242,22 +242,9 @@ if executable('ag')
     set grepformat=%f:%l:%c:%m,%f:%l:%m
 endif
 
-" Set my statusline
+" Set my statusline.
 let g:ale_linting = 0
 let g:ale_fixing = 0
-set statusline=
-let &statusline .= '%<%f'                " Filename, truncate right
-let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
-let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
-let &statusline .= '%{g:ale_fixing ? "[F]" : ""}'
-let &statusline .= '%{go#statusline#Show()}'
-let &statusline .= '%='                  " Right-align from here on
-
-" Right/ruler
-let &statusline .= ' [line %l of %L]'    " current line, total lines
-let &statusline .= ' [col %v]'           " column
-let &statusline .= ' [0x%B]'             " Byte value under cursor
-
 augroup ALEProgress
     autocmd!
     autocmd User ALELintPre  let g:ale_linting = 1 | redrawstatus
@@ -265,6 +252,21 @@ augroup ALEProgress
     autocmd User ALEFixPre   let g:ale_fixing = 1  | redrawstatus
     autocmd User ALEFixPost  let g:ale_fixing = 0  | redrawstatus
 augroup end
+
+set statusline=
+let &statusline .= '%<%f'                " Filename, truncate right
+let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
+let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
+let &statusline .= '%{g:ale_fixing ? "[F]" : ""}'
+let &statusline .= '%{go#statusline#Show()}'
+"let &statusline .= ' %#StatusLineGray#%{LastComplete()}%#StatusLine#'
+"
+
+" Right/ruler
+let &statusline .= '%='                  " Right-align from here on
+let &statusline .= ' [line %l of %L]'    " current line, total lines
+let &statusline .= ' [col %v]'           " column
+let &statusline .= ' [0x%B]'             " Byte value under cursor
 
 " Width is 17 characters
 let &rulerformat = '%l/%L %c 0x%B'

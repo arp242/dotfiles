@@ -27,8 +27,8 @@
 
 [alias]
 	st = status --short
-	ci = commit -a
 	co = checkout
+	ci = commit
 
 [url "git@github.com:"]
 	insteadOf = https://github.com/

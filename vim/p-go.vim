@@ -21,15 +21,15 @@ augroup my_go_settings
 	autocmd FileType go
 				\  delc GoErrCheck | delc GoLint | delc GoVet
 				\| delc GoFmt | delc GoImports | delc GoFmtAutoSaveToggle
-                \| delc GoMetaLinterAutoSaveToggle | delc GoMetaLinter
-                \| delc GoAsmFmtAutoSaveToggle
+				\| delc GoMetaLinterAutoSaveToggle | delc GoMetaLinter
+				\| delc GoAsmFmtAutoSaveToggle
 
     " I simply never use these.
 	autocmd FileType go
-                \  delc GoAutoTypeInfoToggle | delc GoBuildTags | delc GoSameIdsAutoToggle | delc GoTemplateAutoCreateToggle | delc GoSameIdsToggle
-                \| delc GoReportGitHubIssue
-                \| delc GoDecls | delc GoDeclsDir
-                \| silent! delc GoInstallBinaries | silent! delc GoUpdateBinaries
+				\  delc GoAutoTypeInfoToggle | delc GoBuildTags | delc GoSameIdsAutoToggle | delc GoTemplateAutoCreateToggle | delc GoSameIdsToggle
+				\| delc GoReportGitHubIssue
+				\| delc GoDecls | delc GoDeclsDir
+				\| silent! delc GoInstallBinaries | silent! delc GoUpdateBinaries
 
 	" Enable syntax-based folding and close all folds.
 	autocmd FileType go setlocal foldmethod=syntax | normal! zM
@@ -55,11 +55,13 @@ augroup my_go_settings
 
 	" Set makeprg to go install instead of go build.
 	autocmd FileType go
-        \  if expand('%:p') =~# '^/home/martin/work/src/github.com/teamwork/desk'
-        \|   let &l:makeprg = 'go install github.com/teamwork/desk/cmd/desk'
-        \| else
-        \|   let &l:makeprg = 'go install'
-        \| endif
+		\  if expand('%:p') =~# '^/home/martin/work/src/github.com/teamwork/desk/'
+		\|   let &l:makeprg = 'go install github.com/teamwork/desk/cmd/desk'
+		\| elseif expand('%:p') =~# '^/home/martin/work/src/github.com/teamwork/deskimporter/'
+		\|   let &l:makeprg = 'go install github.com/teamwork/deskimporter/cmd/deskimporter'
+		\| else
+		\|   let &l:makeprg = 'go install'
+		\| endif
 
 	" Make sure guru scope is set correct.
 	autocmd BufRead /home/martin/work/src/*.go
@@ -68,9 +70,9 @@ augroup my_go_settings
 				\| if len(s:tmp) > 1 | exe 'silent :GoGuruScope ' . s:tmp[1] | endif
 				\| unlet s:tmp
 
-    " Set build tags.
-    autocmd BufRead /home/martin/work/src/github.com/teamwork/desk/*.go
-                \ let g:go_build_tags = 'testdb'
+	" Set build tags.
+	autocmd BufRead /home/martin/work/src/github.com/teamwork/desk/*.go
+				\ let g:go_build_tags = 'testdb'
 
 	" Use "botright new" instead of "new"
 	"autocmd FileType go
