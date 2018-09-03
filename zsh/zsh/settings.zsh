@@ -1,19 +1,17 @@
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
 
-# Disable ^S/^Q - I never use that and I can actually use those keys now
-stty -ixon
-# Disable ^\; I sometimes confuse Mod4+\ with it, which is annoying.
-stty quit undef
-setopt noflowcontrol
+# Disable ^S, ^Q, ^\
+stty -ixon quit undef
 
-setopt nomatch               # Show error if globbing fails
+setopt noflowcontrol         # Disable useless ^S and ^Q
 setopt notify                # Report status of bg jobs immediately
 setopt nohup                 # Don't kill background jobs when exiting
 setopt noclobber             # Don't clobber existing files with >
 setopt nobeep                # Don't beep
 setopt nobgnice              # Don't frob with nicelevels
-setopt noautoremoveslash     # Too magic for my liking
 setopt interactivecomments   # Allow comments in interactive shells
+setopt noautoremoveslash     # Don't guess when slashes should be removed (too magic)
+setopt nomatch               # Show error if globbing fails
 setopt extendedglob          # More globbing characters
 LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
 
@@ -23,9 +21,9 @@ setopt pushdminus            # -0 counts from top, +0 from bottom
 setopt pushdsilent           # Don't show stack after using pushd
 setopt pushdignoredups       # Don't store duplicate entries
 
-# I go here a lot; "cd ~tw/project"
+# Shortcuts; I go here a lot; "cd ~tw/project"
 tw=/home/martin/work/src/github.com/teamwork
-go=/home/martin/go/src/arp242.net
+c=/data/code
 
 ### History
 setopt hist_ignore_dups      # Ignore duplicate in history.
@@ -38,6 +36,7 @@ setopt histignorespace       # Don't add commands starting with space to history
 HISTFILE=~/.zsh/history      # Store history here
 HISTSIZE=80000               # Max. entries to keep in memory
 SAVEHIST=80000               # Max. entries to save to file
+HISTORY_IGNORE='([bf]g *|disown|cd ..|cd -)' # Don't add these to the history file.
 
 ### Prompt
 setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT

@@ -37,10 +37,10 @@ _postpath "$HOME/.gem/ruby/2.6.0/bin"
 _postpath "$HOME/.gem/ruby/2.7.0/bin"
 
 # Go
-_postpath "$HOME/go/bin"
+_prepath "$HOME/go/bin"
+_prepath "$HOME/work/bin"
 _postpath "/usr/local/go/bin"
 _postpath "/usr/local/gotools/bin"
-_postpath "$HOME/work/bin"
 _postpath "$HOME/work/dev-env-martin/bin"
 
 # Python
@@ -52,7 +52,6 @@ unfunction _prepath
 unfunction _postpath
 
 # Various applications settings
-#export GOPATH=$HOME/go:$HOME/work:/data/code/go
 export GOPATH=$HOME/go:$HOME/work
 export GOTMPDIR=/tmp/gotmpdir
 export BLOCKSIZE=K

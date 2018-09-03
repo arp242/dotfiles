@@ -25,7 +25,7 @@ command! SuperWrite call s:super_write()
 " Clean trailing whitespace.
 fun! s:trim_whitespace()
 	let l:save = winsaveview()
-	%s/\s\+$//e
+	keeppattern %s/\s\+$//e
 	call winrestview(l:save)
 endfun
 command! TrimWhitespace call s:trim_whitespace()
@@ -33,7 +33,7 @@ command! TrimWhitespace call s:trim_whitespace()
 " Move a file & update buffer.
 fun! s:mv(dest)
 	let l:src = expand('%:p')
-	if a:dest != ''
+	if a:dest isnot# ''
 		let l:dest = expand(a:dest)
 	else
 		let l:dest = expand(input('New file name: ', expand('%:p'), 'file'))
@@ -58,9 +58,9 @@ fun! s:scroll()
 	"nowrap nofoldenable
 	botright vsplit
 
-	normal L
-	normal j
-	normal zt
+	normal! L
+	normal! j
+	normal! zt
 
 	setlocal scrollbind
 	exe "normal \<c-w>p"
@@ -75,3 +75,9 @@ command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')
 
 " Easier diff copy
 command! DG :1,$+1diffget
+
+command! -nargs=0 -bar Helptags
+    \  for p in glob('~/.vim/pack/bundle/opt/*', 1, 1)
+    \|     exe 'packadd ' . fnamemodify(p, ':t')
+    \| endfor
+    \| helptags ALL

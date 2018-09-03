@@ -1,3 +1,6 @@
+set encoding=utf-8
+scriptencoding utf-8
+
 " Make sure we load stuff in the correct order − e.g. loading autocmd.vim before
 " settings.vim can cause problems
 source ~/.vim/settings.vim

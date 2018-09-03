@@ -4,8 +4,7 @@ set -euC
 
 n=$1
 
-#git fetch origin pull/$n/head:pr_$n
-git fetch up pull/$n/head:pr_$n
+git fetch origin pull/$n/head:pr_$n
 git checkout pr_$n
 
 

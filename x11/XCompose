@@ -70,7 +70,6 @@
 <Multi_key>  <asciitilde>   <n>            :  "ñ" ntilde          # ~ n (LATIN SMALL LETTER N WITH TILDE)             
 <Multi_key>  <asciitilde>   <o>            :  "õ" otilde          # ~ o (LATIN SMALL LETTER O WITH TILDE)             
 
-
 # Some additional letters
 <Multi_key>  <slash>        <O>            :  "Ø" Ooblique        # / O (LATIN CAPITAL LETTER O WITH STROKE)          
 <Multi_key>  <slash>        <o>            :  "ø" oslash          # / o (LATIN SMALL LETTER O WITH STROKE)            
@@ -79,7 +78,8 @@
 <Multi_key>  <o>            <A>            :  "Å" Aring           # o A (LATIN CAPITAL LETTER A WITH RING ABOVE)      
 <Multi_key>  <o>            <a>            :  "å" aring           # o a (LATIN SMALL LETTER A WITH RING ABOVE)        
 <Multi_key>  <s>            <s>            :  "ß" ssharp          # s s (LATIN SMALL LETTER SHARP S)                  
-
+<Multi_key>  <slash>        <l>            :  "ł" lstroke         # / l (LATIN SMALL LETTER L WITH STROKE)
+<Multi_key>  <slash>        <L>            :  "Ł" Lstroke         # / L (LATIN CAPITAL LETTER L WITH STROKE)
 
 # Quotation marks
 <Multi_key>  <grave>        <grave>        :  "‘" U02018          # ` ` (LEFT SINGLE QUOTATION MARK)                  

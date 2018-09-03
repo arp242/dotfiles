@@ -11,7 +11,7 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 " Load my color scheme if it exists.
-colorscheme default2
+silent! colorscheme default2
 
 " Use standard color scheme (some Linuxes feel the need to overwrite this in
 " global vimrc)
@@ -98,9 +98,6 @@ set nofoldenable
 " Always show statusline and tab bar
 set laststatus=2
 set showtabline=2
-
-" Use utf-8
-set encoding=utf-8
 
 " Always use UNIX line endings \n
 "set fileformats=unix
@@ -206,11 +203,11 @@ set softtabstop=-1  " Use shiftwidth
 
 " Set (& create if needed) a temp directory to keep backup, swap, and undo files
 set backupdir=$HOME/.vim/tmp/backup
-set dir=$HOME/.vim/tmp/swap
+set directory=$HOME/.vim/tmp/swap
 set viewdir=$HOME/.vim/tmp/view
 set undodir=$HOME/.vim/tmp/undo
 if !isdirectory(&backupdir) | call mkdir(&backupdir, 'p', 0700) | endif
-if !isdirectory(&dir)       | call mkdir(&dir, 'p', 0700)       | endif
+if !isdirectory(&directory) | call mkdir(&directory, 'p', 0700) | endif
 if !isdirectory(&viewdir)   | call mkdir(&viewdir, 'p', 0700)   | endif
 if !isdirectory(&undodir)   | call mkdir(&undodir, 'p', 0700)   | endif
 
@@ -245,22 +242,28 @@ endif
 " Set my statusline.
 let g:ale_linting = 0
 let g:ale_fixing = 0
+let g:making = 0
 augroup ALEProgress
     autocmd!
-    autocmd User ALELintPre  let g:ale_linting = 1 | redrawstatus
-    autocmd User ALELintPost let g:ale_linting = 0 | redrawstatus
-    autocmd User ALEFixPre   let g:ale_fixing = 1  | redrawstatus
-    autocmd User ALEFixPost  let g:ale_fixing = 0  | redrawstatus
+    autocmd User ALELintPre   let g:ale_linting = 1 | redrawstatus
+    autocmd User ALELintPost  let g:ale_linting = 0 | redrawstatus
+    autocmd User ALEFixPre    let g:ale_fixing = 1  | redrawstatus
+    autocmd User ALEFixPost   let g:ale_fixing = 0  | redrawstatus
+	autocmd QuickFixCmdPre  * let g:making = 1      | redrawstatus
+	autocmd QuickFixCmdPost * let g:making = 0      | redrawstatus
 augroup end
 
 set statusline=
 let &statusline .= '%<%f'                " Filename, truncate right
 let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
 let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
-let &statusline .= '%{g:ale_fixing ? "[F]" : ""}'
-let &statusline .= '%{go#statusline#Show()}'
+let &statusline .= '%{g:ale_fixing  ? "[F]" : ""}'
+let &statusline .= '%{g:making      ? "[M]" : ""}'
+let &statusline .= '%#Error#%{len(getloclist(0)) > 0 ? "[E]" : ""}%#StatusLine#'
+if exists('*go#statusline#Show()')
+	let &statusline .= '%{go#statusline#Show()}'
+endif
 "let &statusline .= ' %#StatusLineGray#%{LastComplete()}%#StatusLine#'
-"
 
 " Right/ruler
 let &statusline .= '%='                  " Right-align from here on

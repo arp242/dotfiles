@@ -2,8 +2,8 @@
 
 f="$(git rev-parse --show-toplevel)/.git/wip-commit"
 if [ -f "$f" ]; then
-	git commit --file "$f" --edit
+	git commit --file "$f" --edit "$@"
 	[ $? -eq 0 ] && rm "$f"
 else
-	git commit
+	git commit "$@"
 fi

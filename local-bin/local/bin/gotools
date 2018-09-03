@@ -17,16 +17,14 @@ github.com/jstemmer/gotags
 github.com/kardianos/govendor
 github.com/kisielk/errcheck
 github.com/klauspost/asmfmt/cmd/asmfmt
+github.com/mdempsky/gocode
 github.com/motemen/gore
-github.com/nsf/gocode
 github.com/rogpeppe/godef
-github.com/stapelberg/expanderr
+github.com/sqs/goreturns
 github.com/stapelberg/expanderr
 github.com/zmb3/gogetdoc
 golang.org/x/review/git-codereview
-golang.org/x/tools/cmd/goimports
-golang.org/x/tools/cmd/gorename
-golang.org/x/tools/cmd/guru
+golang.org/x/tools/...
 "
 
 for r in $repos; do
