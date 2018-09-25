@@ -242,7 +242,7 @@ if executable('ag')
 endif
 
 " Set my statusline.
-fun s:errcolor()
+fun! s:errcolor()
     if len(getloclist(bufnr('%'))) > 0 || len(getqflist()) > 0
         hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
                     \ ctermfg=1 guifg=#cd0000
@@ -257,14 +257,15 @@ let g:ale_fixing = 0
 let g:making = 0
 augroup ALEProgress
     autocmd!
-    autocmd User ALELintPre   let g:ale_linting = 1 | redrawstatus
-    autocmd User ALELintPost  let g:ale_linting = 0 | redrawstatus
-    autocmd User ALEFixPre    let g:ale_fixing = 1  | redrawstatus
-    autocmd User ALEFixPost   let g:ale_fixing = 0  | redrawstatus
-    autocmd QuickFixCmdPre  * let g:making = 1      | redrawstatus
-    autocmd QuickFixCmdPost * let g:making = 0      | redrawstatus
+    autocmd User ALELintPre       let g:ale_linting = 1 | redrawstatus
+    autocmd User ALELintPost      let g:ale_linting = 0 | redrawstatus
+    autocmd User ALEFixPre        let g:ale_fixing = 1  | redrawstatus
+    autocmd User ALEFixPost       let g:ale_fixing = 0  | redrawstatus
+    autocmd QuickFixCmdPre  *make let g:making = 1      | redrawstatus
+    autocmd QuickFixCmdPost *make let g:making = 0      | redrawstatus
 
-    autocmd BufEnter,CursorMoved,CursorMovedI * :call s:errcolor()
+    autocmd BufEnter *                  call s:errcolor() | redrawstatus
+    autocmd QuickFixCmdPost ?expr,*make call s:errcolor() | redrawstatus
 augroup end
 
 set statusline=

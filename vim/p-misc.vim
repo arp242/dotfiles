@@ -15,6 +15,9 @@ let g:completor_doc_position = 'top'
 let g:completor_auto_close_doc = 0
 let g:completor_min_chars = 0
 
+let g:qf_auto_open_quickfix = 0
+let g:qf_auto_open_loclist = 0
+
 augroup my_go
 	autocmd!
 
