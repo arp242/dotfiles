@@ -1,12 +1,14 @@
 " Settings for Vim-go
 
+let g:gopher_debug = ['commands']
+
 augroup my_go_settings
 	autocmd!
 
 	" Shortcuts for make/test/run.
 	autocmd FileType go nnoremap <buffer> MM :wa<CR>:compiler go<CR>:LmakeJob<CR>
 	autocmd FileType go nnoremap <buffer> TT :wa<CR>:compiler gotest<CR>:LmakeJob<CR>
-	autocmd FileType go nnoremap <buffer> RR :wa<CR>:compiler gorun<CR>:LmakeJob<CR>
+	"autocmd FileType go nnoremap <buffer> RR :wa<CR>:compiler gorun<CR>:LmakeJob<CR>
 
 	autocmd FileType go nnoremap <buffer> <Leader>a :call <SID>alt()<CR>
 
@@ -42,3 +44,47 @@ fun! s:alt()
 	endif
 	exe printf(':%s %s', l:cmd, fnameescape(l:alt_file))
 endfun
+
+
+" Toggle between "single-line" and "normal" if checks:
+"
+"   err := e()
+"   if err != nil {
+"
+" and:
+"
+"   if err := e(); err != nil {
+"
+" TODO: See if we can integrate this in https://github.com/AndrewRadev/splitjoin.vim
+" TODO: Check if we can integrate this in expanderr.
+fun! s:switch_if()
+	let l:line = getline('.')
+	if match(l:line, "if ") == -1
+		" Try line below current one too.
+		let l:line = getline(line('.') + 1)
+
+		if match(l:line, "if ") == -1
+			echohl Error | echom "No 'if' in current line" | echohl Normal
+			return
+		endif
+
+		normal! j
+	endif
+
+	let l:line = substitute(l:line, "^\\s*", "", "")
+	let l:indent = repeat("\t", indent('.') / 4)
+
+	" Convert "if .. {" to "if ..; err != nil {".
+	if match(l:line, ";") == -1
+		let l:prev_line = substitute(getline(line('.') - 1), "^\\s*", "", "")
+		execute ':' . (line('.') - 1) . 'd _'
+		call setline('.', printf('%sif %s; err != nil {', l:indent, l:prev_line))
+	" Convert "if ..; err != nil {" to "if .. {".
+	else
+		let [l:prev_line, l:line] = split(l:line, "; ")
+		let l:prev_line = substitute(l:prev_line, "^\\s*", "", "")[3:]
+		call setline('.', printf('%sif %s', l:indent, l:line))
+		call append(line('.') - 1, printf("%s%s", l:indent, l:prev_line))
+	endif
+endfun
+nnoremap <Leader>e :call <SID>switch_if()<CR>

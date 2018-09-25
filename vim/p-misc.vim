@@ -13,16 +13,20 @@ let g:completor_auto_trigger = 0
 let g:completor_def_split = 'tab'
 let g:completor_doc_position = 'top'
 let g:completor_auto_close_doc = 0
+let g:completor_min_chars = 0
 
-" TODO: don't put cursor here.
-" TODO: make smaller
-nnoremap K :call completor#do('doc')<CR>
+augroup my_go
+	autocmd!
 
-" TODO: can't open in tab
-" TODO: use path relative to cwd
-" TODO: re-use buffers
-nnoremap gd :call completor#do('definition')<CR>
+	" TODO: don't put cursor here.
+	" TODO: make smaller
+	autocmd Filetype go nnoremap <buffer> K  :call completor#do('doc')<CR>
 
+	" TODO: can't open in tab
+	" TODO: use path relative to cwd
+	" TODO: re-use buffers
+	autocmd Filetype go nnoremap <buffer> gd :call completor#do('definition')<CR>
+augroup end
 
 "set completeopt=longest,menuone
 "*g:completor_complete_options*

@@ -12,6 +12,9 @@ fun! s:hi()
 
 	hi StatusLineGray term=bold,reverse cterm=bold,reverse gui=bold,reverse ctermbg=254
 
+	hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
+				\ ctermfg=NONE guifg=NONE
+
 	" Not so bright
 	"hi LineNr ctermfg=253
 	"hi CursorLineNr ctermfg=253

@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 " Switch syntax highlighting on
 syntax on
 
@@ -15,7 +17,7 @@ silent! colorscheme default2
 
 " Use standard color scheme (some Linuxes feel the need to overwrite this in
 " global vimrc)
-if get(g:, 'colors_name', 'default2') isnot# 'default2'
+if get(g:, 'colors_name', '') isnot# 'default2'
 	colorscheme default
 endif
 
@@ -240,6 +242,16 @@ if executable('ag')
 endif
 
 " Set my statusline.
+fun s:errcolor()
+    if len(getloclist(bufnr('%'))) > 0 || len(getqflist()) > 0
+        hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
+                    \ ctermfg=1 guifg=#cd0000
+    else
+        hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
+                    \ ctermfg=NONE guifg=NONE
+    endif
+endfun
+
 let g:ale_linting = 0
 let g:ale_fixing = 0
 let g:making = 0
@@ -249,20 +261,21 @@ augroup ALEProgress
     autocmd User ALELintPost  let g:ale_linting = 0 | redrawstatus
     autocmd User ALEFixPre    let g:ale_fixing = 1  | redrawstatus
     autocmd User ALEFixPost   let g:ale_fixing = 0  | redrawstatus
-	autocmd QuickFixCmdPre  * let g:making = 1      | redrawstatus
-	autocmd QuickFixCmdPost * let g:making = 0      | redrawstatus
+    autocmd QuickFixCmdPre  * let g:making = 1      | redrawstatus
+    autocmd QuickFixCmdPost * let g:making = 0      | redrawstatus
+
+    autocmd BufEnter,CursorMoved,CursorMovedI * :call s:errcolor()
 augroup end
 
 set statusline=
+let &statusline .= '%#ErrorSTL#'
 let &statusline .= '%<%f'                " Filename, truncate right
 let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
 let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
 let &statusline .= '%{g:ale_fixing  ? "[F]" : ""}'
 let &statusline .= '%{g:making      ? "[M]" : ""}'
-let &statusline .= '%#Error#%{len(getloclist(0)) > 0 ? "[E]" : ""}%#StatusLine#'
-if exists('*go#statusline#Show()')
-	let &statusline .= '%{go#statusline#Show()}'
-endif
+let &statusline .= '%{len(getloclist(0)) > 0 ? "[E]" : ""}'
+let &statusline .= '%#StatusLine#'
 "let &statusline .= ' %#StatusLineGray#%{LastComplete()}%#StatusLine#'
 
 " Right/ruler

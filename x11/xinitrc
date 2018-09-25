@@ -3,7 +3,7 @@
 [ -f ~/.xsession ] && . ~/.xsession
 
 if hash dwm > /dev/null; then
-	exec ssh-agent /home/martin/suckless/dwm/dwm
+	exec ssh-agent /usr/local/bin/dwm
 else
 	exec ssh-agent twm
 fi
