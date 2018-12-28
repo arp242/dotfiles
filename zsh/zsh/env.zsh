@@ -85,7 +85,8 @@ export GTK_OVERLAY_SCROLLING=0
 export SYSTEMD_PAGER=
 
 # Setup pass
-export PASSWORD_STORE_DIR=/data/stuff/password-store
+#export PASSWORD_STORE_DIR=/data/stuff/password-store
+export PASSWORD_STORE_DIR=/home/martin/password-store
 export PASSWORD_STORE_X_SELECTION=primary
 export PASSWORD_STORE_CLIP_TIME=10
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true

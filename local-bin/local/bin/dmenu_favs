@@ -1,0 +1,3 @@
+#!/bin/sh
+
+printf 'arandr\nchromium\nfirefox\ngimp\npavucontrol\nslock\nspotify\nsteam\n' | dmenu "$@" | ${SHELL:-"/bin/sh"} &

@@ -24,14 +24,14 @@ if [[ $uname = Linux ]]; then
 	fi
 
 	_exists bsdtar && alias tar='bsdtar'
-	_exists htop && alias top='htop'
+	_exists htop   && alias top='htop'
 else
 	alias la='ls -a'
 	alias lc='ls -l'
 	alias lac='ls -la'
 fi
 
-# A few more aliases...
+# A few more aliases.
 alias cp='cp -i'
 alias mv='mv -i'
 alias make='nice -n 20 make'
@@ -41,9 +41,17 @@ alias rdiff='diff -urN -x CVS -x .svn -x .git -x .hg '
 alias decolor="sed 's|\x1b\[[;0-9]*m||g'"
 alias trcolor="sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 
-alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
-alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
-alias mplayer='mpv'
+_exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
+_exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
+_exists mpv        && alias mplayer='mpv'
+
+if _exists git; then
+	alias g='git'
+	alias gst='git st'
+	alias gst='git diff'
+	alias gci='git commit'
+	alias grebase='git rebase'
+fi
 
 if _exists drill; then
 	alias dig='drill'
@@ -74,13 +82,6 @@ alias -g /t='|& tail'
 alias -g /v='|& vim -'
 alias -g /l='|& less'
 
-# Functions
-
-# csh habit...
-setenv() {
-	typeset -x "${1}${1:+=}${(@)argv[2,$#]}"
-}
-
 # "ag edit" and "grep edit".
 age() {
 	#vim +'normal! gg' +"/$1" +n -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
@@ -98,22 +99,9 @@ lwr() {
 	done
 }
 
-# It's pathetic that we need this but we do :-/
-repulse() {
-	pulseaudio -k && volumeicon &
-}
-
-finddep() {
-	grep --exclude-dir .git -r "$1" | grep '\.go:' | grep -v "vendor/$1"
-}
-
 # "Short awk"
 sawk() {
 	awk "{print \$$1}"
-}
-
-godeps() {
-    go list -f '{{range $f := .Imports}}{{$f}}{{printf "\n"}}{{end}}' ./...
 }
 
 # pushd function to emulate the old zsh behaviour.

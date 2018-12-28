@@ -15,6 +15,8 @@ fun! s:hi()
 	hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
 				\ ctermfg=NONE guifg=NONE
 
+	hi SignColumn guibg=#ffffff
+
 	" Not so bright
 	"hi LineNr ctermfg=253
 	"hi CursorLineNr ctermfg=253

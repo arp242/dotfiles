@@ -1,6 +1,9 @@
 " Settings for Vim-go
 
 let g:gopher_debug = ['commands']
+let g:gopher_highlight = []
+
+let g:gopher_highlight = ['string-spell', 'string-fmt', 'fold-import', 'fold-pkg-comment']
 
 augroup my_go_settings
 	autocmd!

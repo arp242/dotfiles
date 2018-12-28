@@ -3,7 +3,9 @@
 [ -f ~/.xsession ] && . ~/.xsession
 
 if hash dwm > /dev/null; then
-	exec ssh-agent /usr/local/bin/dwm
+	while :; do
+		ssh-agent dwm
+	done
 else
 	exec ssh-agent twm
 fi

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -euC
+
+#announce="http://tracker.what.cd:34000/qcnio9b514a9xsu7toxsrmj5xrl19qsi/announce"
+
+# Get tagname
+_tag() {
+	metaflac "$1" --show-tag="$2" | cut -d= -f2-
+}
+
+[ -z "$1" ] && exit 2
+
+for flacdir in "$@"; do
+	outdir="$HOME/music/$flacdir"
+	mkdir -p "$outdir"
+
+	# Convert flac
+	for f in "$flacdir"/*.flac; do
+		[ ! -e "$f" ] && continue
+
+		basename "$f"
+		flac -dcs "$f" |
+			lame --quiet --vbr-new -V0 --replaygain-accurate --id3v2-only \
+				--tt "$(_tag "$f" TITLE)" \
+				--tn "$(_tag "$f" TRACKNUMBER)" \
+				--tg "$(_tag "$f" GENRE)" \
+				--ty "$(_tag "$f" DATE)" \
+				--ta "$(_tag "$f" ARTIST)" \
+				--tl "$(_tag "$f" ALBUM)" \
+				- "$outdir/$(basename "${f%.flac}").mp3"
+	done
+
+	# Copy additional files
+	#for f in "$flacdir"/*.*[!flac]; do
+	#	cp "$f" "$outdir"
+	#done
+
+	# Make torrent
+	#mktorrent -p -a "$announce" -o "$outdir/../$(basename "$outdir").torrent" "$outdir"
+done

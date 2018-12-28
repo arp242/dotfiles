@@ -23,12 +23,12 @@ augroup my_go
 
 	" TODO: don't put cursor here.
 	" TODO: make smaller
-	autocmd Filetype go nnoremap <buffer> K  :call completor#do('doc')<CR>
+	"autocmd Filetype go nnoremap <buffer> K  :call completor#do('doc')<CR>
 
 	" TODO: can't open in tab
 	" TODO: use path relative to cwd
 	" TODO: re-use buffers
-	autocmd Filetype go nnoremap <buffer> gd :call completor#do('definition')<CR>
+	autocmd Filetype go nmap <buffer> gd <Plug>(ale_go_to_definition_in_tab)
 augroup end
 
 "set completeopt=longest,menuone

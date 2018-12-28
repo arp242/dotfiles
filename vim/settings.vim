@@ -193,7 +193,8 @@ set smarttab
 set matchpairs+=<:>
 
 " Use open tab (if any) when trying to jump to a quickfix error.
-set switchbuf=usetab
+"set switchbuf=usetab
+set switchbuf=useopen,usetab,newtab
 
 " Real men use real tabs...
 set noexpandtab
@@ -255,10 +256,10 @@ endfun
 let g:ale_linting = 0
 let g:ale_fixing = 0
 let g:making = 0
-augroup ALEProgress
+augroup statusline
     autocmd!
     autocmd User ALELintPre       let g:ale_linting = 1 | redrawstatus
-    autocmd User ALELintPost      let g:ale_linting = 0 | redrawstatus
+    autocmd User ALELintPost      let g:ale_linting = 0 | call s:errcolor() | redrawstatus
     autocmd User ALEFixPre        let g:ale_fixing = 1  | redrawstatus
     autocmd User ALEFixPost       let g:ale_fixing = 0  | redrawstatus
     autocmd QuickFixCmdPre  *make let g:making = 1      | redrawstatus

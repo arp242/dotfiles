@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+
+set -euC
+
+case "$1" in
+	"up")      amixer -q sset 'Master' 5%+      ;;
+	"down")    amixer -q sset 'Master' 5%-      ;;
+	"mute")    amixer -q sset Master toggle  ;;
+	"micmute") amixer -q sset Capture toggle ;;
+	*)
+		echo "Unsupported: \"$1\""
+		exit 1
+esac
+
+pkill -HUP slstatus
