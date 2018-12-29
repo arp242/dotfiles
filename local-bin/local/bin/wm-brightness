@@ -4,7 +4,7 @@
 #
 
 # Increment to use.
-incr=5%
+incr=2.5%
 
 cur=$(xbacklight -get)
 case "$1" in
@@ -16,7 +16,7 @@ case "$1" in
 		fi
 	;;
 	"down")
-		if [[ $cur -le 5 ]]; then
+		if [[ $cur -le 3 ]]; then
 			xbacklight -set 1
 		else
 			xbacklight -dec $incr
