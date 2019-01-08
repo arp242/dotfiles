@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# https://github.com/carpetsmoker/uni
+
+uni s '' |
+	tr '[:upper:]' '[:lower:]' |
+	dmenu |
+	grep -o "^'.'" |
+	tr -d "'" |
+	xclip -selection clipboard
