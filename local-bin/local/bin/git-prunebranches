@@ -1,4 +1,6 @@
 #!/bin/sh
+#
+# Remove local branches that no longer exist on remote.
 
 git fetch origin --prune
 git branch --merged master | grep -v 'master$' | xargs git branch -d

@@ -1,7 +1,7 @@
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
 
-# Disable ^S, ^Q, ^\
-stty -ixon quit undef
+stty -ixon quit undef        # Disable ^S, ^Q, ^\
+limit coredumpsize 0         # Don't really need coredumps.
 
 setopt noflowcontrol         # Disable useless ^S and ^Q
 setopt notify                # Report status of bg jobs immediately
@@ -21,10 +21,6 @@ setopt pushdminus            # -0 counts from top, +0 from bottom
 setopt pushdsilent           # Don't show stack after using pushd
 setopt pushdignoredups       # Don't store duplicate entries
 
-# Shortcuts; I go here a lot; "cd ~tw/project"
-tw=/home/martin/work/src/github.com/teamwork
-c=/data/code
-
 ### History
 setopt hist_ignore_dups      # Ignore duplicate in history.
 setopt appendhistory         # Append to history, rather than overwriting
@@ -34,8 +30,8 @@ setopt extendedhistory       # Store some metadata as well
 setopt histnostore           # Don't store history or fc commands
 setopt histignorespace       # Don't add commands starting with space to history.
 HISTFILE=~/.zsh/history      # Store history here
-HISTSIZE=80000               # Max. entries to keep in memory
-SAVEHIST=80000               # Max. entries to save to file
+HISTSIZE=40000               # Max. entries to keep in memory
+SAVEHIST=40000               # Max. entries to save to file
 HISTORY_IGNORE='([bf]g *|disown|cd ..|cd -)' # Don't add these to the history file.
 
 ### Prompt
@@ -45,6 +41,7 @@ autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' formats '(%b)'
 #zstyle ':vcs_info:*' check-for-changes true
+#zstyle ':vcs_info:git:*:martin' formats "\u200b"
 
 # Set mode variable for prompt
 function zle-line-init zle-keymap-select {

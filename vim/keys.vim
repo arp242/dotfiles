@@ -4,7 +4,6 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 " Close help, rather than open help.
 nnoremap <F1> :helpclose<CR>
 inoremap <F1> <C-o>:helpclose<CR>
-nnoremap <F4> :ALEToggle<CR>
 
 " Some useful-ish toggles.
 nnoremap <F9>  :set shiftround!<CR>:set shiftround?<CR>
@@ -24,25 +23,26 @@ nnoremap <Leader>su :set spelllang=en_us<CR>
 nnoremap <Leader>sd :set spelllang=de_de<CR>
 
 " Use <C-l> to clear some highlighting.
-nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
+nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR><C-l>
+":syntax sync fromstart<CR><C-l>
 
-" We don't need no stinkin' ex mode; use it for formatting
+" We don't need no stinkin' ex mode; use it for formatting.
 noremap Q gq
 
 " Bloody annoying.
 nnoremap q: :q
 
-" Interface with system clipboard
+" Interface with system clipboard.
 noremap <Leader>y "*y
 noremap <Leader>p "*p
 noremap <Leader>Y "+y
 noremap <Leader>P "+p
 
-" Indent in visual and select mode automatically re-selects
+" Indent in visual and select mode automatically re-selects.
 vnoremap > >gv
 vnoremap < <gv
 
-" Use visual movement rather than line movement
+" Use visual movement rather than line movement.
 nnoremap k gk
 nnoremap j gj
 nnoremap <Up> gk
@@ -61,15 +61,15 @@ vnoremap gF <C-w>gF
 noremap <expr> <Home> col('.') is# match(getline('.'), '\S') + 1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
-" Workaround to map <Home> in xterm outside of tmux on my system.
-if &term == "xterm-256color"
-	set <Home>=OH
-	set <xHome>=OH
-endif
-
 " Replace the current line with the unnamed register without affecting any
 " register.
 nnoremap RR "_ddP
+
+" Shortcut to write and run :make.
+nnoremap MM :wa<CR>:make<CR>
+
+" Shortcut to close all windows except the current one.
+nnoremap <silent> OO :silent wincmd o<CR>
 
 " I often mistype this :-/
 cabbr Set set
@@ -77,10 +77,12 @@ cabbr Help help
 iabbr teh the
 iabbr Teh The
 iabbr taht that
-
-" Makes Go a bit easier to program.
-iabbr 1= !=
+cabbr tane tabe
+cabbr ta tabe
 iabbr ;= :=
+
+" Makes stuff a bit easier to type.
+iabbr 1= !=
 
 " Make these common shortcuts work in the commandline.
 cnoremap <C-a> <Home>

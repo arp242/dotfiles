@@ -28,38 +28,36 @@ _prepath /usr/X11R6/sbin
 _prepath /usr/local/bin
 _prepath /usr/local/sbin
 
-# Ruby; TODO: do this better
-_postpath "$HOME/.gem/ruby/2.2.0/bin"
+_postpath "$HOME/.gem/ruby/2.2.0/bin"   # Ruby; TODO: do this better
 _postpath "$HOME/.gem/ruby/2.3.0/bin"
 _postpath "$HOME/.gem/ruby/2.4.0/bin"
 _postpath "$HOME/.gem/ruby/2.5.0/bin"
 _postpath "$HOME/.gem/ruby/2.6.0/bin"
 _postpath "$HOME/.gem/ruby/2.7.0/bin"
 
-# Go
-_prepath "$HOME/go/bin"
-_prepath "$HOME/work/bin"
+_prepath "$HOME/go/bin"                 # Go
 _postpath "/usr/local/go/bin"
 _postpath "/usr/local/gotools/bin"
-_postpath "$HOME/work/dev-env-martin/bin"
 
-# Python
-_postpath "$HOME/.local/bin"
+_postpath "$HOME/.local/bin"            # Python
 
-_prepath "$HOME/Local/bin"
+_prepath "$HOME/Local/bin"              # My local stuff.
 
 unfunction _prepath
 unfunction _postpath
 
-# Various applications settings
-export GOPATH=$HOME/go:$HOME/work
+# Store Go tmp files in /tmp; make sure it exists, as Go won't create it for us
+# and error out!
 export GOTMPDIR=/tmp/gotmpdir
+[[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
+
+# Various applications settings
 export BLOCKSIZE=K
 export PAGER=less
 export LESS="--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
 
 # Make man pages 80 characters wide at the most; this is the default on BSD, but
-# not Linux
+# not Linux (not needed if you use mandoc, instead of the man-db crap).
 export MANWIDTH=80
 
 # Colors for ls(1)
@@ -78,36 +76,23 @@ export GDK_CORE_DEVICE_EVENTS=1
 export GTK_IM_MODULE=xim
 export QT_IM_MODULE=xim
 
-# Disable retarded "overlay scrollbar"
+# Disable stupid "overlay scrollbar"
 export GTK_OVERLAY_SCROLLING=0
 
 # Don't output to a pager
 export SYSTEMD_PAGER=
 
+# Set user service dir for runit.
+[[ $uid -gt 0 ]] && export SVDIR=~/.config/service
+
 # Setup pass
-#export PASSWORD_STORE_DIR=/data/stuff/password-store
-export PASSWORD_STORE_DIR=/home/martin/password-store
+export PASSWORD_STORE_DIR=/home/martin/.config/password-store
 export PASSWORD_STORE_X_SELECTION=primary
 export PASSWORD_STORE_CLIP_TIME=10
 export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
-# Do the $TERM dance; these options seem to work best on various systems...
-if [[ -n "$TMUX" ]]; then
-	export TERM=screen-256color
-elif [[ $uname = OpenBSD ]]; then
-	export TERM=xterm-xfree86
-elif [[ $uname = FreeBSD ]]; then
-	if  [[ $tty =~ ttyv* ]]; then
-		export TERM=cons25
-	else
-		export TERM=xterm-256color
-	fi
-elif [[ $uname == Linux ]]; then
-	export TERM=xterm-256color
-	#setenv TERM xterm-color
-else
-	export TERM=vt220
-fi
+# Set TERM.
+[[ -n "$TMUX" ]] && export TERM=screen-256color || export TERM=st-256color
 
 # UTF-8
 if _exists locale; then
@@ -138,7 +123,7 @@ _exists firefox && export BROWSER=firefox
 [[ -f "$HOME/Local/python-startup" ]] && export PYTHONSTARTUP=~/Local/python-startup
 
 # Makes it easier to write configs specific to just my laptop.
-export HOSTNAME=$(hostname)
+#export HOSTNAME=$(hostname)
 
 # This makes font looks non-ugly in Java applications
 #export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"

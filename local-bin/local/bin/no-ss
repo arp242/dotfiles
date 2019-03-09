@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Disable the screensaver/DPMS. Useful when playing audio over HDMI.
+
+while :; do
+	xset s off
+	sleep 40
+done

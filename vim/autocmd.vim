@@ -1,127 +1,87 @@
 augroup basic
-	autocmd!
+	au!
 
 	" Go to the last cursor location when a file is opened, unless this is a git
 	" commit (in which case it's annoying).
-	autocmd BufReadPost *
+	au BufReadPost *
 		\ if line("'\"") > 1 && line("'\"") <= line("$") && &filetype != 'gitcommit'
 			\| exe 'normal! g`"'
 		\| endif
 
-	" Syntax breaks less often, but it's a bit slower
-	autocmd BufEnter * syntax sync fromstart
-
-	" Never spellcheck urls
-	autocmd BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
+	" Never spellcheck urls.
+	au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 augroup end
 
-" Preferences for various filetypes
+" Preferences for various filetypes.
 augroup my_filetypes
-	autocmd!
+	au!
 
 	" Don't need the syntax highlighting for git commits; don't like it at all.
-	autocmd FileType gitcommit
-                \  setlocal syntax=OFF
+	au FileType gitcommit
+                \  setl syntax=OFF
                 \| syn match gitcommitComment "^#.*"
-                \| setlocal ts=8
+                \| setl ts=8
 
 	" Reset some settings that these ftplugins or syntax files reset :-/
-	autocmd FileType python setlocal ts=4
-	autocmd FileType sass setlocal noexpandtab sw=4
+	au FileType python setl ts=4
+	au FileType sass setl noexpandtab sw=4
+
+	" Remove Python 2 keywords.
+	au Syntax python
+		\ syn keyword pythonTwoBuiltin basestring cmp execfile file long unichr
+		\     raw_input reduce reload unicode xrange apply buffer coerce intern
 
 	" 2 spaces is almost universal.
-	autocmd FileType yaml setlocal expandtab ts=2 sts=2 sw=2
+	au FileType yaml setl expandtab ts=2 sts=2 sw=2
 
 	" C files are almost always ts=8, and very often mix tabs & spaces.
-	autocmd FileType c,cpp setlocal ts=8
+	au FileType c,cpp setl ts=8
 
 	" Set tabstop for Makefile, config files, etc.
-	autocmd BufNewFile,BufRead [Mm]akefile*,crontab*,*rc,*.conf,*.ini,*.cfg,*.rc setlocal ts=8
+	au BufNewFile,BufRead [Mm]akefile*,crontab*,*rc,*.conf,*.ini,*.cfg,*.rc setl ts=8
 
 	" Set larger textwidth for HTML.
-	autocmd FileType html,htmldjango,eruby,haml setlocal textwidth=120
+	au FileType html,htmldjango,eruby,haml setl textwidth=120
 
 	" Fix 'temp file must be edited in place' on some platforms.
-	autocmd FileType crontab setlocal backupcopy=yes
+	au FileType crontab setl backupcopy=yes
 
 	" My todo-file is in Markdown.
-	autocmd BufRead,BufNewFile TODO setlocal filetype=markdown
-
-	" Assume Markdown for dwb/qutebrowser ^E, and don't store in viminfo since
-	" these are temporary files
-	autocmd BufRead,BufNewFile ~/.cache/dwb/edit*,qutebrowser-editor-*,~/.cache/itsalltext/*
-		\ setlocal ft=markdown viminfo=
+	au BufRead,BufNewFile TODO setl filetype=markdown
 
 	" Highlight trailing spaces in Markdown
-	autocmd FileType markdown
+	au FileType markdown
 		\  highlight MarkdownTrailingSpaces ctermbg=green guibg=green
 		\| call matchadd('MarkdownTrailingSpaces', '\s\+$', 100)
 
-    " Don't conceal * etc. in Markdown. So anoying.
-    autocmd FileType markdown setlocal conceallevel=0
-
 	" Set textwidth to 76 for emails.
-	autocmd BufReadPost /tmp/mail-* setlocal ft=mail | normal! 0Go
-	autocmd FileType mail setlocal textwidth=76
+	au BufReadPost /tmp/mail-* setl ft=mail | normal! 0Go
+	au FileType mail setl textwidth=76
 
 	" These emails are usually DOS formatted (as should be, per RFC).
-	autocmd BufReadPost *.eml setlocal fileformats+=dos fileformat=dos | edit!
+	au BufReadPost *.eml setl fileformats+=dos fileformat=dos | edit!
 
-	" Make editing SSH authorized_keys & known_hosts less painful
-	autocmd BufReadPost authorized_keys,known_hosts
-		\ setlocal nowrap noautoindent nosmartindent textwidth=0 formatoptions=
+	" Make editing SSH authorized_keys and known_hosts less painful.
+	au BufReadPost authorized_keys,known_hosts
+		\ setl nowrap noautoindent nosmartindent textwidth=0 formatoptions=
 
 	" Works better most of the time.
-	autocmd FileType json,xml setlocal nowrap
+	au FileType json,xml setl nowrap
 
-	" Disable 'number' from vim-qf.
-	autocmd FileType qf setlocal nonumber
-
-	" Use a function for sanity!
-	autocmd FileType mail call s:mail()
-    autocmd FileType help call s:help()
+	" Show formatting characters only in insert mode.
+    au FileType help
+				\  silent! packadd! vim-vimhelplint
+				\| if &modifiable | setl colorcolumn=78 | endif
+				\| augroup help_insert
+    			\|     au InsertEnter <buffer> setl conceallevel=0 | highlight clear Ignore
+    			\|     au InsertLeave <buffer> setl conceallevel=2
+    			\| augroup end
 augroup end
 
-" Set up ft=mail
-fun! s:mail()
-	augroup ft_mail
-		autocmd!
-		" Increase textwidth for some headers; https://vi.stackexchange.com/a/9187/51
-		autocmd CursorMoved,CursorMovedI *
-			\  if index(["mailHeaderKey", "mailSubject", "mailHeaderEmail", "mailHeader"], synIDattr(synID(line('.'), col('.'), 1), 'name')) >= 0
-			\|     setlocal textwidth=500
-		    \| else
-			\|     setlocal textwidth=72
-			\| endif
-	augroup end
-endfun
-
-" Show formatting characters in insert mode.
-fun! s:help()
-	silent! packadd! vim-vimhelplint
-	if &modifiable
-		setlocal colorcolumn=78
-	endif
-    augroup help_insert
-        autocmd!
-        autocmd InsertEnter <buffer> setlocal conceallevel=0 | highlight clear Ignore
-        autocmd InsertLeave <buffer> setlocal conceallevel=2
-    augroup end
-endfun
-
-" Remove Python 2 keywords.
-augroup angering_zed_shaw
-	autocmd!
-	autocmd Syntax python
-		\ syn keyword pythonTwoBuiltin basestring cmp execfile file long
-		\                              raw_input reduce reload unichr unicode
-		\                              xrange apply buffer coerce intern
-augroup end
-
-" Until this gets fixed: https://github.com/vim/vim/pull/2285
+" is# and isnot# won't work otherwise. Emailed syntax maintainer on 20190309.
 augroup fix_vimscript
-    autocmd!
-    autocmd FileType vim syn match vimOper
+    au!
+    au FileType vim syn match vimOper
                 \ "\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\|isnot\|is\)[?#]\{0,2}"
                 \ skipwhite nextgroup=vimString,vimSpecFile
 augroup end

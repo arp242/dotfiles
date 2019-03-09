@@ -8,9 +8,4 @@ source ~/.vim/autocmd.vim
 source ~/.vim/commands.vim
 source ~/.vim/keys.vim
 source ~/.vim/gui.vim
-source ~/.vim/highlight.vim
-
-" Plugin configs can be in any order.
-for s:f in glob('$HOME/.vim/p-*.vim', 0, 1)
-	execute 'source ' . s:f
-endfor
+source ~/.vim/plugins.vim

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#
+# TODO: support overflows to next day: timecalc 14:00 08:00
+# TODO: support different formats: 14.00, 1400, 14, 2pm
 
 import datetime, re, sys
 

@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Disable xbanish and xcape while a command is running.
+
+set -euC
+
+xbanish=$(pgrep xbanish)
+xcape=$(pgrep xcape)
+
+kill -STOP $xbanish $xcape
+$@
+kill -CONT $xbanish $xcape

@@ -1,20 +1,27 @@
+# Store all zsh-related stuff in ~/.zsh/ instead of ~/
 ZDOTDIR=~/.zsh
 umask 022
 
+# Helper stuff; will be unset later.
 _exists() { hash $1 2>/dev/null }
 _exists uname && uname=$(uname) || uname=win32
+uid=$(id -u)
 
+# Source config files.
 source ~/.zsh/env.zsh
-
-# Our work here is done if not an interactive shell
-[[ -o interactive ]] || exit 0
+[[ -o interactive ]] || exit 0  # Our work here is done if not an interactive shell
 
 source ~/.zsh/settings.zsh
 source ~/.zsh/completion.zsh
 source ~/.zsh/commands.zsh
 source ~/.zsh/keys.zsh
 
+# Unset helpers.
 unfunction _exists
+unset uid
+unset uname
+
+# Source plugins.
 
 # Other stuff to look at:
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dircycle/dircycle.plugin.zsh
@@ -23,18 +30,3 @@ unfunction _exists
 # https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/tmux
 fpath=($fpath ~/.zsh/plugins)
 for f in ~/.zsh/plugins/*.zsh; do source "$f"; done
-
-# We're ssh-ing into vagrant; don't logout on ^D
-[[ -d /vagrant ]] && setopt ignoreeof
-
-# Don't really need coredumps.
-limit coredumpsize 0
-
-# Use the "shortcut directory" when starting a new shell.
-[[ $PWD =~ "^/home/martin/work/src/github.com/teamwork" ]] && \
-	cd ~tw/${PWD#/home/martin/work/src/github.com/teamwork}
-[[ $PWD =~ "^/home/martin/go/src/arp242.net" ]] && \
-	cd ~tw/${PWD#/home/martin/go/src/arp242.net}
-
-# I like fortunes!
-fortune -a

@@ -1,17 +1,27 @@
+
+
+" vim-lookup
+augroup p_misc
+	autocmd!
+	autocmd FileType vim nnoremap <buffer> <silent> gd :call lookup#lookup()<cr>
+augroup end
+
+" TODO: add command/function for this; don't like the formatting in stl.
+" :echo matchup#delim#get_current('all', 'both_all'):
+"let g:matchup_matchparen_status_offscreen = 0
+"let g:matchup_matchparen_deferred = 1
+
+
 " Settings for Vim-go
-
-let g:gopher_debug = ['commands']
-let g:gopher_highlight = []
-
-let g:gopher_highlight = ['string-spell', 'string-fmt', 'fold-import', 'fold-pkg-comment']
 
 augroup my_go_settings
 	autocmd!
 
 	" Shortcuts for make/test/run.
-	autocmd FileType go nnoremap <buffer> MM :wa<CR>:compiler go<CR>:LmakeJob<CR>
-	autocmd FileType go nnoremap <buffer> TT :wa<CR>:compiler gotest<CR>:LmakeJob<CR>
+	"autocmd FileType go nnoremap <buffer> MM :wa<CR>:compiler go<CR>:LmakeJob<CR>
+	"autocmd FileType go nnoremap <buffer> TT :wa<CR>:compiler gotest<CR>:LmakeJob<CR>
 	"autocmd FileType go nnoremap <buffer> RR :wa<CR>:compiler gorun<CR>:LmakeJob<CR>
+	"autocmd FileType go imap <C-@> <Plug>(ale_complete)
 
 	autocmd FileType go nnoremap <buffer> <Leader>a :call <SID>alt()<CR>
 
@@ -91,3 +101,4 @@ fun! s:switch_if()
 	endif
 endfun
 nnoremap <Leader>e :call <SID>switch_if()<CR>
+

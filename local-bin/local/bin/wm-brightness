@@ -10,14 +10,14 @@ cur=$(xbacklight -get)
 case "$1" in
 	"up")
 		if [[ $cur -eq 0 ]]; then
-			xbacklight -set 1
+			xbacklight -set 0.1
 		else
 			xbacklight -inc $incr
 		fi
 	;;
 	"down")
 		if [[ $cur -le 3 ]]; then
-			xbacklight -set 1
+			xbacklight -set 0.1
 		else
 			xbacklight -dec $incr
 		fi

@@ -3,10 +3,18 @@
 	email = martin@arp242.net
 
 [core]
+	# Don't output to pager.
 	pager =
+
+	# Always use \n, even on Windows.
 	eol = lf
 
+[commit]
+	# Sign commits with my key.
+	gpgSign = true
+
 [color]
+	# Don't add colours to various commands.
 	branch =
 	diff =
 	status =
@@ -22,16 +30,17 @@
 	tool = vimdiff
 	renamelimit = 9001
 
-[commit]
-	gpgSign = true
-
 [alias]
 	st = status --short
 	co = checkout
-	ci = commit
 
-[url "git@github.com:"]
-	insteadOf = https://github.com/
+	# Allow drafting commit mesages.
+	draft = !${EDITOR:-vi} $(git rev-parse --git-dir)/draft
+	ci = "!d=$(git rev-parse --git-dir)/draft; [ -f "$d" ] && git commit -eF "$d" || git commit"
+
+# Prefer git protocol over http for GitHub.
+# [url "git@github.com:"]
+# 	insteadOf = https://github.com/
 
 [http]
 	cookiefile = /home/martin/.gitcookies

@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+shopt -s nullglob globstar
+
+typeit=0
+if [[ $1 == "--type" ]]; then
+	typeit=1
+	shift
+fi
+
+startdir=${PASSWORD_STORE_DIR-~/.password-store}
+basedir=$startdir
+done=0
+level=0
+prevselection=""
+selection=""
+
+while [ "$done" -eq 0 ] ; do 
+	password_files=( "$startdir"/* )
+	password_files=( "${password_files[@]#"$startdir"/}" )
+	password_files=( "${password_files[@]%.gpg}" )
+
+	if [ "$level" -ne 0 ]; then
+		password_files=(".." "${password_files[@]}") 
+	fi
+	entry=$(printf '%s\n' "${password_files[@]}" | dmenu "$@")
+	
+	echo "entry: $entry"
+	if [ -z "$entry" ] ; then
+		done=1
+		exit
+	fi
+
+	if [ "$entry" != ".." ] ; then
+		prevselection=$selection
+		selection="$selection/$entry"
+	
+		# Check if another dir.
+		if [ -d "$startdir/$entry" ] ; then
+			startdir="$startdir/$entry"
+			level=$((level + 1))
+		# Not a directory so it must be a real password entry.
+		else
+			if [[ $typeit -eq 0 ]]; then
+				pass show -c "$selection" 2>/dev/null
+			else
+				xdotool - <<<"type --clearmodifiers -- $(pass show "$selection" | head -n 1)"
+			fi
+			done=1
+		fi
+
+	else
+		level=$((level - 1))
+		selection=$prevselection
+		startdir="$basedir/$selection"
+	fi
+done

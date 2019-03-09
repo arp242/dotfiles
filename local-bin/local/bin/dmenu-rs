@@ -11,4 +11,4 @@ redshift -O4000 -b.6
 redshift -O3000 -b1
 redshift -O3000 -b.8
 redshift -O3000 -b.6\
-" | dmenu "$@" | ${SHELL:-"/bin/sh"} &
+" | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &

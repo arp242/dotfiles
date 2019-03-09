@@ -1,36 +1,26 @@
-if has('gui_running')
-	augroup gui
-		autocmd!
+if !has('gui_running')
+	finish
+endif
 
-		" Default width & height; autocmd to prevent resize when reloading vimrc
-		autocmd VimEnter * set lines=55 columns=120
-	augroup end
+" Don't iconfy on <C-z>
+noremap <C-z> <NOP>
 
-	" Use pop-up menu for right button
-	set mousemodel=popup_setpos
+" Default width and height; autocmd to prevent resize when reloading vimrc.
+augroup gui
+	au!
+	au VimEnter * set lines=55 columns=120
+augroup end
 
-	" Also use the mouse for selection
-	set selectmode=key,mouse
-
-	" Default clipboard is system clipboard
-	set clipboard=unnamedplus
-
-	" Set font
-	if has('gui_gtk')
-		set guifont=Dejavu\ Sans\ Mono\ 12
-	else
-		set guifont=Dejavu_Sans_Mono:h10
-	endif
-
-	" Don't blink the cursor
-	set guicursor+=a:blinkon0
-
-	" Remove all the GUI cruft and make gVim look and behave like Vim
-	" a: copy-on-select
-	" i: Use icon
-	" M: No menu
-	set guioptions=aiM
-
-	" Don't iconfy on <C-z>
-	noremap <C-z> <NOP>
+set mousemodel=popup_setpos            " Use pop-up menu for right button
+set selectmode=key,mouse               " Also use the mouse for selection
+set clipboard=unnamedplus              " Default clipboard is system clipboard
+set guicursor+=a:blinkon0              " Don't blink the cursor
+set guioptions=aiM                     " Remove all the GUI cruft and make gVim look and behave like Vim
+                                       " a: copy-on-select
+                                       " i: Use icon
+                                       " M: No menu
+if has('gui_gtk')                      " Set font
+	set guifont=Dejavu\ Sans\ Mono\ 12
+else
+	set guifont=Dejavu_Sans_Mono:h10
 endif

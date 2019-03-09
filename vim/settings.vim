@@ -1,211 +1,94 @@
 scriptencoding utf-8
 
-" Switch syntax highlighting on
-syntax on
-
-" Enable file type detection
-filetype plugin indent on
-
-" Use true colors.
-set termguicolors
-" Set correct escape codes for st.
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+syntax on                              " Switch syntax highlighting on.
+filetype plugin indent on              " Enable filetype detection.
+set termguicolors                      " Use true colors.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" " Set correct escape codes for st.
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-" Load my color scheme if it exists.
-silent! colorscheme default2
-
-" Use standard color scheme (some Linuxes feel the need to overwrite this in
-" global vimrc)
+silent! colorscheme default2           " Load my color scheme if it exists.
 if get(g:, 'colors_name', '') isnot# 'default2'
-	colorscheme default
+	colorscheme default                " Fall back to default (some Linuxes overwrite this in global vimrc).
 endif
 
-" My terminal has a white background colour
-set background=light
+set background=light                   " My terminal has a white background colour.
+set backspace=indent,eol,start         " Allow backspacing over everything.
+set history=500                        " Keep 500 lines of command line history.
+set incsearch                          " Jump to match while typing the pattern in /.
+set hlsearch                           " Highlight the last used search pattern.
+set ignorecase                         " Case-insensitive searching unless \C is in the pattern...
+set smartcase                          " ...or the pattern contains an upper case letter.
+set nowrapscan                         " Don't wrap search.
+set gdefault                           " Always use the /g flag with :s; add /g to restore the default behaviour.
+set textwidth=80                       " Wrap at at 80 characters.
+set linebreak                          " Wrap at word.
+set breakindent                        " When wrapping show next line on the same indent level.
+set autoindent                         " Always set auto indenting on.
+set backup                             " Keep backup file when writing.
+set backupext=.bak                     " Extension for backup files.
+set listchars=tab:!·,trail:·           " String to use in 'list' mode.
+set spelllang=en_gb                    " Default language for spell check.
+set helplang=en                        " Always use English in help...
+set langmenu=en                        " ...and UI
+set scrolloff=5                        " Minimum number of lines to keep above/below cursor.
+set wildmenu                           " Better tab completion at the command-line.
+" set wildignore=*.o,*.pyc,*.png,*.jpg,*_test.go
+set wildignore=*.o,*.pyc,*.png,*.jpg   " Ignore these files in completion.
+set wildmode=list:longest              " List all matches, and complete to the longest unambiguous string.
+set wildignorecase                     " Case is ignored when completing file names and directories.
+set completeopt=longest,menuone        " Insert mode completion.
+" set completeopt=longest,menuone,noinsert
+set pumheight=10                       " Don't make completion menu too high.
+set infercase                          " Like smartcase for insert completion.
+set tabpagemax=500                     " Max. number of tabs to be open with -p argument or :tab all "
+set showcmd                            " Show partial command in the last line of the screen.
+set formatoptions+=j                   " j: Remove comment character when joining lines with J.
+set nojoinspaces                       " Don't add two spaces after interpunction when using J.
+set shiftround                         " Round indent to multiple of shiftwidth when using < and >
+set smarttab                           " Backspace at start of line remove shiftwidith worth of space.
+set matchpairs+=<:>                    " Also match < & > with %
+set switchbuf=useopen,usetab,newtab    " Use open tab (if any) when trying to jump to a quickfix error.
+" set switchbuf=usetab
+set noexpandtab                        " Real men use real tabs...
+set tabstop=4                          " ...which are always 4 spaces wide.
+set shiftwidth=0                       " Use tabstop.
+set softtabstop=-1                     " Use shiftwidth.
+set synmaxcol=500                      " Maximum column in which to search for syntax items.
+set t_te=                              " Prevent clearing the terminal on exit.
+"set t_ti= t_te=
+set mouse=                             " I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim).
+set nrformats=bin,hex                  " Don't increment octal numbers.
+set paragraphs=                        " Don't include nroff stuff.
+set tildeop                            " Use ~ as an operator; e.g. ~w
+set clipboard=                         " Never automatically interface with system clipboard.
+set nofoldenable                       " Disable folds by default.
+set laststatus=2                       " Always show statusline...
+set showtabline=2                      " ...and tab bar.
+set ttyfast                            " Faster redrawing.
+set title                              " Update term title...
+set titleold=                          " ...but restore old title after exiting.
 
-" Allow backspacing over everything
-set backspace=indent,eol,start
+set viminfo='50,<0,n~/.vim/tmp/viminfo " '50  save fewer marks.
+                                       " <0   prevent saving registers.
 
-" Keep 500 lines of command line history
-set history=500
+set display=lastline,uhex              " lastline  Show as much of the last line as possible instead of @
+                                       " uhex      Always show unprintable chars as <xx> instead of ^C
 
-" '50  save fewer marks
-" <0   prevent saving registers
-"
-" Neovim also has a different viminfo format, so store that somewhere else
-set viminfo='50,<0,n~/.vim/tmp/viminfo
-if has('nvim')
-	let &viminfo .= '.nvim'
-endif
+set updatecount=50                     " Write to swap file every 50 characters; swap file is also written if nothing
+                                       " happens for four seconds (as set by the 'updatetime' setting).
 
-" Jump to search word while typing
-set incsearch
 
-" Highlight the last used search pattern.
-set hlsearch
-
-" Case-insensitive searching unless the pattern contains an upper case letter or
-" if \C is in the pattern.
-set ignorecase
-set smartcase
-
-" Don't wrap search
-set nowrapscan
-
-" Always use the /g flag with :s; add /g to restore the default behaviour.
-set gdefault
-
-" Wrap at at 80 characters
-set textwidth=80
-
-" Wrap at word
-set linebreak
-
-" Show a █ when wrapping a line
-"set showbreak=█
-
-" When wrapping show next line on the same indent level
-if has('patch-7.4.338')
-	set breakindent
-endif
-
-" Always set auto indenting on
-set autoindent
-
-" Keep backup file when writing
-set backup
-
-" Extension for backup files
-set backupext=.bak
-
-" String to use in 'list' mode
-" Using · only seems to work only in fairly recent Vim versions
-if v:version > 703
-	silent! set listchars=tab:!·,trail:·
-else
-	set listchars=tab:!.,trail:.
-endif
-
-" Default language for spell check
-set spelllang=en_gb
-
-" Always use English in UI/help
-set helplang=en
-set langmenu=en
-
-" Disable folds by default
-set nofoldenable
-
-" Always show statusline and tab bar
-set laststatus=2
-set showtabline=2
-
-" Always use UNIX line endings \n
-"set fileformats=unix
-
-" Faster redrawing
-set ttyfast
-
-" Update term title but restore old title after leaving Vim
-set title
-set titleold=
-
-" Use blowfish2 for encrypting files; cryptmethod=blowfish is *not* secure
-if has('cryptv') && has('patch-7.4-399')
-	set cryptmethod=blowfish2
-endif
-
-" lastline  Show as much of the last line as possible instead of @
-" uhex      Always show unprintable chars as <xx> instead of ^C
-set display=lastline,uhex
-
-" Write to swap file every 50 characters; swap file is also written if nothing
-" happens for four seconds (as set by the 'updatetime' setting)
-set updatecount=50
-
-" Minimum number of lines to keep above/below cursor
-set scrolloff=5
-
-" Better tab completion at the command-line
-set wildmenu
-
-" Ignore these files in completion
-"set wildignore=*.o,*.pyc,*.png,*.jpg,*_test.go
-set wildignore=*.o,*.pyc,*.png,*.jpg
-
-" List all matches, and complete to the longest unambiguous string
-set wildmode=list:longest
-
-" Case is ignored when completing file names and directories
-set wildignorecase
-
-" Insert mode completion
-set completeopt=longest,menuone
-"set completeopt=longest,menuone,noinsert
-
-" Don't make completion menu too high
-set pumheight=10
-
-" Like smartcase for insert completion
-set infercase
-
-" Allow cursor to go one character past the end of the line
-"set virtualedit=onemore
-
-" Max. number of tabs to be open with -p argument or :tab all"
-set tabpagemax=50
-
-" Show partial command in the last line of the screen
-set showcmd
-
-" n   Recognize numbered lists when formatting (see formatlistpat)
-" c   Wrap comments with textwidth
-" r   Insert comment char after enter
-" o   Insert comment char after o/O
-" q   Format comments with gq
-" l   Do not break lines when they were longer than 'textwidth' to start with
-set formatoptions+=ncroql
+set formatoptions+=ncroql              " n   Recognize numbered lists when formatting (see formatlistpat)
+                                       " c   Wrap comments with textwidth
+                                       " r   Insert comment char after enter
+                                       " o   Insert comment char after o/O
+                                       " q   Format comments with gq
+                                       " l   Do not break lines when they were longer than 'textwidth' to start with
 
 " ... make it deal with non-numbered lists (-) as well
 set formatlistpat=^\\s*\\(\\d\\\|\-\\)\\+[\\]:.)}\\t\ ]\\s*
 
-" j: Remove comment character when joining lines with J
-if v:version > 703
-	set formatoptions+=j
-endif
-
-" Don't add two spaces after interpunction when using J
-set nojoinspaces
-
-" Interactively ask for confirmation when the buffer is unsaved & quiting
-"set confirm
-
-" Round indent to multiple of shiftwidth when using < and >
-" Note that this can break some badly indented code when re-indenting whole
-" blocks
-set shiftround
-
-" Backspace at start of line remove shiftwidith worth of space
-set smarttab
-
-" Also match < & > with %
-set matchpairs+=<:>
-
-" Use open tab (if any) when trying to jump to a quickfix error.
-"set switchbuf=usetab
-set switchbuf=useopen,usetab,newtab
-
-" Real men use real tabs...
-set noexpandtab
-
-" ...which are always 4 spaces wide
-set tabstop=4
-set shiftwidth=0    " Use tabstop
-set softtabstop=-1  " Use shiftwidth
-
-" Set (& create if needed) a temp directory to keep backup, swap, and undo files
-set backupdir=$HOME/.vim/tmp/backup
+set backupdir=$HOME/.vim/tmp/backup    " Set/create directory to keep backup, swap, and undo files.
 set directory=$HOME/.vim/tmp/swap
 set viewdir=$HOME/.vim/tmp/view
 set undodir=$HOME/.vim/tmp/undo
@@ -214,77 +97,14 @@ if !isdirectory(&directory) | call mkdir(&directory, 'p', 0700) | endif
 if !isdirectory(&viewdir)   | call mkdir(&viewdir, 'p', 0700)   | endif
 if !isdirectory(&undodir)   | call mkdir(&undodir, 'p', 0700)   | endif
 
-" Maximum column in which to search for syntax items.
-set synmaxcol=500
+set statusline=                        " Set my statusline.
+let &statusline .= '%<%f'              " Filename, truncate right
+let &statusline .= ' %h%m%r'           " [Help] [modified] [read-only]
+"let &statusline .= '%{len(getloclist(0)) > 0 ? "[E]" : ""}'
 
-" Prevent clearing the terminal on exit
-"set t_ti= t_te=
-set t_te=
+let &statusline .= '%='                " Right-align from here on.
+let &statusline .= ' [line %l of %L]'  " current line, total lines.
+let &statusline .= ' [col %v]'         " column.
+let &statusline .= ' [0x%B]'           " Byte value under cursor.
 
-" I don't want no stinkin' mouse (off by default in Vim, but enabled in Neovim)
-set mouse=
-
-" Don't increment octal numbers
-set nrformats=bin,hex
-
-" Don't include nroff stuff
-set paragraphs=
-
-" Use ~ as an operator; e.g. ~w
-set tildeop
-
-" Never automatically interface with system clipboard.
-set clipboard=
-
-" Use ag
-if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor\ --ignore-case\ --column
-    set grepformat=%f:%l:%c:%m,%f:%l:%m
-endif
-
-" Set my statusline.
-fun! s:errcolor()
-    if len(getloclist(bufnr('%'))) > 0 || len(getqflist()) > 0
-        hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
-                    \ ctermfg=1 guifg=#cd0000
-    else
-        hi ErrorSTL term=bold,reverse cterm=bold,reverse gui=bold,reverse
-                    \ ctermfg=NONE guifg=NONE
-    endif
-endfun
-
-let g:ale_linting = 0
-let g:ale_fixing = 0
-let g:making = 0
-augroup statusline
-    autocmd!
-    autocmd User ALELintPre       let g:ale_linting = 1 | redrawstatus
-    autocmd User ALELintPost      let g:ale_linting = 0 | call s:errcolor() | redrawstatus
-    autocmd User ALEFixPre        let g:ale_fixing = 1  | redrawstatus
-    autocmd User ALEFixPost       let g:ale_fixing = 0  | redrawstatus
-    autocmd QuickFixCmdPre  *make let g:making = 1      | redrawstatus
-    autocmd QuickFixCmdPost *make let g:making = 0      | redrawstatus
-
-    autocmd BufEnter *                  call s:errcolor() | redrawstatus
-    autocmd QuickFixCmdPost ?expr,*make call s:errcolor() | redrawstatus
-augroup end
-
-set statusline=
-let &statusline .= '%#ErrorSTL#'
-let &statusline .= '%<%f'                " Filename, truncate right
-let &statusline .= ' %h%m%r'             " [Help] [modified] [read-only]
-let &statusline .= '%{g:ale_linting ? "[L]" : ""}'
-let &statusline .= '%{g:ale_fixing  ? "[F]" : ""}'
-let &statusline .= '%{g:making      ? "[M]" : ""}'
-let &statusline .= '%{len(getloclist(0)) > 0 ? "[E]" : ""}'
-let &statusline .= '%#StatusLine#'
-"let &statusline .= ' %#StatusLineGray#%{LastComplete()}%#StatusLine#'
-
-" Right/ruler
-let &statusline .= '%='                  " Right-align from here on
-let &statusline .= ' [line %l of %L]'    " current line, total lines
-let &statusline .= ' [col %v]'           " column
-let &statusline .= ' [0x%B]'             " Byte value under cursor
-
-" Width is 17 characters
-let &rulerformat = '%l/%L %c 0x%B'
+let &rulerformat = '%l/%L %c 0x%B'     " Width is 17 characters.

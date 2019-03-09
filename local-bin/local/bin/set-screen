@@ -11,6 +11,7 @@ set -eC
 #	names="$names $name"
 #done
 
+# TODO: also set audio output!
 
 hdmi() {
 	xrandr \

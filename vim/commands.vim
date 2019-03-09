@@ -30,7 +30,7 @@ fun! s:trim_whitespace()
 endfun
 command! TrimWhitespace call s:trim_whitespace()
 
-" Move a file & update buffer.
+" Move a file and update buffer.
 fun! s:mv(dest)
 	let l:src = expand('%:p')
 	if a:dest isnot# ''
@@ -76,6 +76,7 @@ command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')
 " Easier diff copy
 command! DG :1,$+1diffget
 
+" Load all optional packages too before running :helptags ALL.
 command! -nargs=0 -bar Helptags
     \  for p in glob('~/.vim/pack/bundle/opt/*', 1, 1)
     \|     exe 'packadd ' . fnamemodify(p, ':t')
