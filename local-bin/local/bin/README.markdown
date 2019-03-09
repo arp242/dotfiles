@@ -13,6 +13,7 @@ My shell commands.
 | no-ss             | Disable screensaver (e.g. for playing audio over HDMI).                   |
 | sanitize-music    | Sanitize downloaded music directories.                                    |
 | set-screen        | Enable HDMI output on laptop.                                             |
+| spotify-send      | Send commands to Spotify client.                                          |
 | timecalc          | Calculate difference between two times.                                   |
 | tmux-site         | Launch tmux session to edit my website.                                   |
 | urldecode         | urldecode stuff.                                                          |
