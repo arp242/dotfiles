@@ -48,6 +48,7 @@ i386/=
 mbox/=
 unicode
 multibyte
+screensaver
 
 # Program names.
 sftp/=
@@ -61,6 +62,7 @@ zsh/=
 gcc/=
 npm/=
 openssl/=
+tmux/=
 
 # Product names.
 Baskerville

@@ -1,3 +1,5 @@
+# install in /etc/zsh/zshrc or your personal .zshrc
+
 # gc
 prefixes=(5 6 8)
 for p in $prefixes; do
@@ -15,6 +17,7 @@ compctl -g "*.go" gccgo
 __go_tool_complete() {
   typeset -a commands build_flags
   commands+=(
+    'bug[start a bug report]'
     'build[compile packages and dependencies]'
     'clean[remove object files]'
     'doc[run godoc on package sources]'
@@ -26,6 +29,7 @@ __go_tool_complete() {
     'help[display help]'
     'install[compile and install packages and dependencies]'
     'list[list packages]'
+    'mod[module maintenance]'
     'run[compile and run Go program]'
     'test[test packages]'
     'tool[run specified go tool]'
@@ -124,16 +128,38 @@ __go_tool_complete() {
       ;;
   help)
       _values "${commands[@]}" \
+        'buildmode[build modes]' \
+        'c[calling between Go and C]' \
+        'cache[build and test caching]' \
+        'environment[environment variables]' \
+        'filetype[file types]' \
+        'go.mod[the go.mod file]' \
         'gopath[GOPATH environment variable]' \
-        'packages[description of package lists]' \
-        'remote[remote import path syntax]' \
-        'testflag[description of testing flags]' \
-        'testfunc[description of testing functions]'
+        'gopath-get[legacy GOPATH go get]' \
+        'goproxy[module proxy protocol]' \
+        'importpath[import path syntax]' \
+        'modules[modules, module versions, and more]' \
+        'module-get[module-aware go get]' \
+        'packages[package lists and patterns]' \
+        'testflag[testing flags]' \
+        'testfunc[testing functions]'
+      ;;
+  mod)
+      _values "${commands[@]}" \
+        'download[download modules to local cache]' \
+        'edit[edit go.mod from tools or scripts]' \
+        'graph[print module requirement graph]' \
+        'help[more information about a command]' \
+        'init[initialize new module in current directory]' \
+        'tidy[add missing and remove unused modules]' \
+        'vendor[make vendored copy of dependencies]' \
+        'verify[verify dependencies have expected content]' \
+        'why[explain why packages or modules are needed]' \
       ;;
   run)
       _arguments -s -w : \
           ${build_flags[@]} \
-          '*:file:_path_files -g "*.go"'
+          '*:file:_files -g "*.go"'
       ;;
   tool)
       if (( CURRENT == 3 )); then

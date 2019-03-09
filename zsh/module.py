@@ -1,5 +1,5 @@
 dirs = {
-	'~/.zsh': 'zsh',
+        '~/.zsh': '.',
 }
 
 symlinks = {

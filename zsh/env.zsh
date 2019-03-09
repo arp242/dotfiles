@@ -4,16 +4,18 @@ typeset -U path  # No duplicates
 # On Arch and some other systems some of these are links, so use the full path
 # to prevent dupes.
 _prepath() {
-	local dir=$1
-	[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
-	[[ ! -d "$dir" ]] && return
-	path=("$dir" $path[@])
+	for dir in "$@"; do
+		[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
+		[[ ! -d "$dir" ]] && return
+		path=("$dir" $path[@])
+	done
 }
 _postpath() {
-	local dir=$1
-	[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
-	[[ ! -d "$dir" ]] && return
-	path=($path[@] "$dir")
+	for dir in "$@"; do
+		[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
+		[[ ! -d "$d" ]] && return
+		path=($path[@] "$d")
+	done
 }
 
 _prepath /bin
@@ -28,20 +30,10 @@ _prepath /usr/X11R6/sbin
 _prepath /usr/local/bin
 _prepath /usr/local/sbin
 
-_postpath "$HOME/.gem/ruby/2.2.0/bin"   # Ruby; TODO: do this better
-_postpath "$HOME/.gem/ruby/2.3.0/bin"
-_postpath "$HOME/.gem/ruby/2.4.0/bin"
-_postpath "$HOME/.gem/ruby/2.5.0/bin"
-_postpath "$HOME/.gem/ruby/2.6.0/bin"
-_postpath "$HOME/.gem/ruby/2.7.0/bin"
-
-_prepath "$HOME/go/bin"                 # Go
-_postpath "/usr/local/go/bin"
-_postpath "/usr/local/gotools/bin"
-
-_postpath "$HOME/.local/bin"            # Python
-
-_prepath "$HOME/Local/bin"              # My local stuff.
+_postpath $HOME/.gem/ruby/*/bin        # Ruby
+_prepath "$HOME/go/bin"                # Go
+#_postpath "~/.vim/pack/plugins/start/gopher.vim/tools/bin"
+_prepath "$HOME/.local/bin"            # My local stuff.
 
 unfunction _prepath
 unfunction _postpath

@@ -213,7 +213,7 @@ def proc_module(module, code):
 
     if assigns.get('requires_root', False):
         # TODO
-        print('{} requires root -> skiping'.format(module))
+        # print('{} requires root -> skiping'.format(module))
         return
 
     os.chdir(os.path.dirname(module))

@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -euC
+
+mkdir -p ~/pics/ss
+cd ~/pics/ss
+sleep 0.2
+
+case "${1:-}" in
+	full)
+		scrot --exec 'geeqie $f' ;;
+	copy)
+		scrot --select --exec \
+			'xclip -t image/png -selection clipboard -in < $f && rm $f'
+		;;
+	*)
+		scrot --select --exec 'geeqie $f' ;;
+esac
