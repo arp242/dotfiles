@@ -1,0 +1,18 @@
+#!/bin/sh
+# Set tags for an audio file. Useful after downloading video/albums from YouTube
+# to copy to phone etc.
+
+set -euC
+
+_usage() {
+	echo "Usage: $0 file artist album"
+}
+
+if [ -z "${3:-}" ]; then
+	_usage
+	exit 1
+fi
+
+out="tmp.${1##*.}"
+ffmpeg -loglevel 24 -i "$1" -acodec copy -metadata ARTIST="$2" -metadata ALBUM="$3" "$out"
+mv "$out" "$1"
