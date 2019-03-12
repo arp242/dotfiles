@@ -45,10 +45,10 @@ vnoremap < <gv
 " Use visual movement rather than line movement.
 nnoremap k gk
 nnoremap j gj
-nnoremap <Up> gk
+nnoremap <Up>   gk
 nnoremap <Down> gj
-inoremap <Down> <C-o>gj
-inoremap <Up> <C-o>gk
+inoremap <expr> <Up>   pumvisible() ? "\<Up>"    : "\<C-o>gk"
+inoremap <expr> <Down> pumvisible() ? "\<Down>" : "\<C-o>gj"
 
 " gf and gF opens in a tab.
 nnoremap gf <C-w>gf
@@ -60,6 +60,27 @@ vnoremap gF <C-w>gF
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
 noremap <expr> <Home> col('.') is# match(getline('.'), '\S') + 1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
+
+fun! s:guessType()
+	if &spell && spellbadword()[1] isnot# ''
+		" TODO: Show original word somewhere.
+		" TODO: Make completion start even if word is after badly spelled word.
+		return "\<C-x>s"
+	elseif &completefunc isnot# ''
+		return "\<C-x>\<C-u>"
+	elseif &omnifunc isnot# ''
+		return "\<C-x>\<C-o>"
+	elseif exists('*completor#do')                      " https://github.com/maralla/completor.vim
+		return "\<C-R>=completor#do('complete')\<CR>"
+	elseif exists(':ALEComplete')                       " https://github.com/w0rp/ale
+		return "\<C-\>\<C-O>:ALEComplete\<CR>"
+	else
+		return "\<C-x>\<C-n>"
+	endif
+endfun
+
+inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
+nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
 
 " Replace the current line with the unnamed register without affecting any
 " register.
@@ -74,11 +95,11 @@ nnoremap <silent> OO :silent wincmd o<CR>
 " I often mistype this :-/
 cabbr Set set
 cabbr Help help
+cabbr tane tabe
+cabbr ta tabe
 iabbr teh the
 iabbr Teh The
 iabbr taht that
-cabbr tane tabe
-cabbr ta tabe
 iabbr ;= :=
 
 " Makes stuff a bit easier to type.

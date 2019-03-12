@@ -28,5 +28,15 @@ zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
 # Use menu
 zstyle ':completion:*' menu select
 
-# TODO:
-# show help text in different colour or something
+# Complete my 'idea' command.
+__idea_complete() {
+	typeset -a files
+	local dir="$HOME/code/arp242.net/_ideas/"
+	for f in "$dir"*.markdown; do
+		f="${f#$dir}"
+		f="${f%.markdown}"
+		files+=($f)
+	done
+	_values 'idea' ${files[@]}
+}
+compdef __idea_complete idea

@@ -32,7 +32,7 @@ _prepath /usr/local/sbin
 
 _postpath $HOME/.gem/ruby/*/bin        # Ruby
 _prepath "$HOME/go/bin"                # Go
-#_postpath "~/.vim/pack/plugins/start/gopher.vim/tools/bin"
+_postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
 _prepath "$HOME/.local/bin"            # My local stuff.
 
 unfunction _prepath
@@ -112,7 +112,7 @@ _exists firefox && export BROWSER=firefox
 #fi
 
 # Run commands from this file; only run for interactive prompt
-[[ -f "$HOME/Local/python-startup" ]] && export PYTHONSTARTUP=~/Local/python-startup
+[[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
 
 # Makes it easier to write configs specific to just my laptop.
 #export HOSTNAME=$(hostname)

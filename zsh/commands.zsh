@@ -7,7 +7,7 @@ chpwd() {
 autoload -U zmv
 
 if [[ $uname = Linux ]]; then
-	alias ls='ls -FN --color'
+	alias ls='ls -FN --color=auto'
 
 	alias lc='ls -lh'
 	alias la='ls -A'

@@ -11,7 +11,6 @@ if get(g:, 'colors_name', '') isnot# 'default2'
 	colorscheme default                " Fall back to default (some Linuxes overwrite this in global vimrc).
 endif
 
-set background=light                   " My terminal has a white background colour.
 set backspace=indent,eol,start         " Allow backspacing over everything.
 set history=500                        " Keep 500 lines of command line history.
 set incsearch                          " Jump to match while typing the pattern in /.
@@ -38,6 +37,7 @@ set wildmode=list:longest              " List all matches, and complete to the l
 set wildignorecase                     " Case is ignored when completing file names and directories.
 set completeopt=longest,menuone        " Insert mode completion.
 " set completeopt=longest,menuone,noinsert
+set previewheight=6                    " Height of preview window.
 set pumheight=10                       " Don't make completion menu too high.
 set infercase                          " Like smartcase for insert completion.
 set tabpagemax=500                     " Max. number of tabs to be open with -p argument or :tab all "
@@ -103,8 +103,26 @@ let &statusline .= ' %h%m%r'           " [Help] [modified] [read-only]
 "let &statusline .= '%{len(getloclist(0)) > 0 ? "[E]" : ""}'
 
 let &statusline .= '%='                " Right-align from here on.
+let &statusline .= ' %{get(v:completed_item, "abbr", "")}'
 let &statusline .= ' [line %l of %L]'  " current line, total lines.
 let &statusline .= ' [col %v]'         " column.
 let &statusline .= ' [0x%B]'           " Byte value under cursor.
 
 let &rulerformat = '%l/%L %c 0x%B'     " Width is 17 characters.
+
+" Highlight columns 80/120
+fun! s:color()
+	highlight SoftWrap cterm=underline gui=underline
+	highlight HardWrap ctermbg=225 guibg=lightred
+endfun
+call s:color()
+augroup softwrap
+	autocmd!
+	autocmd Colorscheme * call s:color()
+
+	" I don't know why this needs to be in this autocmd, but sometimes it won't
+	" work if it's not.
+	autocmd BufReadPost,BufNew *
+		\  call matchadd('SoftWrap', '\%82v')
+		\| call matchadd('HardWrap', '\%122v')
+augroup end

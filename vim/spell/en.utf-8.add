@@ -49,6 +49,19 @@ mbox/=
 unicode
 multibyte
 screensaver
+plugins
+plugin
+popup
+vendoring
+Neovim
+vimrc
+LSP
+async
+GOPATH
+vendored
+filetype
+filetypes
+quickfix
 
 # Program names.
 sftp/=
@@ -63,6 +76,9 @@ gcc/=
 npm/=
 openssl/=
 tmux/=
+pf/=
+gofmt/=
+
 
 # Product names.
 Baskerville
@@ -105,4 +121,3 @@ stupidness
 clusterfuck
 
 # Unsorted (zg'd).
-pf

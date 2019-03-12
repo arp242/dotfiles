@@ -1,4 +1,4 @@
-My shell commands.
+My shell commands in `./bin`:
 
 |                   |                                                                           |
 | ----------------- | ------------------------------------------------------------------------- |
@@ -10,6 +10,7 @@ My shell commands.
 | game              | Disable [xbanish][xbanish] and [xcape][xcape] while a command is running. |
 | git-prunebranches | Remove local branches that no longer exist on remote.                     |
 | git-undolast      | Undo last commit.                                                         |
+| idea              | Write down an idea for a weblog post.                                     |
 | no-ss             | Disable screensaver (e.g. for playing audio over HDMI).                   |
 | sanitize-music    | Sanitize downloaded music directories.                                    |
 | set-screen        | Enable HDMI output on laptop.                                             |
@@ -18,6 +19,7 @@ My shell commands.
 | tmux-site         | Launch tmux session to edit my website.                                   |
 | urldecode         | urldecode stuff.                                                          |
 | wm-brightness     | Increment or decrement brightness.                                        |
+| wm-scrot          | Shortcuts to [scrot][scrot] to run from WM.                               |
 | wm-volume         | Increment or decrement volume.                                            |
 
 
@@ -26,3 +28,4 @@ My shell commands.
 [uni]: https://github.com/Carpetsmoker/uni
 [xbanish]: https://github.com/jcs/xbanish
 [xcape]: https://github.com/alols/xcape
+[scrot]: https://phab.enlightenment.org/diffusion/ESVN/browse/trunk/misc/scrot;35502
