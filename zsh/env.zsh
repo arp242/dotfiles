@@ -98,8 +98,6 @@ fi
 # Set editor
 if _exists vim; then
 	export EDITOR=vim
-	alias vim="vim -p"
-	alias vi="vim"
 elif _exists vi; then
 	export EDITOR=vi
 fi

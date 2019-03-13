@@ -44,6 +44,12 @@ alias trcolor="sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 _exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
 _exists mpv        && alias mplayer='mpv'
+_exists nvim       && alias nvim='nvim -u ~/.vim/vimrc'
+
+if _exists vim; then
+	alias vim="vim -p"
+	alias vi="vim"
+fi
 
 if _exists git; then
 	alias g='git'

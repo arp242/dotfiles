@@ -43,7 +43,7 @@ fun! s:mv(dest)
 		call mkdir(fnamemodify(l:dest, ':h'), 'p')
 	endif
 
-    if rename(l:src, l:dest) == 0
+	if rename(l:src, l:dest) == 0
 		execute 'edit ' . l:dest
 	endif
 endfun

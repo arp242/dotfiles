@@ -48,9 +48,6 @@ endfun
 let g:gopher_debug = ['commands']
 let g:gopher_highlight = ['string-spell', 'string-fmt', 'fold-import', 'fold-pkg-comment']
 
-
-" TODO: just needed for formatting; perhaps map before use and unmap after?
-
 augroup my_gopher
 	au!
 
@@ -108,7 +105,7 @@ let g:lsc_preview_split_direction = 'below'
 augroup my_lsc
 	au!
 	au BufNewFile,BufReadPost *
-		\  if has_key(g:lsc_servers_by_filetype, &filetype) && lsc#server#filetypeActive(&filetype)
+		\  if has_key(get(g:, 'lsc_servers_by_filetype', {}), &filetype) && lsc#server#filetypeActive(&filetype)
 		\|     inoremap <buffer> <C-k> <C-o>:LSClientSignatureHelp<CR>
 		\|     nnoremap <buffer> <C-w>]     :tab LSClientGoToDefinitionSplit<CR>
 		\|     nnoremap <buffer> <C-w><C-]> :tab LSClientGoToDefinitionSplit<CR>

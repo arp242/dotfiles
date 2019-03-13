@@ -68,8 +68,10 @@ set ttyfast                            " Faster redrawing.
 set title                              " Update term title...
 set titleold=                          " ...but restore old title after exiting.
 
+if !has('nvim')
 set viminfo='50,<0,n~/.vim/tmp/viminfo " '50  save fewer marks.
                                        " <0   prevent saving registers.
+endif
 
 set display=lastline,uhex              " lastline  Show as much of the last line as possible instead of @
                                        " uhex      Always show unprintable chars as <xx> instead of ^C
