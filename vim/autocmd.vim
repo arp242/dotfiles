@@ -18,9 +18,9 @@ augroup my_filetypes
 
 	" Don't need the syntax highlighting for git commits; don't like it at all.
 	au FileType gitcommit
-                \  setl syntax=OFF
-                \| syn match gitcommitComment "^#.*"
-                \| setl ts=8
+		\  setl syntax=OFF
+		\| syn match gitcommitComment "^#.*"
+		\| setl ts=8
 
 	" Reset some settings that these ftplugins or syntax files reset :-/
 	au FileType python setl ts=4
@@ -69,19 +69,19 @@ augroup my_filetypes
 	au FileType json,xml setl nowrap
 
 	" Show formatting characters only in insert mode.
-    au FileType help
+	au FileType help
 				\  silent! packadd! vim-vimhelplint
 				\| if &modifiable | setl colorcolumn=78 | endif
 				\| augroup help_insert
-    			\|     au InsertEnter <buffer> setl conceallevel=0 | highlight clear Ignore
-    			\|     au InsertLeave <buffer> setl conceallevel=2
-    			\| augroup end
+				\|     au InsertEnter <buffer> setl conceallevel=0 | highlight clear Ignore
+				\|     au InsertLeave <buffer> setl conceallevel=2
+				\| augroup end
 augroup end
 
 " is# and isnot# won't work otherwise. Emailed syntax maintainer on 20190309.
 augroup fix_vimscript
-    au!
-    au FileType vim syn match vimOper
-                \ "\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\|isnot\|is\)[?#]\{0,2}"
-                \ skipwhite nextgroup=vimString,vimSpecFile
+	au!
+	au FileType vim syn match vimOper
+				\ "\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\|isnot\|is\)[?#]\{0,2}"
+				\ skipwhite nextgroup=vimString,vimSpecFile
 augroup end

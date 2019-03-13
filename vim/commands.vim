@@ -78,7 +78,7 @@ command! DG :1,$+1diffget
 
 " Load all optional packages too before running :helptags ALL.
 command! -nargs=0 -bar Helptags
-    \  for p in glob('~/.vim/pack/bundle/opt/*', 1, 1)
-    \|     exe 'packadd ' . fnamemodify(p, ':t')
-    \| endfor
-    \| helptags ALL
+		\  for p in glob('~/.vim/pack/bundle/opt/*', 1, 1)
+		\|     exe 'packadd ' . fnamemodify(p, ':t')
+		\| endfor
+		\| helptags ALL
