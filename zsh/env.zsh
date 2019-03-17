@@ -46,7 +46,16 @@ export GOTMPDIR=/tmp/gotmpdir
 # Various applications settings
 export BLOCKSIZE=K
 export PAGER=less
-export LESS="--ignore-case --LONG-PROMPT --SILENT --no-init --no-lessopen"
+
+# R    Display colours escape chars as-is (so they're displayed).
+# i    Ignore case unless pattern has upper case chars.
+# M    Display line numbers and position.
+# Q    Never ring terminal bell.
+# X    Don't clear the screen on exit.
+# F    Quit if output fits on a single screen.
+# L    Ignore LESSOPEN (some Linux distros set this to retarded, dangerous, and
+#      broken defaults; *cough* Fedora *cough*).
+export LESS="RiMQXFL"
 
 # Make man pages 80 characters wide at the most; this is the default on BSD, but
 # not Linux (not needed if you use mandoc, instead of the man-db crap).
