@@ -1,2 +1,4 @@
 .headers on
-.mode "column"
+.changes on
+.mode column
+.tables

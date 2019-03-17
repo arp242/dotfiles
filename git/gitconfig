@@ -26,6 +26,9 @@
 [push]
 	default = current
 
+[tag]
+	forceSignAnnotated = true
+
 [merge]
 	tool = vimdiff
 	renamelimit = 9001

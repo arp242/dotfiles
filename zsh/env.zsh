@@ -13,8 +13,8 @@ _prepath() {
 _postpath() {
 	for dir in "$@"; do
 		[[ -L "$dir" ]] && dir=$(readlink -f "$dir")
-		[[ ! -d "$d" ]] && return
-		path=($path[@] "$d")
+		[[ ! -d "$dir" ]] && return
+		path=($path[@] "$dir")
 	done
 }
 

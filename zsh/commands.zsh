@@ -110,6 +110,11 @@ sawk() {
 	awk "{print \$$1}"
 }
 
+unprompt() {
+	export PS1='$ '
+	export RPROMPT=' '
+}
+
 # pushd function to emulate the old zsh behaviour.
 # With this, pushd +/-n lifts the selected element
 # to the top of the stack instead of cycling
