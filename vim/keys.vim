@@ -65,7 +65,7 @@ fun! s:readtime()
         exe "silent normal! g\<C-g>"
         let l:msg = v:statusmsg
         let l:words = str2nr(split(split(l:msg, ';')[2], ' ')[3])
-        echom printf('%s; about %.0f minutes', l:msg, ceil(l:words / 200.0))
+        echo printf('%s; About %.0f minutes', l:msg, ceil(l:words / 200.0))
     finally
         let v:statusmsg = l:status
     endtry
