@@ -1,12 +1,8 @@
 #!/bin/sh
 #
-# Disable xbanish and xcape while a command is running.
+# Disable xbanish and xcape while a command is running (as the name implies,
+# mostly for games).
 
-set -euC
-
-xbanish=$(pgrep xbanish)
-xcape=$(pgrep xcape)
-
-kill -STOP $xbanish $xcape
+trap 'sv start ~/.config/service/xcape ~/.config/service/xbanish' EXIT
+sv stop ~/.config/service/xcape ~/.config/service/xbanish
 $@
-kill -CONT $xbanish $xcape

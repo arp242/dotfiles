@@ -1,4 +1,4 @@
 files = {
 	'~/.bashrc': 'bashrc',
-	'~/.inputrc': 'inputrc'
+	'~/.config/inputrc': 'inputrc'
 }

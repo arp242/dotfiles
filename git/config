@@ -1,3 +1,5 @@
+# https://dev.to/fedekau/using-git-hooks-to-improve-your-day-to-day-workflow-4nl5
+
 [user]
 name       = Martin Tournoij
 email      = martin@arp242.net
@@ -47,7 +49,6 @@ autoCorrect = 10             # Run guessed command after 1s if there's only one 
 
 [status]
 short         = true         # Always use short CVS-ish output.
-relativePaths = false        # Always use full path names, never relative.
 branch        = true         # Show branch on status.
 
 [alias]

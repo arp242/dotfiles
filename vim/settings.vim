@@ -1,5 +1,6 @@
 scriptencoding utf-8
 
+set packpath^=~/.cache/vim             " Use ~/.cache so we can easy copy ~/.vim without loads of stuff.
 syntax on                              " Switch syntax highlighting on.
 filetype plugin indent on              " Enable filetype detection.
 set termguicolors                      " Use true colors.
@@ -93,15 +94,15 @@ if $SSH_CLIENT . $SSH2_CLIENT . $SSH_CONNECTION is# ''
 endif
 
 if !has('nvim')    " nvim has different file formant. Only use it for testing so whatever.
-    set viminfo='50,<0,n~/.vim/tmp/viminfo " '50  save fewer marks.
+    set viminfo='50,<0,n~/.cache/vim/viminfo " '50  save fewer marks.
                                            " <0   prevent saving registers.
 endif
 
-" Set/create directory to keep backup, swap, and undo files.
-set backupdir=$HOME/.vim/tmp/backup | call mkdir(&backupdir, 'p', 0700)
-set directory=$HOME/.vim/tmp/swap   | call mkdir(&directory, 'p', 0700)
-set viewdir=$HOME/.vim/tmp/view     | call mkdir(&viewdir, 'p', 0700)
-set undodir=$HOME/.vim/tmp/undo     | call mkdir(&undodir, 'p', 0700)
+" Set/create directory to keep backup, swap, undo files.
+set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
+set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0700)
+set viewdir=$HOME/.cache/vim/view     | call mkdir(&viewdir, 'p', 0700)
+set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
 
 " Highlight columns 80/120
 fun! s:color()

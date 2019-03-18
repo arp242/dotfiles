@@ -2,6 +2,7 @@ My shell commands in `./bin`:
 
 |                   |                                                                           |
 | ----------------- | ------------------------------------------------------------------------- |
+| bl-connect        | Spam `bluetoothctl` with `power on`.                                      |
 | dmenu-favs        | Quick-launch common programs with [dmenu][dmenu].                         |
 | dmenu-pass        | Copy [pass][pass] passwords.                                              |
 | dmenu-rs          | Control [redshift][redshift].                                             |
@@ -12,9 +13,10 @@ My shell commands in `./bin`:
 | git-undolast      | Undo last commit.                                                         |
 | idea              | Write down an idea for a weblog post.                                     |
 | no-ss             | Disable screensaver (e.g. for playing audio over HDMI).                   |
+| pa-mv             | Move PulseAudio inputs to a different output ("sink")                     |
 | sanitize-music    | Sanitize downloaded music directories.                                    |
 | set-meta          | Set tags for an audio file.                                               |
-| set-screen        | Enable HDMI output on laptop.                                             |
+| set-screen        | Enable HDMI output on laptop, also sets sound.                            |
 | spotify-send      | Send commands to Spotify client.                                          |
 | timecalc          | Calculate difference between two times.                                   |
 | tmux-site         | Launch tmux session to edit my website.                                   |

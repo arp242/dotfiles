@@ -3,6 +3,5 @@ dirs = {
 }
 
 symlinks = {
-	'~/.zsh/zshrc': '~/.zshrc',
-	'~/.zsh/zshenv': '~/.zshenv',
+	'~/.zsh/zshrc': '~/.zsh/zshrc',
 }

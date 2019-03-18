@@ -1,11 +1,8 @@
 #!/bin/sh
 
-[ -f ~/.xsession ] && . ~/.xsession
-
-if hash dwm > /dev/null; then
-	while :; do
-		ssh-agent dwm
-	done
-else
-	exec ssh-agent twm
-fi
+cd ~
+xset -b
+xmodmap ~/.Xmodmap
+xbacklight -set 10
+xsetroot -solid "#3a6ea5"
+while :; do ssh-agent dwm; done

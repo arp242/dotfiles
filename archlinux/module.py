@@ -1,3 +1,3 @@
 files = {
-	'~/.makepkg.conf': 'makepkg.conf',
+	'~/.config/pacman/makepkg.conf': 'makepkg.conf',
 }

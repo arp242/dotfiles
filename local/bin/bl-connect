@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+
+set -euC
+
+while :; do
+	# Don't ask me why, but connecting to bluetooth seems to work better after
+	# running this a few times.
+	echo 'power on' | bluetoothctl | grep -q '\[bluetooth\]' || exit 0
+	sleep 1
+done

@@ -113,9 +113,19 @@ augroup my-lsc
     au User LSCShowPreview      exe 'resize ' . min([&previewheight, line('$')])
 augroup end
 
+
+""" neoformat
+"""""""""""""
+let g:neoformat_only_msg_on_error = 1  " Only message on errors.
+
+augroup my-neoformat
+    au!
+    au BufWritePre * undojoin | Neoformat
+augroup END
+
+
 """ typescript-vim
 """"""""""""""""""
-
 augroup my-typescript
     au!
     " Strict compiler options.

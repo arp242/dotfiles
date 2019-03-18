@@ -1,22 +1,20 @@
 # vim:filetype=python
 
-# Load modules
-modules = ('datetime', 'pprint', 'os', 'time', 're', 'sys')
-for m in modules: globals()[m] = __import__(m)
-print('\nLoaded modules: %s\n' % ', '.join(modules))
-del m, modules
+# Store history file in a better location.
+import atexit, os, readline
+_histfile_ = os.path.join(os.path.expanduser('~'), ".cache/python_history")
+atexit.register(readline.write_history_file, _histfile_)
+try:
+    readline.read_history_file(_histfile_)
+    readline.set_history_length(4000)
+except FileNotFoundError:
+    pass
+
+# Load some common modules.
+import datetime, pprint, time, re, sys
 
 # Set aliases
-aliases = (
-	(pprint.pprint, 'pp'),
-)
-
-print('Aliases:')
-for src, dst in aliases:
-	setattr(__builtins__, dst, src)
-	print('  %s -> %s.%s' % (dst, src.__module__, src.__name__))
-del src, dst, aliases
-
+pp = pprint.pprint
+h = help
 # Like dir, but only "public" attributes
-def pdir(obj):
-	return [ d for d in dir(obj) if d[0] != '_' ]
+d = lambda obj: [d for d in dir(obj) if d[0] != '_']

@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -euC
+
+if [ -z "${1:-}" ]; then
+	pactl list sinks |
+		grep -E '(^Sink|Description:)' |
+		cut -d ':' -f2- |
+		sed 's/^\s\+/    /'
+	echo
+
+	pactl list sink-inputs |
+		grep -E '(^Sink|application.name =|Sink:)' |
+		cut -d= -f2 |
+		sed 's/^\s\+/    /'
+	echo
+
+	echo 'Move PulseAudio inputs to a different output ("sink").'
+	echo "${0##*/} [input] to move to the next sink (wraps around)."
+	echo "${0##*/} [input] [sink] to move to a specific sink."
+elif [ -z "${2:-}" ]; then
+	cur="$(pactl list short sink-inputs | grep "^$1" | awk '{print $2}')"
+	sinks=$(pactl list short sinks | awk '{print $1}')
+
+	use=0
+	for s in $sinks; do
+		[ "$use" -eq 1 ] && exec $0 $1 $s
+		[ "$s" = "$cur" ] && use=1
+	done
+	[ "$use" -eq 1 ] && exec $0 $1 "$(echo "$sinks" | head -n1)"
+
+	>&2 echo "${0##*/}: only one sink?"
+	exit 1
+elif [ -z "${3:-}" ]; then
+	pactl move-sink-input "$1" "$2"
+else
+	>&2 echo "$0: that's wrong; try again"
+	exec $0
+fi

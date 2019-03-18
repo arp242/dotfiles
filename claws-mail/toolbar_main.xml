@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<toolbar>
+	<item file="mail_receive_all" text="Get Mail" action="A_RECEIVE_ALL"/>
+	<item file="mail_compose" text="Compose" action="A_COMPOSE_EMAIL"/>
+	<item file="mail_reply" text="Reply" action="A_REPLY_MESSAGE"/>
+	<item file="mail_reply_to_all" text="All" action="A_REPLY_ALL"/>
+	<item file="trash_btn" text="Trash" action="A_TRASH"/>
+	<item file="mark_ignorethread" text="Ignore thread" action="A_IGNORE_THREAD"/>
+	<item file="mark_watchthread" text="Watch thread" action="A_WATCH_THREAD"/>
+	<item file="preferences" text="Preferences" action="A_PREFERENCES"/>
+</toolbar>

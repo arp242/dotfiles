@@ -57,6 +57,11 @@ export PAGER=less
 #      broken defaults; *cough* Fedora *cough*).
 export LESS="RiMQXFL"
 
+# Store history file in more appropriate dir.
+export LESSHISTFILE=~/.cache/lesshistory
+export INPUTRC=~/.config/inputrc
+export SQLITE_HISTORY=~/.cache/sqlite_history
+
 # Make man pages 80 characters wide at the most; this is the default on BSD, but
 # not Linux (not needed if you use mandoc, instead of the man-db crap).
 export MANWIDTH=80

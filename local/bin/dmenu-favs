@@ -1,2 +1,11 @@
 #!/bin/sh
-printf 'arandr\nchromium\nfirefox\ngimp\npavucontrol\nslock\nspotify\nsteam\n' | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &
+printf "\
+arandr
+chromium
+claws-mail
+firefox
+gimp
+pavucontrol
+slock
+spotify
+" | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &

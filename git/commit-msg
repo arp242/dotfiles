@@ -6,9 +6,9 @@ set -euC
 
 msgfile=$1
 
-head -n1 "$msgfile" | grep -Eq '^[a-zA-Z0-9./-]+: .{5,60}' || (
-	echo 'Commit topic must match "^\w+: .{5,60}"'
-	exit 1
-)
+# head -n1 "$msgfile" | grep -Eq '^[a-zA-Z0-9./-]+: .{5,60}' || (
+# 	echo 'Commit topic must match "^\w+: .{5,60}"'
+# 	exit 1
+# )
 
 exit 0

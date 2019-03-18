@@ -13,7 +13,7 @@ augroup basic
 augroup end
 
 " Preferences for various filetypes.
-augroup my_filetypes
+augroup my-filetypes
     au!
 
     " Don't need the syntax highlighting for git commits; don't like it at all.
@@ -66,6 +66,7 @@ augroup my_filetypes
 
     " Set textwidth to 76 for emails.
     au BufReadPost /tmp/mail-* setl ft=mail | normal! 0Go
+    au BufNewFile,BufReadPost /home/martin/.claws-mail/tmp/tmpmsg.* setl ft=mail
     au FileType mail setl textwidth=76
 
     " These emails are usually DOS formatted (as should be, per RFC).
