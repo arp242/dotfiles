@@ -1,6 +1,6 @@
 scriptencoding utf-8
 
-set packpath^=~/.cache/vim             " Use ~/.cache so we can easy copy ~/.vim without loads of stuff.
+"set packpath^=~/.cache/vim             " Use ~/.cache so we can easy copy ~/.vim without loads of stuff.
 syntax on                              " Switch syntax highlighting on.
 filetype plugin indent on              " Enable filetype detection.
 set termguicolors                      " Use true colors.

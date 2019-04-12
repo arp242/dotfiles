@@ -5,4 +5,4 @@
 
 trap 'sv start ~/.config/service/xcape ~/.config/service/xbanish' EXIT
 sv stop ~/.config/service/xcape ~/.config/service/xbanish
-$@
+"$@"

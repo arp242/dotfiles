@@ -63,9 +63,8 @@ fun! s:readtime()
     let l:status = v:statusmsg
     try
         exe "silent normal! g\<C-g>"
-        let l:msg = v:statusmsg
-        let l:words = str2nr(split(split(l:msg, ';')[2], ' ')[3])
-        echo printf('%s; About %.0f minutes', l:msg, ceil(l:words / 200.0))
+        echo printf('%s; About %.0f minutes',
+                    \ v:statusmsg, ceil(wordcount()['words'] / 200.0))
     finally
         let v:statusmsg = l:status
     endtry
@@ -92,6 +91,37 @@ fun! s:guessType()
 endfun
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
+
+" Don't hijack the entire screen for spell checking, just show the top 8 results
+" in the commandline.
+" Press 0 for the full list. Any key press that's not a valid option (1-8) will
+" behave as normal.
+fun! QuickSpell()
+	if &spell is 0
+        echohl Error | echo "Spell checking not enabled" | echohl None
+		return
+	endif
+
+	let l:sug = spellsuggest(expand('<cword>'), 8)
+	echo join(map(copy(l:sug), {i, v -> printf('%d %s', l:i+1, l:v)}), ' | ')
+
+	let l:char = nr2char(getchar())
+    if l:char is# '0'
+        normal! z=
+        return
+    endif
+
+	let l:n = str2nr(l:char)
+
+    " So it's easier to just do "ciw" or whatnot.
+    if l:n is 0 || l:n > len(l:sug)
+        return feedkeys(l:char)
+    endif
+
+    exe printf("normal! ciw%s\<Esc>", l:sug[l:n-1])
+    echo
+endfun
+nnoremap z= :call QuickSpell()<CR>
 
 " Replace the current line with the unnamed register without affecting any
 " register.

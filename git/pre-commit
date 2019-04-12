@@ -14,6 +14,6 @@ if [ $(git diff --cached --name-only --diff-filter=A -z $against |
 fi
 
 # Make sure there are no diff markers.
-git diff-index --check --cached $against --
+#git diff-index --check --cached $against --
 
 exit 0

@@ -9,4 +9,5 @@
 	<item file="mail_privacy_signed" text="Sign" action="A_PRIVACY_SIGN"/>
 	<item file="mail_privacy_encrypted" text="Encrypt" action="A_PRIVACY_ENCRYPT"/>
 	<item file="close" text="Close" action="A_CLOSE"/>
+	<item file="linewrapcurrent" text="Wrap para." action="A_LINEWRAP_CURRENT"/>
 </toolbar>

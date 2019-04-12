@@ -118,18 +118,5 @@ fi
 
 _exists firefox && export BROWSER=firefox
 
-## Set DISPLAY on remote login
-#if ($?REMOTEHOST && ! $?DISPLAY) then
-#	export DISPLAY=${REMOTEHOST}:0
-#fi
-
 # Run commands from this file; only run for interactive prompt
 [[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
-
-# Makes it easier to write configs specific to just my laptop.
-#export HOSTNAME=$(hostname)
-
-# This makes font looks non-ugly in Java applications
-#export _JAVA_OPTIONS="-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
-export _JAVA_AWT_WM_NONREPARENTING=1
-export JAVA_HOME=/opt/android-studio/jre

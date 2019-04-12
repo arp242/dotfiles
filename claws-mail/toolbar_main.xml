@@ -8,4 +8,5 @@
 	<item file="mark_ignorethread" text="Ignore thread" action="A_IGNORE_THREAD"/>
 	<item file="mark_watchthread" text="Watch thread" action="A_WATCH_THREAD"/>
 	<item file="preferences" text="Preferences" action="A_PREFERENCES"/>
+	<item file="exec" text="Execute" action="A_EXECUTE"/>
 </toolbar>

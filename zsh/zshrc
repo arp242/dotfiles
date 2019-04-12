@@ -21,6 +21,9 @@ unfunction _exists
 unset uid
 unset uname
 
+# Directory shortcuts
+pack=$HOME/.cache/vim/pack/plugins/start/
+
 # Source plugins.
 
 # Other stuff to look at:

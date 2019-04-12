@@ -1,7 +1,6 @@
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
 
 stty -ixon quit undef        # Disable ^S, ^Q, ^\
-limit coredumpsize 0         # Don't really need coredumps.
 
 setopt noflowcontrol         # Disable useless ^S and ^Q
 setopt notify                # Report status of bg jobs immediately
