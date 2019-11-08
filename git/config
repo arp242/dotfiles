@@ -3,14 +3,16 @@
 [user]
 name       = Martin Tournoij
 email      = martin@arp242.net
-signingKey = A6258419189EE585
+signingKey = 0xA6258419189EE585
 
 [core]
 eol       = lf               # Always use \n, even on Windows.
-hooksPath = ~/.config/git    # Centralised git hooks.
 
 [commit]
 gpgSign = true               # Sign commits with my key.
+
+[gpg]
+program = gpg2               # Not all systems install a "gpg" symlink.
 
 [color]
 status     =                 # Don't add colours to various commands.
@@ -39,6 +41,8 @@ pruneTags = true             # Same for tags.
 spellingDictionary   = en_GB # Use British English.
 #matchTrackingBranch = true   # New branches default to tracking remote branches with matching names.
 pruneDuringFetch     = true  # Prune remote-tracking branches when fetching.
+fontui = -family \"DejaVu Sans\" -size 14 -weight normal -slant roman -underline 0 -overstrike 0
+fontdiff = -family \"DejaVu Sans Mono\" -size 14 -weight normal -slant roman -underline 0 -overstrike 0
 
 [help]
 # TODO: disable "most similar commands are..."

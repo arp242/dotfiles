@@ -68,6 +68,9 @@ set laststatus=2                       " Always show statusline...
 set showtabline=2                      " ...and tab bar.
 set title                              " Update term title...
 set titleold=                          " ...but restore old title after exiting.
+set shortmess-=S                       " Show match count on n.
+" https://www.reddit.com/r/vim/comments/cn20tv/tip_histogrambased_diffs_using_modern_vim/
+"set diffopt=filler,internal,algorithm:histogram,indent-heuristic
 set display=lastline,uhex              " lastline  Show as much of the last line as possible instead of @.
                                        " uhex      Always show unprintable chars as <xx> instead of ^C.
 set updatecount=50                     " Write to swap file every 50 characters; swap file is also written if nothing
@@ -106,8 +109,9 @@ set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
 
 " Highlight columns 80/120
 fun! s:color()
-    highlight SoftWrap cterm=underline gui=underline
-    highlight HardWrap ctermbg=225 guibg=lightred
+    hi SoftWrap  cterm=underline gui=underline
+    hi HardWrap  ctermbg=225     guibg=lightred
+    hi SpellRare ctermbg=green   guibg=green      
 endfun
 call s:color()
 augroup softwrap

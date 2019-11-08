@@ -19,6 +19,10 @@ let g:loaded_zipPlugin = 1
 let g:did_install_default_menus = 1    " We don't use the menus (this is comparatively slow)
 
 
+""" switchy.vim
+"""""""""""""""
+nnoremap <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
+
 """ vim-dirvish
 """""""""""""""
 let g:dirvish_relative_paths = 1       " Make paths in the Dirvish buffer relative to getcwd().
@@ -48,19 +52,20 @@ augroup my-gopher
     au!
 
     " Make, lint, and test code.
-    au FileType go nnoremap MM :wa<CR>:compiler go<CR>:silent make!<CR>:redraw!<CR>
-    au FileType go nnoremap LL :wa<CR>:compiler golint<CR>:silent make!<CR>:redraw!<CR>
-    au FileType go nnoremap TT :wa<CR>:compiler gotest<CR>:silent make!<CR>:redraw!<CR>
-
-    " Lint on write.
-    "au BufWritePost *.go compiler golint | silent make! | redraw!
+    au FileType go nnoremap MM :silent! :wa<CR>:compiler go<CR>:silent make!<CR>:redraw!<CR>
+    au FileType go nnoremap LL :silent! :wa<CR>:compiler golint<CR>:silent make!<CR>:redraw!<CR>
+    au FileType go nnoremap TT :silent! :wa<CR>:compiler gotest<CR>:silent make!<CR>:redraw!<CR>
 
     " Format buffer on write.
     au BufWritePre *.go
                 \  let s:save = winsaveview()
                 \| exe 'keepjumps %!goimports 2>/dev/null || cat /dev/stdin'
                 \| call winrestview(s:save)
+
+    autocmd BufReadPre /home/martin/code/goatcounter/*.go
+                \ let g:gopher_install_package = 'zgo.at/goatcounter/cmd/goatcounter'
 augroup end
+
 
 """ vim-qf
 """"""""""
@@ -88,20 +93,38 @@ nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
 
 """ vim-lsc
 """""""""""
-" Use full path as I modified this one to emit less useless status messages.
-let g:lsc_server_commands = {'go': '/home/martin/go/bin/bingo -diagnostics-style none -enhance-signature-help'}
+" https://github.com/castwide/solargraph
+" https://github.com/redhat-developer/yaml-language-server
+let g:lsc_server_commands = {
+            \ 'go': #{command: 'gopls serve', log_level: -1},
+            \ }
+
+"\ https://github.com/mads-hartmann/bash-language-server
+" \ 'sh':     #{command: 'bash-language-server start'},
+" "\ https://github.com/palantir/python-language-server
+" "\ 'python': #{command: 'pyls'},
+" "\ https://github.com/vscode-langservers/vscode-css-languageserver-bin
+" \ 'css':    #{command: 'css-languageserver --stdio'},
+" "\ https://clang.llvm.org/extra/clangd/
+" \ 'c':      #{command: 'clangd -log=error'},
+" "\ https://github.com/sourcegraph/javascript-typescript-langserver
+" \ 'javascript': #{command: 'javascript-typescript-stdio'},
+" \ }
 
 let g:lsc_enable_autocomplete = v:false      " Don't complete when typing.
 let g:lsc_enable_diagnostics = v:false       " Don't lint code.
+let g:lsc_reference_highlights = v:false     " Don't highlight references.
+"let g:lsc_enable_incremental_sync = v:false  " Don't constantly send diffs to server.
 let g:lsc_preview_split_direction = 'below'  " Show preview at bottom, rather than top.
 
-let g:lsc_auto_map = {'defaults': v:true, 'SignatureHelp': '<C-k>', 'GoToDefinitionSplit': ''}
+"let g:lsc_auto_map = {'defaults': v:true, 'SignatureHelp': '<C-k>', 'GoToDefinitionSplit': ''}
+let g:lsc_auto_map = {'defaults': v:true, 'GoToDefinitionSplit': ''}
 augroup my-lsc
     au!
     au BufNewFile,BufReadPost *
         \  if has_key(get(g:, 'lsc_servers_by_filetype', {}), &filetype) && lsc#server#filetypeActive(&filetype)
         "\     Show function signature in insert mode too (I don't use digraphs).
-        \|     inoremap <buffer> <C-k> <C-o>:LSClientSignatureHelp<CR>
+        "\ \|     inoremap <buffer> <C-k> <C-o>:LSClientSignatureHelp<CR>
         "\     Open in tab, rather than split.
         \|     nnoremap <buffer> <C-w>]     :tab LSClientGoToDefinitionSplit<CR>
         \|     nnoremap <buffer> <C-w><C-]> :tab LSClientGoToDefinitionSplit<CR>
@@ -114,30 +137,97 @@ augroup my-lsc
 augroup end
 
 
-""" neoformat
-"""""""""""""
-let g:neoformat_only_msg_on_error = 1  " Only message on errors.
+"autocmd FileType go nnoremap <buffer> ;a :call <SID>alt()<CR>
+" fun! s:alt() abort
+"     let l:file = expand('%')
+"     if empty(l:file)
+"         return
+"     elseif l:file[-8:] is# '_test.go'
+"         let l:alt_file = l:file[:-9] . '.go'
+"     elseif l:file[-3:] is# '.go'
+"         let l:alt_file = l:file[:-4] . '_test.go'
+"     else
+"         return
+"     endif
+" 
+"     let l:cmd = 'tabe'
+"     if bufloaded(l:alt_file)
+"         let l:cmd = 'sbuffer'
+"     endif
+"     exe printf(':%s %s', l:cmd, fnameescape(l:alt_file))
+" endfun
 
-augroup my-neoformat
-    au!
-    "au BufWritePre * undojoin | Neoformat
-augroup END
+fun! s:popper(popup_items) abort
+    " TODO: don't do this
+	let s:popup_items = a:popup_items
+    let s:popup_map = {}
+    for l:item in a:popup_items
+        let s:popup_map[l:item[0]] = l:item[1]
+    endfor
 
+	call popup_create(map(a:popup_items, {_, v -> v[0]}), #{
+        \ filter:     function('s:filter'),
+        \ callback:   function('s:run_cmd'),
+        \ mapping:    0,
+        \ cursorline: 1,
+        \ line:       'cursor+1',
+        \ col:        'cursor',
+	\ })
+endfun
 
-""" typescript-vim
-""""""""""""""""""
-augroup my-typescript
-    au!
-    " Strict compiler options.
-    au Filetype typescript let g:typescript_compiler_options = join([
-                \ '--strict',
-                \ '--noImplicitAny',
-                \ '--noImplicitThis',
-                \ '--noUnusedLocals',
-                \ '--noImplicitReturns',
-                \ '--noFallthroughCasesInSwitch',
-                \ ],' ')
-augroup end
+fun! s:filter(id, key) abort
+  if a:key is# 'x' || a:key is# ''
+    call popup_clear()
+    return 1
+  endif
 
+  " No shortcut, pass to generic filter
+  let l:action = get(s:popup_map, a:key, -1)
+  if l:action is -1
+    return popup_filter_menu(a:id, a:key)
+  endif
+
+  call popup_close(a:id, l:action)
+  return 1
+endfun
+
+fun! s:run_cmd(id, cmd, ...) abort
+  " Fixes some problems with the popup menu's buffer still being open when we
+  " start doing various operations (wrong text, infinite recursion, etc.)
+  " TODO(popup): I think this is a Vim bug? Or am I using it wrong? Need to look
+  " deeper.
+  call popup_clear()
+
+  let l:cmd = a:cmd
+  if type(l:cmd) is v:t_number
+    let l:cmd = s:popup_items[a:cmd - 1]
+  endif
+
+  " :Command
+  " !shell
+  " expr
+  let l:cmd = s:popup_map[l:cmd]
+  exe l:cmd
+endfun
+
+nnoremap <silent> <Leader>l :call <SID>popper([
+    \ ['actions',           ':LSClientFindCodeActions'],
+    \ ['diag_line',         ':LSClientLineDiagnostics'],
+    \ ['doc',               ':LSClientDocumentSymbol'],
+    \ ['enable',            ':LSClientEnable'],
+    \ ['goto',              ':LSClientGoToDefinition'],
+    \ ['goto_split',        ':LSClientGoToDefinitionSplit'],
+    \ ['hover',             ':LSClientShowHover'],
+    \ ['impl',              ':LSClientFindImplementations'],
+    \ ['ref',               ':LSClientFindReferences'],
+    \ ['ref_next',          ':LSClientNextReference'],
+    \ ['ref_prev',          ':LSClientPreviousReference'],
+    \ ['rename',            ':LSClientRename'],
+    \ ['restart',           ':LSClientRestartServer'],
+    \ ['signature',         ':LSClientSignatureHelp'],
+    \ ['workspace_symbol',  ':LSClientWorkspaceSymbol'],
+    \ ['diag',              ':LSClientAllDiagnostics'],
+    \ ['disable',           ':LSClientDisable'],
+    \ ])<CR>
 
 " vim:expandtab

@@ -13,7 +13,7 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # Always ignore these files/functions
-zstyle ':completion:*:files' ignored-patterns '*?.pyc' '*?.o'
+zstyle ':completion:*:files'     ignored-patterns '*?.pyc' '*?.o'
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
 # Show more info in some completions
@@ -31,7 +31,7 @@ zstyle ':completion:*' menu select
 # Complete my 'idea' command.
 __idea_complete() {
 	typeset -a files
-	local dir="$HOME/code/arp242.net/_ideas/"
+	local dir="$HOME/code/arp242.net/_drafts/ideas/"
 	for f in "$dir"*.markdown; do
 		f="${f#$dir}"
 		f="${f%.markdown}"

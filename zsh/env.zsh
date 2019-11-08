@@ -35,6 +35,9 @@ _prepath "$HOME/go/bin"                # Go
 _postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
 _prepath "$HOME/.local/bin"            # My local stuff.
 
+# Because bundler is stupid.
+export BUNDLE_PATH=$HOME/.gem/ruby/2.6.0
+
 unfunction _prepath
 unfunction _postpath
 
@@ -89,7 +92,7 @@ export GTK_OVERLAY_SCROLLING=0
 export SYSTEMD_PAGER=
 
 # Set user service dir for runit.
-[[ $uid -gt 0 ]] && export SVDIR=~/.config/service
+export SVDIR=/var/service
 
 # Setup pass
 export PASSWORD_STORE_DIR=/home/martin/.config/password-store
@@ -102,9 +105,7 @@ export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 
 # UTF-8
 if _exists locale; then
-	export LANG=en_US.UTF-8
-	export LC_CTYPE=en_US.UTF-8
-	export LC_COLLATE=en_US.UTF-8
+	export LANG=en_NZ.UTF-8
 	#export I18NPATH=~/.locale
 	#export LOCPATH=~/.locale
 fi

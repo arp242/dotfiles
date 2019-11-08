@@ -2,24 +2,32 @@
 
 set -euC
 
+# No arguments: list sinks and inputs.
 if [ -z "${1:-}" ]; then
 	pactl list sinks |
 		grep -E '(^Sink|Description:)' |
 		cut -d ':' -f2- |
-		sed 's/^\s\+/    /'
+		sed 's/^\s\+/    /' |
+		sed -E 's/#([0-9]+)/\x1b[91;1m\1\x1b[0m/'
 	echo
 
 	pactl list sink-inputs |
 		grep -E '(^Sink|application.name =|Sink:)' |
 		cut -d= -f2 |
-		sed 's/^\s\+/    /'
+		sed 's/^\s\+/    /' |
+		sed -E 's/Sink: ([0-9]+)/Sink: \x1b[91;1m\1\x1b[0m/'
 	echo
 
-	echo 'Move PulseAudio inputs to a different output ("sink").'
-	echo "${0##*/} [input] to move to the next sink (wraps around)."
-	echo "${0##*/} [input] [sink] to move to a specific sink."
+	echo 'Move PulseAudio inputs to a different output ("sink"):'
+	echo "  ${0##*/} [input] to move to the next sink (wraps around)."
+	echo "  ${0##*/} [input] [sink] to move to a specific sink."
+# One argument: move input to next sink.
 elif [ -z "${2:-}" ]; then
 	cur="$(pactl list short sink-inputs | grep "^$1" | awk '{print $2}')"
+	if [ -z "$cur" ]; then
+		>&2 echo "${0##*/}: no suck input: $1"
+		exit 1
+	fi
 	sinks=$(pactl list short sinks | awk '{print $1}')
 
 	use=0
@@ -31,9 +39,10 @@ elif [ -z "${2:-}" ]; then
 
 	>&2 echo "${0##*/}: only one sink?"
 	exit 1
+# Two arguments: move specific input to specific sink.
 elif [ -z "${3:-}" ]; then
 	pactl move-sink-input "$1" "$2"
 else
-	>&2 echo "$0: that's wrong; try again"
+	>&2 echo "${0##*/}: that's wrong; try again"
 	exec $0
 fi

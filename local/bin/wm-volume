@@ -3,6 +3,9 @@
 
 set -euC
 
+# pactl set-sink-mute @DEFAULT_SINK@ toggle
+# pactl set-sink-volume @DEFAULT_SINK@ -5%"
+
 case "$1" in
 	"up")      amixer -q sset 'Master' 5%+      ;;
 	"down")    amixer -q sset 'Master' 5%-      ;;
@@ -12,5 +15,3 @@ case "$1" in
 		echo "Unsupported: \"$1\""
 		exit 1
 esac
-
-pkill -HUP slstatus

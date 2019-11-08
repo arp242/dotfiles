@@ -4,27 +4,45 @@
 #
 
 # Increment to use.
-incr=2.5%
+# incr=2.5%
+# cur=$(xbacklight -get)
+# case "$1" in
+# 	"up")
+# 		if [[ $cur -eq 0 ]]; then
+# 			xbacklight -set 0.1
+# 		else
+# 			xbacklight -inc $incr
+# 		fi
+# 	;;
+# 	"down")
+# 		if [[ $cur -le 3 ]]; then
+# 			xbacklight -set 0.1
+# 		else
+# 			xbacklight -dec $incr
+# 		fi
+# 	;;
+# 	*)
+# 		echo "Unsupported: \"$1\""
+# 		exit 1
+# esac
+# 
+# xbacklight -get
 
-cur=$(xbacklight -get)
+incr=100
+dev=/sys/class/backlight/intel_backlight/brightness
+cur=$(cat "$dev")
 case "$1" in
 	"up")
-		if [[ $cur -eq 0 ]]; then
-			xbacklight -set 0.1
-		else
-			xbacklight -inc $incr
-		fi
+		echo $(( $cur + $incr )) > "$dev"
 	;;
 	"down")
-		if [[ $cur -le 3 ]]; then
-			xbacklight -set 0.1
+		if [[ $cur -le 1 ]]; then
+			echo 1 > "$dev"
 		else
-			xbacklight -dec $incr
+			echo $(( $cur - $incr )) > "$dev"
 		fi
 	;;
 	*)
 		echo "Unsupported: \"$1\""
 		exit 1
 esac
-
-xbacklight -get

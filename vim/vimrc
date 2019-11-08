@@ -3,7 +3,6 @@ scriptencoding utf-8
 
 " Make sure we load stuff in the correct order − e.g. loading autocmd.vim before
 " settings.vim can cause problems
-source ~/.vim/nvim.vim
 source ~/.vim/settings.vim
 source ~/.vim/autocmd.vim
 source ~/.vim/commands.vim

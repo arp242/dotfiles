@@ -6,7 +6,7 @@
 #
 #   __idea_complete() {
 #   	typeset -a files
-#   	local dir="$HOME/code/arp242.net/_ideas/"
+#   	local dir="$HOME/code/arp242.net/drafts/_ideas/"
 #   	for f in "$dir"*.markdown; do
 #   		f="${f#$dir}"
 #   		f="${f%.markdown}"
@@ -25,13 +25,13 @@ if [ -z "${1:-}" ]; then
 fi
 
 # Older ideas don't have a date.
-f="$HOME/code/arp242.net/_ideas/$1.markdown"
+f="$HOME/code/arp242.net/_drafts/ideas/$1.markdown"
 if [ -f "$f" ]; then
 	vim "$f"
 	exit $?
 fi
 
-f="$HOME/code/arp242.net/_ideas/$(date +%Y-%m-%d)-$1.markdown"
+f="$HOME/code/arp242.net/_drafts/ideas/$(date +%Y-%m-%d)-$1.markdown"
 if [ -f "$f" ]; then
 	vim "$f"
 	exit $?
@@ -44,6 +44,7 @@ cat <<EOF > "$f"
 ---
 layout: post
 title: "$title"
+desc: ""
 ---
 
 EOF

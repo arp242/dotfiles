@@ -1,11 +1,10 @@
 #!/bin/sh
 printf "\
-arandr
 chromium
-claws-mail
 firefox
 gimp
-pavucontrol
+xscreen -d1
+xscreen -d1 -s
 slock
 spotify
 " | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &

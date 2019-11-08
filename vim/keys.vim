@@ -39,6 +39,14 @@ noremap <Leader>P "+p
 vnoremap > >gv
 vnoremap < <gv
 
+" Make n always search forward, even when started with ?
+nnoremap <expr> n 'Nn'[v:searchforward]
+nnoremap <expr> N 'nN'[v:searchforward]
+
+" Don't move cursor on * and #
+nnoremap <silent> * :let @/ = '\<' . expand('<cword>') .  '\>' \| :set hlsearch<CR>
+nnoremap <silent> # :let @/ = '\<' . expand('<cword>') .  '\>' \| :set hlsearch<CR>
+
 " Use visual movement rather than line movement.
 nnoremap k gk
 nnoremap j gj
@@ -52,6 +60,9 @@ nnoremap gf <C-w>gf
 vnoremap gf <C-w>gf
 nnoremap gF <C-w>gF
 vnoremap gF <C-w>gF
+
+" Suspend also works from insert.
+inoremap <C-z> <C-o><C-z>
 
 " Home works like 0 if already at start of a line, and ^ otherwise.
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
@@ -85,6 +96,8 @@ fun! s:guessType()
         return "\<C-R>=completor#do('complete')\<CR>"
     elseif exists(':ALEComplete')                       " https://github.com/w0rp/ale
         return "\<C-\>\<C-O>:ALEComplete\<CR>"
+	elseif exists('*coc#refresh')                       " https://github.com/neoclide/coc.nvim
+		return "\<C-r>=coc#refresh()\<CR>"
     else
         return "\<C-x>\<C-n>"
     endif
@@ -92,20 +105,40 @@ endfun
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
 
-" Don't hijack the entire screen for spell checking, just show the top 8 results
+" Don't hijack the entire screen for spell checking, just show the top 9 results
 " in the commandline.
-" Press 0 for the full list. Any key press that's not a valid option (1-8) will
+" Press 0 for the full list. Any key press that's not a valid option (1-9) will
 " behave as normal.
-fun! QuickSpell()
+fun! s:quickspell()
 	if &spell is 0
         echohl Error | echo "Spell checking not enabled" | echohl None
 		return
 	endif
 
-	let l:sug = spellsuggest(expand('<cword>'), 8)
-	echo join(map(copy(l:sug), {i, v -> printf('%d %s', l:i+1, l:v)}), ' | ')
+    " Separator between items.
+    let l:sep = ' | '
 
+    " Show as many columns as will fit in the window.
+	let l:sug = spellsuggest(expand('<cWORD>'), 9)
+    let l:c = 0
+    for l:i in range(0, len(l:sug))
+        let l:c += len(l:sug[l:i - 1]) + len(printf('%d ', l:i + 1))
+        " The -5 is needed to prevent some hit-enter prompts, even when there is
+        " enough space (bug?)
+        if l:c + (len(l:sep) * l:i) >= &columns - 5
+            break
+        endif
+    endfor
+
+    " Show options; make it stand out a bit.
+    echohl QuickFixLine
+	echo join(map(l:sug[:l:i - 1], {i, v -> printf('%d %s', l:i+1, l:v)}), l:sep)
+    echohl None
+
+    " Get answer.
 	let l:char = nr2char(getchar())
+
+    " Display regular spell screen on 0.
     if l:char is# '0'
         normal! z=
         return
@@ -113,22 +146,25 @@ fun! QuickSpell()
 
 	let l:n = str2nr(l:char)
 
-    " So it's easier to just do "ciw" or whatnot.
+    " Feed the character if it's not a number, so it's easier to do e.g. "ciW".
     if l:n is 0 || l:n > len(l:sug)
         return feedkeys(l:char)
     endif
 
-    exe printf("normal! ciw%s\<Esc>", l:sug[l:n-1])
+    " Replace!
+    exe printf("normal! ciW%s\<Esc>", l:sug[l:n-1])
     echo
 endfun
-nnoremap z= :call QuickSpell()<CR>
+nnoremap z= :call <SID>quickspell()<CR>
 
-" Replace the current line with the unnamed register without affecting any
-" register.
+" Yank without clobbering registers.
+nnoremap dD "_dd
+
+" Replace the current line with the unnamed register.
 nnoremap RR "_ddP
 
 " Shortcut to write and run :make.
-nnoremap MM :wa<CR>:make<CR>
+nnoremap MM :silent! :wa<CR>:make<CR>
 
 " Shortcut to close all windows except the current one.
 nnoremap <silent> OO :silent wincmd o<CR>
@@ -142,6 +178,7 @@ cabbr Help help
 cabbr tane tabe
 cabbr ta tabe
 iabbr teh the
+iabbr hte the
 iabbr Teh The
 iabbr seperated separated
 iabbr taht that
@@ -158,5 +195,6 @@ iabbr 1= !=
 cnoremap <C-a> <Home>
 "cnoremap <C-k>  TODO
 
-
-" vim:expandtab
+" Easier way to close quickfix.
+nnoremap <silent> <C-w>q     :cclose\|:lclose<CR>
+nnoremap <silent> <C-w><C-q> :cclose\|:lclose<CR>

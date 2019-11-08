@@ -22,7 +22,3 @@ if has('gui_gtk')                      " Set font
 elseif has('gui_win32')
     set guifont=Dejavu_Sans_Mono:h10
 endif
-
-
-" vim:expandtab
-

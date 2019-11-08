@@ -59,10 +59,13 @@ augroup my-filetypes
                 \|   hi htmlItalic cterm=underline
                 \| endif
 
+    " Don't need errors; too many false positives.
+    au FileType markdown hi markdownError ctermbg=NONE
+
     " Highlight trailing spaces in Markdown
-    au FileType markdown
-        \  highlight MarkdownTrailingSpaces ctermbg=green guibg=green
-        \| call matchadd('MarkdownTrailingSpaces', '\s\+$', 100)
+    "au FileType markdown
+    "    \  highlight MarkdownTrailingSpaces ctermbg=green guibg=green
+    "    \| call matchadd('MarkdownTrailingSpaces', '\s\+[^\%#]$', 100)
 
     " Set textwidth to 76 for emails.
     au BufReadPost /tmp/mail-* setl ft=mail | normal! 0Go
@@ -111,6 +114,36 @@ augroup fix_vimscript
                 \ "\(==\|!=\|>=\|<=\|=\~\|!\~\|>\|<\|=\|isnot\|is\)[?#]\{0,2}"
                 \ skipwhite nextgroup=vimString,vimSpecFile
 augroup end
+
+augroup gitlog
+    au FileType git
+                "\ Go to commit.
+                \  nnoremap <Leader>g :exe printf(":!cd ~/src/vim && git diff %s^\\!", split(getline('.'), ' ')[1])<CR>
+                "\ Delete commit.
+                \| nnoremap <Leader>d :call search('^commit ', 'bc') \| :exe 'd' . (search('^commit ', 'n') - line('.'))<CR>
+                "\ Format commit.
+                \| nnoremap <Leader>f :call <SID>format_commit()<CR>
+augroup end
+
+fun! s:format_commit()
+    call search('^commit ', 'bc')
+    silent normal! ms4j^w"vdt:
+
+    call search('Solution: ')
+    silent normal! f:llm<
+    call search('^$')
+    silent normal! k$m>gv"dd
+    let @d = substitute(@d, '[\r\n ]\+', ' ', 'g')
+    let l:end = line('.')
+    normal! 'sd
+    silent exe 'd' . (l:end - line('.') - 1)
+
+    call setline('.', printf("[\"%s\", ['%s'],", trim(@d), trim(@v)))
+    call setline(line('.') + 1, "    ''' '''],")
+
+    call search('^commit ', '')
+endfun
+
 
 
 " vim:expandtab

@@ -44,7 +44,6 @@ alias trcolor="sed -e 's|\x1b\[36m|\x1b\[31m|g'; 's|\x1b\[33m|\x1b\[31m|g'"
 _exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
 _exists mpv        && alias mplayer='mpv'
-_exists nvim       && alias nvim='nvim -u ~/.vim/vimrc'
 
 if _exists vim; then
 	alias vim="vim -p"
@@ -65,6 +64,12 @@ elif _exists dig; then
 	alias drill='dig'
 fi
 
+if _exists xbps-query; then
+	alias xquery=xbps-query
+	alias xinstall=xbps-install
+	alias xremove=xbps-remove
+fi
+
 # Typos
 alias sl='ls'
 alias l='ls'
@@ -83,7 +88,9 @@ alias Less='less'
 alias cd.='cd .'
 alias cd..='cd ..'
 
-# Global aliases
+alias now='echo $(date +%Y-%m-%d)'
+
+# Global aliases to pipe output.
 alias -g /t='|& tail'
 alias -g /v='|& vim -'
 alias -g /l='|& less'

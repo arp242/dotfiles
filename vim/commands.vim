@@ -52,5 +52,8 @@ fun! s:scroll()
 endfun
 command! Scroll call s:scroll()
 
-
-" vim:expandtab
+" Call uni on current character.
+command! UnicodeName echo
+         \ system('uni -q i', 
+         \      [strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)]
+         \ )[:-2]

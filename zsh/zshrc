@@ -23,6 +23,7 @@ unset uname
 
 # Directory shortcuts
 pack=$HOME/.cache/vim/pack/plugins/start/
+d=$HOME/code/arp242.net/_drafts
 
 # Source plugins.
 

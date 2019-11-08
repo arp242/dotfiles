@@ -3,9 +3,18 @@
 
 set -euC
 
-while :; do
-	# Don't ask me why, but connecting to bluetooth seems to work better after
-	# running this a few times.
-	echo 'power on' | bluetoothctl | grep -q '\[bluetooth\]' || exit 0
-	sleep 1
+devs=$(echo 'devices' | bluetoothctl | grep '^Device')
+
+IFS="
+"
+i=1
+for dev in $(echo "$devs" | cut -d ' ' -f3-); do
+	echo "$(( i++ )) $dev"
 done
+
+printf "Which? "
+read n
+mac=$(echo "$devs" | sed "${n}p;d" | cut -d ' ' -f2)
+
+echo 'power on'     | bluetoothctl
+echo "connect $mac" | bluetoothctl
