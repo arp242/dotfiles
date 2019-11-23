@@ -1,36 +1,356 @@
-# Store all zsh-related stuff in ~/.zsh/ instead of ~/
-ZDOTDIR=~/.zsh
-umask 022
+# http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
+#
+# https://github.com/GaugeK/dots/blob/master/zsh/etc/zsh/.zshrc
+
+
+ZDOTDIR=~/.zsh       # Store all zsh-related stuff in ~/.zsh/ instead of ~/
 
 # Helper stuff; will be unset later.
 _exists() { hash $1 2>/dev/null }
-_exists uname && uname=$(uname) || uname=win32
-uid=$(id -u)
 
-# Source config files.
-source ~/.zsh/env.zsh
-[[ -o interactive ]] || exit 0  # Our work here is done if not an interactive shell
+### Setup PATH
+##############
+typeset -U path  # No duplicates
+path=()
 
-source ~/.zsh/settings.zsh
-source ~/.zsh/completion.zsh
-source ~/.zsh/commands.zsh
-source ~/.zsh/keys.zsh
+# On some other systems /usr/bin links to /bin; use the full path to prevent dupes.
+_prepath() {
+	for dir in "$@"; do
+		[[ -L "$dir" ]] && dir=$(/usr/bin/readlink -f "$dir")
+		[[ ! -d "$dir" ]] && return
+		path=("$dir" $path[@])
+	done
+}
+_postpath() {
+	for dir in "$@"; do
+		[[ -L "$dir" ]] && dir=$(/usr/bin/readlink -f "$dir")
+		[[ ! -d "$dir" ]] && return
+		path=($path[@] "$dir")
+	done
+}
 
-# Unset helpers.
-unfunction _exists
-unset uid
-unset uname
+_prepath /bin /sbin /usr/bin /usr/sbin /usr/games
+_prepath /usr/pkg/bin   /usr/pkg/sbin   # NetBSD
+_prepath /usr/X11R6/bin /usr/X11R6/sbin # OpenBSD
+_prepath /usr/local/bin /usr/local/sbin
+
+_postpath $HOME/.gem/ruby/*/bin        # Ruby
+_prepath "$HOME/go/bin"                # Go
+_postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
+_prepath "$HOME/.local/bin"            # My local stuff.
+unfunction _prepath
+unfunction _postpath
+
+### Application environment
+###########################
+[[ -n "$TMUX" ]] && export TERM=screen-256color || export TERM=st-256color
+
+_exists locale  && export LANG=en_NZ.UTF-8            # UTF-8; use Kiwiland for sane date format, metric system, etc.
+_exists vim     && export EDITOR=vim                  # Default applications.
+_exists firefox && export BROWSER=firefox
+_exists less    && export PAGER=less
+
+export LESSHISTFILE=~/.cache/lesshistory      # Store files in xdg dirs
+export INPUTRC=~/.config/inputrc
+export SQLITE_HISTORY=~/.cache/sqlite_history
+
+export BUNDLE_PATH=$HOME/.gem/ruby/2.6.0     # Because bundler is stupid.
+export GOTMPDIR=/tmp/gotmpdir                # Store Go tmp files in /tmp; make sure it exists as Go won't create it.
+[[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
+
+export BLOCKSIZE=K                           # Output sizes in K instead of 512b blocks
+
+# R    Display colours escape chars as-is (so they're displayed).
+# i    Ignore case unless pattern has upper case chars.
+# M    Display line numbers and position.
+# Q    Never ring terminal bell.
+# X    Don't clear the screen on exit.
+# F    Quit if output fits on a single screen.
+# L    Ignore LESSOPEN (some Linux distros set this to retarded, dangerous, and
+#      broken defaults; *cough* Fedora *cough*).
+export LESS="RiMQXFL"
+
+# Make man pages 80 characters wide at the most; this is the default on BSD, but
+# not Linux (not needed if you use mandoc, instead of the man-db).
+export MANWIDTH=80
+
+export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=31:"
+export GREP_COLOR=31                                           # Older GNU grep; BSD grep
+export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep, I guess GREP_COLOR was too easy to use
+
+export GDK_CORE_DEVICE_EVENTS=1  # Fix scrolling in GTK3; https://www.pekwm.org/projects/pekwm/tasks/350
+export GTK_IM_MODULE=xim         # Make compose key work
+export QT_IM_MODULE=xim
+export GTK_OVERLAY_SCROLLING=0   # Disable stupid "overlay scrollbar"
+export SYSTEMD_PAGER=            # Don't output to a pager
+export SVDIR=/var/service        # Set user service dir for runit.
+
+# Run commands from this file on interactive session
+[[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
+
+### Our work here is done if not an interactive shell
+#####################################################
+[[ -o interactive ]] || exit 0 
 
 # Directory shortcuts
 pack=$HOME/.cache/vim/pack/plugins/start/
 d=$HOME/code/arp242.net/_drafts
 
-# Source plugins.
+setopt noflowcontrol         # Disable ^S, ^Q, ^\
+stty -ixon quit undef
 
-# Other stuff to look at:
-# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dircycle/dircycle.plugin.zsh
-# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirhistory/dirhistory.plugin.zsh
-# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/dirpersist/dirpersist.plugin.zsh
-# https://github.com/robbyrussell/oh-my-zsh/tree/master/plugins/tmux
-fpath=($fpath ~/.zsh/plugins)
-for f in ~/.zsh/plugins/*.zsh; do source "$f"; done
+setopt notify                # Report status of bg jobs immediately
+setopt nohup                 # Don't kill background jobs when exiting
+setopt noclobber             # Don't clobber existing files with >
+setopt nobeep                # Don't beep
+setopt nobgnice              # Don't frob with nicelevels
+setopt interactivecomments   # Allow comments in interactive shells
+setopt noautoremoveslash     # Don't guess when slashes should be removed (too magic)
+setopt nomatch               # Show error if globbing fails
+setopt extendedglob          # More globbing characters
+LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
+
+### Directory
+setopt autopushd             # Automatically keep a history
+setopt pushdminus            # -0 counts from top, +0 from bottom
+setopt pushdsilent           # Don't show stack after using pushd
+setopt pushdignoredups       # Don't store duplicate entries
+
+### History
+setopt hist_ignore_dups      # Ignore duplicate in history.
+setopt appendhistory         # Append to history, rather than overwriting
+setopt incappendhistory      # Append immediately rather than only at exit
+#setopt sharehistory          # Also read back new commands when writing history
+setopt extendedhistory       # Store some metadata as well
+setopt histnostore           # Don't store history or fc commands
+setopt histignorespace       # Don't add commands starting with space to history.
+HISTFILE=~/.zsh/history      # Store history here
+HISTSIZE=40000               # Max. entries to keep in memory
+SAVEHIST=40000               # Max. entries to save to file
+HISTORY_IGNORE='([bf]g *|disown|cd ..|cd -)' # Don't add these to the history file.
+
+### Completion
+setopt completeinword        # Allow completion from within a word/phrase
+setopt alwaystoend           # Move cursor to end of word when when completing from middle
+setopt nolistambiguous       # Show options on single tab press
+
+### Prompt
+setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT
+
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' formats '(%b)'
+#zstyle ':vcs_info:*' check-for-changes true
+#zstyle ':vcs_info:git:*:martin' formats "\u200b"
+
+# Set mode variable for prompt
+function zle-line-init zle-keymap-select {
+	mode="${${KEYMAP/vicmd/n}/(main|viins)/i}"
+	zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
+
+set_prompt() {
+	vcs_info
+
+	print -n "%(?..%S %? %s)"           # Exit code in "standout" if non-0.
+	[[ $mode = n ]] && print -n "%S"    # Directory as "standout" in normal mode.
+	print -n "[%~]${vcs_info_msg_0_}%#" # Directory and VCS info (if any).
+	[[ $mode = n ]] && print -n "%s"    # End standout.
+	print -n ' '
+}
+
+set_rprompt() {
+	local host='%U%B%m%b%u'
+	if [[ -n "${SSH_CLIENT}${SSH2_CLIENT}${SSH_CONNECTION}" ]]; then
+		host="%F{red}${host}%f"
+	fi
+	print "${mode}:${host}:%T"
+}
+
+PROMPT=$'$(set_prompt)'
+RPROMPT=$'$(set_rprompt)'
+
+
+### Completion
+##############
+
+# Load and init
+autoload -Uz compinit && compinit && zmodload zsh/complist
+zstyle ':completion:*' completer _expand _complete _ignored
+
+# Make completion case-insensitive
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# Always ignore these files/functions
+zstyle ':completion:*:files'     ignored-patterns '*?.pyc' '*?.o'
+zstyle ':completion:*:functions' ignored-patterns '_*'
+
+zstyle ':completion:*' verbose yes                             # Show more info in some completions
+zstyle ':completion:*:warnings' format 'No completions'        # Warn when there are no completions
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}  # Show ls-like colours in file completion
+zstyle ':completion:*' menu select                             # Use menu
+
+### Keys
+########
+
+bindkey -v    # "Vi" bindings
+
+# The time the shell waits, in hundredths of seconds, for  another
+# key to be pressed when reading bound multi-character sequences.
+# export KEYTIMEOUT=40
+export KEYTIMEOUT=10
+
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
+insert_sudo() { zle beginning-of-line; zle -U "doas " }
+replace_rm()  { zle beginning-of-line; zle delete-word; zle -U "rm " }
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+zle -N edit-command-line
+zle -N insert-sudo insert_sudo
+zle -N replace-rm replace_rm
+
+bindkey '^[[A'  up-line-or-beginning-search    # Arrow up
+bindkey '^[OA'  up-line-or-beginning-search
+bindkey '^[[B'  down-line-or-beginning-search  # Arrow down
+bindkey '^[OB'  down-line-or-beginning-search
+bindkey '^[[H'  beginning-of-line              # Home
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[7~' beginning-of-line
+bindkey '^[[F'  end-of-line                    # End
+bindkey '^[[4~' end-of-line
+bindkey '^[[8~' end-of-line
+bindkey '^[[3~' delete-char                    # Delete
+bindkey '^[[P'  delete-char
+bindkey '^[[5~' up-line-or-history             # Page up
+bindkey '^[[6~' down-line-or-history           # Page down
+bindkey '^[OP'  run-help                       # F1
+bindkey '^h'    backward-delete-char           # Backspace
+bindkey '^?'    backward-delete-char
+
+bindkey '^a'    beginning-of-line
+bindkey '^k'    kill-line
+bindkey '^p'    up-line-or-beginning-search
+bindkey '^n'    down-line-or-beginning-search
+bindkey '^e'    edit-command-line
+bindkey '^s'    insert-sudo
+bindkey '^r'    replace-rm
+bindkey '^I'    complete-word                  # complete on tab, leave expansion to _expand
+                                               # Useful for going back in menu completion
+bindkey '^[[Z'  up-history                     # Shift+Tab
+
+# Use this completion and start completion for new dir
+bindkey -M menuselect '^o' accept-and-infer-next-history
+
+#bindkey ' ' magic-space    # also do history expansion on space
+
+# Put job in fg on ^Z if there are any bg jobs.
+toggle-ctrl-z () {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line
+  else
+    zle push-input
+    zle clear-screen
+  fi
+}
+zle -N toggle-ctrl-z
+bindkey '^Z' toggle-ctrl-z
+
+### Commands
+############
+alias cp='cp -i'              # Ask for confirmation when overwriting existing files.
+alias mv='mv -i'
+alias make='nice -n 20 make'  # Make can always be very nice.
+
+if [[ "$(uname)" = "Linux" ]]; then
+	alias ls='ls -FN --color=auto' # -F adds trailing / etc; -N avoids adding quotes
+	alias lc='ls -lh'              # "List Complete"
+	alias la='ls -A'               # "List All"
+	alias lac='ls -lhA'            # "List All Complete"
+	alias lsd='ls -ld *(-/DN)'     # "List Directory"
+	alias lh='ls -d .*'            # "List Hidden"
+	alias grep='grep --color'
+else
+	alias la='ls -a'
+	alias lc='ls -l'
+	alias lac='ls -la'
+fi
+
+
+if _exists systemctl; then
+	alias zzz='systemctl suspend'
+	alias ZZZ='systemctl hibernate'
+elif _exists pm-suspend; then
+	alias zzz='pm-suspend'
+	alias ZZZ='pm-hibernate'
+fi
+
+_exists bsdtar     && alias tar='bsdtar'
+_exists htop       && alias top='htop'
+_exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
+_exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
+
+if _exists vim; then
+	alias vim="vim -p"
+	alias vi="vim"
+fi
+
+# Typos
+alias sl='ls'
+alias l='ls'
+alias c='cd'
+alias vo='vi'
+alias dirs='dirs -v'
+alias d='dirs'
+alias fd='pushd'
+alias ci='vi' # ci already exists, but few people use it and it mangles files!
+alias iv='vi' # Some image viewer I never use, annoying
+alias grpe='grep'
+alias Grep='grep'
+alias les='less'
+alias les='less'
+alias Less='less'
+alias cd.='cd .'
+alias cd..='cd ..'
+
+alias now='echo $(date +%Y-%m-%d)'
+
+# Global aliases to pipe output.
+alias -g /t='|& tail'
+alias -g /v='|& vim -'
+alias -g /l='|& less'
+
+# "ag edit" and "grep edit".
+age() {
+	#vim +'normal! gg' +"/$1" +n -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
+	vim +"/$1" -p $(ag "$@" | cut -d: -f1 | sort -u)
+}
+grepe() {
+	vim -p $(grep "$@" | cut -d: -f1 | sort -u)
+}
+
+# Rename all files in the current directory to lowercase
+lwr() {
+	for f in ./*; do
+		nf="$(echo "${f}" | tr '[:upper:]' '[:lower:]')"
+		mv -v "${f}" "${nf}"
+	done
+}
+
+# "Short awk"
+sawk() {
+	awk "{print \$$1}"
+}
+
+# For copying examples.
+unprompt() {
+	export PS1='$ '
+	export RPROMPT=' '
+}
+
+# Unset helper.
+unfunction _exists
