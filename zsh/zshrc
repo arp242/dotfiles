@@ -185,8 +185,8 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # Always ignore these files/functions
-zstyle ':completion:*:files'     ignored-patterns '*?.pyc' '*?.o'
-zstyle ':completion:*:functions' ignored-patterns '_*'
+zstyle ':completion:*:*:*:*:*files' ignored-patterns '*?.pyc' '*?.o'
+zstyle ':completion:*:*:functions'  ignored-patterns '_*'
 
 zstyle ':completion:*' verbose yes                             # Show more info in some completions
 zstyle ':completion:*:warnings' format 'No completions'        # Warn when there are no completions
@@ -280,7 +280,6 @@ else
 	alias lac='ls -la'
 fi
 
-
 if _exists systemctl; then
 	alias zzz='systemctl suspend'
 	alias ZZZ='systemctl hibernate'
@@ -304,11 +303,8 @@ alias sl='ls'
 alias l='ls'
 alias c='cd'
 alias vo='vi'
-alias dirs='dirs -v'
-alias d='dirs'
-alias fd='pushd'
-alias ci='vi' # ci already exists, but few people use it and it mangles files!
-alias iv='vi' # Some image viewer I never use, annoying
+alias ci='vi'
+alias iv='vi'
 alias grpe='grep'
 alias Grep='grep'
 alias les='less'
@@ -331,19 +327,6 @@ age() {
 }
 grepe() {
 	vim -p $(grep "$@" | cut -d: -f1 | sort -u)
-}
-
-# Rename all files in the current directory to lowercase
-lwr() {
-	for f in ./*; do
-		nf="$(echo "${f}" | tr '[:upper:]' '[:lower:]')"
-		mv -v "${f}" "${nf}"
-	done
-}
-
-# "Short awk"
-sawk() {
-	awk "{print \$$1}"
 }
 
 # For copying examples.
