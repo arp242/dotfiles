@@ -39,7 +39,7 @@ My shell commands in `./bin`:
 
 [tz]: https://github.com/arp242/dotfiles/blob/master/local/bin/tz
 [ff-hist]: https://github.com/arp242/dotfiles/blob/master/local/bin/ff-hist
-[bl-connect]: https://github.com/arp242/dotfiles/blob/master/local/bin/backup
+[backup]: https://github.com/arp242/dotfiles/blob/master/local/bin/backup
 [bl-connect]: https://github.com/arp242/dotfiles/blob/master/local/bin/bl-connect
 [dmenu-favs]: https://github.com/arp242/dotfiles/blob/master/local/bin/dmenu-favs
 [dmenu-pass]: https://github.com/arp242/dotfiles/blob/master/local/bin/dmenu-pass
