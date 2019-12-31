@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+
+query='select
+	strftime("%Y-%m-%d %H:%M", datetime(substr(last_visit_date, 0, 11), "unixepoch")) as last_visit,
+	url,
+	title
+from moz_places'
+
+[ -n "${1:-}" ] && query="$query where url like '%$1%'"
+query="$query order by last_visit_date desc"
+
+trap 'rm /tmp/places.sqlite' EXIT
+cp ~/.mozilla/firefox/1fow4xw4.default/places.sqlite /tmp
+
+sqlite3 -init /dev/null -column /tmp/places.sqlite "$query" 2>&1 | tail -n+2

@@ -43,6 +43,5 @@ case "$1" in
 		fi
 	;;
 	*)
-		echo "Unsupported: \"$1\""
-		exit 1
+		echo "$1" > "$dev"
 esac

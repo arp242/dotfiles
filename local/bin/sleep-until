@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -euC
+
+if [ "${1:-}" = "" ]; then
+	echo >&/dev/stderr "need target time"
+	exit 1
+fi
+
+s=$(( $(date -d "$1" +%s) - $(date +%s) ))
+if [ $s -lt 0 ]; then
+	# TODO
+	mn=$(( $(date -d 23:59 +%s) - $(date +%s) ))
+	s=$(( -$s + $mn + 60 ))
+fi
+
+m=$(($s / 60))
+[ $m -gt 60 ] && printf "$(($m / 60)) hours "
+echo "$(($m % 60)) minutes ($s seconds)"
+sleep $s

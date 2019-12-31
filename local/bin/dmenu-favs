@@ -1,5 +1,5 @@
 #!/bin/sh
-printf "\
+exec $(printf "\
 chromium
 firefox
 gimp
@@ -7,4 +7,4 @@ xscreen -d1
 xscreen -d1 -s
 slock
 spotify
-" | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &
+" | dmenu -i "$@") &

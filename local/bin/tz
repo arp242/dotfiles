@@ -1,0 +1,22 @@
+#!/bin/sh
+
+printf "%-15s" "US East"
+TZ="America/Los_Angeles" date
+
+printf "%-15s" "US West"
+TZ="America/New_York" date
+
+printf "%-15s" "UTC"
+TZ="UTC" date
+
+printf "%-15s" "Ireland/UK"
+TZ="Europe/Dublin" date
+
+printf "%-15s" "West Europe"
+TZ="Europe/Amsterdam" date
+
+printf "%-15s" "Bali"
+TZ="Asia/Makassar" date
+
+printf "%-15s" "New Zealand"
+TZ="NZ" date

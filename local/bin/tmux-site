@@ -12,7 +12,7 @@ fi
 tmux new-session -d -s site
 
 tmux new-window -d -n server
-tmux send-keys -t '=site:=server' C-l 'cd _site && python -mhttp.server' Enter
+tmux send-keys -t '=site:=server' C-l '(cd _site && python -mhttp.server)' Enter
 
 tmux new-window -d -n jekyll
 tmux send-keys -t '=site:=jekyll' C-l 'JEKYLL_NO_BUNDLER_REQUIRE=1 jekyll build -w' Enter

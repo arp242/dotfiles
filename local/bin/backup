@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+
+import datetime
+import os
+import subprocess
+import sys
+
+exclude = [
+    '.cache',
+    '.gem',
+    '.npm',
+    'GOG Games',
+    'go',
+    'work',
+    '.mozilla/firefox/1fow4xw4.default/storage',
+    'music',
+    'tv',
+    #'pics',
+    '.wine',
+    '.local/share/Steam',
+    '.config/google-chrome',
+    '.config/chromium',
+    'backups/tw.tar.gz',
+    'backups/xps',
+    'src',
+    '.local/aur',
+
+    '.local/share/keybase',
+    'code/postit-recipe/bfpd',
+    '.claws-mail/imapcache',
+]
+
+os.chdir('/home/martin')
+
+if len(sys.argv) < 2:
+    print('no cmd')
+    sys.exit(1)
+
+if sys.argv[1] == 'test':
+    cmd = ['du', '-ah']
+    for e in exclude:
+        cmd += ['--exclude', './' + e]
+    subprocess.call(cmd + sys.argv[2:])
+
+elif sys.argv[1] == 'tar':
+    # gzip -k backup.tar  44.02s user 1.27s system 98% cpu 46.104 total
+    #
+    # -rw-r--r-- 1 martin martin 1.2G Aug 23 03:04 backup.tar
+    # -rw-r--r-- 1 martin martin 854M Aug 23 03:04 backup.tar.gz
+    #
+    # openssl enc -aes-256-cbc    -in backup.tar.gz -out backup.tar.gz.crypt
+    # openssl enc -aes-256-cbc -d -in backup.tar.gz.crypt > baclup.tar.gz
+    cmd = ['tar', 'cf', f'backups/xps/{datetime.datetime.now().strftime("%Y%m%dT%H:%M:%S")}.tar']
+    for e in exclude:
+        cmd += ['--exclude', './' + e]
+    cmd += ['.']
+    subprocess.call(cmd)
+
+# elif sys.argv[1] == 'backup':
+#     cmd = ['rclone', 'sync'] + sys.argv[2:]
+#     for e in exclude:
+#         cmd += ['--exclude', '/' + e + '/**']
+#     cmd += ['.', 'dropbox:']
+#     subprocess.call(cmd + sys.argv[2:])
+
+else:
+    print('unknown cmd')
+    sys.exit(1)
