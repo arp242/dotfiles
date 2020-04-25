@@ -2,10 +2,11 @@
 #
 # https://github.com/GaugeK/dots/blob/master/zsh/etc/zsh/.zshrc
 
+set -u               # Undefined variables are an error.
 
 ZDOTDIR=~/.zsh       # Store all zsh-related stuff in ~/.zsh/ instead of ~/
 
-# Helper stuff; will be unset later.
+# Helper; will be unset later.
 _exists() { hash $1 2>/dev/null }
 
 ### Setup PATH
@@ -34,27 +35,33 @@ _prepath /usr/pkg/bin   /usr/pkg/sbin   # NetBSD
 _prepath /usr/X11R6/bin /usr/X11R6/sbin # OpenBSD
 _prepath /usr/local/bin /usr/local/sbin
 
-_postpath $HOME/.gem/ruby/*/bin        # Ruby
 _prepath "$HOME/go/bin"                # Go
 _postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
 _prepath "$HOME/.local/bin"            # My local stuff.
+if [[ -d "$HOME/.gem/ruby" ]]; then    # Ruby
+	for d in "$HOME/.gem/ruby/"*; do
+		_postpath "$d/bin";
+		export BUNDLE_PATH=$d  # Because bundler is stupid.
+	done
+fi
+
 unfunction _prepath
 unfunction _postpath
 
 ### Application environment
 ###########################
-[[ -n "$TMUX" ]] && export TERM=screen-256color || export TERM=st-256color
+[[ -n "${TMUX:-}" ]] && export TERM=screen-256color || export TERM=st-256color
 
-_exists locale  && export LANG=en_NZ.UTF-8            # UTF-8; use Kiwiland for sane date format, metric system, etc.
-_exists vim     && export EDITOR=vim                  # Default applications.
-_exists firefox && export BROWSER=firefox
-_exists less    && export PAGER=less
+_exists locale   && export LANG=en_NZ.UTF-8            # UTF-8; use Kiwiland for sane date format, metric system, etc.
+_exists vim      && export EDITOR=vim                  # Default applications.
+_exists firefox  && export BROWSER=firefox
+_exists less     && export PAGER=less
+#_exists vimpager && export PAGER=vimpager
 
 export LESSHISTFILE=~/.cache/lesshistory      # Store files in xdg dirs
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
 
-export BUNDLE_PATH=$HOME/.gem/ruby/2.6.0     # Because bundler is stupid.
 export GOTMPDIR=/tmp/gotmpdir                # Store Go tmp files in /tmp; make sure it exists as Go won't create it.
 [[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
 
@@ -65,10 +72,9 @@ export BLOCKSIZE=K                           # Output sizes in K instead of 512b
 # M    Display line numbers and position.
 # Q    Never ring terminal bell.
 # X    Don't clear the screen on exit.
-# F    Quit if output fits on a single screen.
 # L    Ignore LESSOPEN (some Linux distros set this to retarded, dangerous, and
 #      broken defaults; *cough* Fedora *cough*).
-export LESS="RiMQXFL"
+export LESS="RiMQXL"
 
 # Make man pages 80 characters wide at the most; this is the default on BSD, but
 # not Linux (not needed if you use mandoc, instead of the man-db).
@@ -78,23 +84,29 @@ export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43
 export GREP_COLOR=31                                           # Older GNU grep; BSD grep
 export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep, I guess GREP_COLOR was too easy to use
 
-export GDK_CORE_DEVICE_EVENTS=1  # Fix scrolling in GTK3; https://www.pekwm.org/projects/pekwm/tasks/350
-export GTK_IM_MODULE=xim         # Make compose key work
+export GDK_CORE_DEVICE_EVENTS=1    # Fix scrolling in GTK3; https://www.pekwm.org/projects/pekwm/tasks/350
+export GTK_IM_MODULE=xim           # Make compose key work
 export QT_IM_MODULE=xim
-export GTK_OVERLAY_SCROLLING=0   # Disable stupid "overlay scrollbar"
-export SYSTEMD_PAGER=            # Don't output to a pager
-export SVDIR=/var/service        # Set user service dir for runit.
+export GTK_OVERLAY_SCROLLING=0     # Disable stupid "overlay scrollbar"
+export SYSTEMD_PAGER=              # Don't output to a pager
+if [[ -d '/etc/service' ]]; then   # Set user service dir for runit.
+	export SVDIR=/etc/service        
+elif [[ -d '/var/service' ]]; then
+	export SVDIR=/var/service
+fi 
 
 # Run commands from this file on interactive session
 [[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
 
 ### Our work here is done if not an interactive shell
 #####################################################
-[[ -o interactive ]] || exit 0 
+[[ -o interactive ]] || return 0 
 
 # Directory shortcuts
 pack=$HOME/.cache/vim/pack/plugins/start/
 d=$HOME/code/arp242.net/_drafts
+go=/usr/lib/go/src
+vim=/usr/share/vim/vim82
 
 setopt noflowcontrol         # Disable ^S, ^Q, ^\
 stty -ixon quit undef
@@ -109,12 +121,6 @@ setopt noautoremoveslash     # Don't guess when slashes should be removed (too m
 setopt nomatch               # Show error if globbing fails
 setopt extendedglob          # More globbing characters
 LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
-
-### Directory
-setopt autopushd             # Automatically keep a history
-setopt pushdminus            # -0 counts from top, +0 from bottom
-setopt pushdsilent           # Don't show stack after using pushd
-setopt pushdignoredups       # Don't store duplicate entries
 
 ### History
 setopt hist_ignore_dups      # Ignore duplicate in history.
@@ -137,12 +143,6 @@ setopt nolistambiguous       # Show options on single tab press
 ### Prompt
 setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT
 
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' formats '(%b)'
-#zstyle ':vcs_info:*' check-for-changes true
-#zstyle ':vcs_info:git:*:martin' formats "\u200b"
-
 # Set mode variable for prompt
 function zle-line-init zle-keymap-select {
 	mode="${${KEYMAP/vicmd/n}/(main|viins)/i}"
@@ -151,22 +151,27 @@ function zle-line-init zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
+
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:*' formats '(%b)'
+ 
 set_prompt() {
 	vcs_info
 
-	print -n "%(?..%S %? %s)"           # Exit code in "standout" if non-0.
-	[[ $mode = n ]] && print -n "%S"    # Directory as "standout" in normal mode.
-	print -n "[%~]${vcs_info_msg_0_}%#" # Directory and VCS info (if any).
-	[[ $mode = n ]] && print -n "%s"    # End standout.
+	print -n "%(?..%S %? %s)"                  # Exit code in "standout" if non-0.
+	[[ "${mode:-}" = n ]] && print -n "%S"     # Directory as "standout" in normal mode.
+	print -n "[%~]${vcs_info_msg_0_}%#"        # Directory and VCS info (if any).
+	[[ "${mode:-}" = "n" ]] && print -n "%s"   # End standout.
 	print -n ' '
 }
 
 set_rprompt() {
 	local host='%U%B%m%b%u'
-	if [[ -n "${SSH_CLIENT}${SSH2_CLIENT}${SSH_CONNECTION}" ]]; then
+	if [[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]]; then
 		host="%F{red}${host}%f"
 	fi
-	print "${mode}:${host}:%T"
+	print "${mode:-}:${host}:%T"
 }
 
 PROMPT=$'$(set_prompt)'
@@ -181,11 +186,14 @@ autoload -Uz compinit && compinit && zmodload zsh/complist
 zstyle ':completion:*' completer _expand _complete _ignored
 
 # Make completion case-insensitive
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+# TODO: makes "mpla<Tab>" match _mplayer
+#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# TODO: fold unicode "e" should match "é".
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 # Always ignore these files/functions
 zstyle ':completion:*:*:*:*:*files' ignored-patterns '*?.pyc' '*?.o'
+# TODO: dict<Tab> still gives _dict (or ispell<Tab>)
 zstyle ':completion:*:*:functions'  ignored-patterns '_*'
 
 zstyle ':completion:*' verbose yes                             # Show more info in some completions
@@ -203,15 +211,17 @@ bindkey -v    # "Vi" bindings
 # export KEYTIMEOUT=40
 export KEYTIMEOUT=10
 
-autoload -Uz up-line-or-beginning-search down-line-or-beginning-search edit-command-line
-insert_sudo() { zle beginning-of-line; zle -U "doas " }
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search \
+	edit-command-line copy-earlier-word 
+insert_doas() { zle beginning-of-line; zle -U "doas " }
 replace_rm()  { zle beginning-of-line; zle delete-word; zle -U "rm " }
 
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 zle -N edit-command-line
-zle -N insert-sudo insert_sudo
+zle -N insert-doas insert_doas
 zle -N replace-rm replace_rm
+zle -N copy-earlier-word 
 
 bindkey '^[[A'  up-line-or-beginning-search    # Arrow up
 bindkey '^[OA'  up-line-or-beginning-search
@@ -236,11 +246,12 @@ bindkey '^k'    kill-line
 bindkey '^p'    up-line-or-beginning-search
 bindkey '^n'    down-line-or-beginning-search
 bindkey '^e'    edit-command-line
-bindkey '^s'    insert-sudo
+bindkey '^s'    insert-doas
 bindkey '^r'    replace-rm
 bindkey '^I'    complete-word                  # complete on tab, leave expansion to _expand
                                                # Useful for going back in menu completion
 bindkey '^[[Z'  up-history                     # Shift+Tab
+bindkey '^o' copy-earlier-word
 
 # Use this completion and start completion for new dir
 bindkey -M menuselect '^o' accept-and-infer-next-history
@@ -267,7 +278,11 @@ alias mv='mv -i'
 alias make='nice -n 20 make'  # Make can always be very nice.
 
 if [[ "$(uname)" = "Linux" ]]; then
-	alias ls='ls -FN --color=auto' # -F adds trailing / etc; -N avoids adding quotes
+	if [ -h /bin/ls ]; then   # Assume busybox
+		alias ls='ls -F --color=never'
+	else
+		alias ls='ls -FN --color=auto' # -F adds trailing / etc; -N avoids adding quotes
+	fi
 	alias lc='ls -lh'              # "List Complete"
 	alias la='ls -A'               # "List All"
 	alias lac='ls -lhA'            # "List All Complete"
@@ -275,6 +290,7 @@ if [[ "$(uname)" = "Linux" ]]; then
 	alias lh='ls -d .*'            # "List Hidden"
 	alias grep='grep --color'
 else
+	alias ls='ls -F'
 	alias la='ls -a'
 	alias lc='ls -l'
 	alias lac='ls -la'
@@ -292,6 +308,7 @@ _exists bsdtar     && alias tar='bsdtar'
 _exists htop       && alias top='htop'
 _exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
+_exists sqlite3    && alias sqlite=sqlite3
 
 if _exists vim; then
 	alias vim="vim -p"
@@ -313,26 +330,50 @@ alias Less='less'
 alias cd.='cd .'
 alias cd..='cd ..'
 
-alias now='echo $(date +%Y-%m-%d)'
+alias td='echo $(date +%Y-%m-%d)'
+alias now='echo $(date +%Y-%m-%d\ %T)'
 
 # Global aliases to pipe output.
-alias -g /t='|& tail'
-alias -g /v='|& vim -'
-alias -g /l='|& less'
+# TODO: Ideally, restrict this to the end of the line.
+alias -g VV=' |& vimpager -'
+alias -g VVV=' |& vim -'
 
 # "ag edit" and "grep edit".
 age() {
-	#vim +'normal! gg' +"/$1" +n -p $(ag $@ | cut -d: -f1 | sort -u | xargs)
-	vim +"/$1" -p $(ag "$@" | cut -d: -f1 | sort -u)
+	vim +'/\v'"$1" +':silent tabdo :1 | normal! n' +':tabfirst' -p $(ag "$@" | cut -d: -f1 | sort -u)
 }
 grepe() {
-	vim -p $(grep "$@" | cut -d: -f1 | sort -u)
+	vim +'/\v'"$1" +':silent tabdo :1 | normal! n' +':tabfirst' -p $(grep "$@" | cut -d: -f1 | sort -u)
 }
 
 # For copying examples.
 unprompt() {
 	export PS1='$ '
 	export RPROMPT=' '
+}
+
+reagent() {
+	export SSH_AUTH_SOCK=$(echo /tmp/ssh-*/agent.*)
+	ssh-add -l >/dev/null || ssh-add
+}
+
+rnd() {
+	[[ "${1:-}" = "ascii" ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
+	strings -n1 < /dev/urandom | tr -d "$filter" | head -c${2:-15}
+	echo
+}
+
+# "tmp go"
+tgo() {
+	tmp="$(mktemp -p /tmp -d "tgo_$(date +%Y%m%d)_XXXXXXXX")"
+	printf 'package main\n\nfunc main() {\n\n}\n' > "$tmp/main.go"
+	printf 'package main\n\nfunc TestMain(*t testing.T) {\n\n}\n' > "$tmp/main_test.go"
+	printf 'module %s\n' "$(basename "$tmp")" > "$tmp/go.mod"
+	(
+		cd "$tmp"
+		vim -p main.go main_test.go
+		echo "$tmp"
+	)
 }
 
 # Unset helper.

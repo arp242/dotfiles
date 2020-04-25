@@ -1,4 +1,5 @@
 #!/bin/sh
 export DISPLAY=:0
 export XAUTHORITY=/home/martin/.Xauthority
-exec xbanish -i mod4
+export PATH=$PATH:/usr/local/bin
+exec xbanish -i mod4 >/dev/null 2>&1

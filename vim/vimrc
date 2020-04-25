@@ -1,12 +1,11 @@
 set encoding=utf-8
 scriptencoding utf-8
 
-"set packpath^=~/.cache/vim             " Use ~/.cache so we can easy copy ~/.vim without loads of stuff.
 syntax on                              " Switch syntax highlighting on.
 filetype plugin indent on              " Enable filetype detection.
 set termguicolors                      " Use true colors.
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" " Set correct escape codes to make termguicolors
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum" " work in st.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" " Set correct escape codes to make termguicolors word in st.
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 silent! colorscheme default2           " Load my color scheme if it exists.
 if get(g:, 'colors_name', '') isnot# 'default2'
@@ -71,12 +70,17 @@ set showtabline=2                      " ...and tab bar.
 set title                              " Update term title...
 set titleold=                          " ...but restore old title after exiting.
 set shortmess-=S                       " Show match count on n.
-" https://www.reddit.com/r/vim/comments/cn20tv/tip_histogrambased_diffs_using_modern_vim/
-"set diffopt=filler,internal,algorithm:histogram,indent-heuristic
+let &ttyfast = $SSH_CLIENT is# ''      " Assume the terminal is fast for smoother redrawing.
 set display=lastline,uhex              " lastline  Show as much of the last line as possible instead of @.
                                        " uhex      Always show unprintable chars as <xx> instead of ^C.
 set updatecount=50                     " Write to swap file every 50 characters; swap file is also written if nothing
                                        " happens for 4 seconds (as set by the 'updatetime' setting).
+set diffopt=internal,filler,closeoff,indent-heuristic,algorithm:histogram
+                                       " filler            Show filler lines.
+                                       " internal          Use internal library.
+                                       " closeoff          Run :diffoff when closing the other split.
+                                       " indent-heuristic  Better detection of whitespace diffs.
+                                       " algorithm         Better algorithm
 set formatoptions+=ncroql              " n   Recognize numbered lists when formatting (see formatlistpat)
                                        " c   Wrap comments with textwidth
                                        " r   Insert comment char after enter
@@ -94,62 +98,15 @@ let &statusline .= ' [line %l of %L]'  " current line, total lines.
 let &statusline .= ' [col %v]'         " column.
 let &statusline .= ' [0x%B]'           " Byte value under cursor.
 
-if $SSH_CLIENT . $SSH2_CLIENT . $SSH_CONNECTION is# ''
-    set ttyfast                        " Assume the terminal is fast for smoother redrawing.
-endif
-
-if !has('nvim')    " nvim has different file formant. Only use it for testing so whatever.
-    set viminfo='50,<0,n~/.cache/vim/viminfo " '50  save fewer marks.
-                                           " <0   prevent saving registers.
-endif
-
 " Set/create directory to keep backup, swap, undo files.
 set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
 set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0700)
 set viewdir=$HOME/.cache/vim/view     | call mkdir(&viewdir, 'p', 0700)
 set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
-
-" Highlight columns 80/120
-fun! s:color()
-    hi SoftWrap  cterm=underline gui=underline
-    hi HardWrap  ctermbg=225     guibg=lightred
-    hi SpellRare ctermbg=green   guibg=green      
-endfun
-call s:color()
-augroup softwrap
-    au!
-    au Colorscheme * call s:color()
-
-    " I don't know why this needs to be in this autocmd, but sometimes it won't
-    " work if it's not.
-    au BufReadPost,BufNew *
-        \  call matchadd('SoftWrap', '\%82v')
-        \| call matchadd('HardWrap', '\%122v')
-augroup end
-
-
-if has('gui_running')
-	" Don't iconfy on <C-z>
-	noremap <C-z> <NOP>
-
-	set mousemodel=popup_setpos            " Use pop-up menu for right button.
-	set selectmode=key,mouse               " Also use the mouse for selection.
-	set clipboard=unnamedplus              " Default clipboard is system clipboard.
-	set guicursor+=a:blinkon0              " Don't blink the cursor
-	set guioptions=aiM                     " Remove all the GUI cruft and make gVim look and behave like Vim
-										" a: copy-on-select
-										" i: Use icon
-										" M: No menu
-
-	if has('gui_gtk')                      " Set font
-		set guifont=Dejavu\ Sans\ Mono\ 16
-
-		" TODO: make it look the same as terminal, which has:
-		"static char *font = "DejaVu Sans Mono:pixelsize=22:antialias=true:autohint=true";
-	elseif has('gui_win32')
-		set guifont=Dejavu_Sans_Mono:h10
-	endif
+if &viminfofile isnot# 'NONE' | 
+    set viminfofile=$HOME/.cache/vim/viminfo
 endif
+
 
 """ Autocmds
 """"""""""""
@@ -163,13 +120,11 @@ augroup my-autocmds
             \| exe 'normal! g`"'
         \| endif
 
+    " Hub
+    au BufNewFile,BufRead ISSUE_EDITMSG set ft=
+
     " Don't spellcheck urls.
     au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
-
-    " Don't need the syntax highlighting for git commits; don't like it at all.
-    au FileType gitcommit
-        \  setl syntax=OFF ts=8
-        \| syn match gitcommitComment "^#.*"
 
     " Reset some settings that these ftplugins or syntax files reset :-/
     au FileType python setl ts=4
@@ -187,7 +142,7 @@ augroup my-autocmds
     au FileType c,cpp setl ts=8
 
     " Set tabstop for Makefile, config files, etc.
-    au BufNewFile,BufRead [Mm]akefile*,crontab*,*rc,*.conf,*.ini,*.cfg,*.rc setl ts=8
+    au BufNewFile,BufRead [Mm]akefile*,crontab*,*.conf,*.ini,*.cfg,*.rc setl ts=8
 
     " Set larger textwidth for HTML.
     au FileType html,htmldjango,eruby,haml setl textwidth=100
@@ -199,38 +154,27 @@ augroup my-autocmds
     " Italics don't work well in tmux; shows black background. Loads of people
     " with the issue, but can't get it to work, so just disable it :-(
     au FileType markdown,html,gohtml,htmldjango,xhtml
-                \  if $TMUX isnot ''
-                \|   hi htmlItalic cterm=underline
-                \| endif
+        \  if $TMUX isnot '' | hi htmlItalic cterm=underline | endif
 
     " Don't need errors; too many false positives.
     au FileType markdown hi markdownError ctermbg=NONE
 
-    " Set textwidth to 76 for emails.
-    au BufReadPost /tmp/mail-* setl ft=mail | normal! 0Go
-    au BufNewFile,BufReadPost /home/martin/.claws-mail/tmp/tmpmsg.* setl ft=mail
-    au FileType mail setl textwidth=76
-
     " These emails are usually DOS formatted (as should be, per RFC).
     au BufReadPost *.eml setl fileformats+=dos fileformat=dos | edit!
 
-    " Make editing SSH authorized_keys and known_hosts less painful.
-    au BufReadPost authorized_keys,known_hosts
-        \ setl nowrap noautoindent nosmartindent textwidth=0 formatoptions=
-
     " Works better most of the time.
-    au FileType json,xml setl nowrap
+    "au FileType json,xml setl nowrap
 
     " Show formatting characters only in insert mode and load vimhelplint.
-    au FileType help
-                \| if &modifiable
-                \|   setl colorcolumn=78
-                \|   silent! packadd! vim-vimhelplint
-                \|   augroup help_insert
-                \|     au InsertEnter <buffer> setl conceallevel=0 | highlight clear Ignore
-                \|     au InsertLeave <buffer> setl conceallevel=2
-                \|   augroup end
-                \| endif
+    "au FileType help
+    "    \| if &modifiable
+    "    \|   setl colorcolumn=78
+    "    \|   silent! packadd! vim-vimhelplint
+    "    \|   augroup help_insert
+    "    \|     au InsertEnter <buffer> setl conceallevel=0 | highlight clear Ignore
+    "    \|     au InsertLeave <buffer> setl conceallevel=2
+    "    \|   augroup end
+    "    \| endif
 
     " Very common in CSS; not sure why this isn't there by default? Hmm.
     au FileType css setl isk+=-
@@ -243,19 +187,20 @@ augroup my-autocmds
     "   https://github.com/stephenmckinney/vim-dochub
     "   https://github.com/romainl/vim-devdocs
     au FileType css,html,gohtml,htmldjango,xhtml
-                \  setl keywordprg=:MDN
-                \| command! -nargs=1 MDN call system(printf(
-                \          'firefox https://developer.mozilla.org/en-US/docs/Web/%s/%s',
-                \          (&ft is# 'css' ? 'CSS' : 'HTML/Element'), <f-args>))
+        \  setl keywordprg=:MDN
+        \| command! -nargs=1 MDN call system(printf(
+        \          'firefox https://developer.mozilla.org/en-US/docs/Web/%s/%s',
+        \          (&ft is# 'css' ? 'CSS' : 'HTML/Element'), <f-args>))
 augroup end
-
 
 
 """ Commands
 """"""""""""
 
-" Get the syntax name of character under the cursor
-command! SyntaxName :echo synIDattr(synID(line('.'), col('.'), 1), 'name')
+" Get the syntax name of character under the cursor.
+command! -bang SyntaxName echo <bang>0
+    \ ? map(synstack(line('.'), col('.')), {_, id -> synIDattr(id, 'name')})
+    \ : synIDattr(synID(line('.'), col('.'), 1), 'name')
 
 " Clean trailing whitespace.
 fun! s:trim_whitespace()
@@ -265,31 +210,20 @@ fun! s:trim_whitespace()
 endfun
 command! TrimWhitespace call s:trim_whitespace()
 
-" Move a file and update buffer.
-fun! s:mv(dest)
-    let l:src = expand('%:p')
-	let l:dest = expand(a:dest isnot# '' 
-				\ ? a:dest 
-				\ : input('New file name: ', expand('%:p'), 'file'))
+" Call uni on current character or visual selection.
+command! -range UnicodeName
+        \  let s:save = @a
+        \| if <count> is# -1 | let @a = strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)
+        \| else              | exe 'normal! gv"ay' | endif
+        \| echo system('uni -q i', @a)[:-2]
+        \| let @a = s:save | unlet s:save
 
-    if !isdirectory(fnamemodify(l:dest, ':h'))
-        call mkdir(fnamemodify(l:dest, ':h'), 'p')
-    endif
-    if rename(l:src, l:dest) is# 0
-        execute 'edit ' . l:dest
-    endif
-endfun
-command! -nargs=? -complete=file Mv call s:mv(<q-args>)
-
-" Call uni on current character.
-command! UnicodeName echo
-         \ system('uni -q i', 
-         \      [strcharpart(strpart(getline('.'), col('.') - 1), 0, 1)]
-         \ )[:-2]
+" Convert buffer to scratch.
+command S setlocal noswapfile buftype=nofile bufhidden=hide
 
 
-""" Keys
-""""""""
+""" Key mappings
+""""""""""""""""
 
 " Reload config.
 nnoremap <Leader>r :source $MYVIMRC<CR>
@@ -309,8 +243,6 @@ inoremap <F8>      <C-o>:set spell!<CR>
 nnoremap <Leader>ss :set spell!<CR>:set spell?<CR>
 nnoremap <Leader>sn :set spelllang=nl<CR>
 nnoremap <Leader>se :set spelllang=en_gb<CR>
-nnoremap <Leader>su :set spelllang=en_us<CR>
-nnoremap <Leader>sd :set spelllang=de_de<CR>
 
 " Use <C-l> to clear some highlighting, and make sure it works from insert mode.
 nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
@@ -357,98 +289,30 @@ vnoremap gF <C-w>gF
 " Suspend also works from insert.
 inoremap <C-z> <C-o><C-z>
 
+" Doc on <C-q> in insert.
+inoremap <C-q> <C-o>:normal! K<CR>
+
 " Home works like 0 if already at start of a line, and ^ otherwise.
 " Adapted from: http://vim.wikia.com/wiki/VimTip315
 noremap <expr> <Home> col('.') is# match(getline('.'), '\S') + 1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
 
-" Add guesstimate of reading time to g<C-g>.
-fun! s:readtime()
-    let l:status = v:statusmsg
-    try
-        exe "silent normal! g\<C-g>"
-        echo printf('%s; About %.0f minutes',
-                    \ v:statusmsg, ceil(wordcount()['words'] / 200.0))
-    finally
-        let v:statusmsg = l:status
-    endtry
-endfun
-nnoremap g<C-g> :call <SID>readtime()<CR>
-
 " Use a reasonable completion.
 fun! s:guessType()
-    if &spell && spellbadword()[1] isnot# ''
-        " TODO: Show original word somewhere.
-        " TODO: Make completion start even if word is after badly spelled word.
-        return "\<C-x>s"
-    elseif &completefunc isnot# ''
-        return "\<C-x>\<C-u>"
-    elseif &omnifunc isnot# ''
-        return "\<C-x>\<C-o>"
-    elseif exists('*completor#do')                      " https://github.com/maralla/completor.vim
-        return "\<C-R>=completor#do('complete')\<CR>"
-    elseif exists(':ALEComplete')                       " https://github.com/w0rp/ale
-        return "\<C-\>\<C-O>:ALEComplete\<CR>"
-	elseif exists('*coc#refresh')                       " https://github.com/neoclide/coc.nvim
-		return "\<C-r>=coc#refresh()\<CR>"
-    else
-        return "\<C-x>\<C-n>"
+    " TODO: Show original word somewhere.
+    " TODO: Make completion start even if word is after badly spelled word.
+
+    if &spell && spellbadword()[1] isnot# '' | return "\<C-x>s"
+    elseif &completefunc isnot# ''           | return "\<C-x>\<C-u>"
+    elseif &omnifunc isnot# ''               | return "\<C-x>\<C-o>"
+    elseif exists('*completor#do')           | return "\<C-R>=completor#do('complete')\<CR>"
+    elseif exists(':ALEComplete')            | "\<C-\>\<C-O>:ALEComplete\<CR>"
+    elseif exists('*coc#refresh')            | "\<C-r>=coc#refresh()\<CR>"
+    else                                     | return "\<C-x>\<C-n>"
     endif
 endfun
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
-
-" Don't hijack the entire screen for spell checking, just show the top 9 results
-" in the commandline.
-" Press 0 for the full list. Any key press that's not a valid option (1-9) will
-" behave as normal.
-fun! s:quickspell()
-	if &spell is 0
-        echohl Error | echo "Spell checking not enabled" | echohl None
-		return
-	endif
-
-    " Separator between items.
-    let l:sep = ' | '
-
-    " Show as many columns as will fit in the window.
-	let l:sug = spellsuggest(expand('<cWORD>'), 9)
-    let l:c = 0
-    for l:i in range(0, len(l:sug))
-        let l:c += len(l:sug[l:i - 1]) + len(printf('%d ', l:i + 1))
-        " The -5 is needed to prevent some hit-enter prompts, even when there is
-        " enough space (bug?)
-        if l:c + (len(l:sep) * l:i) >= &columns - 5
-            break
-        endif
-    endfor
-
-    " Show options; make it stand out a bit.
-    echohl QuickFixLine
-	echo join(map(l:sug[:l:i - 1], {i, v -> printf('%d %s', l:i+1, l:v)}), l:sep)
-    echohl None
-
-    " Get answer.
-	let l:char = nr2char(getchar())
-
-    " Display regular spell screen on 0.
-    if l:char is# '0'
-        normal! z=
-        return
-    endif
-
-	let l:n = str2nr(l:char)
-
-    " Feed the character if it's not a number, so it's easier to do e.g. "ciW".
-    if l:n is 0 || l:n > len(l:sug)
-        return feedkeys(l:char)
-    endif
-
-    " Replace!
-    exe printf("normal! ciW%s\<Esc>", l:sug[l:n-1])
-    echo
-endfun
-nnoremap z= :call <SID>quickspell()<CR>
 
 " Yank without clobbering registers.
 nnoremap dD "_dd
@@ -457,13 +321,10 @@ nnoremap dD "_dd
 nnoremap RR "_ddP
 
 " Shortcut to write and run :make.
-nnoremap MM :silent! :wa<CR>:make<CR>
+nnoremap <silent> MM :silent! :wa<CR>:echo &makeprg<CR>:silent make<CR>:redraw!<CR>
 
 " Shortcut to close all windows except the current one.
 nnoremap <silent> OO :silent wincmd o<CR>
-
-" Format the current line from insert mode.
-inoremap <C-f> <C-o>gqk
 
 " I often mistype this :-/
 cabbr Set set
@@ -474,28 +335,38 @@ iabbr teh the
 iabbr hte the
 iabbr Teh The
 iabbr seperated separated
+iabbr seperate separate
 iabbr taht that
 
 " Makes stuff a bit easier to type.
 iabbr 1= !=
-
-" Kind of specific to Go, but doesn't harm to keep as global abbrs.
 iabbr ;= :=
+iabbr :+ :=
 iabbr err1= err !=
 iabbr err!= err !=
 
-" Make these common shortcuts work in the commandline.
-cnoremap <C-a> <Home>
-"cnoremap <C-k>  TODO
+" Add/remove word delimiters in search pattern.
+fun! s:wrap()
+    let l = getcmdline()
+    let pos = getcmdpos()
+    " Remove
+    if l[:1] is '\<' && l[-2:] is '\>'
+        call setcmdpos(pos - 2)
+        return l[2:len(l)-3]
+    endif
+    " Add
+    if l[:1] isnot '\<'
+        let l = '\<' . l
+        let pos += 2
+    endif
+    if l[-2:] isnot '\>'
+        let l .= '\>'
+    endif
+    call setcmdpos(pos)
+    return l
+endfun
+cnoremap <expr> <C-a> index(['/', '?'], getcmdtype()) is -1 ? "\<F1>" : "\<C-\>e<SID>wrap()\<CR>"
 
-" Easier way to close quickfix.
-nnoremap <silent> <C-w>q     :cclose\|:lclose<CR>
-nnoremap <silent> <C-w><C-q> :cclose\|:lclose<CR>
-
-" Split line.
-" TODO: undo should restore cursor position.
-" https://github.com/drzel/vim-split-line
-nnoremap S :keeppatterns substitute/\s*\%#\s*/\r/e <bar> normal! ==<CR>
 
 """ Plugins
 """""""""""
@@ -546,23 +417,33 @@ augroup end
 """ gopher.vim
 """"""""""""""
 let g:gopher_debug = ['commands']
-let g:gopher_highlight = ['string-spell', 'string-fmt', 'fold-import', 'fold-pkg-comment']
+let g:gopher_highlight = ['string-spell', 'string-fmt',
+        \ 'fold-block', 'fold-comment', 'fold-import', 'fold-pkg-comment', 'fold-varconst']
+let g:gopher_highlight = ['string-spell', 'string-fmt']
 
 augroup my-gopher
     au!
 
     " Make, lint, and test code.
-    au FileType go nnoremap MM :silent! :wa<CR>:compiler go<CR>:silent make!<CR>:redraw!<CR>
-    au FileType go nnoremap TT :silent! :wa<CR>:compiler gotest<CR>:silent make!<CR>:redraw!<CR>
+    "au FileType go nmap MM <Plug>(gopher-install)
+    "au FileType go nmap TT <Plug>(gopher-test)
+
+    " Make ! stand out a bit more.
+    au FileType go syn match goBang /!\ze[^=]/ | hi goBang gui=bold cterm=bold
+
+    " Compile without cgo unless explicitly enabled.
+    autocmd FileType go if $CGO_ENABLED is# '' | let $CGO_ENABLED=0 | endif
 
     " Format buffer on write.
+    " https://vi.stackexchange.com/questions/7116
     au BufWritePre *.go
                 \  let s:save = winsaveview()
                 \| exe 'keepjumps %!goimports 2>/dev/null || cat /dev/stdin'
                 \| call winrestview(s:save)
 
-    autocmd BufReadPre /home/martin/code/goatcounter/*.go
-                \ let g:gopher_install_package = 'zgo.at/goatcounter/cmd/goatcounter'
+    "            \| let g:gopher_install_package = 'zgo.at/goatcounter/cmd/goatcounter'
+    "autocmd BufReadPre /home/martin/code/goatletter/*.go
+    "            \ let g:gopher_install_package = 'zgo.at/goatletter/cmd/goatletter'
 augroup end
 
 
@@ -579,36 +460,22 @@ nmap <C-Right>   <Plug>(qf_qf_next)
 nmap <Esc>[C     <Plug>(qf_qf_next)
 nmap <Esc>[1;5C  <Plug>(qf_qf_next)
 
-" Toggle location list.
+" Toggle quickfix list.
 nmap <C-Up>      <Plug>(qf_qf_toggle_stay)
 nmap <Esc>[A     <Plug>(qf_qf_toggle_stay)
 nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
 
-" TODO: Make <C-Down> switch above mappings to loclist.
-" nnoremap <C-Down>
-" nnoremap <Esc>[B
-" nnoremap <Esc>[1;5B
-
 
 """ vim-lsc
 """""""""""
-" https://github.com/castwide/solargraph
-" https://github.com/redhat-developer/yaml-language-server
-let g:lsc_server_commands = {
-            \ 'go': #{command: 'gopls serve', log_level: -1},
-            \ }
-
-"\ https://github.com/mads-hartmann/bash-language-server
-" \ 'sh':     #{command: 'bash-language-server start'},
-" "\ https://github.com/palantir/python-language-server
-" "\ 'python': #{command: 'pyls'},
-" "\ https://github.com/vscode-langservers/vscode-css-languageserver-bin
-" \ 'css':    #{command: 'css-languageserver --stdio'},
-" "\ https://clang.llvm.org/extra/clangd/
-" \ 'c':      #{command: 'clangd -log=error'},
-" "\ https://github.com/sourcegraph/javascript-typescript-langserver
-" \ 'javascript': #{command: 'javascript-typescript-stdio'},
-" \ }
+let g:lsc_server_commands = #{
+    \ c:          #{command: 'clangd -log=error'},
+    \ css:        #{command: 'css-languageserver --stdio'},
+    \ go:         #{command: 'gopls serve', log_level: -1, suppress_stderr: v:true},
+    \ javascript: #{command: 'javascript-typescript-stdio'},
+    \ python:     #{command: 'pyls'},
+    \ sh:         #{command: 'bash-language-server start'},
+\ }
 
 let g:lsc_enable_autocomplete = v:false      " Don't complete when typing.
 let g:lsc_enable_diagnostics = v:false       " Don't lint code.
@@ -616,21 +483,12 @@ let g:lsc_reference_highlights = v:false     " Don't highlight references.
 "let g:lsc_enable_incremental_sync = v:false  " Don't constantly send diffs to server.
 let g:lsc_preview_split_direction = 'below'  " Show preview at bottom, rather than top.
 
-"let g:lsc_auto_map = {'defaults': v:true, 'SignatureHelp': '<C-k>', 'GoToDefinitionSplit': ''}
 let g:lsc_auto_map = {'defaults': v:true, 'GoToDefinitionSplit': ''}
 augroup my-lsc
     au!
+    " Open in tab, rather than split.
     au BufNewFile,BufReadPost *
         \  if has_key(get(g:, 'lsc_servers_by_filetype', {}), &filetype) && lsc#server#filetypeActive(&filetype)
-        "\     Show function signature in insert mode too (I don't use digraphs).
-        "\ \|     inoremap <buffer> <C-k> <C-o>:LSClientSignatureHelp<CR>
-        "\     Open in tab, rather than split.
-        \|     nnoremap <buffer> <C-w>]     :tab LSClientGoToDefinitionSplit<CR>
-        \|     nnoremap <buffer> <C-w><C-]> :tab LSClientGoToDefinitionSplit<CR>
-        \|     nnoremap <buffer> gd         :tab LSClientGoToDefinitionSplit<CR>
+        \|   nnoremap <buffer> gd :tab LSClientGoToDefinitionSplit<CR>
         \| endif
-
-    " Resize to be as small as possible.
-    au WinLeave __lsc_preview__ exe 'resize ' . min([&previewheight, line('$')])
-    au User LSCShowPreview      exe 'resize ' . min([&previewheight, line('$')])
 augroup end

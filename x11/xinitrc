@@ -2,7 +2,10 @@
 
 cd ~
 xset -b
+#xset m 1/1
 xmodmap ~/.Xmodmap
-xbacklight -set 10
+#xbacklight -set 10
 xsetroot -solid "#3a6ea5"
-while :; do ssh-agent dwm; done
+while :; do
+	ssh-agent dwm
+done

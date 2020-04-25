@@ -8,25 +8,36 @@
 #     Active Profile: output:analog-stereo+input:analog-stereo
 #     Active Profile: output:hdmi-stereo-extra1
 
+laptop="eDP1"
+hdmi="HDMI2"
+
+laptop="eDP-1"
+hdmi="HDMI-1"
+
+laptop_mode=1366x768
+hdmi_mode=1920x1080
+
 set -euC
 
 case "${1:-}" in
 	both)
 		xrandr \
-			 --output eDP1  --mode 1920x1080 --pos 0x0 --primary \
-			 --output HDMI2 --mode 1920x1080 --pos 0x0
-		pactl set-card-profile 0 output:hdmi-stereo-extra1
+			 --output "$laptop" --mode "$laptop_mode" --pos 0x0 --primary \
+			 --output "$hdmi"   --mode "$hdmi_mode" --pos 0x0
+		#pactl set-card-profile 0 output:hdmi-stereo-extra1
+		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 		;;
 	hdmi)
 		xrandr \
-			--output HDMI2 --mode 1920x1080 --pos 0x0 --primary \
-			--output eDP1  --off
-		pactl set-card-profile 0 output:hdmi-stereo-extra1
+			--output "$laptop" --off \
+			--output "$hdmi"   --mode "$hdmi_mode" --pos 0x0 --primary
+		#pactl set-card-profile 0 output:hdmi-stereo-extra1
+		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 		;;
 	laptop)
 		xrandr \
-			--output eDP1  --mode 1920x1080 --pos 0x0 --primary \
-			--output HDMI2 --off
+			--output "$laptop" --mode "$laptop_mode" --pos 0x0 --primary \
+			--output "$hdmi"   --off
 		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 		;;
 	*)

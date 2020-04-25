@@ -4,6 +4,9 @@
 # My name
 Tournoij
 
+# Valid words, but I often misspell this.
+trail/?
+
 # Some computer jargon.
 libre
 dir
@@ -21,8 +24,9 @@ conf
 commandline
 docbook
 tagsoup
-JSON
-YAML
+JSON/=
+YAML/=
+TOML/=
 EC2
 OOP
 microservice
@@ -69,6 +73,14 @@ GPG
 keyrings
 PRs
 multiline
+monorepos
+codepoints
+stdout
+stdin
+stderr
+keybind
+pageviews
+stdlib
 
 # Program names.
 sftp/=
@@ -87,34 +99,42 @@ pf/=
 gofmt/=
 
 # Product names.
-Baskerville
-CoffeeScript
-TypeScript
-OpenAPI
-MariaDB
-MySQL
-PostgreSQL
-Redis
-qutebrowser
-CentOS
-WebDAV
-macOS
-Kubernetes
-k8s
-Plesk
-suckless
-Reddit
-ThinkPad
-POSIX
-Bitbucket
-WebKit
-MediaWiki
-MessagePack
-Equifax
-UpWork
-PowerShell
-SecureWorks
-Vimeo
+Baskerville/=
+CoffeeScript/=
+TypeScript/=
+OpenAPI/=
+MariaDB/=
+MySQL/=
+PostgreSQL/=
+Redis/=
+qutebrowser/=
+CentOS/=
+WebDAV/=
+macOS/=
+Kubernetes/=
+k8s/=
+Plesk/=
+suckless/=
+Reddit/=
+ThinkPad/=
+POSIX/=
+Bitbucket/=
+WebKit/=
+MediaWiki/=
+MessagePack/=
+Equifax/=
+UpWork/=
+PowerShell/=
+SecureWorks/=
+Vimeo/=
+Ericson/=
+QNX/=
+Hurd/=
+jQuery/=
+WhatsApp/=
+DragonFly/=
+XFree86/=
+MSX/=
 
 # Words I like but aren't in the main spell file.
 decorational
@@ -143,9 +163,6 @@ makepkg
 systemd
 earthers
 autoreply
-DragonFly
-XFree86
-MSX
 asshole
 Breivik
 Tarrant
@@ -179,23 +196,15 @@ VimScript
 printf
 MediaWiki's
 userbase
-TOML
 reddit
 Reddit's
 HN
 ol'
-stdlib
 globals
 Multatuli
 Nuremburg
 Kristallnacht
-MySQL's
 twat
-jQuery
-WhatsApp
-Ericson
 Compatability
-pageviews
-QNX
-Hurd
-monorepos
+SaaS
+linebreaks
