@@ -6,7 +6,7 @@ def run():
 		os.makedirs(d)
 
 	path = '{}/authorized_keys'.format(d)
-	key = open('id_rsa.pub', 'r').read().strip()
+	key = open('id_ed25519.pub', 'r').read().strip()
 	if os.path.exists(path):
 		if key in open(d + '/authorized_keys', 'r').read():
 			return
