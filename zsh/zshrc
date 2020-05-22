@@ -1,13 +1,15 @@
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
 #
 # https://github.com/GaugeK/dots/blob/master/zsh/etc/zsh/.zshrc
+#
+# https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
 
 set -u               # Undefined variables are an error.
 
 ZDOTDIR=~/.zsh       # Store all zsh-related stuff in ~/.zsh/ instead of ~/
 
 # Helper; will be unset later.
-_exists() { hash $1 2>/dev/null }
+_exists() { (( $+commands[$1] )) }
 
 ### Setup PATH
 ##############
@@ -17,14 +19,14 @@ path=()
 # On some other systems /usr/bin links to /bin; use the full path to prevent dupes.
 _prepath() {
 	for dir in "$@"; do
-		[[ -L "$dir" ]] && dir=$(/usr/bin/readlink -f "$dir")
+		dir=${dir:A}
 		[[ ! -d "$dir" ]] && return
 		path=("$dir" $path[@])
 	done
 }
 _postpath() {
 	for dir in "$@"; do
-		[[ -L "$dir" ]] && dir=$(/usr/bin/readlink -f "$dir")
+		dir=${dir:A}
 		[[ ! -d "$dir" ]] && return
 		path=($path[@] "$dir")
 	done
@@ -354,7 +356,7 @@ alias now='echo $(date +%Y-%m-%d\ %T)'
 
 # Global aliases to pipe output.
 # TODO: Ideally, restrict this to the end of the line.
-alias -g VV=' |& vim -'
+alias -g VV=' |& vim +S -'
 alias -g LL=' |& less'
 
 # "ag edit" and "grep edit".
