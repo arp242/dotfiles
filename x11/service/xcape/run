@@ -1,4 +1,4 @@
 #!/bin/sh
 export DISPLAY=:0
-export XAUTHORITY=/home/martin/.Xauthority
+export XAUTHORITY=/home/martin/.config/x11/authority
 exec xcape -fe 'Shift_L=KP_Add' >/dev/null 2>&1

@@ -3,7 +3,7 @@
 cd ~
 xset -b
 #xset m 1/1
-xmodmap ~/.Xmodmap
+xmodmap ~/.config/x11/modmap
 #xbacklight -set 10
 xsetroot -solid "#3a6ea5"
 while :; do

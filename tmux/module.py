@@ -1,3 +1,3 @@
 files = {
-	'~/.tmux.conf': 'tmux.conf',
+	'~/.config/tmux/tmux.conf': 'tmux.conf',
 }

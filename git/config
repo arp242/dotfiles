@@ -28,7 +28,8 @@ advice     = false
 mnemonicprefix = true        # Use more useful dir names in diff instead of a/ and b/.
 
 [pager]
-#status = false
+status = false               # No pager for these commands; I know how to use | less
+branch = false
 
 [push]
 default = current            # Update a branch with the same name on the receiving end.
@@ -45,7 +46,6 @@ fontui = -family \"DejaVu Sans\" -size 14 -weight normal -slant roman -underline
 fontdiff = -family \"DejaVu Sans Mono\" -size 14 -weight normal -slant roman -underline 0 -overstrike 0
 
 [help]
-# TODO: disable "most similar commands are..."
 autoCorrect = 10             # Run guessed command after 1s if there's only one guess result.
 
 [merge]
@@ -56,12 +56,14 @@ short         = true         # Always use short CVS-ish output.
 branch        = true         # Show branch on status.
 
 [alias]
-st = status                  # Shortcuts
-co = checkout
-
-# Allow drafting commit mesages.
-draft = !${EDITOR:-vi} $(git rev-parse --git-dir)/draft
-ci    = "!d=$(git rev-parse --git-dir)/draft; [ -f "$d" ] && git commit -eF "$d" || git commit"
+st  = status                  # Shortcuts
+co  = checkout
+l   = log --no-color --name-status # Can't disable colours for "git log" without also disabling "git diff" :-/
+d   = diff --patch --stat
+b   = branch -v
+ci  = commit
+# Use draft message for commit
+draft = !git commit --edit -F $(git rev-parse --git-dir)/draft
 
 [url "git@github.com:"]      # Prefer git protocol over http for GitHub.
 insteadOf = https://github.com/

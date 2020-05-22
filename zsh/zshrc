@@ -52,16 +52,31 @@ unfunction _postpath
 ###########################
 [[ -n "${TMUX:-}" ]] && export TERM=screen-256color || export TERM=st-256color
 
-_exists locale   && export LANG=en_NZ.UTF-8            # UTF-8; use Kiwiland for sane date format, metric system, etc.
-_exists vim      && export EDITOR=vim                  # Default applications.
+_exists vim      && export EDITOR=vim        # Default applications.
 _exists firefox  && export BROWSER=firefox
 _exists less     && export PAGER=less
 #_exists vimpager && export PAGER=vimpager
 
-export LESSHISTFILE=~/.cache/lesshistory      # Store files in xdg dirs
+# https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
+export LESSHISTFILE=~/.cache/lesshistory     # Store files in xdg dirs
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
+export PSQLRC=~/.config/psqlrc
+export PSQL_HISTORY=~/.cache/psql_history
+export BUNDLE_USER_HOME=~/.cache/bundle
+export GNUPGHOME=~/.config/gnupg
+# GTK: $XDG_CONFIG_HOME/gtk-3.0/Compose
+export XCOMPOSEFILE=~/.config/x11/compose
+export XAUTHORITY=~/.config/x11/authority
 
+# Doesn't work? "startx ~/.config/x11/xinitrc"?
+export XINITRC=~/.config/x11/xinitrc
+
+#export VIMINIT=":source ~/.config/vim/vimrc"
+
+# TODO? export GEM_HOME=~/.cache/gem
+
+export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
 export GOTMPDIR=/tmp/gotmpdir                # Store Go tmp files in /tmp; make sure it exists as Go won't create it.
 [[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
 
@@ -103,10 +118,13 @@ fi
 [[ -o interactive ]] || return 0 
 
 # Directory shortcuts
-pack=$HOME/.cache/vim/pack/plugins/start/
-d=$HOME/code/arp242.net/_drafts
-go=/usr/lib/go/src
-vim=/usr/share/vim/vim82
+hash -d pack=$HOME/.cache/vim/pack/plugins/start
+hash -d vim=/usr/share/vim/vim82
+hash -d d=$HOME/code/arp242.net/_drafts
+hash -d p=$HOME/code/arp242.net/_posts
+hash -d go=/usr/lib/go/src
+hash -d c=$HOME/code
+hash -d gc=$HOME/code/goatcounter
 
 setopt noflowcontrol         # Disable ^S, ^Q, ^\
 stty -ixon quit undef
@@ -151,17 +169,16 @@ function zle-line-init zle-keymap-select {
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git
 zstyle ':vcs_info:*' formats '(%b)'
  
 set_prompt() {
-	vcs_info
+	vcs_info >/dev/null 2>&1
 
 	print -n "%(?..%S %? %s)"                  # Exit code in "standout" if non-0.
 	[[ "${mode:-}" = n ]] && print -n "%S"     # Directory as "standout" in normal mode.
-	print -n "[%~]${vcs_info_msg_0_}%#"        # Directory and VCS info (if any).
+	print -n "[%~]${vcs_info_msg_0_:-}%#"      # Directory and VCS info (if any).
 	[[ "${mode:-}" = "n" ]] && print -n "%s"   # End standout.
 	print -n ' '
 }
@@ -276,6 +293,8 @@ bindkey '^Z' toggle-ctrl-z
 alias cp='cp -i'              # Ask for confirmation when overwriting existing files.
 alias mv='mv -i'
 alias make='nice -n 20 make'  # Make can always be very nice.
+alias free='free -m'          # MB is more useful.
+alias cal='cal -m'            # Week starts on Monday.
 
 if [[ "$(uname)" = "Linux" ]]; then
 	if [ -h /bin/ls ]; then   # Assume busybox
@@ -335,8 +354,8 @@ alias now='echo $(date +%Y-%m-%d\ %T)'
 
 # Global aliases to pipe output.
 # TODO: Ideally, restrict this to the end of the line.
-alias -g VV=' |& vimpager -'
-alias -g VVV=' |& vim -'
+alias -g VV=' |& vim -'
+alias -g LL=' |& less'
 
 # "ag edit" and "grep edit".
 age() {
@@ -367,7 +386,9 @@ rnd() {
 tgo() {
 	tmp="$(mktemp -p /tmp -d "tgo_$(date +%Y%m%d)_XXXXXXXX")"
 	printf 'package main\n\nfunc main() {\n\n}\n' > "$tmp/main.go"
-	printf 'package main\n\nfunc TestMain(*t testing.T) {\n\n}\n' > "$tmp/main_test.go"
+	printf 'package main\n\nfunc TestMain(t *testing.T) {\n\n}\n\n' > "$tmp/main_test.go"
+	printf 'func BenchmarkMain(b *testing.B) {\n\tb.ReportAllocs()\n\tfor n := 0; n < b.N; n++ {\n\t}\n}\n' >> "$tmp/main_test.go"
+
 	printf 'module %s\n' "$(basename "$tmp")" > "$tmp/go.mod"
 	(
 		cd "$tmp"
@@ -375,6 +396,19 @@ tgo() {
 		echo "$tmp"
 	)
 }
+
+sql() {
+	cmd="psql -X -P linestyle=unicode -P null=NULL goatcounter"
+	f="$HOME/docs/sql/scripts/$1"
+	if [[ -f "$f" ]]; then
+		eval "$cmd" < "$HOME/docs/sql/scripts/$1" | less -S
+	else
+		eval "$cmd" <<< "$1" | less -S
+	fi
+}
+_sql() { _files -W ~/docs/sql/scripts }
+compdef _sql sql
+
 
 # Unset helper.
 unfunction _exists

@@ -66,7 +66,7 @@ set tildeop                            " Use ~ as an operator to switch case.
 set clipboard=                         " Never automatically interface with system clipboard.
 set nofoldenable                       " Disable folds by default.
 set laststatus=2                       " Always show statusline...
-set showtabline=2                      " ...and tab bar.
+"set showtabline=2                      " ...and tab bar.
 set title                              " Update term title...
 set titleold=                          " ...but restore old title after exiting.
 set shortmess-=S                       " Show match count on n.
@@ -92,11 +92,15 @@ let &statusline .= '%<%f'              " Filename, truncate right
 let &statusline .= ' %h%m%r'           " [Help] [modified] [read-only]
 let &statusline .= '%{len(getqflist()) > 0 ? "[QE]" : ""}'
 let &statusline .= '%{len(getloclist(0)) > 0 ? "[LE]" : ""}'
+let &statusline .= ' %#X#%{get(v:completed_item, "menu", "")}%#StatusLine#'
+let &statusline .= ' %#Y#%{get(get(b:, "lsc_last_preview", []), 0, "")}%#StatusLine#'
 let &statusline .= '%='                " Right-align from here on.
-let &statusline .= ' %{get(v:completed_item, "abbr", "")}'
 let &statusline .= ' [line %l of %L]'  " current line, total lines.
 let &statusline .= ' [col %v]'         " column.
 let &statusline .= ' [0x%B]'           " Byte value under cursor.
+
+hi X guibg=#999999 guifg=white
+hi Y guibg=#cccccc guifg=black
 
 " Set/create directory to keep backup, swap, undo files.
 set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
@@ -182,6 +186,9 @@ augroup my-autocmds
     " Varnish
     autocmd BufRead,BufNewFile *.vcl setfiletype vcl.conf
 
+    " Void packages.
+    autocmd BufRead,BufNewFile */srcpkgs/*/template setfiletype sh
+
     " Get MDN help for current element; works for CSS and HTML.
     " TODO: check out:
     "   https://github.com/stephenmckinney/vim-dochub
@@ -191,11 +198,20 @@ augroup my-autocmds
         \| command! -nargs=1 MDN call system(printf(
         \          'firefox https://developer.mozilla.org/en-US/docs/Web/%s/%s',
         \          (&ft is# 'css' ? 'CSS' : 'HTML/Element'), <f-args>))
+
+
+	autocmd BufReadPost ip nnoremap <Leader>i :echo system('ipinfo ' . expand('<cWORD>'))<CR>
 augroup end
 
 
 """ Commands
 """"""""""""
+
+" Convert buffer to and from scratch.
+command S
+    \  if &buftype is# 'nofile' | setl swapfile buftype= bufhidden=
+    \| else                     | setl noswapfile buftype=nofile bufhidden=hide | endif
+    \| echo printf('swapfile=%s buftype=%s bufhidden=%s', &swapfile, &buftype, &bufhidden)
 
 " Get the syntax name of character under the cursor.
 command! -bang SyntaxName echo <bang>0
@@ -218,8 +234,45 @@ command! -range UnicodeName
         \| echo system('uni -q i', @a)[:-2]
         \| let @a = s:save | unlet s:save
 
-" Convert buffer to scratch.
-command S setlocal noswapfile buftype=nofile bufhidden=hide
+" It's not uncommon I want to insert some text at the start and end of lines;
+" this makes that a bit easier.
+"
+"   :Modline /start/ /end/
+"   :Modline !/path/! //
+"   :Modline // /end only/
+fun! s:modline(line1, line2, args)
+    exe printf('%s,%ss%s^%s', a:line1, a:line2, a:args[0][0], a:args[0])
+    exe printf('%s,%ss%s$%s', a:line1, a:line2, a:args[1][0], a:args[1])
+endfun
+command! -range -nargs=+ Modline call s:modline(<line1>, <line2>, [<f-args>])
+
+" Sum up all numbers in a visual selection.
+"
+" This removes all non-numbers, so that it works when summing:
+"
+"  Personal plans        € 44
+"  Personal plus plans   € 20
+"  Stripe costs         -€ 14
+"
+" It will just add 44, 20, and -14 (resulting in 50).
+fun! s:sum(count)
+    if a:count is# -1
+        echohl Error | echom 'Sum: need selection' | echohl None
+        return
+    endif
+
+    let l:save = @a
+    normal! gv"ay
+    let l:lines = @a
+    let @a = l:save
+
+    let l:total = 0
+    for l:line in split(substitute(l:lines, '[^0-9\n-]', '', 'g'), "\n")
+        let l:total += l:line->str2nr(10)
+    endfor
+    echom printf('Total: %d', l:total)
+endfun
+command! -range Sum call s:sum(<count>)
 
 
 """ Key mappings
@@ -438,7 +491,7 @@ augroup my-gopher
     " https://vi.stackexchange.com/questions/7116
     au BufWritePre *.go
                 \  let s:save = winsaveview()
-                \| exe 'keepjumps %!goimports 2>/dev/null || cat /dev/stdin'
+                \| silent! exe 'undojoin | keepjumps %!goimports 2>/dev/null || cat /dev/stdin'
                 \| call winrestview(s:save)
 
     "            \| let g:gopher_install_package = 'zgo.at/goatcounter/cmd/goatcounter'
@@ -470,9 +523,7 @@ nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
 """""""""""
 let g:lsc_server_commands = #{
     \ c:          #{command: 'clangd -log=error'},
-    \ css:        #{command: 'css-languageserver --stdio'},
     \ go:         #{command: 'gopls serve', log_level: -1, suppress_stderr: v:true},
-    \ javascript: #{command: 'javascript-typescript-stdio'},
     \ python:     #{command: 'pyls'},
     \ sh:         #{command: 'bash-language-server start'},
 \ }
@@ -481,7 +532,7 @@ let g:lsc_enable_autocomplete = v:false      " Don't complete when typing.
 let g:lsc_enable_diagnostics = v:false       " Don't lint code.
 let g:lsc_reference_highlights = v:false     " Don't highlight references.
 "let g:lsc_enable_incremental_sync = v:false  " Don't constantly send diffs to server.
-let g:lsc_preview_split_direction = 'below'  " Show preview at bottom, rather than top.
+"let g:lsc_preview_split_direction = 'below'  " Show preview at bottom, rather than top.
 
 let g:lsc_auto_map = {'defaults': v:true, 'GoToDefinitionSplit': ''}
 augroup my-lsc
@@ -492,3 +543,34 @@ augroup my-lsc
         \|   nnoremap <buffer> gd :tab LSClientGoToDefinitionSplit<CR>
         \| endif
 augroup end
+
+" Useful especially for repeating last :s command, since it won't reset the last
+" search pattern.
+" TODO: turns out :&& is the same?
+let s:last_repeat = get(s:, 'last_repeat', '')
+fun! s:repeat(bang, l1, l2, ...)
+    if a:bang
+        echo s:last_repeat
+        return
+    endif
+
+    if a:0 > 0
+        let s:last_repeat = join(a:000, ' ')
+    endif
+    let run = printf('%d,%d%s', a:l1, a:l2, s:last_repeat)
+    exe run
+endfun
+command! -bang -range -nargs=* Repeat call s:repeat(<bang>0, <line1>, <line2>, <f-args>)
+nnoremap <silent> <Leader>. :call <SID>repeat()<CR>
+
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+"inoremap <C-U> <C-G>u<C-U>
+
+" Expandtab since some docs are aligned.
+" vim: et
+
+let g:html_indent_script1 = 'inc'
+let g:html_indent_style1  = 'inc'
+":let g:html_indent_inctags = "html,body,head,tbody"
+":let g:html_indent_autotags = "th,td,tr,tfoot,thead"
