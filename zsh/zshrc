@@ -1,8 +1,11 @@
+# Some other things to check out:
+#
 # http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
-#
 # https://github.com/GaugeK/dots/blob/master/zsh/etc/zsh/.zshrc
-#
 # https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
+# https://github.com/zdharma/Zsh-100-Commits-Club
+# https://github.com/myfreeweb/dotfiles/blob/master/zsh/zshrc
+#
 
 set -u               # Undefined variables are an error.
 
@@ -60,6 +63,7 @@ _exists less     && export PAGER=less
 #_exists vimpager && export PAGER=vimpager
 
 # https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
+# https://www.reddit.com/r/zsh/comments/fvtr19/no_more_dotfile_clutter_in_my_home/
 export LESSHISTFILE=~/.cache/lesshistory     # Store files in xdg dirs
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
@@ -330,6 +334,7 @@ _exists htop       && alias top='htop'
 _exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
 _exists sqlite3    && alias sqlite=sqlite3
+_exists psql       && alias psql='LESS=S$LESS psql'  # Don't wrap
 
 if _exists vim; then
 	alias vim="vim -p"
