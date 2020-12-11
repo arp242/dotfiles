@@ -3,7 +3,6 @@
 [user]
 name       = Martin Tournoij
 email      = martin@arp242.net
-signingKey = 0xA6258419189EE585
 
 [core]
 eol       = lf               # Always use \n, even on Windows.

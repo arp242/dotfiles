@@ -1,4 +1,8 @@
+pragma foreign_keys = on;
+pragma case_sensitive_like = on;
+pragma journal_mode = wal;
 .headers on
-.changes on
 .mode column
-.tables
+.width 100
+.bail on
+.changes on

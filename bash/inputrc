@@ -20,6 +20,9 @@ set enable-keypad off
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 
+# C-o is C-p
+C-O: history-search-backward
+
 # Home
 "\e[H": beginning-of-line
 "\e[1~": beginning-of-line

@@ -7,10 +7,10 @@ set -euC
 # pactl set-sink-volume @DEFAULT_SINK@ -5%"
 
 case "$1" in
-	"up")      amixer -q sset 'Master' 5%+      ;;
-	"down")    amixer -q sset 'Master' 5%-      ;;
-	"mute")    amixer -q sset Master toggle  ;;
-	"micmute") amixer -q sset Capture toggle ;;
+	"up")      amixer -q -c 1 sset 'Master' 5%+      ;;
+	"down")    amixer -q -c 1 sset 'Master' 5%-      ;;
+	"mute")    amixer -q -c 1 sset Master toggle  ;;
+	"micmute") amixer -q -c 1 sset Capture toggle ;;
 	*)
 		echo "Unsupported: \"$1\""
 		exit 1

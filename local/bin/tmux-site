@@ -23,6 +23,6 @@ tmux new-window -d -t "=$s" -n server -c ~/code/arp242.net/_site
 tmux send-keys -t "=$s:=server" 'python -mhttp.server' Enter
 
 tmux new-window -d -t "=$s" -n jekyll
-tmux send-keys -t "=$s:=jekyll" 'JEKYLL_NO_BUNDLER_REQUIRE=1 jekyll build -w' Enter
+tmux send-keys -t "=$s:=jekyll" 'JEKYLL_NO_BUNDLER_REQUIRE=1 jekyll build --strict_front_matter -w' Enter
 
 att

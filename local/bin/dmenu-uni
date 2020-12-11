@@ -9,7 +9,7 @@ case "${1:-all}" in
 			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
 			grep -o "^'.'" |
 			tr -d "'" |
-			xclip -selection clipboard
+			xclip -selection clipboard -rmlastnl
 		;;
 	
 	# List all emojis.
@@ -17,17 +17,17 @@ case "${1:-all}" in
 		uni -q emoji -gender man all |
 			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
 			cut -d' ' -f1 |
-			xclip -selection clipboard
+			xclip -selection clipboard -rmlastnl
 		;;
 
 	# List common facial expressions, excluding flags, guitars, lobsters, map of
 	# Japan, and what-have-you.
 	emoji-common)
 		uni -q emoji -gender man \
-			-groups smileys,hand-fingers-open,hand-fingers-partial,hand-single-finger,hand-fingers-closed,hands,body-parts,person-gesture |
+			g:smileys g:hand-fingers-open g:hand-fingers-partial g:hand-single-finger g:hand-fingers-closed g:hands g:body-parts g:person-gesture |
 			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
 			cut -d' ' -f1 |
-			xclip -selection clipboard
+			xclip -selection clipboard -rmlastnl
 		;;
 
 	*)

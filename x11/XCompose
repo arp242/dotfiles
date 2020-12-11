@@ -124,8 +124,7 @@
 <Multi_key>  <exclam>       <exclam>       :  "¡" exclamdown      # ! ! (INVERTED EXCLAMATION MARK)
 <Multi_key>  <question>     <question>     :  "¿" questiondown    # ? ? (INVERTED QUESTION MARK)
 <Multi_key>  <exclam>       <question>     :  "‽" U0203d          # ! ? (INTERROBANG)
-<Multi_key>  <period> <comma> : "·" U00B7
-<Multi_key>  <comma> <period> : "·" U00B7
+<Multi_key>  <period>       <comma>        :  "·" U00B7           # . , (MIDDLE DOT)
 
 # Math
 <Multi_key>  <x>            <x>            :  "×" multiply        # x x (MULTIPLICATION SIGN)
@@ -363,6 +362,7 @@
 <Multi_key>  <exclam>       <asciicircum>  :  "¡" exclamdown      # ! ^ (INVERTED EXCLAMATION MARK)
 <Multi_key>  <question>     <asciicircum>  :  "¿" questiondown    # ? ^ (INVERTED QUESTION MARK)
 <Multi_key>  <question>     <exclam>       :  "‽" U0203d          # ? ! (INTERROBANG)
+<Multi_key>  <comma>        <period>       :  "·" U00B7           # , . (MIDDLE DOT)
 <Multi_key>  <minus>        <colon>        :  "÷" division        # - : (DIVISION SIGN)
 <Multi_key>  <equal>        <exclam>       :  "≠" U02260          # = ! (NOT EQUAL TO)
 <Multi_key>  <equal>        <slash>        :  "≠" U02260          # = / (NOT EQUAL TO)

@@ -1,18 +1,5 @@
-# Some other things to check out:
-#
-# http://zanshin.net/2013/02/02/zsh-configuration-from-the-ground-up/
-# https://github.com/GaugeK/dots/blob/master/zsh/etc/zsh/.zshrc
-# https://github.com/sorin-ionescu/prezto/blob/master/modules/editor/init.zsh
-# https://github.com/zdharma/Zsh-100-Commits-Club
-# https://github.com/myfreeweb/dotfiles/blob/master/zsh/zshrc
-#
-
 set -u               # Undefined variables are an error.
-
 ZDOTDIR=~/.zsh       # Store all zsh-related stuff in ~/.zsh/ instead of ~/
-
-# Helper; will be unset later.
-_exists() { (( $+commands[$1] )) }
 
 ### Setup PATH
 ##############
@@ -23,48 +10,46 @@ path=()
 _prepath() {
 	for dir in "$@"; do
 		dir=${dir:A}
-		[[ ! -d "$dir" ]] && return
-		path=("$dir" $path[@])
+		[[ -d "$dir" ]] && path=("$dir" $path[@])
 	done
 }
 _postpath() {
 	for dir in "$@"; do
 		dir=${dir:A}
-		[[ ! -d "$dir" ]] && return
-		path=($path[@] "$dir")
+		[[ -d "$dir" ]] && path=($path[@] "$dir")
 	done
 }
 
 _prepath /bin /sbin /usr/bin /usr/sbin /usr/games
-_prepath /usr/pkg/bin   /usr/pkg/sbin   # NetBSD
-_prepath /usr/X11R6/bin /usr/X11R6/sbin # OpenBSD
+_prepath /usr/pkg/bin   /usr/pkg/sbin    # NetBSD
+_prepath /usr/X11R6/bin /usr/X11R6/sbin  # OpenBSD
 _prepath /usr/local/bin /usr/local/sbin
 
-_prepath "$HOME/go/bin"                # Go
+_postpath "/usr/lib/psql12/bin/"         # PostgreSQL 12 on Void
+_postpath "$HOME/.local/gobin"           # Go
 _postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
-_prepath "$HOME/.local/bin"            # My local stuff.
-if [[ -d "$HOME/.gem/ruby" ]]; then    # Ruby
-	for d in "$HOME/.gem/ruby/"*; do
-		_postpath "$d/bin";
-		export BUNDLE_PATH=$d  # Because bundler is stupid.
-	done
-fi
+_prepath  "$HOME/.local/bin"             # My local stuff.
+_postpath "$HOME/.gem/ruby/"*/bin(N[-1]) # Ruby
+#export BUNDLE_PATH=$d                    # Use gem path.
 
 unfunction _prepath
 unfunction _postpath
 
-### Application environment
-###########################
+### Various env variables
+#########################
 [[ -n "${TMUX:-}" ]] && export TERM=screen-256color || export TERM=st-256color
+
+# Helper; will be unset later.
+_exists() { (( $+commands[$1] )) }
 
 _exists vim      && export EDITOR=vim        # Default applications.
 _exists firefox  && export BROWSER=firefox
 _exists less     && export PAGER=less
-#_exists vimpager && export PAGER=vimpager
 
+# Store stuff in ~/.config and ~/.cache when we can.
 # https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
 # https://www.reddit.com/r/zsh/comments/fvtr19/no_more_dotfile_clutter_in_my_home/
-export LESSHISTFILE=~/.cache/lesshistory     # Store files in xdg dirs
+export LESSHISTFILE=~/.cache/lesshistory
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
 export PSQLRC=~/.config/psqlrc
@@ -74,182 +59,160 @@ export GNUPGHOME=~/.config/gnupg
 # GTK: $XDG_CONFIG_HOME/gtk-3.0/Compose
 export XCOMPOSEFILE=~/.config/x11/compose
 export XAUTHORITY=~/.config/x11/authority
+export CRAWL_DIR=~/.config/crawl
 
+# TODO
 # Doesn't work? "startx ~/.config/x11/xinitrc"?
-export XINITRC=~/.config/x11/xinitrc
-
-#export VIMINIT=":source ~/.config/vim/vimrc"
-
-# TODO? export GEM_HOME=~/.cache/gem
+# export XINITRC=~/.config/x11/xinitrc
+# export VIMINIT=":source ~/.config/vim/vimrc"
+# export GEM_HOME=~/.cache/gem
 
 export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
+export GOMODCACHE=~/.cache/go-mod            # Go modules cache.
+export GOBIN=~/.local/gobin                  # Go binaries ('go install').
 export GOTMPDIR=/tmp/gotmpdir                # Store Go tmp files in /tmp; make sure it exists as Go won't create it.
 [[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
-
-export BLOCKSIZE=K                           # Output sizes in K instead of 512b blocks
 
 # R    Display colours escape chars as-is (so they're displayed).
 # i    Ignore case unless pattern has upper case chars.
 # M    Display line numbers and position.
 # Q    Never ring terminal bell.
 # X    Don't clear the screen on exit.
-# L    Ignore LESSOPEN (some Linux distros set this to retarded, dangerous, and
-#      broken defaults; *cough* Fedora *cough*).
+# L    Ignore LESSOPEN (some Linux distros set this by broken defaults (*cough* Fedora *cough*).
 export LESS="RiMQXL"
-
-# Make man pages 80 characters wide at the most; this is the default on BSD, but
-# not Linux (not needed if you use mandoc, instead of the man-db).
-export MANWIDTH=80
 
 export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=31:"
 export GREP_COLOR=31                                           # Older GNU grep; BSD grep
 export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep, I guess GREP_COLOR was too easy to use
+export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep
 
-export GDK_CORE_DEVICE_EVENTS=1    # Fix scrolling in GTK3; https://www.pekwm.org/projects/pekwm/tasks/350
-export GTK_IM_MODULE=xim           # Make compose key work
+export BLOCKSIZE=K                 # Output sizes in K instead of 512b blocks.
+export MANWIDTH=80                 # Only needed with GNU stuff; use mandoc for better man.
+export GTK_IM_MODULE=xim           # Make compose key work.
 export QT_IM_MODULE=xim
-export GTK_OVERLAY_SCROLLING=0     # Disable stupid "overlay scrollbar"
-export SYSTEMD_PAGER=              # Don't output to a pager
+export GTK_OVERLAY_SCROLLING=0     # Disable annoying "overlay scrollbar".
+export SYSTEMD_PAGER=              # Don't output to a pager.
 if [[ -d '/etc/service' ]]; then   # Set user service dir for runit.
-	export SVDIR=/etc/service        
+	export SVDIR=/etc/service
 elif [[ -d '/var/service' ]]; then
 	export SVDIR=/var/service
-fi 
+fi
+export XDG_RUNTIME_DIR=/tmp/xdg-runtime-$USER  # Needed for some programs.
+mkdir -p $XDG_RUNTIME_DIR
 
 # Run commands from this file on interactive session
 [[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
 
 ### Our work here is done if not an interactive shell
 #####################################################
-[[ -o interactive ]] || return 0 
+[[ -o interactive ]] || return 0
+
+# Load zsh-completions
+fpath=($HOME/.zsh/zsh-completions/src $fpath)
 
 # Directory shortcuts
 hash -d pack=$HOME/.cache/vim/pack/plugins/start
-hash -d vim=/usr/share/vim/vim82
+hash -d vim=/usr/local/share/vim/vim82
 hash -d d=$HOME/code/arp242.net/_drafts
 hash -d p=$HOME/code/arp242.net/_posts
 hash -d go=/usr/lib/go/src
 hash -d c=$HOME/code
 hash -d gc=$HOME/code/goatcounter
 
-setopt noflowcontrol         # Disable ^S, ^Q, ^\
-stty -ixon quit undef
-
+setopt no_flow_control       # Disable ^S, ^Q, ^\
+stty -ixon quit undef        # For Vim etc; above is just for zsh.
 setopt notify                # Report status of bg jobs immediately
-setopt nohup                 # Don't kill background jobs when exiting
-setopt noclobber             # Don't clobber existing files with >
-setopt nobeep                # Don't beep
-setopt nobgnice              # Don't frob with nicelevels
-setopt interactivecomments   # Allow comments in interactive shells
-setopt noautoremoveslash     # Don't guess when slashes should be removed (too magic)
-setopt nomatch               # Show error if globbing fails
-setopt extendedglob          # More globbing characters
+setopt no_hup                # Don't kill background jobs when exiting
+setopt no_clobber            # Don't clobber existing files with > ....
+#setopt clobber_empty         # ... but do allow overwriting existing empty files.
+setopt append_create         # Refuse to create new files with >>
+setopt no_beep               # Don't beep
+setopt no_bg_nice            # Don't frob with nicelevels
+setopt no_auto_remove_slash  # Don't guess when slashes should be removed (too magic)
+setopt no_match              # Show error if globbing fails
+setopt extended_glob         # More globbing characters
 LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
 
 ### History
-setopt hist_ignore_dups      # Ignore duplicate in history.
-setopt appendhistory         # Append to history, rather than overwriting
-setopt incappendhistory      # Append immediately rather than only at exit
-#setopt sharehistory          # Also read back new commands when writing history
-setopt extendedhistory       # Store some metadata as well
-setopt histnostore           # Don't store history or fc commands
-setopt histignorespace       # Don't add commands starting with space to history.
+setopt append_history        # Append to history, rather than overwriting
+setopt inc_append_history    # Append immediately rather than only at exit
+setopt extended_history      # Store some metadata as well
+setopt hist_no_store         # Don't store history or fc commands
+setopt no_bang_hist          # Don't use ! for history expansion
+setopt hist_ignore_dups      # Don't add to history if it's the same as previous event.
+setopt hist_ignore_all_dups  # Remove older event if new event is duplicate.
 HISTFILE=~/.zsh/history      # Store history here
-HISTSIZE=40000               # Max. entries to keep in memory
-SAVEHIST=40000               # Max. entries to save to file
-HISTORY_IGNORE='([bf]g *|disown|cd ..|cd -)' # Don't add these to the history file.
-
-### Completion
-setopt completeinword        # Allow completion from within a word/phrase
-setopt alwaystoend           # Move cursor to end of word when when completing from middle
-setopt nolistambiguous       # Show options on single tab press
+HISTSIZE=11000               # Max. entries to keep in memory
+SAVEHIST=10000               # Max. entries to save to file
+HISTORY_IGNORE='([bf]g *|[bf]g|disown|cd ..|cd -)' # Don't add these to the history file.
 
 ### Prompt
-setopt promptsubst           # Expand parameters commands, and arithmetic in PROMPT
-
-# Set mode variable for prompt
-function zle-line-init zle-keymap-select {
-	mode="${${KEYMAP/vicmd/n}/(main|viins)/i}"
-	zle reset-prompt
-}
-zle -N zle-line-init
-zle -N zle-keymap-select
+setopt prompt_subst          # Expand parameters commands, and arithmetic in PROMPT
 
 autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git
-zstyle ':vcs_info:*' formats '(%b)'
- 
+zstyle ':vcs_info:*' enable git       # Enable just git.
+zstyle ':vcs_info:*' formats '(%b)'   # Show branch.
+
 set_prompt() {
 	vcs_info >/dev/null 2>&1
-
-	print -n "%(?..%S %? %s)"                  # Exit code in "standout" if non-0.
-	[[ "${mode:-}" = n ]] && print -n "%S"     # Directory as "standout" in normal mode.
-	print -n "[%~]${vcs_info_msg_0_:-}%#"      # Directory and VCS info (if any).
-	[[ "${mode:-}" = "n" ]] && print -n "%s"   # End standout.
-	print -n ' '
+	print -n "%(?..%130(?..%S%?%s))"           # Exit code in "standout" if non-0 and non-130 (^C to clear input)
+	print -n "[%~]${vcs_info_msg_0_:-}%# "     # Directory and VCS info (if any).
 }
+PROMPT=$'$(set_prompt)'
 
 set_rprompt() {
-	local host='%U%B%m%b%u'
-	if [[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]]; then
-		host="%F{red}${host}%f"
-	fi
-	print "${mode:-}:${host}:%T"
+	host=    # Show hostname only for ssh connections; otherwise just the local time.
+	[[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]] && host="%F{red}%U%B%m%b%u%f:"
+	print "${host}%T"
 }
-
-PROMPT=$'$(set_prompt)'
 RPROMPT=$'$(set_rprompt)'
 
 
 ### Completion
 ##############
+setopt complete_in_word      # Allow completion from within a word/phrase.
+setopt always_to_end         # Move cursor to end of word when when completing from middle.
+setopt no_list_ambiguous     # Show options on single tab press.
 
 # Load and init
-autoload -Uz compinit && compinit && zmodload zsh/complist
-zstyle ':completion:*' completer _expand _complete _ignored
+autoload -U compinit && compinit  # Load completion system.
+zmodload zsh/complist             # Load interactive menu.
 
-# Make completion case-insensitive
-# TODO: makes "mpla<Tab>" match _mplayer
-#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-# TODO: fold unicode "e" should match "é".
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+autoload -U select-word-style && select-word-style bash          # Only alphanumeric characters match a "word".
+zstyle ':zle:*' word-chars '-_'                                  # Also match these additional characters as a "word".
 
-# Always ignore these files/functions
-zstyle ':completion:*:*:*:*:*files' ignored-patterns '*?.pyc' '*?.o'
-# TODO: dict<Tab> still gives _dict (or ispell<Tab>)
-zstyle ':completion:*:*:functions'  ignored-patterns '_*'
-
-zstyle ':completion:*' verbose yes                             # Show more info in some completions
-zstyle ':completion:*:warnings' format 'No completions'        # Warn when there are no completions
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}  # Show ls-like colours in file completion
-zstyle ':completion:*' menu select                             # Use menu
+zstyle ':completion:*'           menu select                     # Use menu for selecting.
+zstyle ':completion::complete:*' use-cache on                    # Enable cache (not used by many completions).
+zstyle ':completion:*:warnings'  format 'No completions'         # Warn when there are no completions
+zstyle ':completion:*:default'   list-colors ${(s.:.)LS_COLORS}  # Show ls-like colours in file completion.
+zstyle ':completion:*'           squeeze-slashes true            # "path//<Tab>" is "path/" rather than "path/*"
+zstyle ':completion:*'           matcher-list 'm:{a-z}={A-Z}'    # Make completion case-insensitive.
+zstyle ':completion:*:functions' ignored-patterns '_*'           # Ignore in completion.
+zstyle ':completion:*:*files'    ignored-patterns '*?.pyc' '*?.o'
 
 ### Keys
 ########
+bindkey -e              # Use the default "emacs" bindings.
+export KEYTIMEOUT=10    # Time to wait for another key in multi-character sequences, in 1/100th second.
 
-bindkey -v    # "Vi" bindings
+autoload -U up-line-or-beginning-search    && zle -N up-line-or-beginning-search
+autoload -U down-line-or-beginning-search  && zle -N down-line-or-beginning-search
+autoload -U edit-command-line              && zle -N edit-command-line
 
-# The time the shell waits, in hundredths of seconds, for  another
-# key to be pressed when reading bound multi-character sequences.
-# export KEYTIMEOUT=40
-export KEYTIMEOUT=10
-
-autoload -Uz up-line-or-beginning-search down-line-or-beginning-search \
-	edit-command-line copy-earlier-word 
-insert_doas() { zle beginning-of-line; zle -U "doas " }
-replace_rm()  { zle beginning-of-line; zle delete-word; zle -U "rm " }
-
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-zle -N edit-command-line
-zle -N insert-doas insert_doas
-zle -N replace-rm replace_rm
-zle -N copy-earlier-word 
+# So ideally we should use "zmodload zsh/terminfo" and then use $terminfo for
+# some of the below, but on my system various entries are missing or wrong. So
+# I'll guess I'll keep the ugly stuff below(?) For reference, you can list
+# terminfo with (also, infocmp):
+#
+#   for k v in ${(kv)terminfo}; do printf '%-10s %q\n' "$k" "$v"; done
 
 bindkey '^[[A'  up-line-or-beginning-search    # Arrow up
 bindkey '^[OA'  up-line-or-beginning-search
+bindkey '^p'    up-line-or-beginning-search
+bindkey '^o'    up-line-or-beginning-search    # https://www.arp242.net/control-o.html
 bindkey '^[[B'  down-line-or-beginning-search  # Arrow down
 bindkey '^[OB'  down-line-or-beginning-search
+bindkey '^n'    down-line-or-beginning-search
 bindkey '^[[H'  beginning-of-line              # Home
 bindkey '^[[1~' beginning-of-line
 bindkey '^[[7~' beginning-of-line
@@ -258,49 +221,49 @@ bindkey '^[[4~' end-of-line
 bindkey '^[[8~' end-of-line
 bindkey '^[[3~' delete-char                    # Delete
 bindkey '^[[P'  delete-char
-bindkey '^[[5~' up-line-or-history             # Page up
-bindkey '^[[6~' down-line-or-history           # Page down
-bindkey '^[OP'  run-help                       # F1
 bindkey '^h'    backward-delete-char           # Backspace
 bindkey '^?'    backward-delete-char
+bindkey '^t'    edit-command-line              # Edit in Vim.
+bindkey '^\'    accept-and-hold                # Run command without clearing commandline.
+bindkey '^[[Z'  up-history                     # Shift+Tab; so it works in completion menu to go back.
+bindkey '^[OP'  run-help                       # F1
+bindkey -s '^[[5~' '\a'                        # Disable Page up/down; on my ThinkPad they're right next to the
+bindkey -s '^[[6~' '\a'                        # arrow keys and pressing them by accident is annoying.
 
-bindkey '^a'    beginning-of-line
-bindkey '^k'    kill-line
-bindkey '^p'    up-line-or-beginning-search
-bindkey '^n'    down-line-or-beginning-search
-bindkey '^e'    edit-command-line
-bindkey '^s'    insert-doas
-bindkey '^r'    replace-rm
-bindkey '^I'    complete-word                  # complete on tab, leave expansion to _expand
-                                               # Useful for going back in menu completion
-bindkey '^[[Z'  up-history                     # Shift+Tab
-bindkey '^o' copy-earlier-word
 
-# Use this completion and start completion for new dir
-bindkey -M menuselect '^o' accept-and-infer-next-history
+# Add "doas" at the start.
+insert-doas() { zle beginning-of-line; zle -U "doas " }
+zle -N insert-doas insert-doas && bindkey '^s' insert-doas
 
-#bindkey ' ' magic-space    # also do history expansion on space
+# Replace first word with "rm".
+replace-rm()  { zle beginning-of-line; zle delete-word; zle -U "rm " }
+zle -N replace-rm replace-rm && bindkey '^r' replace-rm
 
-# Put job in fg on ^Z if there are any bg jobs.
-toggle-ctrl-z () {
-  if [[ $#BUFFER -eq 0 ]]; then
-    BUFFER="fg"
-    zle accept-line
-  else
-    zle push-input
-    zle clear-screen
-  fi
+# Store the current input, and restore it with a second ^q
+remember() {
+	# Nothing in buffer: get previous command.
+	if [[ $#BUFFER -eq 0 ]]; then
+		print -ln "${stored:-}"
+		stored=
+	# Store current input.
+	else
+		stored=$BUFFER
+		BUFFER=
+	fi
 }
-zle -N toggle-ctrl-z
-bindkey '^Z' toggle-ctrl-z
+zle -N remember remember && bindkey '^q' remember
+
 
 ### Commands
 ############
-alias cp='cp -i'              # Ask for confirmation when overwriting existing files.
+alias cp='cp -i'                        # Ask for confirmation when overwriting existing files.
 alias mv='mv -i'
-alias make='nice -n 20 make'  # Make can always be very nice.
-alias free='free -m'          # MB is more useful.
-alias cal='cal -m'            # Week starts on Monday.
+alias make='nice -n 20 make'            # Make can always be very nice.
+alias free='free -m'                    # MB is more useful.
+alias cal='cal -m'                      # Week starts on Monday.
+alias ps='ps axu'                       # These are pretty much the only flags I use.
+alias td='echo $(date +%Y-%m-%d)'       # "today"
+alias now='echo $(date +%Y-%m-%d\ %T)'
 
 if [[ "$(uname)" = "Linux" ]]; then
 	if [ -h /bin/ls ]; then   # Assume busybox
@@ -313,7 +276,6 @@ if [[ "$(uname)" = "Linux" ]]; then
 	alias lac='ls -lhA'            # "List All Complete"
 	alias lsd='ls -ld *(-/DN)'     # "List Directory"
 	alias lh='ls -d .*'            # "List Hidden"
-	alias grep='grep --color'
 else
 	alias ls='ls -F'
 	alias la='ls -a'
@@ -331,18 +293,25 @@ fi
 
 _exists bsdtar     && alias tar='bsdtar'
 _exists htop       && alias top='htop'
-_exists ag         && alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
 _exists sqlite3    && alias sqlite=sqlite3
+_exists gpg2       && alias gpg=gpg2
 _exists psql       && alias psql='LESS=S$LESS psql'  # Don't wrap
+
+if _exists rg; then   # Prefer ripgrep if it exists; I'm so used to typing "ag".
+	alias ag='rg'
+elif _exists ag; then
+	alias ag='ag -S --color-match 31 --color-line-number 35 --color-path 1\;4'
+fi
 
 if _exists vim; then
 	alias vim="vim -p"
 	alias vi="vim"
 fi
 
-# Typos
-alias sl='ls'
+unfunction _exists   # Unset helper.
+
+alias sl='ls'        # Typos
 alias l='ls'
 alias c='cd'
 alias vo='vi'
@@ -356,38 +325,56 @@ alias Less='less'
 alias cd.='cd .'
 alias cd..='cd ..'
 
-alias td='echo $(date +%Y-%m-%d)'
-alias now='echo $(date +%Y-%m-%d\ %T)'
+autoload -U run-help run-help-git     # Smarter run-help; "git commit foo" will pull up git-commit(1), not git(1).
+alias run-help >/dev/null && unalias run-help
 
-# Global aliases to pipe output.
-# TODO: Ideally, restrict this to the end of the line.
-alias -g VV=' |& vim +S -'
+alias curl='noglob curl'              # Disable globbing for some commands where we rarely want it;
+alias find='noglob find'              # Allows typing e.g. "find . -name *.zsh" without quotes.
+
+autoload -U zcalc                     # Get quick results for "zc 6*6", or just use "zc" to get zcalc
+alias zc >/dev/null && unalias zc
+zc() { [[ -n "$@" ]] && zcalc -e $@ || zcalc }
+alias zc='noglob zc'
+
+alias -g VV=' |& vim +S -'            # Global aliases to pipe output.
 alias -g LL=' |& less'
+alias -g GG=' |& grep'
 
 # "ag edit" and "grep edit".
+# TODO: skip flags when sending to Vim instead of using $1
 age() {
-	vim +'/\v'"$1" +':silent tabdo :1 | normal! n' +':tabfirst' -p $(ag "$@" | cut -d: -f1 | sort -u)
+	vim \
+		+'/\v'"${1/\//\\/}" \
+		+':silent tabdo :1 | normal! n' \
+		+':tabfirst' \
+		-p $(ag "$@" | cut -d: -f1 | sort -u)
 }
 grepe() {
-	vim +'/\v'"$1" +':silent tabdo :1 | normal! n' +':tabfirst' -p $(grep "$@" | cut -d: -f1 | sort -u)
+	vim \
+		+'/\v'"${1/\//\\/}" \
+		+':silent tabdo :1 | normal! n' \
+		+':tabfirst' \
+		-p $(grep "$@" | cut -d: -f1 | sort -u)
 }
 
 # For copying examples.
-unprompt() {
-	export PS1='$ '
-	export RPROMPT=' '
-}
+unprompt() { export PS1='$ ' RPROMPT=' ' }
 
+# Restart ssh-agent after restarting WM or x11 (may be old env var in tmux).
 reagent() {
 	export SSH_AUTH_SOCK=$(echo /tmp/ssh-*/agent.*)
 	ssh-add -l >/dev/null || ssh-add
 }
 
+# Get random commands.
 rnd() {
-	[[ "${1:-}" = "ascii" ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
-	strings -n1 < /dev/urandom | tr -d "$filter" | head -c${2:-15}
+	[[ "${2:-}" = "alpha" ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
+	strings -n1 < /dev/urandom | tr -d "$filter" | head -c${1:-15}
 	echo
 }
+
+# Create directory alias for the current directory.
+hashcwd() { hash -d "$1"="$PWD" }
 
 # "tmp go"
 tgo() {
@@ -404,6 +391,7 @@ tgo() {
 	)
 }
 
+# Run sql files or commands.
 sql() {
 	cmd="psql -X -P linestyle=unicode -P null=NULL goatcounter"
 	f="$HOME/docs/sql/scripts/$1"
@@ -416,6 +404,166 @@ sql() {
 _sql() { _files -W ~/docs/sql/scripts }
 compdef _sql sql
 
+# Shorter cut.
+cutt() { cut -f "${1}" -d "${2:- }" }
 
-# Unset helper.
-unfunction _exists
+# Create/edit GoatCounter migrations without too much faffing about.
+mig() {
+	p="$HOME/code/goatcounter/db/migrate"
+
+	if [[ -f "$p/pgsql/$1" ]]; then
+		vim -p "$p/pgsql/$1" "$p/sqlite/$1"
+		return
+	fi
+
+	name="$(date +%Y-%m-%d)-1-$1.sql"
+	sql="begin;\n\n\n\tinsert into version values('${name%.sql}');\ncommit;\n"
+	printf "$sql" > "$p/pgsql/$name"
+	printf "$sql" > "$p/sqlite/$name"
+
+	vim -p "$p/pgsql/$name" "$p/sqlite/$name"
+}
+_mig() { _files -W ~/code/goatcounter/db/migrate/pgsql }
+compdef _mig mig
+
+#### WIP commands
+
+# Emit a "beep"; useful to notice when long-running commands are done:
+#   takes_long_time; beep
+# TODO: different sounds based on $?
+beep() { timeout .1 speaker-test --frequency 500 --test sine >/dev/null 2>&1 }
+
+# List completions just for the PostgreSQL manpages on SQL syntax.
+man-sql() {
+	# TODO: check -w in any position.
+	if [[ ${1:-} = "-w" ]]; then
+		w=$(echo "$2" | tr '[[:upper:]]' '[[:lower:]]' | tr -d _)
+		firefox "https://www.postgresql.org/docs/current/sql-$w.html"
+		return
+	fi
+
+	man $@
+}
+_man-sql() {
+	# _files -W /usr/share/man/man7 -g "[A-Z]*.7"
+	#local x=(/usr/share/man/man7/[A-Z]*.7)
+
+	local x=('-w')
+	for f in /usr/share/man/man7/[A-Z]*.7; do
+		f=${f%.7}
+		x=($x ${f##*/})
+	done
+
+	# TODO: accept any position; add -w
+	# TODO: -w shows up in completion menu?
+	_arguments "1: :{_describe 'page' x}"
+	#_arguments -s -S : $x
+}
+compdef _man-sql man-sql
+
+#  For example, if $chpwd_functions is an array containing the
+#         values `mychpwd', `chpwd_save_dirstack'
+#
+# chpwd  Executed whenever the current working directory is changed.
+#
+# b() { }
+# f() { }
+
+# setopt auto_pushd
+#AUTO_PUSHD
+# setopt pushd_ignore_dups
+#PUSHD_MINUS
+#PUSHD_SILENT
+
+
+# TODO: add "back", which is like "cd -" but goes back like browser; also "forward".
+# b
+# f
+# b() { }
+# f() { }
+
+# REMEMBERING RECENT DIRECTORIES
+#        The function cdr allo [..]
+
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+# zstyle ':chpwd:*' recent-dirs-max 0
+zstyle ':chpwd:*' recent-dirs-insert 'always'
+zstyle ':chpwd:*' recent-dirs-max 50
+zstyle ':chpwd:*' recent-dirs-prune 'parent'
+
+alias cdd=cdr  # Easier to type
+
+
+
+
+# Pull:
+#    remote: Enumerating objects: 25, done.                                builtin/pack-objects.c
+#    remote: Counting objects: 100% (25/25), done.
+#    remote: Compressing objects: 100% (10/10), done.
+#    remote: Total 25 (delta 18), reused 22 (delta 15), pack-reused 0
+#    Unpacking objects: 100% (25/25), 22.20 KiB | 303.00 KiB/s, done.      builtin/unpack-objects.c
+# &  From github.com:vim/vim                                               builtin/ls-remote.c
+# &     80a20df86..3f65c66df  master     -> origin/master                  builtin/fetch.c
+# &   * [new tag]             v8.2.0831  -> v8.2.0831
+# &   * [new tag]             v8.2.0832  -> v8.2.0832
+# &   * [new tag]             v8.2.0833  -> v8.2.0833
+# &   * [new tag]             v8.2.0834  -> v8.2.0834
+# &  Updating 80a20df86..3f65c66df                                         builtin/merge.c
+#    Fast-forward
+#     src/ex_cmds.c                 | 3 +++
+#     src/gui.c                     | 2 ++
+#     src/libvterm/src/pen.c        | 4 ++--
+#     src/map.c                     | 2 +-
+#     src/terminal.c                | 2 +-
+#     src/testdir/test_popupwin.vim | 3 +++
+#     src/version.c                 | 8 ++++++++
+#     7 files changed, 20 insertions(+), 4 deletions(-)
+
+# push: show only last 2 lines:
+#
+#   Enumerating objects: 5, done.                                          builtin/pack-objects.c
+#   Counting objects: 100% (5/5), done.
+#   Delta compression using up to 2 threads
+#   Compressing objects: 100% (3/3), done.
+#   Writing objects: 100% (3/3), 1.24 KiB | 1.24 MiB/s, done.
+#   Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+#   remote: Resolving deltas: 100% (2/2), completed with 2 local objects.  builtin/index-pack.c
+# & To github.com:zgoat/zdb.git                                            transport.c
+# &    117485d..cb59ca2  master -> master
+
+# Or on new Git PR
+#   Enumerating objects: 11, done.
+#   Counting objects: 100% (11/11), done.
+#   Delta compression using up to 2 threads
+#   Compressing objects: 100% (6/6), done.
+#   Writing objects: 100% (9/9), 2.77 KiB | 1.38 MiB/s, done.
+#   Total 9 (delta 0), reused 0 (delta 0), pack-reused 0
+#   remote:
+#   remote: Create a pull request for 'c' on GitHub by visiting:
+#   remote:      https://github.com/arp242/test/pull/new/c
+#   remote:
+# & To github.com:arp242/test.git
+# &  * [new branch]      c -> c
+
+
+# git() {
+# 	if [[ "${1:-}" = "push" ]]; then
+# 		shift
+# 		/usr/bin/git push -q $@
+# 	elif [[ "${1:-}" = "pull" ]]; then
+# 		shift
+# 		/usr/bin/git pull -q $@
+# 	else
+# 		/usr/bin/git $@
+# 	fi
+# }
+
+# $ alias 'git push'='git push -q'
+# $ alias git push
+# exit 1
+# $ alias 'git push'
+# alias 'git push'='git push -q'
+
+
+
