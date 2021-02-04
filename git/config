@@ -1,71 +1,128 @@
-# https://dev.to/fedekau/using-git-hooks-to-improve-your-day-to-day-workflow-4nl5
+# /usr/share/doc/git-jump/README
+
+
+### General settings
+####################
 
 [user]
 name       = Martin Tournoij
 email      = martin@arp242.net
 
+[include]
+path = ~/code/git-color-schemes/light-minimal
+
 [core]
-eol       = lf               # Always use \n, even on Windows.
+eol   = lf                   # Always use \n, even on Windows.
+pager = less -F              # Quit pager if the contents can fit on the screen.
 
-[commit]
-gpgSign = true               # Sign commits with my key.
-
-[gpg]
-program = gpg2               # Not all systems install a "gpg" symlink.
-
-[color]
-status     =                 # Don't add colours to various commands.
-branch     =
-showBranch =
-advice     = false
-# TODO: disable "git log" christmas tree; can be done with diff= but not log=? Hmm
-# remote
-# push
-# transport
-
-[diff]
-mnemonicprefix = true        # Use more useful dir names in diff instead of a/ and b/.
-
-[pager]
-status = false               # No pager for these commands; I know how to use | less
-branch = false
-
-[push]
-default = current            # Update a branch with the same name on the receiving end.
-
-[fetch]
-prune     = true             # Prune branches that no longer exist remote.
-pruneTags = true             # Same for tags.
-
-[gui]
-spellingDictionary   = en_GB # Use British English.
-#matchTrackingBranch = true   # New branches default to tracking remote branches with matching names.
-pruneDuringFetch     = true  # Prune remote-tracking branches when fetching.
-fontui = -family \"DejaVu Sans\" -size 14 -weight normal -slant roman -underline 0 -overstrike 0
-fontdiff = -family \"DejaVu Sans Mono\" -size 14 -weight normal -slant roman -underline 0 -overstrike 0
-
-[help]
-autoCorrect = 10             # Run guessed command after 1s if there's only one guess result.
-
-[merge]
-#verifySignatures = true      # Verify commit signatures.
-
-[status]
-short         = true         # Always use short CVS-ish output.
-branch        = true         # Show branch on status.
-
-[alias]
-st  = status                  # Shortcuts
-co  = checkout
-l   = log --no-color --name-status # Can't disable colours for "git log" without also disabling "git diff" :-/
-d   = diff --patch --stat
-b   = branch -v
-ci  = commit
-# Use draft message for commit
-draft = !git commit --edit -F $(git rev-parse --git-dir)/draft
+[http]                       # Send cookes (e.g. to signal Google SLA signage).
+cookiefile = ~/.config/git/cookies
 
 [url "git@github.com:"]      # Prefer git protocol over http for GitHub.
 insteadOf = https://github.com/
 
-[http]                       # Send cookes (e.g. to signal Google SLA signage).
-cookiefile = ~/.config/git/cookies
+[pretty]
+#myname=fmt
+# Alias for a --pretty= format string, as specified in git-log(1).
+# Any aliases defined here can be used just as the built-in pretty
+# formats could. For example, running git config pretty.changelog
+# "format:* %H %s" would cause the invocation git log
+# --pretty=changelog to be equivalent to running git log
+# "--pretty=format:* %H %s". Note that an alias with the same name as
+# a built-in format will be silently ignored.
+
+
+#### Command settings
+#####################
+
+[diff]
+algorithm    = histogram     # Better quality diffs (but slower).
+noprefix     = true          # Don't show prefixes in file paths.
+colorMoved   = plain         # Highlight chunks of text that moved unchanged different.
+colorMovedWS = no            # Got bad results with ignoring whitespace.
+
+[fetch]
+prune     = true             # Automatically remove remote tracking that no longer exists.
+pruneTags = true
+
+[grep]
+lineNumber = true            # Add line and column number.
+column     = true
+
+[help]
+autoCorrect = 10             # Run guessed command after 1s if there's only one guess result.
+
+[log]
+abbrevCommit = true          # Short commits hashes.
+follow       = true          # Include commits from before renames.
+
+[merge]
+#ff        = false            # Disable fast-forward merges.
+stat      = false            # Don't print diffstat after merge.
+verbosity = 1                # Only show conflicts.
+
+[pull]
+#rebase=false
+ff = only                    # fast-forward instead of merge commits.
+
+[push]
+default = current            # Update a branch with the same name on the receiving end.
+followTags = true            # Automatically push annotated tags.
+
+[rebase]
+missingCommitsCheck = error  # Don't drop removed lines in rebase -i; need explicit drop.
+
+[status]
+short              = true    # Always use short CVS-ish output.
+branch             = true    # Show branch on status.
+showUntrackedFiles = all     # Show untracked files in untracked dirs too.
+
+[stash]
+showPatch = true             # Show patch in git stash show.
+
+### Aliases
+###########
+
+[alias]
+st        = status           # Simple shortcuts.
+co        = checkout
+ci        = commit
+diffh     = diff HEAD
+undolast  = reset HEAD~      # Undo last commit.
+sl        = show HEAD        # Show last commit.
+
+# Use draft message for commit.
+draft = !git commit --edit -F $(git rev-parse --git-dir)/draft
+
+# Reuse last commit message.
+# TODO: --cleanup to remove # lines?
+lastci = !git commit --edit -F $(git rev-parse --git-dir)/COMMIT_EDITMSG
+
+# Edit git-status files in git.
+edit = !vim -p $(git diff --name-only)
+
+# Show nice overview of branches sorted by date.
+b = branch --sort=creatordate --format \
+	'%(HEAD) %(align:width=20)%(refname:short)%(end) %(creatordate:short)  %(upstream:track)%(subject)'
+
+# Like --oneline, but with date.
+# TODO: add some colours
+l = log --format=format:'%cs %h %s%d'
+
+# Just merge files with regular Vim; I don't like using vimdiff.
+mergeit = ![ -z "$(git diff --diff-filter=U)" ] \
+	&& echo "No unmerged files" \
+	|| vim \
+		+'/^\\(<<<<<<<\\|=======\\|>>>>>>>\\)' \
+		+':silent tabdo :1 | normal! n' \
+		+':tabfirst' \
+		-p $(git diff --name-only --diff-filter=U)
+
+# Figure out who works on this.
+authors = !git log --format='%an <%ae>' | sort | uniq -c | sort -rn
+
+# /usr/share/doc/git-diff-highlight/README
+# [pager]
+# log  = diff-highlight | less -F
+# show = diff-highlight | less -F
+# diff = diff-highlight | less -F

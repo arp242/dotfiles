@@ -25,12 +25,12 @@ _prepath /usr/pkg/bin   /usr/pkg/sbin    # NetBSD
 _prepath /usr/X11R6/bin /usr/X11R6/sbin  # OpenBSD
 _prepath /usr/local/bin /usr/local/sbin
 
-_postpath "/usr/lib/psql12/bin/"         # PostgreSQL 12 on Void
-_postpath "$HOME/.local/gobin"           # Go
+_postpath "/usr/lib/psql13/bin/"         # PostgreSQL 13 on Void
+_prepath  "$HOME/.local/gobin"           # Go
 _postpath "$HOME/.vim/pack/plugins/start/gopher.vim/tools/bin"
 _prepath  "$HOME/.local/bin"             # My local stuff.
 _postpath "$HOME/.gem/ruby/"*/bin(N[-1]) # Ruby
-#export BUNDLE_PATH=$d                    # Use gem path.
+export BUNDLE_PATH="$HOME/.gem"          # Use gem path.
 
 unfunction _prepath
 unfunction _postpath
@@ -45,6 +45,8 @@ _exists() { (( $+commands[$1] )) }
 _exists vim      && export EDITOR=vim        # Default applications.
 _exists firefox  && export BROWSER=firefox
 _exists less     && export PAGER=less
+_exists clang    && export CC=clang
+_exists clang++  && export CXX=clang++
 
 # Store stuff in ~/.config and ~/.cache when we can.
 # https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
@@ -67,11 +69,16 @@ export CRAWL_DIR=~/.config/crawl
 # export VIMINIT=":source ~/.config/vim/vimrc"
 # export GEM_HOME=~/.cache/gem
 
-export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
-export GOMODCACHE=~/.cache/go-mod            # Go modules cache.
-export GOBIN=~/.local/gobin                  # Go binaries ('go install').
-export GOTMPDIR=/tmp/gotmpdir                # Store Go tmp files in /tmp; make sure it exists as Go won't create it.
-[[ ! -d "$GOTMPDIR" ]] && mkdir "$GOTMPDIR"
+export LANG=en_NZ.UTF-8               # Use Kiwiland for sane date format, metric system, etc.
+
+export GOPATH=~/.cache/go             # GOPATH mostly stores cache stuff these days.
+export GOCACHE=/tmp/go/build          # Go build cache in tmp/memory
+export GOBIN=~/.local/gobin           # Go binaries ('go install').
+export GOTMPDIR=/tmp/go/tmp           # tmp files during compile
+[[ ! -d "$GOTMPDIR" ]] && mkdir -p "$GOTMPDIR"  # Make sure it exists as Go won't create it.
+
+# Faster compiles.
+export CFLAGS=-O0 CGO_CFLAGS=-O0 CGO_LDFLAGS=-O0
 
 # R    Display colours escape chars as-is (so they're displayed).
 # i    Ignore case unless pattern has upper case chars.
@@ -85,6 +92,8 @@ export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43
 export GREP_COLOR=31                                           # Older GNU grep; BSD grep
 export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep, I guess GREP_COLOR was too easy to use
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep
+export PGHOST=/tmp
+export PGDATABASE=goatcounter
 
 export BLOCKSIZE=K                 # Output sizes in K instead of 512b blocks.
 export MANWIDTH=80                 # Only needed with GNU stuff; use mandoc for better man.
@@ -102,6 +111,9 @@ mkdir -p $XDG_RUNTIME_DIR
 
 # Run commands from this file on interactive session
 [[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
+
+# Update checks take a second and clobber output with annoying text.
+export GH_NO_UPDATE_NOTIFIER=y
 
 ### Our work here is done if not an interactive shell
 #####################################################
@@ -160,10 +172,20 @@ set_prompt() {
 }
 PROMPT=$'$(set_prompt)'
 
+_has_bat=$([[ -f /sys/bus/acpi/drivers/battery/PNP0C0A:00/power_supply/BAT0/capacity ]])
 set_rprompt() {
-	host=    # Show hostname only for ssh connections; otherwise just the local time.
+	local host=    # Show hostname only for ssh connections; otherwise just the local time.
 	[[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]] && host="%F{red}%U%B%m%b%u%f:"
-	print "${host}%T"
+	local bat=
+	# https://unix.stackexchange.com/questions/189749/understanding-bashs-read-a-file-command-substitution
+	# $(< "$FILE")
+	if [[ "$_has_bat" -eq 0 ]];then 
+		read bat </sys/bus/acpi/drivers/battery/PNP0C0A:00/power_supply/BAT0/capacity
+		bat=":$bat%%"
+	fi
+
+	# power_now=0  # Plugged in
+	print "${host}%T${bat}"
 }
 RPROMPT=$'$(set_rprompt)'
 
@@ -265,6 +287,9 @@ alias ps='ps axu'                       # These are pretty much the only flags I
 alias td='echo $(date +%Y-%m-%d)'       # "today"
 alias now='echo $(date +%Y-%m-%d\ %T)'
 
+# "git" and "go" already start with "g"; this is easier.
+alias hub='NO_COLOR=y gh'
+
 if [[ "$(uname)" = "Linux" ]]; then
 	if [ -h /bin/ls ]; then   # Assume busybox
 		alias ls='ls -F --color=never'
@@ -341,20 +366,23 @@ alias -g LL=' |& less'
 alias -g GG=' |& grep'
 
 # "ag edit" and "grep edit".
-# TODO: skip flags when sending to Vim instead of using $1
 age() {
+	IFS=$'\n' files=($(ag "$@" | cut -d: -f1 | sort -u))
+	[[ -z "$files" ]] && return 1
 	vim \
-		+'/\v'"${1/\//\\/}" \
-		+':silent tabdo :1 | normal! n' \
+		+':silent! /\v'"${@[-1]/\//\\/}" \
+		+':silent! tabdo :1 | normal! n' \
 		+':tabfirst' \
-		-p $(ag "$@" | cut -d: -f1 | sort -u)
+		-p $files
 }
 grepe() {
+	IFS=$'\n' files=($(ag "$@" | cut -d: -f1 | sort -u))
+	[[ -z "$files" ]] && return 1
 	vim \
-		+'/\v'"${1/\//\\/}" \
-		+':silent tabdo :1 | normal! n' \
+		+':silent! /\v'"${@[-1]/\//\\/}" \
+		+':silent! tabdo :1 | normal! n' \
 		+':tabfirst' \
-		-p $(grep "$@" | cut -d: -f1 | sort -u)
+		-p $files
 }
 
 # For copying examples.
@@ -391,6 +419,18 @@ tgo() {
 	)
 }
 
+# Shorter cut.
+cutt() { cut -f "${1}" -d "${2:- }" }
+
+# Emit a "beep"; useful to notice when long-running commands are done:
+#   takes_long_time; beep
+beep() {
+	l=$?
+	timeout .1 speaker-test --frequency 500 --test sine >/dev/null 2>&1
+	[[ $l -gt 0 ]] && { sleep .2; beep }  # Beep twice if the previous command failed.
+	return 0
+}
+
 # Run sql files or commands.
 sql() {
 	cmd="psql -X -P linestyle=unicode -P null=NULL goatcounter"
@@ -404,62 +444,32 @@ sql() {
 _sql() { _files -W ~/docs/sql/scripts }
 compdef _sql sql
 
-# Shorter cut.
-cutt() { cut -f "${1}" -d "${2:- }" }
-
-# Create/edit GoatCounter migrations without too much faffing about.
-mig() {
-	p="$HOME/code/goatcounter/db/migrate"
-
-	if [[ -f "$p/pgsql/$1" ]]; then
-		vim -p "$p/pgsql/$1" "$p/sqlite/$1"
+# sman, or "SQL man"; list completions just for the PostgreSQL manpages on SQL syntax.
+sman() {
+	if [[ ${@[(i)-w]} -le ${#@} ]]; then  # -w in ${@}?
+		page=("${(@)@:#-w}")              # Remove -w from ${@}
+		w=$(echo "${page%-13}" | tr '[[:upper:]]' '[[:lower:]]' | tr -d _)
+		${BROWSER:-firefox} "https://www.postgresql.org/docs/current/sql-$w.html"
 		return
 	fi
 
-	name="$(date +%Y-%m-%d)-1-$1.sql"
-	sql="begin;\n\n\n\tinsert into version values('${name%.sql}');\ncommit;\n"
-	printf "$sql" > "$p/pgsql/$name"
-	printf "$sql" > "$p/sqlite/$name"
-
-	vim -p "$p/pgsql/$name" "$p/sqlite/$name"
+	man $@-13 # Add back -13 since Void installs manpages as "SELECT-13".
 }
-_mig() { _files -W ~/code/goatcounter/db/migrate/pgsql }
-compdef _mig mig
-
-#### WIP commands
-
-# Emit a "beep"; useful to notice when long-running commands are done:
-#   takes_long_time; beep
-# TODO: different sounds based on $?
-beep() { timeout .1 speaker-test --frequency 500 --test sine >/dev/null 2>&1 }
-
-# List completions just for the PostgreSQL manpages on SQL syntax.
-man-sql() {
-	# TODO: check -w in any position.
-	if [[ ${1:-} = "-w" ]]; then
-		w=$(echo "$2" | tr '[[:upper:]]' '[[:lower:]]' | tr -d _)
-		firefox "https://www.postgresql.org/docs/current/sql-$w.html"
-		return
-	fi
-
-	man $@
-}
-_man-sql() {
-	# _files -W /usr/share/man/man7 -g "[A-Z]*.7"
-	#local x=(/usr/share/man/man7/[A-Z]*.7)
-
-	local x=('-w')
+_sman() {
+	local x=()
 	for f in /usr/share/man/man7/[A-Z]*.7; do
 		f=${f%.7}
+		f=${f%-13}
 		x=($x ${f##*/})
 	done
 
-	# TODO: accept any position; add -w
-	# TODO: -w shows up in completion menu?
 	_arguments "1: :{_describe 'page' x}"
-	#_arguments -s -S : $x
 }
-compdef _man-sql man-sql
+compdef _sman sman
+
+
+#### WIP commands
+
 
 #  For example, if $chpwd_functions is an array containing the
 #         values `mychpwd', `chpwd_save_dirstack'
@@ -487,83 +497,57 @@ compdef _man-sql man-sql
 
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
-# zstyle ':chpwd:*' recent-dirs-max 0
-zstyle ':chpwd:*' recent-dirs-insert 'always'
+# zstyle ':chpwd:*' recent-dirs-insert 'always'
 zstyle ':chpwd:*' recent-dirs-max 50
-zstyle ':chpwd:*' recent-dirs-prune 'parent'
+# zstyle ':chpwd:*' recent-dirs-prune 'parent'
 
-alias cdd=cdr  # Easier to type
-
-
+alias recent=cdr  # Easier to type
 
 
-# Pull:
-#    remote: Enumerating objects: 25, done.                                builtin/pack-objects.c
-#    remote: Counting objects: 100% (25/25), done.
-#    remote: Compressing objects: 100% (10/10), done.
-#    remote: Total 25 (delta 18), reused 22 (delta 15), pack-reused 0
-#    Unpacking objects: 100% (25/25), 22.20 KiB | 303.00 KiB/s, done.      builtin/unpack-objects.c
-# &  From github.com:vim/vim                                               builtin/ls-remote.c
-# &     80a20df86..3f65c66df  master     -> origin/master                  builtin/fetch.c
-# &   * [new tag]             v8.2.0831  -> v8.2.0831
-# &   * [new tag]             v8.2.0832  -> v8.2.0832
-# &   * [new tag]             v8.2.0833  -> v8.2.0833
-# &   * [new tag]             v8.2.0834  -> v8.2.0834
-# &  Updating 80a20df86..3f65c66df                                         builtin/merge.c
-#    Fast-forward
-#     src/ex_cmds.c                 | 3 +++
-#     src/gui.c                     | 2 ++
-#     src/libvterm/src/pen.c        | 4 ++--
-#     src/map.c                     | 2 +-
-#     src/terminal.c                | 2 +-
-#     src/testdir/test_popupwin.vim | 3 +++
-#     src/version.c                 | 8 ++++++++
-#     7 files changed, 20 insertions(+), 4 deletions(-)
 
-# push: show only last 2 lines:
-#
-#   Enumerating objects: 5, done.                                          builtin/pack-objects.c
-#   Counting objects: 100% (5/5), done.
-#   Delta compression using up to 2 threads
-#   Compressing objects: 100% (3/3), done.
-#   Writing objects: 100% (3/3), 1.24 KiB | 1.24 MiB/s, done.
-#   Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
-#   remote: Resolving deltas: 100% (2/2), completed with 2 local objects.  builtin/index-pack.c
-# & To github.com:zgoat/zdb.git                                            transport.c
-# &    117485d..cb59ca2  master -> master
-
-# Or on new Git PR
-#   Enumerating objects: 11, done.
-#   Counting objects: 100% (11/11), done.
-#   Delta compression using up to 2 threads
-#   Compressing objects: 100% (6/6), done.
-#   Writing objects: 100% (9/9), 2.77 KiB | 1.38 MiB/s, done.
-#   Total 9 (delta 0), reused 0 (delta 0), pack-reused 0
-#   remote:
-#   remote: Create a pull request for 'c' on GitHub by visiting:
-#   remote:      https://github.com/arp242/test/pull/new/c
-#   remote:
-# & To github.com:arp242/test.git
-# &  * [new branch]      c -> c
-
-
-# git() {
-# 	if [[ "${1:-}" = "push" ]]; then
-# 		shift
-# 		/usr/bin/git push -q $@
-# 	elif [[ "${1:-}" = "pull" ]]; then
-# 		shift
-# 		/usr/bin/git pull -q $@
-# 	else
-# 		/usr/bin/git $@
+# TODO: add to $chpwd_functions? Not sure of we need add-zsh-hook??
+# autoload -Uz add-zsh-hook
+# dir_hist=()
+# dir_hist_idx=
+# _hist() {
+# 	dir_hist=(${dir_hist:0:100} "$PWD")
+# 	dir_hist_idx=""
+# }
+# add-zsh-hook chpwd _hist
+# 
+# back() {
+# 	if [[ -z $dir_hist_idx ]]; then
+# 		dir_hist_idx=${#dir_hist}
 # 	fi
+# 	dir_hist_idx=$(( $dir_hist_idx - 1 ))
+# 
+# 	if [[ $dir_hist_idx -eq 0 ]]; then
+# 		echo "At first entry"
+# 		return 1
+# 	fi
+# 	cd -q ${dir_hist[$dir_hist_idx]}
+# }
+# 
+# fwd() {
+# 	if [[ -z $dir_hist_idx ]]; then
+# 		echo "At last entry"
+# 		return 1
+# 	fi
+# 
+# 	dir_hist_idx=$(( $dir_hist_idx + 1 ))
+# 	if [[ $dir_hist_idx -gt ${#dir_hist} ]]; then
+# 		dir_hist_idx=""
+# 		echo "At last entry"
+# 		return 1
+# 	fi
+# 
+# 	cd -q ${dir_hist[$dir_hist_idx]}
+# }
+# 
+# hist() {
+# 	echo "$dir_hist"
+# 	echo "$dir_hist_idx"
 # }
 
-# $ alias 'git push'='git push -q'
-# $ alias git push
-# exit 1
-# $ alias 'git push'
-# alias 'git push'='git push -q'
 
-
-
+# go list -u -m $(go list -m -f '{{.Indirect}} {{.}}' all | grep '^false' | cut -d ' ' -f2) | grep '\['

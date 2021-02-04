@@ -1,37 +1,38 @@
 #!/bin/sh
 #
 # https://github.com/arp242/uni
+#
+# Usage:
+#
+#   dmenu-uni all            All codepoints, won't include ZWJ emoji sequences.
+#   dmenu-uni emoji          All emojis.
+#   dmenu-uni emoji-common   Common emojis
+#
+# NOTE: dmenu will *crash* when using a colour emoji font, this is a bug in Xft:
+# https://bugs.freedesktop.org/show_bug.cgi?id=107534
+
+#dmenu="dmenu -i"                                   # Command to use
+#dmenu="dmenu -x -i -l 20 -fn monospace:size=20"   # Adding some options
+#dmenu="rofi -dmenu"                               # Use Rofi instead
+#dmenu="fzf"                                       # Use fzf instead
+dmenu="dmenu -x -i -l 20 -fn monospace:size=20 -sb #dddddd -sf #000000"
+
+# Command to copy to clipboard:
+copy="xclip -rmlastnl -selection clipboard"
+
+# Common emojis I use >99% of the time:
+common="-or g:smileys g:hand-fingers-open g:hand-fingers-partial g:hand-single-finger g:hand-fingers-closed g:hands g:body-parts g:person-gesture"
+
+# Display onlt the male variants:
+#common="$common -gender male"
+
+# Set skin tone:
+#common="$common -tone mediumdark"
 
 case "${1:-all}" in
-	# List all codepoints.
-	all)
-		uni -q p all |
-			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
-			grep -o "^'.'" |
-			tr -d "'" |
-			xclip -selection clipboard -rmlastnl
-		;;
-	
-	# List all emojis.
-	emoji)
-		uni -q emoji -gender man all |
-			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
-			cut -d' ' -f1 |
-			xclip -selection clipboard -rmlastnl
-		;;
-
-	# List common facial expressions, excluding flags, guitars, lobsters, map of
-	# Japan, and what-have-you.
-	emoji-common)
-		uni -q emoji -gender man \
-			g:smileys g:hand-fingers-open g:hand-fingers-partial g:hand-single-finger g:hand-fingers-closed g:hands g:body-parts g:person-gesture |
-			dmenu -x -i -l 20 -fn 'monospace:size=20' -sb '#dddddd' -sf '#000000' |
-			cut -d' ' -f1 |
-			xclip -selection clipboard -rmlastnl
-		;;
-
-	*)
-		echo >&2 "dmenu-uni: unknown '$1'"
-		;;
+	all)           uni -q p all     | $dmenu | grep -o "^'.'" | tr -d "'" | $copy ;;
+	emoji)         uni -q e all     | $dmenu | cut -d ' ' -f1 | $copy ;;
+	emoji-common)  uni -q e $common | $dmenu | cut -d ' ' -f1 | $copy ;;
+	*)             uni -q e $@      | $dmenu | cut -d ' ' -f1 | $copy ;;
+	#*)             echo >&2 "dmenu-uni: unknown '$1'" ;;
 esac
-
