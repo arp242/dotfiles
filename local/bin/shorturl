@@ -1,0 +1,45 @@
+#!/bin/sh
+
+if [ -n "$1" ]; then
+	sed \
+		-e 's!~~!~!g;' \
+		-e 's!~A!Android!g;' \
+		-e 's!~c!Chrome/!g;' \
+		-e 's!~C!compatible!g;' \
+		-e 's!~e!Edge/!g;' \
+		-e 's!~f!Firefox/!g;' \
+		-e 's!~g!Gecko/!g;' \
+		-e 's!~G!(KHTML, like Gecko)!g;' \
+		-e 's!~i!iPhone!g;' \
+		-e 's!~I!Macintosh!g;' \
+		-e 's!~a!AppleWebKit/!g;' \
+		-e 's!~L!Linux!g;' \
+		-e 's!~m!Mobile/!g;' \
+		-e 's!~M!Mobile!g;' \
+		-e 's!~s!Safari/!g;' \
+		-e 's!~v!Version/!g;' \
+		-e 's!~W!Windows!g;' \
+		-e 's!~Z !Mozilla/5.0 !g;' \
+		< /dev/stdin
+fi
+
+sed \
+	-e 's!~!~~!g;' \
+	-e 's!Android!~A!g;' \
+	-e 's!Chrome/!~c!g;' \
+	-e 's!compatible!~C!g;' \
+	-e 's!Edge/!~e!g;' \
+	-e 's!Firefox/!~f!g;' \
+	-e 's!Gecko/!~g!g;' \
+	-e 's!(KHTML, like Gecko)!~G!g;' \
+	-e 's!iPhone!~i!g;' \
+	-e 's!Macintosh!~I!g;' \
+	-e 's!AppleWebKit/!~a!g;' \
+	-e 's!Linux!~L!g;' \
+	-e 's!Mobile/!~m!g;' \
+	-e 's!Mobile!~M!g;' \
+	-e 's!Safari/!~s!g;' \
+	-e 's!Version/!~v!g;' \
+	-e 's!Windows!~W!g;' \
+	-e 's!Mozilla/5.0 !~Z !g;' \
+	< /dev/stdin

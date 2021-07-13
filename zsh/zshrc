@@ -52,6 +52,7 @@ _exists clang++  && export CXX=clang++
 # https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
 # https://www.reddit.com/r/zsh/comments/fvtr19/no_more_dotfile_clutter_in_my_home/
 export LESSHISTFILE=~/.cache/lesshistory
+export LESSKEY=~/.config/less/less
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
 export PSQLRC=~/.config/psqlrc
@@ -78,7 +79,7 @@ export GOTMPDIR=/tmp/go/tmp           # tmp files during compile
 [[ ! -d "$GOTMPDIR" ]] && mkdir -p "$GOTMPDIR"  # Make sure it exists as Go won't create it.
 
 # Faster compiles.
-export CFLAGS=-O0 CGO_CFLAGS=-O0 CGO_LDFLAGS=-O0
+#export CFLAGS=-O0 CGO_CFLAGS="-O0 -I/usr/include" CGO_LDFLAGS="-O0 -L/usr/lib"
 
 # R    Display colours escape chars as-is (so they're displayed).
 # i    Ignore case unless pattern has upper case chars.
@@ -120,7 +121,7 @@ export GH_NO_UPDATE_NOTIFIER=y
 [[ -o interactive ]] || return 0
 
 # Load zsh-completions
-fpath=($HOME/.zsh/zsh-completions/src $fpath)
+fpath=($HOME/.zsh/fpath $HOME/.zsh/zsh-completions/src $fpath)
 
 # Directory shortcuts
 hash -d pack=$HOME/.cache/vim/pack/plugins/start
@@ -153,6 +154,7 @@ setopt hist_no_store         # Don't store history or fc commands
 setopt no_bang_hist          # Don't use ! for history expansion
 setopt hist_ignore_dups      # Don't add to history if it's the same as previous event.
 setopt hist_ignore_all_dups  # Remove older event if new event is duplicate.
+setopt hist_save_no_dups     # Older commands that duplicate newer ones are omitted.
 HISTFILE=~/.zsh/history      # Store history here
 HISTSIZE=11000               # Max. entries to keep in memory
 SAVEHIST=10000               # Max. entries to save to file
@@ -160,6 +162,7 @@ HISTORY_IGNORE='([bf]g *|[bf]g|disown|cd ..|cd -)' # Don't add these to the hist
 
 ### Prompt
 setopt prompt_subst          # Expand parameters commands, and arithmetic in PROMPT
+setopt transient_rprompt     # Don't display rprompt on multi-line input.
 
 autoload -Uz vcs_info
 zstyle ':vcs_info:*' enable git       # Enable just git.
@@ -172,14 +175,14 @@ set_prompt() {
 }
 PROMPT=$'$(set_prompt)'
 
-_has_bat=$([[ -f /sys/bus/acpi/drivers/battery/PNP0C0A:00/power_supply/BAT0/capacity ]])
+_has_bat=$([[ -f /sys/bus/acpi/drivers/battery/PNP0C0A:00/power_supply/BAT0/capacity ]]; printf $?)
 set_rprompt() {
 	local host=    # Show hostname only for ssh connections; otherwise just the local time.
 	[[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]] && host="%F{red}%U%B%m%b%u%f:"
 	local bat=
 	# https://unix.stackexchange.com/questions/189749/understanding-bashs-read-a-file-command-substitution
 	# $(< "$FILE")
-	if [[ "$_has_bat" -eq 0 ]];then 
+	if [[ "$_has_bat" -eq 0 ]]; then 
 		read bat </sys/bus/acpi/drivers/battery/PNP0C0A:00/power_supply/BAT0/capacity
 		bat=":$bat%%"
 	fi
@@ -319,6 +322,7 @@ fi
 _exists bsdtar     && alias tar='bsdtar'
 _exists htop       && alias top='htop'
 _exists youtube-dl && alias youtube-dl='youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
+_exists youtube-dl && alias youtube-dl-audio='youtube-dl --extract-audio'
 _exists sqlite3    && alias sqlite=sqlite3
 _exists gpg2       && alias gpg=gpg2
 _exists psql       && alias psql='LESS=S$LESS psql'  # Don't wrap
@@ -355,6 +359,7 @@ alias run-help >/dev/null && unalias run-help
 
 alias curl='noglob curl'              # Disable globbing for some commands where we rarely want it;
 alias find='noglob find'              # Allows typing e.g. "find . -name *.zsh" without quotes.
+alias pharod='noglob pharod'
 
 autoload -U zcalc                     # Get quick results for "zc 6*6", or just use "zc" to get zcalc
 alias zc >/dev/null && unalias zc
@@ -551,3 +556,31 @@ alias recent=cdr  # Easier to type
 
 
 # go list -u -m $(go list -m -f '{{.Indirect}} {{.}}' all | grep '^false' | cut -d ' ' -f2) | grep '\['
+
+# https://github.com/natethinks/jog/
+# zshaddhistory() {
+# 	echo "${1%%$'\n'}|${PWD}   " >> ~/.zsh/history_ext
+# }
+# jog() {
+# grep -a "${PWD}   " ~/.zsh/history_ext | cut -f1 -d'|' | tail
+# }
+
+# Make directory and cd to it.
+mkcd() {
+	mkdir -p $@ && cd ${@:$#}
+}
+
+alias batchy='vim +":Batchy echo" +:S +":setl nowrap"'
+
+alias scc='scc --min-gen --no-complexity --no-cocomo --no-size'
+
+diffdir() {
+	dir1=$(printf '%q' "$1")
+	dir2=$(printf '%q' "$2")
+	shift; shift;
+	vim $@ +":Diffdir $dir1 $dir2"
+}
+
+mpv() { stty susp ''; command mpv $@; stty susp '^Z'; }
+
+# https://gitlab.com/dmfay/dotfiles/-/blob/master/zsh/fks.zsh

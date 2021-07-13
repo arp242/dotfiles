@@ -5,15 +5,9 @@ set nocompatible                       " Ensure it works with 'vim -u'
 syntax on                              " Switch syntax highlighting on.
 filetype plugin indent on              " Enable filetype detection.
 set termguicolors                      " Use true colors.
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" " Set correct escape codes to make termguicolors word in st.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" " Set correct escape codes to make termguicolors work in st.
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-
 silent! colorscheme default2           " Load my color scheme if it exists.
-if get(g:, 'colors_name', '') isnot# 'default2'
-    colorscheme default                " Fall back to default (some Linuxes overwrite this in global vimrc).
-endif
-
-set background=light                   " Make sure correct value is used.
 set backspace=indent,eol,start         " Allow backspacing over everything.
 set history=500                        " Keep 500 lines of command line history.
 set incsearch                          " Jump to match while typing the pattern in /.
@@ -39,8 +33,8 @@ set langmenu=en                        " ...and UI.
 set scrolloff=3                        " Minimum number of lines to keep above/below cursor.
 set wildmenu                           " Better tab completion at the command-line.
 set wildmode=longest,list,full         " Complete longest match, list other matches and select those with wildmenu.
-set wildignore=*.o,*.pyc,*.png,*.jpg,*.gif   " Ignore these files in completion.
 set wildignorecase                     " Case is ignored when completing file names and directories.
+set wildignore=*.o,*.pyc,*.png,*.jpg,*.gif     " Ignore these files in completion.
 set completeopt=menuone,popuphidden,noselect   " Insert mode completion:
                                        " menuone: always show menu, even when there is 1 match.
                                        " popuphidden: show docs in popup window; will be shown in CompleteChanged autocmd below.
@@ -71,10 +65,9 @@ set paragraphs=                        " Don't include nroff stuff.
 set tildeop                            " Use ~ as an operator to switch case.
 set clipboard=                         " Never automatically interface with system clipboard.
 set nofoldenable                       " Disable folds by default.
-set laststatus=2                       " Always show statusline...
+set laststatus=2                       " Always show statusline.
 set undofile                           " Save undo to file.
-set title                              " Update term title...
-set titleold=                          " ...but restore old title after exiting.
+set notitle                            " Don't update term title.
 set shortmess-=S                       " Show match count on n.
 let &ttyfast = $SSH_CLIENT is# ''      " Assume the terminal is fast for smoother redrawing.
 set display=lastline,uhex              " lastline  Show as much of the last line as possible instead of @.
@@ -93,24 +86,18 @@ set formatoptions+=ncroql              " n   Recognize numbered lists when forma
                                        " o   Insert comment char after o/O
                                        " q   Format comments with gq
                                        " l   Do not break lines when they were longer than 'textwidth' to start with
+let &fillchars='vert: ,diff: '         " Don't show any fill characters for vsplit or removed diff lines; colour is enough.
+
 set statusline=
 let &statusline .= '%<%f'              " Filename, truncate right
 let &statusline .= ' %h%m%r'           " [Help] [modified] [read-only]
 let &statusline .= '%{len(getqflist()) > 0 ? "[QE]" : ""}'
 let &statusline .= '%{len(getloclist(0)) > 0 ? "[LE]" : ""}'
 
-" TODO: alternative: map key to show function signature history in popup? Cycle
-" back and forth through it.
-"let &statusline .= ' %#X#%{get(v:completed_item, "menu", "")}%#StatusLine#'
-let &statusline .= ' %#Y#%{get(get(b:, "lsc_last_preview", []), 0, "")}%#StatusLine#'
-
 let &statusline .= '%='                " Right-align from here on.
 let &statusline .= ' [line %l of %L]'  " current line, total lines.
 let &statusline .= ' [col %v]'         " column.
 let &statusline .= ' [0x%B]'           " Byte value under cursor.
-
-hi X guibg=#999999 guifg=white
-hi Y guibg=#cccccc guifg=black
 
 " Set/create directory to keep backup, swap, undo files.
 set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
@@ -119,7 +106,7 @@ set viewdir=$HOME/.cache/vim/view     | call mkdir(&viewdir, 'p', 0700)
 set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
 
 " Set viminfo file unless explicitly turned off.
-if &viminfofile isnot# 'NONE'
+if &viminfofile isnot# 'NONE' && !has('nvim')
     set viminfofile=$HOME/.cache/vim/viminfo
 endif
 
@@ -129,8 +116,7 @@ endif
 augroup my-autocmds
     au!
 
-    " Go to the last cursor location when a file is opened, unless this is a git
-    " commit (in which case it's annoying).
+    " Go to the last cursor location when a file is opened unless this is a git commit.
     au BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") && &filetype != 'gitcommit'
             \| exe 'normal! g`"'
@@ -140,59 +126,37 @@ augroup my-autocmds
     au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 
     " Reset some settings that these ftplugins or syntax files reset :-/
-    au FileType python setl ts=4
-
-    " Remove Python 2 keywords.
-    au Syntax python
-        \ syn keyword pythonTwoBuiltin basestring cmp execfile file long unichr
-        \     raw_input reduce reload unicode xrange apply buffer coerce intern
+    au FileType python setl ts=4 | let g:pyindent_open_paren = 'shiftwidth()' | let g:pyindent_continue = 'shiftwidth()'
 
     " 2 spaces is almost universal.
     au FileType yaml setl expandtab ts=2
 
-    " C files are almost always ts=8, and very often mix tabs and spaces.
-    au FileType c,cpp setl ts=8
-
     " Set tabstop for Makefile, config files, etc.
     au BufNewFile,BufRead [Mm]akefile*,crontab*,*.conf,*.ini,*.cfg,*.rc setl ts=8
 
-    " Set larger textwidth for HTML.
-    au FileType html,htmldjango,eruby,haml setl textwidth=100
+    " Set larger textwidth for HTML, and the HTML indent is horrible.
+    au FileType html,htmldjango,eruby,haml setl textwidth=100 indentexpr=
 
     " Spaces work better, and don't round indenting by shiftwidth (mucks up
     " marking stuff as code).
+    " Don't need errors; too many false positives.
     au FileType markdown setl expandtab noshiftround
+                      \| hi markdownError ctermbg=NONE
 
     " Italics don't work well in tmux; shows black background. Loads of people
     " with the issue, but can't get it to work, so just disable it :-(
     au FileType markdown,html,gohtml,htmldjango,xhtml
-        \  if $TMUX isnot '' | hi htmlItalic cterm=underline | endif
-
-    " Don't need errors; too many false positives.
-    au FileType markdown hi markdownError ctermbg=NONE
+            \ if $TMUX isnot '' | hi htmlItalic cterm=underline | endif
 
     " These emails are usually DOS formatted (as should be, per RFC).
     au BufNewFile  *.eml setl fileformats+=dos fileformat=dos
     au BufReadPost *.eml setl fileformats+=dos fileformat=dos | edit!
-
-    " Works better most of the time.
-    "au FileType json,xml setl nowrap
 
     " Very common in CSS; not sure why this isn't there by default? Hmm.
     au FileType css setl isk+=-
 
     " Open in tab, rather than split.
     au FileType vim setl keywordprg=:tab\ help
-
-    " Varnish
-    autocmd BufRead,BufNewFile *.vcl setfiletype vcl.conf
-
-    " Better indent settings for HTML.
-    au FileType html
-                \  let g:html_indent_script1 = 'inc'
-                \| let g:html_indent_style1  = 'inc'
-                \| let g:html_indent_inctags = "html,body,head,tbody"
-                \| let g:html_indent_autotags = "th,td,tr,tfoot,thead"
 augroup end
 
 
@@ -200,7 +164,7 @@ augroup end
 """"""""""""
 
 " Convert buffer to and from scratch.
-command S
+command! S
     \  if &buftype is# 'nofile' | setl swapfile buftype= bufhidden=
     \| else                     | setl noswapfile buftype=nofile bufhidden=hide | endif
     \| echo printf('swapfile=%s buftype=%s bufhidden=%s', &swapfile, &buftype, &bufhidden)
@@ -228,14 +192,18 @@ command! -range UnicodeName
 
 " Stay on top of things!
 " TODO: maybe also hook in to cursormoved?
-fun! s:keeptop()
-    if execute('nmap <buffer> j') =~# 'jzt$' 
+fun! s:keeptop() abort
+    if execute('nmap <buffer> j') =~# 'jzt$'
+        let &scrolloff = b:scrolloff
+        unlet b:scrolloff
         nunmap <buffer> j
         nunmap <buffer> <Down>
         nunmap <buffer> n
         nunmap <buffer> N
         echo 'Unmapped'
     else
+        let b:scrolloff = &scrolloff
+        set scrolloff=0
         nnoremap <buffer> j jzt
         nnoremap <buffer> n nzt
         nnoremap <buffer> N Nzt
@@ -275,8 +243,8 @@ endfun
 command! -range Sum call s:sum(<count>)
 
 
-""" Key mappings
-""""""""""""""""
+""" Mappings
+""""""""""""
 
 " Reload config.
 nnoremap <Leader>r :source $MYVIMRC<CR>
@@ -284,10 +252,11 @@ nnoremap <Leader>r :source $MYVIMRC<CR>
 " Some useful-ish toggles.
 nnoremap <F9>  :set shiftround!<CR>:set shiftround?<CR>
 nnoremap <F10> :set list!<CR>:set list?<CR>
-inoremap <F10> <Cmd>:set list!<CR>
 nnoremap <F11> :set cursorcolumn!<CR>:set cursorcolumn?<CR>
-inoremap <F11> <Cmd>:set cursorcolumn!<CR>
 nnoremap <F12> :set cursorline!<CR>:set cursorline?<CR>
+inoremap <F9>  <Cmd>:set shiftround!<CR>
+inoremap <F10> <Cmd>:set list!<CR>
+inoremap <F11> <Cmd>:set cursorcolumn!<CR>
 inoremap <F12> <Cmd>:set cursorline!<CR>
 
 " Switch spell check languages
@@ -296,14 +265,9 @@ nnoremap <Leader>sn :set spelllang=nl<CR>
 nnoremap <Leader>se :set spelllang=en_gb<CR>
 
 " Use <C-l> to clear some highlighting, and make sure it works from insert mode.
-nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR>:syntax sync fromstart<CR><C-l>
+nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR><C-l>
 inoremap <C-l> <Cmd>:exe "normal \<C-l>"<CR>
-
-" Open tabs faster.
-nnoremap TT :tabe<Space>
-
-" Open directory in new tab.
-nnoremap <Leader>d :tabe %:h<CR>
+nnoremap <silent> <Leader>l :syntax sync fromstart<CR><C-l>
 
 " We don't need no stinkin' ex mode; use it for formatting.
 noremap Q gq
@@ -337,40 +301,27 @@ nnoremap <Down> gj
 inoremap <expr> <Up>   pumvisible() ? "\<C-p>"  : "\<C-o>gk"
 inoremap <expr> <Down> pumvisible() ? "\<C-n>"  : "\<C-o>gj"
 
-" Scroll with space, like pager. More useful than moving one char.
-nnoremap <Space> <C-d>
-
-" gf and gF opens in a tab.
-nnoremap gf <C-w>gf
-vnoremap gf <C-w>gf
-nnoremap gF <C-w>gF
-vnoremap gF <C-w>gF
-
 " Suspend also works from insert.
 inoremap <C-z> <Cmd><C-z>
 
-" Doc on <C-q> in insert.
-inoremap <C-q> <Cmd>:silent! normal! K<CR>
+" Doc on <C-k> in insert.
+inoremap <C-k> <Cmd>:silent! normal! K<CR>
 
-" Use <C-o> for history, as <C-p> is already used by tmux.
+" Use <C-o> for history, as I use <C-p> as the tmux prefix key.
 cnoremap <C-o> <Up>
 
-" Home works like 0 if already at start of a line, and ^ otherwise.
-" Adapted from: http://vim.wikia.com/wiki/VimTip315
-noremap <expr> <Home> col('.') is# match(getline('.'), '\S') + 1 ? '0' : '^'
-imap <silent> <Home> <Cmd><Home>
+" Readline-y mappings
+inoremap        <C-A> <C-O>^
+cnoremap        <C-A> <Home>
+inoremap <expr> <C-E> col('.') > strlen(getline('.')) \|\| pumvisible() ? "\<C-E>" : "\<End>"
 
 " Use a reasonable completion.
 fun! s:guessType()
     " TODO: Show original word somewhere.
     " TODO: Make completion start even if word is after badly spelled word.
-
     if &spell && spellbadword()[1] isnot# '' | return "\<C-x>s"
     elseif &completefunc isnot# ''           | return "\<C-x>\<C-u>"
     elseif &omnifunc isnot# ''               | return "\<C-x>\<C-o>"
-    elseif exists('*completor#do')           | return "\<C-R>=completor#do('complete')\<CR>"
-    elseif exists(':ALEComplete')            | "\<C-\>\<C-O>:ALEComplete\<CR>"
-    elseif exists('*coc#refresh')            | "\<C-r>=coc#refresh()\<CR>"
     else                                     | return "\<C-x>\<C-n>"
     endif
 endfun
@@ -388,6 +339,41 @@ nnoremap <silent> MM :silent! :wa<CR>:echo &makeprg<CR>:silent make<CR>:redraw!<
 
 " Close all windows except the current one.
 nnoremap <silent> OO :silent wincmd o<CR>
+
+" Open tabs faster.
+nnoremap TT :tabe<Space>
+nnoremap HH :tab h<Space>
+
+" Open directory in new tab.
+nnoremap <Leader>d :tabe %:h<CR>
+
+" Scroll down on space.
+nnoremap <Space> <C-d>
+
+" Create more undo points.
+" for c in ".?!,;\<CR>"
+"     exe printf('inoremap %s %s<C-g>u', c, c)
+" endfor
+
+" gf and gF opens in a tab.
+nnoremap gf <C-w>gf
+vnoremap gf <C-w>gf
+nnoremap gF <C-w>gF
+vnoremap gF <C-w>gF
+
+nnoremap <F1>         gT
+nnoremap <F2>         gt
+nnoremap <Esc>[25~ gT :tabfirst<CR>
+nnoremap <Esc>[26~ gt :tablast<CR>
+nnoremap <Esc>[1;2P   :tabfirst<CR>
+nnoremap <Esc>[1;2Q   :tablast<CR>
+
+inoremap <F1>         <Esc>gT
+inoremap <F2>         <Esc>gt
+inoremap <Esc>[25~ gT <Esc>:tabfirst<CR>
+inoremap <Esc>[26~ gt <Esc>:tablast<CR>
+inoremap <Esc>[1;2P   <Esc>:tabfirst<CR>
+inoremap <Esc>[1;2Q   <Esc>:tablast<CR>
 
 " I often mistype this :-/
 cabbr Set set
@@ -431,9 +417,6 @@ fun! s:wrap()
 endfun
 cnoremap <expr> <C-a> index(['/', '?'], getcmdtype()) is -1 ? "\<F1>" : "\<C-\>e<SID>wrap()\<CR>"
 
-" Important for Reddit 🙃
-comm! Crazify call getline('.')->split('\zs', 1)->map({_, v -> rand()%2 ? toupper(v) : tolower(v)})->join('')->setline('.')
-
 
 """ Plugins
 """""""""""
@@ -463,7 +446,7 @@ nnoremap <silent> <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
 """ lazy.vim
 fun! s:r(file) abort
     let f = $HOME .. '/.vim/snip/' .. a:file
-	return filereadable(f) ? readfile(f) : ''
+    return filereadable(f) ? readfile(f) : ''
 endfun
 let g:lazy_snippets = #{
     \ go: #{
@@ -482,7 +465,6 @@ let g:lazy_snippets = #{
 """ vim-dirvish
 """""""""""""""
 let g:dirvish_relative_paths = 1       " Make paths in the Dirvish buffer relative to getcwd().
-
 augroup my-dirvish
     au!
     au Filetype dirvish
@@ -499,33 +481,44 @@ augroup end
 
 """ gopher.vim
 let g:gopher_debug = ['commands', 'setup']
-let g:gopher_highlight = ['string-spell', 'string-fmt',
-        \ 'fold-block', 'fold-comment', 'fold-import', 'fold-pkg-comment', 'fold-varconst']
 let g:gopher_highlight = ['string-spell', 'string-fmt']
-
 augroup my-gopher
     au!
-
     " Make ! stand out a bit more.
     au FileType go syn match goBang /!\ze[^=]/ | hi goBang gui=bold cterm=bold
 
     " Compile without cgo unless explicitly enabled.
     au FileType go if $CGO_ENABLED is# '' | let $CGO_ENABLED=0 | endif
 
-    " Format buffer on write.
-    " https://vi.stackexchange.com/questions/7116
+	" Highlight comments starting with '///' less.
+    au FileType go
+                \ hi goCommentBg guifg=#aaaaaa ctermfg=grey
+                \| syn region goCommentBg start="///" end="$" contains=@Spell
+    " Format buffer on write; https://vi.stackexchange.com/questions/7116
     au BufWritePre *.go
                 \  let s:save = winsaveview()
                 \| silent! exe 'undojoin | keepjumps %!goimports 2>/dev/null || cat /dev/stdin'
                 \| call winrestview(s:save)
 
-	" Quick replace for go.mod
+    " Quick replace for go.mod
     au FileType gomod comm! -nargs=1 Replace call append(4, printf('replace zgo.at/%s => ../%s', <f-args>, <f-args>))
 augroup end
 
 """ vim-qf
 let g:qf_auto_open_quickfix = 1        " Automatically open qfix and loclist.
 let g:qf_auto_open_loclist = 1
+" let g:qf_auto_quit = 0  " Breaks with tabs.
+augroup my-qf
+    au!
+	" Close list when entering tabs and they're empty.
+    au TabEnter *
+                \  if len(getqflist()) is# 0
+                \|     cclose
+                \| else
+                \|     call qf#OpenQuickfix()
+                \|     wincmd w
+                \| endif
+augroup end
 
 " Go to next/prev error; need to use escape codes as <C-Arrow> isn't reliable.
 nmap <C-Left>    <Plug>(qf_qf_previous)
@@ -540,10 +533,10 @@ nmap <C-Up>      <Plug>(qf_qf_toggle_stay)
 nmap <Esc>[A     <Plug>(qf_qf_toggle_stay)
 nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
 
-
 """ vim-lsc
 let g:lsc_server_commands = {
   \ 'go':         #{command: 'gopls serve', log_level: -1, suppress_stderr: v:true},
+  \ 'python':     #{command: 'pylsp'},
   \ 'c':          #{command: 'clangd --log=error'},
   \ 'cpp':        #{command: 'clangd --log=error'},
   \ 'sql':        #{command: 'sqls',        log_level: -1, suppress_stderr: v:true},
@@ -555,7 +548,6 @@ let g:lsc_enable_diagnostics = v:false       " Don't lint code.
 let g:lsc_reference_highlights = v:false     " Don't highlight references.
 "let g:lsc_enable_incremental_sync = v:false  " Don't constantly send diffs to server.
 "let g:lsc_preview_split_direction = 'below'  " Show preview at bottom, rather than top.
-"let g:lsc_enable_incremental_sync = v:false
 
 let g:lsc_auto_map = #{defaults: v:true, GoToDefinitionSplit: ''}
 augroup my-lsc
@@ -569,7 +561,7 @@ augroup end
 
 
 """ runbuf.vim
-let g:runbuf_commands = #{gc: 'psql goatcounter'}
+let g:runbuf_commands = #{gc: 'psql goatcounter', gcp: 'psql goatcounter_part'}
 let g:runbuf_map = '<C-q>'
 augroup my-runbuf
     au!
@@ -580,61 +572,18 @@ augroup end
 
 """ xdg_open.vim
 let g:xdg_open_no_map = 1
-nnoremap <silent> gx :call xdg_open#open_url(0)<CR>
-xnoremap <silent> gx :call xdg_open#open_url(1)<CR>
+nnoremap <silent> gx :call xdg_open#open(0)<CR>
+xnoremap <silent> gx :call xdg_open#open(1)<CR>
 
-
-""" Random stuff/ideas
-""""""""""""""""""""""
-
-" Open help in cmdline on F1 without closing cmdline.
-fun! s:cmdline_f1() abort
-    if getcmdtype() isnot# ':'
-        return
-    endif
-
-    let cmdlist = getcmdline()->split(' ')
-    if len(cmdlist) is# 0
-        return
-    endif
-    let cmd = findcommand(trim(cmdlist[0]))
-    if cmd is# ''
-        return
-    end
-
-    let so = &scrolloff
-    try
-        set scrolloff=0  " Reset it shows as much as possible.
-
-        let tag = ':' .. cmd
-        if len(cmdlist) > 1
-            if cmd[:2] is# 'set'
-                let tag = printf("'%s'", split(cmdlist[1], '=')[0])
-            elseif cmd is# 'syntax'
-                let tag = printf(":syn-%s", cmdlist[1])
-            elseif cmd is# 'autocmd'
-                let tag = cmdlist[1]
-            endif
-        endif
-
-        try
-            exe ':help ' .. tag
-        catch /E149/
-            return
-        endtry
-
-        augroup cmdline_f1
-            au!
-            exe printf("autocmd CmdlineLeave * ++once exe %d .. 'wincmd c'", winnr())
-        augroup end
-
-        wincmd w
-        redraw
-    finally
-        let &scrolloff = so
-    endtry
-endfun
-cnoremap <F1> <Cmd>:call <SID>cmdline_f1()<CR>
-
+""" mundo.vim
+nnoremap <Leader>u :MundoToggle<CR>
+let g:mundo_right = 1
+let g:mundo_help = 1
+let g:mundo_auto_preview = 0
+let g:mundo_verbose_graph = 0
+augroup my-mundo
+    au!
+    au FileType Mundo,MundoDiff nnoremap <buffer> <C-w>c :normal q<CR>
+augroup end
 
 " vim: et

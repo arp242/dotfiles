@@ -1,0 +1,4 @@
+dirs = {
+	'~/.config/less': '.',
+}
+

@@ -1,6 +1,8 @@
+\set QUIET
 \set HISTSIZE -1
 \set PROMPT1 '(%:ROW_COUNT:)%R%# '
 \set PROMPT2 '%R%# '
 \pset linestyle unicode
 \pset footer off
 \pset null 'NULL'
+\timing on

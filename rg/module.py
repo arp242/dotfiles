@@ -1,0 +1,4 @@
+files = {
+	'~/.config/ripgrep': 'ripgrep',
+}
+

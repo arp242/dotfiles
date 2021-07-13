@@ -1,0 +1,11 @@
+--colors=line:none
+--colors=match:none
+--colors=path:none
+
+--colors=match:fg:red
+--colors=line:fg:magenta
+--colors=path:style:bold
+--colors=path:style:underline
+
+--smart-case
+--sort=path

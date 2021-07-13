@@ -6,6 +6,7 @@ import subprocess
 import sys
 
 exclude = [
+    #'pics',
     '.cache',
     '.gem',
     '.npm',
@@ -15,7 +16,6 @@ exclude = [
     '.mozilla/firefox/1fow4xw4.default/storage',
     'music',
     'tv',
-    #'pics',
     '.wine',
     '.local/share/Steam',
     '.config/google-chrome',
@@ -25,6 +25,7 @@ exclude = [
     'src',
     '.local/aur',
 
+    '.local/gobin',
     '.local/share/keybase',
     'code/postit-recipe/bfpd',
     '.claws-mail/imapcache',
@@ -33,7 +34,7 @@ exclude = [
 os.chdir('/home/martin')
 
 if len(sys.argv) < 2:
-    print('no cmd')
+    print('no cmd: need "test" or "tar"')
     sys.exit(1)
 
 if sys.argv[1] == 'test':
@@ -50,7 +51,7 @@ elif sys.argv[1] == 'tar':
     #
     # openssl enc -aes-256-cbc    -in backup.tar.gz -out backup.tar.gz.crypt
     # openssl enc -aes-256-cbc -d -in backup.tar.gz.crypt > baclup.tar.gz
-    cmd = ['tar', 'cf', f'backups/xps/{datetime.datetime.now().strftime("%Y%m%dT%H:%M:%S")}.tar']
+    cmd = ['tar', 'cf', f'/data/backups/{datetime.datetime.now().strftime("%Y%m%dT%H:%M:%S")}.tar']
     for e in exclude:
         cmd += ['--exclude', './' + e]
     cmd += ['.']

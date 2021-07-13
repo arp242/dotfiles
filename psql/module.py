@@ -1,3 +1,3 @@
 files = {
-	'~/.psqlrc': 'psqlrc',
+	'~/.config/psqlrc': 'psqlrc',
 }

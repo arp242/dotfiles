@@ -1,22 +1,10 @@
 #!/bin/sh
 
-printf "%-15s" "US West"
-TZ="America/Los_Angeles" date
-
-printf "%-15s" "US East"
-TZ="America/New_York" date
-
-printf "%-15s" "UTC"
-TZ="UTC" date
-
-printf "%-15s" "Ireland/UK"
-TZ="Europe/Dublin" date
-
-printf "%-15s" "West Europe"
-TZ="Europe/Amsterdam" date
-
-printf "%-15s" "Bali"
-TZ="Asia/Makassar" date
-
-printf "%-15s" "New Zealand"
-TZ="NZ" date
+[ -n "$1" ] && time="-d @$(date -d "$1" +%s)" || time=
+printf "%-15s" "US West";     TZ="America/Los_Angeles" date $time
+printf "%-15s" "US East";     TZ="America/New_York"    date $time
+printf "%-15s" "UTC";         TZ="UTC"                 date $time
+printf "%-15s" "Ireland/UK";  TZ="Europe/Dublin"       date $time
+printf "%-15s" "West Europe"; TZ="Europe/Amsterdam"    date $time
+printf "%-15s" "Bali";        TZ="Asia/Makassar"       date $time
+printf "%-15s" "New Zealand"; TZ="NZ"                  date $time

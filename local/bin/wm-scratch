@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# TODO
+
+#set -euC
+
+name=scratchwin
+
+scratch=$(xdotool search --classname $name)
+if [ -z "$scratch" ]; then
+	st -n "$name" &
+	# TODO: maybe move?
+	exit 0
+fi
+
+if xdotool search --onlyvisible "$name" > /dev/null; then
+	xdotool windowunmap $scratch
+else
+	xdotool windowmap $scratch
+fi
+
+#xdotool windowraise $scratch
+#windowactivate
+
+	#scratch=$(xdotool search --classname $name)

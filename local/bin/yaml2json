@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'json'
+puts JSON.pretty_generate(YAML.load_file(ARGV[0]))
