@@ -37,10 +37,10 @@ set listlinks
 set listjobs
 
 # Show current dir
-#set prompt = "[%~]%# "
+set prompt = "[%~]%# "
 
 # Use % for normal user and # for super
-#set promptchars = "%#"
+set promptchars = "%#"
 
 # Show date & hostname on right side
 set rprompt = "%B%U%m%b%u:%T"

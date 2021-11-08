@@ -6,6 +6,5 @@ xset -b
 xmodmap ~/.config/x11/modmap
 #xbacklight -set 10
 xsetroot -solid "#3a6ea5"
-# st
-#/home/martin/code/suckless/dwm/dwm
+
 exec ssh-agent dwm

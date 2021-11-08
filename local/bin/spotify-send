@@ -1,5 +1,11 @@
 #!/bin/sh
 
+# pkill dbus
+# dbus-launch --exit-with-session spotify
+#
+# https://gist.github.com/duncan-bayne/3f7ef98a15b02b693bf47a03fda79b3a
+#
+
 set -euC
 
 dest="org.mpris.MediaPlayer2.spotify"

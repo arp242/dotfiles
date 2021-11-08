@@ -7,9 +7,11 @@ cd ~/code/arp242.net
 s=site
 
 att() {
-	[ -n "${TMUX:-}" ] &&
-		tmux switch-client -t "=$s" ||
+	if [ -n "${TMUX:-}" ]; then
+		tmux switch-client -t "=$s"
+	else
 		tmux attach-session -t "=$s"
+	fi
 }
 
 if tmux has-session -t "=$s" 2> /dev/null; then

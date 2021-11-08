@@ -4,6 +4,8 @@
 <dead_grave>  <dead_grave>                 :  "`" grave           # GRAVE ACCENT
 <dead_grave>  <a>                          :  "À" agrave          # LATIN CAPITAL LETTER A WITH GRAVE
 
+<Multi_key>  <numbersign>   <numbersign>   :  "♯" U266F           # MUSIC SHARP SIGN
+
 <Multi_key>  <space>        <space>        :  " " U202F           # NARROW NO-BREAK SPACE
 <Multi_key>  <minus>        <greater>      :  "→" U2192           # RIGHTWARDS ARROW
 <Multi_key>  <minus>        <less>         :  "←" U2190           # LEFTWARDS ARROW
@@ -74,6 +76,8 @@
 <Multi_key>  <v>            <s>            :  "š" U0161           # v s (LATIN SMALL LETTER S WITH CARON)
 <Multi_key>  <v>            <Z>            :  "Ž" U017d           # v Z (LATIN CAPITAL LETTER Z WITH CARON)
 <Multi_key>  <v>            <z>            :  "ž" U017e           # v z (LATIN SMALL LETTER Z WITH CARON)
+<Multi_key>  <v>            <c>            :  "č" U010D           # v c (LATIN SMALL LETTER C WITH CARON)
+<Multi_key>  <v>            <C>            :  "Č" U010C           # v c (LATIN CAPITAL LETTER C WITH CARON)
 <Multi_key>  <asciitilde>   <A>            :  "Ã" Atilde          # ~ A (LATIN CAPITAL LETTER A WITH TILDE)
 <Multi_key>  <asciitilde>   <N>            :  "Ñ" Ntilde          # ~ N (LATIN CAPITAL LETTER N WITH TILDE)
 <Multi_key>  <asciitilde>   <O>            :  "Õ" Otilde          # ~ O (LATIN CAPITAL LETTER O WITH TILDE)
@@ -333,6 +337,8 @@
 <Multi_key>  <s>            <v>            :  "š" U0161           # s v (LATIN SMALL LETTER S WITH CARON)
 <Multi_key>  <Z>            <v>            :  "Ž" U017d           # Z v (LATIN CAPITAL LETTER Z WITH CARON)
 <Multi_key>  <z>            <v>            :  "ž" U017e           # z v (LATIN SMALL LETTER Z WITH CARON)
+<Multi_key>  <c>            <v>            :  "č" U010D           # v c (LATIN SMALL LETTER C WITH CARON)
+<Multi_key>  <C>            <v>            :  "Č" U010C           # v c (LATIN CAPITAL LETTER C WITH CARON)
 <Multi_key>  <A>            <asciitilde>   :  "Ã" Atilde          # A ~ (LATIN CAPITAL LETTER A WITH TILDE)
 <Multi_key>  <N>            <asciitilde>   :  "Ñ" Ntilde          # N ~ (LATIN CAPITAL LETTER N WITH TILDE)
 <Multi_key>  <O>            <asciitilde>   :  "Õ" Otilde          # O ~ (LATIN CAPITAL LETTER O WITH TILDE)

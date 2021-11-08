@@ -7,9 +7,16 @@
 [user]
 name       = Martin Tournoij
 email      = martin@arp242.net
+signingKey = ~/.ssh/id_ed25519
 
 [include]
-path = ~/code/git-color-schemes/light-minimal
+path = ~/code/Misc/git-color-schemes/light-minimal
+
+[init]
+defaultBranch = master       # Just keep the master branch for now.
+
+[gpg]
+format = ssh                 # Sign with SSH key.
 
 [core]
 eol   = lf                   # Always use \n, even on Windows.
@@ -101,9 +108,11 @@ lastci = !git commit --edit -F $(git rev-parse --git-dir)/COMMIT_EDITMSG
 # Edit git-status files in git.
 edit = !vim -p $(git diff --name-only)
 
-# Show nice overview of branches sorted by date.
+# Show nice overview of tags and branches sorted by date.
+t = tag --sort=creatordate --format \
+	'%(creatordate:short) %(HEAD)%(align:width=20)%(refname:short)%(end) → %(upstream:track)%(subject)'
 b = branch --sort=creatordate --format \
-	'%(HEAD) %(align:width=20)%(refname:short)%(end) %(creatordate:short)  %(upstream:track)%(subject)'
+	'%(creatordate:short) %(HEAD)%(align:width=20)%(refname:short)%(end) → %(upstream:track)%(subject)'
 
 # Like --oneline, but with date.
 # TODO: add some colours
@@ -120,9 +129,3 @@ mergeit = ![ -z "$(git diff --diff-filter=U)" ] \
 
 # Figure out who works on this.
 authors = !git log --format='%an <%ae>' | sort | uniq -c | sort -rn
-
-# /usr/share/doc/git-diff-highlight/README
-# [pager]
-# log  = diff-highlight | less -F
-# show = diff-highlight | less -F
-# diff = diff-highlight | less -F

@@ -10,3 +10,6 @@ add Control = Control_L
 
 ! Right Alt is compose
 keysym Alt_R = Multi_key
+
+! keysym KP_Home = minus underscore
+! keysym KP_8    = equal plus
