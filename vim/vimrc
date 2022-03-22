@@ -152,6 +152,14 @@ augroup my-autocmds
                             g:pyindent_open_paren = 'shiftwidth()'
                             g:pyindent_continue   = 'shiftwidth()'
     }
+    # Don't spellcheck comments, but do spellcheck strings.
+    au Filetype toml {
+                            syn match tomlComment /#.*/ contains=tomlTodo
+                            syn region tomlString oneline start=/"/ skip=/\\\\\|\\"/ end=/"/ contains=tomlEscape,@Spell
+                            syn region tomlString oneline start=/'/ end=/'/                  contains=@Spell
+                            syn region tomlString start=/"""/ end=/"""/ contains=tomlEscape,tomlLineEscape,@Spell
+                            syn region tomlString start=/'''/ end=/'''/ contains=@Spell
+    }
     au Filetype vim {
                             setl keywordprg=:tab\ help
                             silent! syn clear vimCommentString vimCommentTitle
@@ -332,7 +340,7 @@ nnoremap <Esc>Or <Down>
 nnoremap <Esc>Ot <Left>
 
 # Use a reasonable completion.
-def s:guessType(): string
+def <SID>guessType(): string
     # TODO: Show original word somewhere.
     # TODO: Make completion start even if word is after badly spelled word.
     if &spell && spellbadword()[1] != '' | return "\<C-x>s"
@@ -408,7 +416,7 @@ iabbr err!= err !=
 
 # Add/remove word delimiters in search pattern.
 # word → \<word\> → word
-def s:wrap(): string
+def <SID>wrap(): string
     var l = getcmdline()
     var pos = getcmdpos()
     # Remove
@@ -436,7 +444,9 @@ cnoremap <expr> <C-s> index(['/', '?'], getcmdtype()) is -1 ? "\<C-s>" : "\<C-\>
 nnoremap <silent> <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
 
 ### lazy.vim
-def s:r(file: string): list<string>
+#def s:r(file: string): list<string>
+# TODO: can't use <SID> in map?
+def <SID>r(file: string): list<string>
     var f = $HOME .. '/.vim/snip/' .. file
     return filereadable(f) ? readfile(f) : ''
 enddef
@@ -444,13 +454,13 @@ g:lazy_snippets = {
     go: {
         err:  "if err != nil {\n\treturn fmt.Errorf(\"\b: %w\", err)\n}",
         errt: "if err != nil {\n\tt.Fatal(err)\n}",
-        tt:   s:r('/test.go'),
+        #tt:   s:r('/test.go'),
         dp:   "fmt.Println(zdb.ApplyPlaceholders(\bquery, args...))",
         dd:   "zdb.Dump(ctx, os.Stdout, \"\b\")",
         bb:   "func Benchmark\b(b *testing.B){\n\tb.ReportAllocs()\n\tfor n := 0; n < b.N; n++ {\n\t}\n}\n"
     },
     html: {
-        doc: s:r('/base.html'),
+        #doc: s:r('/base.html'),
     },
 }
 
@@ -485,6 +495,11 @@ augroup my-gopher
                 | hi goBang gui=bold cterm=bold
                 #\ Compile without cgo unless explicitly enabled.
                 | if $CGO_ENABLED == '' | $CGO_ENABLED = 0 | endif
+
+    au FileType c,cpp
+                #\ Highlight comments starting with /// less.
+                | syn region cCommentBg start="///" end="$" contains=@Spell
+                | hi cCommentBg guifg=#aaaaaa ctermfg=grey
 
     # Quick replace for go.mod
     au FileType gomod comm! -nargs=1 Replace append(4, printf('replace zgo.at/%s => ../../Golib/%s', <f-args>, <f-args>))
@@ -534,6 +549,7 @@ g:lsc_server_commands = {
   sql:          {command: 'sqls',        log_level: -1, suppress_stderr: v:true},
   'sql.runbuf': {command: 'sqls',        log_level: -1, suppress_stderr: v:true},
   cs:           {command: '/home/martin/omni/run -lsp -v --hostPID ' .. getpid()},
+  rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
 }
 # cmd = { "/path/to/omnisharp-roslyn/bin/omnisharp/run", "--languageserver" , "--hostPID", tostring(pid) },
 
@@ -554,7 +570,7 @@ augroup my-lsc
 augroup end
 
 # One command rather than a bunch.
-var s:commands = {
+var commands = {
     enable:          'lsc#server#enable',
     disable:         'lsc#server#disable',
     restart:         'lsc#server#restart',
@@ -574,13 +590,13 @@ var s:commands = {
 # LSClientLineDiagnostics    call lsc#diagnostics#echoForLine()
 # LSClientSignatureHelp      call lsc#signaturehelp#getSignatureHelp()
 # LSClientWindowDiagnostics  call lsc#diagnostics#showLocationList()
-command -nargs=* -complete=customlist,s:lsc_complete LSC :call s:lsc(<f-args>)
-def s:lsc(...args: list<string>)
+command -nargs=* -complete=customlist,<SID>lsc_complete LSC :call <SID>lsc(<f-args>)
+def <SID>lsc(...args: list<string>)
     if len(args) == 0
         return
     endif
 
-    var run = s:commands->get(args[0], v:none)
+    var run = commands->get(args[0], v:none)
     if run == v:none
         echohl ErrorMsg | echo 'Unknown command: ' .. args[0] | echohl None
         return
@@ -591,10 +607,10 @@ def s:lsc(...args: list<string>)
     endif
     function(run)->call(args[1 :])
 enddef
-def s:lsc_complete(lead: string, cmdline: string, pos: number): list<string>
+def <SID>lsc_complete(lead: string, cmdline: string, pos: number): list<string>
     var word = gopher#compl#prev_word(cmdline, pos)
     if word == 'LSC'
-        return s:commands->keys()->filter((_, v) => strpart(v, 0, len(lead)) == lead)
+        return commands->keys()->filter((_, v) => strpart(v, 0, len(lead)) == lead)
     endif
     return []
 enddef
@@ -635,7 +651,7 @@ augroup end
 #     au Filetype * Lpeg autostart
 # augroup end
 
-def s:search_vix()
+def <SID>search_vix()
     var save = @a
     try
         normal! gv"sy
@@ -649,6 +665,8 @@ enddef
 nnoremap g/ <C-o>:call <SID>search_vix()<CR>/<C-R>=@/<CR><CR>
 
 g:loaded_lpeg = 1
+
+g:rust_recommended_style = 0
 
 defcompile  # Compile functions so we get errors on startup.
 # vim: et
