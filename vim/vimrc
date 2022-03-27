@@ -35,12 +35,14 @@ set spelloptions=camel                 # Spellcheck CamelCase words separately.
 set helplang=en langmenu=en            # Always use English in help and UI.
 set scrolloff=3                        # Minimum number of lines to keep above/below cursor.
 set wildmenu                           # Better tab completion at the command-line.
-set wildmode=longest,list,full         # Complete longest match, list other matches in wildmenu.
+set wildmode=longest:full              # Complete longest match, list other matches in wildmenu.
 set wildignorecase                     # Case is ignored when completing file names and directories.
 set wildignore=*.o,*.png,*.jpg,*.jpeg,*.webp,*.gif  # Ignore these files in completion.
+set wildoptions=pum                    # Show pop-up menu.
+set wildcharm=<Tab>                    # Trigger wild mode from mappings/macros.
 set completeopt=menuone,noselect       # Insert mode completion:
-                                       # menuone     → always show menu, even when there is 1 match.
-                                       # noselect    →  don't select an option when starting.
+                                       # menuone   → always show menu, even when there is 1 match.
+                                       # noselect  → don't select an option when starting.
 set completepopup=highlight:Pmenu,border:off  # Options for preview popup in completion.
 set pumheight=10                       # Don't make completion menu too high.
 set previewheight=6                    # Height of preview window.
@@ -351,6 +353,10 @@ def <SID>guessType(): string
 enddef
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
+
+# Make <Tab> go to the next entry when using the popupmenu from commandline
+# completion.
+cnoremap <expr> <Tab> pumvisible() ? '<Down>' : "\<Tab>"
 
 # Yank without clobbering registers.
 nnoremap dD "_dd

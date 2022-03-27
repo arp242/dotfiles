@@ -323,8 +323,8 @@ fi
 
 _exists bsdtar && alias tar='bsdtar'
 _exists htop   && alias top='htop'
-alias youtube-dl='noglob youtube-dl --no-part -o "%(title)s-%(id)s.%(ext)s"'
-alias youtube-dl-audio='youtube-dl --extract-audio'
+alias youtube-dl='noglob yt-dlp --no-part -o "%(title)s-%(id)s.%(ext)s"'
+alias youtube-dl-audio='yt-dlp --extract-audio'
 alias sqlite=sqlite3
 alias gpg=gpg2
 alias psql='LESS=S$LESS psql'  # Don't wrap
@@ -393,7 +393,7 @@ grepe() {
 
 # Restart ssh-agent after restarting WM or x11 (may be old env var in tmux).
 ssh-reagent() {
-	export SSH_AUTH_SOCK=$(echo /tmp/ssh-*/agent.*)
+	export SSH_AUTH_SOCK=$(print /tmp/ssh-*/agent.*)
 	ssh-add -l >/dev/null || ssh-add
 }
 

@@ -41,6 +41,8 @@ insteadOf = https://github.com/
 
 #### Command settings
 #####################
+[commit]
+gpgsign = true               # Sign commits.
 
 [diff]
 algorithm    = histogram     # Better quality diffs (but slower).
