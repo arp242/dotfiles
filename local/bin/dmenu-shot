@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -euC
-
-echo "\
-wm-screenshot select
-wm-screenshot full
-wm-screenshot copy\
-" | dmenu -i "$@" | ${SHELL:-"/bin/sh"} &

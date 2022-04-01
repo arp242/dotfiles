@@ -2,6 +2,7 @@
 #
 # TODO: support overflows to next day: timecalc 14:00 08:00
 # TODO: support different formats: 14.00, 1400, 14, 2pm
+#echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 
 import datetime, re, sys
 

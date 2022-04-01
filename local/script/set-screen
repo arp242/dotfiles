@@ -7,6 +7,7 @@
 #
 #     Active Profile: output:analog-stereo+input:analog-stereo
 #     Active Profile: output:hdmi-stereo-extra1
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 
 laptop="eDP1"
 hdmi="HDMI2"

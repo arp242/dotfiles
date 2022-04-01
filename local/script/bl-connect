@@ -1,0 +1,36 @@
+#!/bin/zsh
+#
+# Connect to a bluetooth device.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+
+set -euC
+
+connect() {
+	local mac=$(cut -d ' ' -f2 <<<$argv[1])
+
+	# Otherwise audio devices can't connect; usually started on the first audio
+	# application, but this may not have happened yet.
+	pulseaudio --start
+	bluetoothctl <<<'power on'
+	bluetoothctl <<<"connect $mac"
+}
+
+IFS="
+"
+devs=($(bluetoothctl <<<devices | grep '^Device'))
+if [[ -n ${1:-} ]]; then
+	for dev in $devs; do
+		if print "$dev" | grep -iq "$1$"; then
+			connect "$dev"
+			break
+		fi
+	done
+	exit 0
+fi
+
+i=0
+for dev in $(cut -d ' ' -f3- <<<$devs); print "$(( i=i+1 )) $dev"
+
+printf "Which? "
+read n
+connect $(sed "${n}p;d" <<<$devs)

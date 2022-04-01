@@ -1,0 +1,114 @@
+#!/bin/zsh
+#
+# WiFi and network status and management.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+
+set -euC
+
+dev=$(iw dev | grep Interface | head -n1 | cut -d ' ' -f2)
+
+usage() {
+	[[ -n ${argv[1]:-} ]] && print >&2 "wifi: error: ${argv[1]}"
+	<<-EOF
+	wifi [command] [cmd-args]
+
+	Using device $dev.
+
+	Commands:
+	   status             Current status (default is no cmd is given).
+	   scan               Scan for networks.
+	   monitor            Keep scanning for networks.
+	   connect [id]       Connect to SSID or BSS (w/o auth).
+	   addr [ip] [route]  Manually set IP address with default route.
+	EOF
+	[[ -n $argv[1] ]] && exit 1
+}
+
+up() {
+	#ip link | grep ${dev}: | grep 'state DOWN' && ip link set $dev up
+	:
+}
+
+status() {
+	local link=$(iw dev $dev link)
+
+	print -f '%-12s %s\n' 'dev'   "$dev"
+	print -f '%-12s %s\n' 'ip'    "$(ip addr show dev $dev | grep '    inet ' | cut -d ' ' -f6)"
+	print -f '%-12s %s\n' 'route' "$(ip route list dev $dev | sed '2,0s/^/             /')"
+	print -f '%-12s %s\n' 'bss'   "$(print $link | head -n1 | cut -d ' ' -f3)"
+
+	iw dev $dev info  | tail -n+2 | awk -F ' ' \
+		'/(addr|ssid|channel|txpower) / { printf("%-12s", $1); $1=""; print $0 }'
+
+	print $link | awk -F ':' \
+		'/(signal|[rt]x bitrate):/ { printf("%-12s", gensub(/^\s/, "", "g", $1)); $1=""; print gensub(/^\s/, "", "g", $0) }'
+	print -f '%-12s %sM\n' 'total RX' $(( $(grep -o 'RX: [0-9]*' <<<$link | cut -d: -f2) / 1048576))
+	print -f '%-12s %sM\n' 'total TX' $(( $(grep -o 'TX: [0-9]*' <<<$link | cut -d: -f2) / 1048576))
+}
+
+scan() {
+	local connected=$(iw dev $dev link | head -n1 | cut -d ' ' -f3)
+	iw dev $dev scan | awk -F: "$(<<-'EOF'
+		/^BSS / {
+			if (ssid != "")
+				printf("  %-10s  %s  %-30s (%s)\n", signal, bss, ssid, ciphers)
+			bss = sprintf("%s:%s:%s:%s:%s:%s", substr($1, 5, 6), $2, $3, $4, $5, substr($6, 0, 2))
+		}
+		/^\tsignal:/        { signal  = gensub(/^ /, "", "g", $2) }
+		/^\tSSID:/          { ssid    = gensub(/^ /, "", "g", $2) }
+		/Pairwise ciphers:/ { ciphers = gensub(/^ /, "", "g", $2) }
+	EOF
+	)" | sort -nr | sed -E "s/  (.*?$connected)/→ \1/"
+}
+
+connect() {
+	local ssid=${argv[1]:-}
+	[[ -z $ssid ]] && usage 'need a SSID'
+
+	iw dev $dev disconnect
+	if grep -Eq '[0-9a-fA-F]{2}(:[0-9a-fA-F]{2}){5}'; then
+		iw dev $dev connect -w bssid $ssid
+	else
+		iw dev $dev connect -w $ssid
+	fi
+
+	# TODO: set auth
+	# wpa_cli passphrase ssid pass
+	# wpa_cli save_config
+}
+
+addr() {
+	local ip=${argv[1]:-}
+	local route=${argv[2]:-}
+	[[ -z $ip ]] && usage 'need an IP address\n'
+
+	ip addr add $ip dev $dev
+	[[ -n $route ]] && ip route add default via 10.0.1.1 dev wlp2s0
+}
+
+monitor() {
+	while :; do
+		s=$(scan)
+		clear
+		print $s
+		sleep 2
+	done
+}
+
+cmd=status
+if [[ -n ${argv[1]:-} ]]; then
+	cmd=$argv[1]
+	shift
+fi
+case $cmd in
+	(help|-h|-help) usage                ;;
+	(status)        up; status  $argv[@] ;;
+	(scan)          up; scan    $argv[@] ;;
+	(connect)       up; connect $argv[@] ;;
+	(addr)          up; addr    $argv[@] ;;
+	(monitor)       up; monitor $argv[@] ;;
+	(*)
+		print >&2 "unknown command: $cmd\n"
+		usage
+		exit 1
+esac

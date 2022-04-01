@@ -1,0 +1,23 @@
+#!/bin/zsh
+#
+# xdg-open, without suckage.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+
+set -eu
+(( $+1 )) || { print >&2 'need a parameter'; exit 1 }
+
+if [[ -z "${1:#*://*}" ]]; then
+	case "${(L)1%%://*}" in
+		(http|https)   exec firefox "$1" ;;
+	esac
+	print >&2 'No handler for this protocol'
+	exit 1
+fi
+
+case ${(L)1##*.} in
+	(html)                   exec firefox "$1" ;;
+	(png|webp|jpg|jpeg|heic) exec sxiv "$1" ;;
+	(mp?|m4v|mkv|avi)        exec mpv "$1" ;;
+esac
+
+exec st -e vim "$1"

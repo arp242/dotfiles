@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+# Sets the screen brightness.
+# Only works on Linux for now.
+#
+# Usage:
+#
+#   wm-brightness            Show current brightness.
+#   wm-brightness print      Idem.
+#   wm-brightness 42         Set brightness to 42.
+#   wm-brightness up         Raise brightness
+#   wm-brightness down       Lower brightness
+#   wm-brightness scale      Use a more fine-grained resolution at lower
+#                            brightnesses.
+#
+# All arguments can be combined; e.g. "wm-brightness up up print" will raise it
+# twice and then print the current value.
+#
+# Note: The scale depends on the driver; it doesn't need to be 1-100%.
+# Note: It seems the xbacklight utility is broken on many systems; it hasn't
+#       worked well on my last two laptops anyway.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+
+if [ -f /sys/class/backlight/intel_backlight/brightness ]; then
+	step=20; min=1; dev=/sys/class/backlight/intel_backlight/brightness
+elif [ -f /sys/class/backlight/amdgpu_bl0/brightness ]; then
+	step=5;  min=0; dev=/sys/class/backlight/amdgpu_bl0/brightness
+else
+	echo >&2 'wm-brightness: no device found in /sys/class/backlight'
+	exit 1
+fi
+
+cur=$(cat "$dev")
+if [ -z "$cur" ]; then
+	echo >&2 "wm-brightness: could not read current value from $dev"
+	exit 1
+fi
+
+[ $# -eq 0 ] && { echo "$cur"; exit 0; }
+
+# Process the scale parameter first so it won't matter where it appears.
+for a in "$@"; do
+	[ $a != "scale" ] && continue
+
+	if [ $cur -le $(( $step * 3 )) ]; then
+		step=$(( $step / 5 ))
+		[ $step -eq 0 ] && step=1
+	fi
+	break
+done
+
+for a in "$@"; do
+	cur=$(cat "$dev")
+	case "$a" in
+		scale) ;;
+		up)    echo $(( $cur + $step )) > "$dev" ;;
+		down)   [ $(( $cur - $step )) -le $min ] && echo $min > "$dev" || echo $(( $cur - $step )) > "$dev" ;;
+		print) cat "$dev" ;;
+		*)     echo "$1" > "$dev"
+	esac
+done

@@ -38,7 +38,7 @@
 # You can pipe this to `fzf` or `dmenu` or whatever if you wish:
 # 
 #     $ ff-hist hello | dmenu | cut -d' ' -f1 | ff-hist - | xclip -rmlastnl -selection clipboard
-#
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 
 set -eu
 

@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# List a set of options in dmenu from the first argument instead of stdin. This
+# avoids having to create lots of wrapper scripts and/or dealing with stdin.
+#
+# Usage:
+#
+#   dmenu-list "item one\nitem two" <any other dmenu flags>
+#
+# The first argument is processed with printf; so "\n" (or \t, etc.) will work.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+
+list=$1; shift
+exec $(printf "$list" | dmenu -i "$@") &
