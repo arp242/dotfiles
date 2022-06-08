@@ -1,47 +1,82 @@
-#!/bin/sh
+#!/bin/zsh
 #
-# Protip: I got these commands by running arandr modified to print out the
-# xrandr commands it runs :-)
+# Set the active screen.
 #
-# pactl output names from switching with pavucontrol and "pactl list cards | grep 'Active Profile:'"
-#
-#     Active Profile: output:analog-stereo+input:analog-stereo
-#     Active Profile: output:hdmi-stereo-extra1
+#   set-screen laptop
+#   set-screen hdmi
+#   set-screen switch
+#   set-screen clone (or both)  # as a mirror/copy
+#   set-screen laptop-hdmi      # Laptop left, HDMI right
+#   set-screen hdmi-laptop      # HDMI left, laptop right
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
-
-laptop="eDP1"
-hdmi="HDMI2"
+[ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
+setopt err_exit no_unset no_clobber pipefail
 
 laptop="eDP-1"
-hdmi="HDMI-1"
+laptop_mode=(--auto)
+laptop_scale=0.8
 
-laptop_mode=1366x768
-hdmi_mode=1920x1080
+hdmi="HDMI-2"
+hdmi_mode=(--auto)
+hdmi_scale=1
 
-set -euC
+laptop_args() {
+	print -- "--output $laptop $laptop_mode --scale ${laptop_scale}x${laptop_scale}"
+}
+hdmi_args() {
+	print -- "--output $hdmi $hdmi_mode --scale ${hdmi_scale}x${hdmi_scale}"
+}
+active() {
+	xrandr --query | grep ' connected primary ' | cut -d' ' -f1
+}
 
 case "${1:-}" in
-	both)
+	(hdmi)
 		xrandr \
-			 --output "$laptop" --mode "$laptop_mode" --pos 0x0 --primary \
-			 --output "$hdmi"   --mode "$hdmi_mode" --pos 0x0
+			$(hdmi_args) --pos 0x0 --primary \
+			--output "$laptop" --off
+
+		# Make sure new keyboard has mappings applied.
+		xmodmap ~/.config/x11/modmap
+
 		#pactl set-card-profile 0 output:hdmi-stereo-extra1
-		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
+		#pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 		;;
-	hdmi)
+	(laptop)
 		xrandr \
-			--output "$laptop" --off \
-			--output "$hdmi"   --mode "$hdmi_mode" --pos 0x0 --primary
+			--output "$hdmi" --off \
+			$(laptop_args) --pos 0x0 --primary
+		#pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
+		;;
+	(switch)
+		case $(active) in
+			($laptop) set-screen hdmi   ;;
+			($hdmi)   set-screen laptop ;;
+			(*)
+				print >&2 "set-screen: can't get active screen"
+				exit 1
+			;;
+		esac
+		;;
+	(clone|both)
+		xrandr \
+			$(hdmi_args)   --pos 0x0 --primary \
+			$(laptop_args) --pos 0x0
 		#pactl set-card-profile 0 output:hdmi-stereo-extra1
-		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
+		#pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
 		;;
-	laptop)
+	(laptop-hdmi)
 		xrandr \
-			--output "$laptop" --mode "$laptop_mode" --pos 0x0 --primary \
-			--output "$hdmi"   --off
-		pactl set-card-profile 0 output:analog-stereo+input:analog-stereo
+			$(laptop_args) --pos 0x0    --rotate normal \
+			$(hdmi_args)   --pos 1920x0 --rotate normal --primary
+			;;
+	(hdmi-laptop)
+		xrandr \
+			$(hdmi_args)   --pos 0x0    --rotate normal --primary \
+			$(laptop_args) --pos 1920x0 --rotate normal
 		;;
-	*)
-		>&2 echo "${0##*/}: unknown screen; use 'laptop', 'hdmi', or 'both'"
+	(*)
+		# TODO: print status instead?
+		print >&2 "${0##*/}: unknown screen; use -h for help"
 		exit 1
 esac

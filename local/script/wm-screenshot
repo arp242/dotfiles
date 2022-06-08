@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/zsh
 #
-# Take a screenshot.
-# Depends on https://github.com/arp242/cap
+# Take a screenshot. Depends on "cap" from https://github.com/arp242/cap
+#
+# "copy" uses xclip, and "open" sxiv.
 #
 # Usage:
 #
@@ -20,28 +21,30 @@
 # Note: files are stored in the current directory. If you launched your WM from
 #       some odd directory then they're stored there.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+[ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
+setopt err_exit no_unset no_clobber pipefail
 
 full=0; copy=0; open=0; rm=0; border=0; file=""
 for a in $@; do
 	case "$a" in
-		full)   full=1   ;;
-		open)   open=1   ;;
-		copy)   copy=1   ;;
-		rm)     rm=1     ;;
-		border) border=1 ;;
-		*.png)  file=$a  ;;
-		*)
-			echo >&2 "wm-screenshow: unknown argument: $a"
+		(full)   full=1   ;;
+		(open)   open=1   ;;
+		(copy)   copy=1   ;;
+		(rm)     rm=1     ;;
+		(border) border=1 ;;
+		(*.png)  file=$a  ;;
+		(*)
+			print >&2 "wm-screenshot: unknown argument '$a'"
 			exit 1
 	esac
 done
 
 args="o"
-[ $full   -eq 0 ] && args="s$args"
-[ $border -eq 1 ] && args="b$args"
-[ -n "$file" ]    && args="$args $file"
+[[ $full   -eq 0 ]] && args="s$args"
+[[ $border -eq 1 ]] && args="b$args"
+[[ -n "$file"    ]] && args="$args $file"
 file="$(cap -$args)"
 
-[ $copy -eq 1 ] && xclip -selection clipboard -target image/png -in "$file"
-[ $open -eq 1 ] && sxiv "$file"
-[ $rm -eq 1 ]   && rm "$file"
+[[ $copy -eq 1 ]] && xclip -selection clipboard -target image/png -in "$file"
+[[ $open -eq 1 ]] && sxiv "$file"
+[[ $rm   -eq 1 ]] && rm "$file"

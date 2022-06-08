@@ -4,9 +4,6 @@ HISTFILE=~/.zsh/history
 
 ### Setup PATH
 ##############
-typeset -U path          # No duplicates
-path=()
-
 # On some other systems /usr/bin links to /bin; use the full path to prevent dupes.
 _prepath() {
 	for dir in "$@"; [[ -d "${dir:A}" ]] && path+=("${dir:A}" $path[@])
@@ -15,6 +12,8 @@ _postpath() {
 	for dir in "$@"; [[ -d "${dir:A}" ]] && path+=("${dir:A}")
 }
 
+typeset -U path                           # No duplicates
+path=()
 _prepath /bin /sbin /usr/bin /usr/sbin /usr/games
 _prepath /usr/pkg/bin   /usr/pkg/sbin     # NetBSD
 _prepath /usr/X11R6/bin /usr/X11R6/sbin   # OpenBSD
@@ -22,7 +21,7 @@ _prepath /usr/local/bin /usr/local/sbin
 
 _prepath  ~/.local/gobin                     # Go
 _postpath ~/code/Vim/gopher.vim/tools/bin
-_prepath  ~/.local/script ~/code/wm-scripts  # My local stuff.
+_prepath  ~/.local/script                    # My local stuff.
 _postpath ~/.gem/ruby/*/bin(N[-1])           # Ruby
 _postpath ~/.luarocks/bin(N[-1])             # Lua
 _postpath ~/.dotnet/root ~/.dotnet/tools     # .NET
@@ -34,7 +33,17 @@ unfunction _postpath
 #########################
 export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
 export LC_COLLATE=C                          # I prefer this sorting.
-[[ -n "${TMUX:-}" ]] && export TERM=tmux-256color || export TERM=st-256color
+if [[ -n ${TMUX:-} ]]; then                  # Do the TERM dance.
+	export TERM=tmux-256color
+elif [[ -n ${DISPLAY:-} ]]; then
+	export TERM=st-256color
+else
+	export TERM=linux
+
+	# TODO: do this somewhere else.
+	setfont ter-932b
+	setterm -foreground black -background white -blink on -store
+fi
 
 _exists() { (( $+commands[$1] )) }           # Helper; will be unset later.
 
@@ -71,12 +80,7 @@ export GOPATH=/tmp/go                 # GOPATH mostly stores cache stuff these d
 export GOCACHE=$GOPATH/cache          # Build and test cache.
 export GOTMPDIR=$GOPATH/tmp           # tmp files during compile
 export GOFLAGS=-modcacherw            # Just leave mod cache writable.
-export GOPRIVATE="github.com/timescale/*"  # Private repos.
 mkdir -m0700 -p "$GOTMPDIR"           # Make sure it exists as Go won't create it.
-
-export GOPATH=~/.cache/go             # GOPATH mostly stores cache stuff these days.
-export GOCACHE=$GOPATH/cache          # Build and test cache.
-export GOTMPDIR=$GOPATH/tmp           # tmp files during compile
 
 # R    Display colours escape chars as-is (so they're displayed).
 # i    Ignore case unless pattern has upper case chars.
@@ -87,8 +91,6 @@ export GOTMPDIR=$GOPATH/tmp           # tmp files during compile
 export LESS="RiMQXL"
 
 export PGHOST=/tmp                 # PostgreSQL defaults
-export PGDATABASE=goatcounter
-export PG_HOST=/tmp                # Timescale tests
 export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43:or=01;35:ex=31:"
 export GREP_COLOR=31                                           # Older GNU grep; BSD grep
 export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep.
@@ -111,6 +113,8 @@ if [[ -d '/etc/service' ]]; then   # Set user service dir for runit.
 elif [[ -d '/var/service' ]]; then
 	export SVDIR=/var/service
 fi
+export XDG_DESKTOP_DIR=$HOME       # Stop Firefox from creating ~/Desktop and ~/Downloads
+export XDG_DOWNLOAD_DIR=$HOME
 export XDG_RUNTIME_DIR=/tmp/xdg-runtime-$USER  # Needed for some programs.
 mkdir -m0700 -p "$XDG_RUNTIME_DIR"
 
@@ -129,24 +133,25 @@ fpath=(~/.zsh/fpath ~/.zsh/zsh-completions/src $fpath)
 hash -d c=~/code
 hash -d pack=~c/Vim
 hash -d cp=~c/Prog
-hash -d gl=~c/Golib
-hash -d ts=~c/timescale
+hash -d cm=~c/Misc
+hash -d cg=~c/Golib
+hash -d sy=~c/schoolyear
 hash -d gc=~/code/goatcounter
 hash -d d=~/code/arp242.net/_drafts
 hash -d p=~/code/arp242.net/_posts
-hash -d vim=/usr/share/vim/vim82
+hash -d vim=/usr/local/share/vim/vim82
 hash -d go=/usr/lib/go/src
 
 setopt no_flow_control       # Disable ^S, ^Q, ^\
 stty -ixon quit undef        # For Vim etc; above is just for zsh.
 setopt notify                # Report status of bg jobs immediately
 setopt no_clobber            # Don't clobber existing files with > ....
-setopt clobber_empty         # ... but do allow overwriting existing empty files.
+setopt clobber_empty         # ... but do allow overwriting empty files.
 setopt append_create         # Refuse to create new files with >>
 setopt no_beep               # Don't beep
 setopt no_hup                # Don't kill background jobs when exiting
 setopt no_bg_nice            # Don't frob with nicelevels
-setopt auto_continue         # Send CONT before disown if job is suspended.
+setopt auto_continue         # Send CONT before disown if job is suspended
 setopt no_auto_remove_slash  # Don't guess when slashes should be removed (too magic)
 setopt no_match              # Show error if globbing fails
 setopt extended_glob         # More globbing characters
@@ -157,7 +162,7 @@ LISTMAX=999999               # Disable 'do you wish to see all %d possibilities'
 setopt append_history        # Append to history, rather than overwriting
 setopt inc_append_history    # Append immediately rather than only at exit
 setopt extended_history      # Store some metadata as well
-setopt hist_no_store         # Don't store history or fc commands
+setopt hist_no_store         # Don't store history and fc commands
 setopt no_bang_hist          # Don't use ! for history expansion
 setopt hist_ignore_dups      # Don't add to history if it's the same as previous event.
 setopt hist_ignore_all_dups  # Remove older event if new event is duplicate.
@@ -176,8 +181,8 @@ zstyle ':vcs_info:*' formats '(%b)'   # Show branch.
 
 set_prompt() {
 	vcs_info >/dev/null 2>&1
-	print -n "%(?..%130(?..%S%?%s))"           # Exit code in "standout" if non-0 and non-130 (^C to clear input)
-	print -n "[%~]${vcs_info_msg_0_:-}%# "     # Directory and VCS info (if any).
+	print -n "%(?..%130(?..%S%?%s))"         # Exit code in "standout" if non-0 and non-130 (^C to clear input)
+	print -n "[%~]${vcs_info_msg_0_:-}%# "   # Directory and VCS info (if any).
 }
 PROMPT=$'$(set_prompt)'
 
@@ -198,7 +203,7 @@ RPROMPT=$'$(set_rprompt)'
 setopt complete_in_word             # Allow completion from within a word/phrase.
 setopt always_to_end                # Move cursor to end of word when when completing from middle.
 setopt no_list_ambiguous            # Show options on single tab press.
-setopt list_packed                  # Use different column widths if w can; makes it more compact.
+setopt list_packed                  # Use different column widths if we can; makes it more compact.
 
 # Load and init
 autoload -U compinit && compinit    # Load completion system.
@@ -211,6 +216,7 @@ zstyle ':completion:*'           menu select                     # Use menu for 
 zstyle ':completion::complete:*' use-cache on                    # Enable cache (not used by many completions).
 zstyle ':completion:*:warnings'  format 'No completions'         # Warn when there are no completions
 zstyle ':completion:*:default'   list-colors ${(s.:.)LS_COLORS}  # Show ls-like colours in file completion.
+zstyle ':completion:*'           list-separator '│'              # Separator before help; looks nicer than --
 zstyle ':completion:*'           squeeze-slashes true            # "path//<Tab>" is "path/" rather than "path/*"
 zstyle ':completion:*'           matcher-list 'm:{a-z}={A-Z}'    # Make completion case-insensitive.
 zstyle ':completion:*:functions' ignored-patterns '_*'           # Ignore in completion.
@@ -225,29 +231,33 @@ autoload -U up-line-or-beginning-search    && zle -N up-line-or-beginning-search
 autoload -U down-line-or-beginning-search  && zle -N down-line-or-beginning-search
 autoload -U edit-command-line              && zle -N edit-command-line
 
-bindkey '^[[A'  up-line-or-beginning-search    # Arrow up
-bindkey '^[OA'  up-line-or-beginning-search
-bindkey '^p'    up-line-or-beginning-search
-bindkey '^o'    up-line-or-beginning-search    # ^p is my tmux prefix, so map ^p to ^o
-bindkey '^[[B'  down-line-or-beginning-search  # Arrow down
-bindkey '^[OB'  down-line-or-beginning-search
-bindkey '^n'    down-line-or-beginning-search
-bindkey '^[[H'  beginning-of-line              # Home
-bindkey '^[[1~' beginning-of-line
-bindkey '^[[7~' beginning-of-line
-bindkey '^[[F'  end-of-line                    # End
-bindkey '^[[4~' end-of-line
-bindkey '^[[8~' end-of-line
-bindkey '^[[3~' delete-char                    # Delete
-bindkey '^[[P'  delete-char
-bindkey '^h'    backward-delete-char           # Backspace
-bindkey '^?'    backward-delete-char
-bindkey '^t'    edit-command-line              # Edit in Vim.
-bindkey '^\'    accept-and-hold                # Run command without clearing commandline.
-bindkey '^[[Z'  up-history                     # Shift+Tab; so it works in completion menu to go back.
-bindkey '^[OP'  run-help                       # F1
-bindkey -s '^[[5~' ''                          # Disable Page up/down; on my ThinkPad they're right next to the
-bindkey -s '^[[6~' ''                          # arrow keys and pressing them by accident is annoying.
+bindkey '^[[A'    up-line-or-beginning-search   # Arrow up
+bindkey '^[OA'    up-line-or-beginning-search
+bindkey '^p'      up-line-or-beginning-search
+bindkey '^o'      up-line-or-beginning-search   # ^p is my tmux prefix, so map ^p to ^o
+bindkey '^[[B'    down-line-or-beginning-search # Arrow down
+bindkey '^[OB'    down-line-or-beginning-search
+bindkey '^n'      down-line-or-beginning-search
+bindkey '^[[1;5C' forward-char                  # Ctrl + Arrow Right
+bindkey '^[[1;5D' backward-char                 # Ctrl + Arrow Left
+bindkey '^[[1;2C' forward-word                  # Shift + Arrow Right
+bindkey '^[[1;2D' backward-word                 # Shift + Arrow Left
+bindkey '^[[H'    beginning-of-line             # Home
+bindkey '^[[1~'   beginning-of-line
+bindkey '^[[7~'   beginning-of-line
+bindkey '^[[F'    end-of-line                   # End
+bindkey '^[[4~'   end-of-line
+bindkey '^[[8~'   end-of-line
+bindkey '^[[3~'   delete-char                   # Delete
+bindkey '^[[P'    delete-char
+bindkey '^h'      backward-delete-char          # Backspace
+bindkey '^?'      backward-delete-char
+bindkey '^t'      edit-command-line             # Edit in Vim.
+bindkey '^\'      accept-and-hold               # Run command without clearing commandline.
+bindkey '^[[Z'    up-history                    # Shift+Tab; so it works in completion menu to go back.
+bindkey '^[OP'    run-help                      # F1
+bindkey -s '^[[5~' ''                           # Disable Page up/down; on my ThinkPad they're right next to the
+bindkey -s '^[[6~' ''                           # arrow keys and pressing them by accident is annoying.
 
 # Toggle "doas" at the start.
 toggle-doas() {
@@ -279,31 +289,21 @@ alias cp='cp -i'                        # Ask for confirmation when overwriting 
 alias mv='mv -i'
 alias make='nice -n 20 make'            # Make can always be very nice.
 alias free='free -m'                    # MB is more useful.
+alias du='du -h'
 alias cal='cal -m'                      # Week starts on Monday.
 alias ps='ps axu'                       # These are pretty much the only flags I use.
 alias td='echo $(date +%Y-%m-%d)'       # "today"
 alias now='echo $(date +%Y-%m-%d\ %T)'
 alias hub='NO_COLOR=y gh'               # "git" and "go" already start with "g"; this is easier.
+alias df='df -h | grep -Ev "(cgroup|devtmpfs|/run|/shm)"'
 
 # Disable this ridiculous banner and colours.
 alias ffmpeg='AV_LOG_FORCE_NOCOLOR=1  ffmpeg  -hide_banner'
 alias ffprobe='AV_LOG_FORCE_NOCOLOR=1 ffprobe -hide_banner'
 alias ffplay='AV_LOG_FORCE_NOCOLOR=1  ffplay  -hide_banner'
 
-# Concat files with ffmpeg. The ffmpeg CLI is the most obscure and arcane I've
-# seen, and I always keep forgetting how to do this.
-ffconcat() {
-	tmp=$(mktemp)
-	{
-		for f in ${@[1,-2]}; print "file '${f:A}'" >>$tmp
-		ffmpeg -f concat -safe 0 -i "$tmp" -c copy "${@[-1]}"
-	} always {
-		rm $tmp
-	}
-}
-
-if [[ "$(uname)" = "Linux" ]]; then
-	if [ -h /bin/ls ]; then            # Assume busybox; the bb colours don't work on light bg.
+if [[ $(uname) = Linux ]]; then
+	if [[ -h /bin/ls ]]; then          # Assume busybox; the colours don't work on light bg.
 		alias ls='ls -F --color=never'
 	else
 		alias ls='ls -FN --color=auto' # -F adds trailing / etc; -N avoids adding quotes
@@ -330,11 +330,19 @@ fi
 
 _exists bsdtar && alias tar='bsdtar'
 _exists htop   && alias top='htop'
-alias youtube-dl='noglob yt-dlp --no-part -o "%(title)s-%(id)s.%(ext)s"'
-alias youtube-dl-audio='yt-dlp --extract-audio'
+alias youtube-dl='noglob yt-dlp --no-colors --no-part -o "%(title)s-%(id)s.%(ext)s"'
+alias youtube-dl-audio='youtube-dl --extract-audio --format "bestaudio*"'
+youtube-dl-select() {
+	# Select two: 1+2
+	# Ideally want to select av1; much smaller!
+	youtube-dl -F --quiet $1 | grep -Ev '(storyboard|(video|audio) only)' |
+		sed -E 's/\|/│/g; 2s/-/─/g; s/[~0-9.]+[MG]iB/\x1b[1m\0\x1b[0m/'
+	print -n 'Which? '
+	read -n s
+	youtube-dl -f $s $1
+}
 alias sqlite=sqlite3
 alias gpg=gpg2
-alias psql='LESS=S$LESS psql'  # Don't wrap
 alias ag='rg'                  # I'm so used to typing "ag".
 alias vim="vim -p --ttyfail"   # Open in tabs, and refuse to open if output is not a terminal.
 alias vi="vim"
@@ -366,15 +374,15 @@ alias pharod='noglob pharod'
 
 autoload -U zcalc                     # Get quick results for "zc 6 * 6", or just use "zc" to get zcalc
 alias zc >/dev/null && unalias zc
-zc() { if (( $# )); then zcalc -e "$@"; else zcalc; fi }
+zc() { if (( $# )); then zcalc -e ${(j: :)@}; else zcalc; fi }
 alias zc='noglob zc'
 
 alias -g VV=' |& vim +S -'            # Global aliases to pipe output.
 alias -g LL=' |& less'
+alias -g LLl=' |& less'               # Typo after using ^l
 alias -g GG=' |& grep'
 alias -g HH=' |& head -n20'
-alias -g XX=' |& xclip -in'           # TODO: ideally I'd like to copy to both, but xclip doesn't support that
-alias -g LLl=' |& less'               # Typo after using ^l
+alias -g CC=' |& xclip -in'           # TODO: ideally I'd like to copy to both, but xclip doesn't support that
 
 # Diff two directories
 diffdir() { vim ${@[3,-1]} +":Diffdir $1 $2" }
@@ -388,14 +396,16 @@ age() {
 	(( $#files )) || return 1
 	vim --ttyfail -p $files \
 		+':silent! /\v'"${@[-1]/\//\\/}" \
-		+':silent! tabdo :1 | normal! n' +':tabfirst'
+		+':silent! tabdo :1 | normal! n' \
+		+':tabfirst'
 }
 grepe() {
 	local IFS=$'\n' files=($(=grep -l "$@"))
 	(( $#files )) || return 1
 	vim --ttyfail -p $files \
 		+':silent! /\v'"${@[-1]/\//\\/}" \
-		+':silent! tabdo :1 | normal! n' +':tabfirst'
+		+':silent! tabdo :1 | normal! n' \
+		+':tabfirst'
 }
 
 # Restart ssh-agent after restarting WM or x11 (may be old env var in tmux).
@@ -406,9 +416,9 @@ ssh-reagent() {
 
 # Get random string.
 rnd() {
-	[[ "${2:-}" = "alpha" ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
-	strings -n1 < /dev/urandom | tr -d "$filter" | head -c${1:-15}
-	echo
+	[[ -n ${2:-} ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
+	strings -n1 </dev/urandom | tr -d $filter | head -c${1:-20}
+	print
 }
 
 # Create directory alias for the current directory.
@@ -467,23 +477,20 @@ go-mod-update() {
 	go list -u -m $(go list -m -f '{{.Indirect}} {{.}}' all | awk '/^false/ {print $2}') | grep '\['
 }
 
-# Remove all files last accessed more than 1 day ago.
-go-clean-cache() {
-	#files=("$(go env GOPATH)/"**(ad+1))
-	files=("$(go env GOPATH)/"**/*(N.ad+1))
-	if (( ! $#files )); then
-		print "No files to remove in $(go env GOPATH)"
-		return 2
+# - Automatically set PGDATABASE to the first path part that matches a database.
+# - Add -S to LESS to not wrap.
+psql() {
+	local db=${PGDATABASE:-}
+	if [[ -z $db && -z ${1:-} ]]; then
+		local paths=(${(s,/,)PWD})
+		local dbs=($(=psql -qtAX postgres -c 'select datname from pg_catalog.pg_database'))
+		for p in ${(Oa)paths}; do
+			if [[ ${dbs[(r)$p]:-} = $p ]]; then
+				db=$p
+				break
+			fi
+		done
 	fi
-
-	print $files
-	print -n 'Remove? [y/N]'
-	read -n a
-
-	if [[ $a = y ]]; then
-		:
-		#rm $files
-	else
-		print 'Well okay then'
-	fi
+	[[ -n $db ]] && print >&2 "Using database $db"
+	LESS=S$LESS PGDATABASE=$db =psql $@
 }

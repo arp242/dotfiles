@@ -2,7 +2,6 @@
 #
 # Move application to different pulseaudio sink.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
-
 set -euC
 
 # No arguments: list sinks and inputs.

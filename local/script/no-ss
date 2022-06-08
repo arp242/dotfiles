@@ -2,6 +2,7 @@
 #
 # Disable the screensaver/DPMS. Useful when playing audio over HDMI.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+set -euC
 
 while :; do
 	xset s off

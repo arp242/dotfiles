@@ -1,0 +1,114 @@
+#!/bin/zsh
+#
+# Volume and media controls.
+#
+# System-global (with pactl):
+#    vol-up      Raise volume.
+#    vol-down    Lower volume.
+#    mute        Toggle mute for all speakers.
+#    micmute     Toggle mute for all microphones.
+#
+# For applications (supported: mpv, Firefox):
+#    pause    Toggle play/pause.
+#    next     Next track/file.
+#    prev     Previous track/file.
+#    forward  Seek forward 1 minute.
+#    rewind   Seek backwards 1 minute.
+#
+# For mpv, start mpv with "--input-ipc-server=/tmp/.mpv". You can stick this in
+# your ~/.config/mpv/mpv.conf. See mpv(1)
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+[ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
+setopt err_exit no_unset no_clobber pipefail
+
+control-mpv() {
+	local mpv_sock=/tmp/.mpv
+	if [[ ! -e $mpv_sock ]]; then
+		print >&2 "wm-media: $mpv_sock doesn't exist"
+		exit 1
+	fi
+
+	case $1 in
+		(pause)   print '{"command": ["cycle", "pause"]}' | socat - $mpv_sock ;;
+		(next)    print '{"command": ["playlist-next"]}'  | socat - $mpv_sock ;;
+		(prev)    print '{"command": ["playlist-prev"]}'  | socat - $mpv_sock ;;
+		(forward) print '{"command": ["seek", "60"]}'     | socat - $mpv_sock ;;
+		(rewind)  print '{"command": ["seek", "60"]}'     | socat - $mpv_sock ;;
+		(*)
+			print >&2 "wm-media: unknown action: '$1'"
+			exit 1
+	esac
+}
+
+control-firefox() {
+	# https://specifications.freedesktop.org/mpris-spec/2.2/
+	# https://github.com/acrisci/playerctl
+	# https://wiki.archlinux.org/title/MPRIS
+	# dbus-send --print-reply --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.ListNames
+	# dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next
+	# dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous
+
+	# TODO: need instance name.
+	case $1 in
+		(pause)
+			dbus-send \
+				--print-reply \
+				--dest=org.mpris.MediaPlayer2.firefox.instance23725 \
+				/org/mpris/MediaPlayer2 \
+				org.mpris.MediaPlayer2.Player.PlayPause
+		;;
+		(*)
+			print >&2 "wm-media: unknown action: '$1'"
+			exit 1
+	esac
+}
+
+# Get the currently active/connected sink.
+get-sink() {
+	local sink=$(pactl list sinks short | grep RUNNING | head -n1)
+	[ -z "$sink" ] && sink=$(pactl list sinks short | head -n1)
+	print "$sink" | cut -f1
+}
+
+status() {
+	:
+	# TODO: print status
+	# TODO: this lists all sinks, not the first. Can't seem to get one sink from
+	# pactl? ffs.
+	# vol=$(pactl list sinks | grep 'Base Volume:' | cut -d / -f 2 | tr -d ' %')
+	# [ $vol -gt 100 ] && return
+	# echo $vol
+	#
+	# print >&2 'wm-media: no command; use -h for help.'
+	# exit 1
+}
+
+case ${1:-} in
+	("")       status ;;
+	(vol-up)   pactl set-sink-volume $(get-sink) +5%    ;;
+	(vol-down) pactl set-sink-volume $(get-sink) -5%    ;;
+	(mute)     pactl set-sink-mute   $(get-sink) toggle ;;
+	(micmute)  pactl set-source-mute $(get-sink) toggle ;;
+	(*)
+		IFS=$'\n'
+
+		# TODO: pass more information:
+		#
+		#   application.process.id = "6116"
+		#   application.process.binary = "mpv"
+		#   application.name = "mpv Media Player"
+		#   media.name = "Earthless - Red Dragon.opus - mpv"
+		#
+		#   application.process.id = "30080"
+		#   application.process.binary = "firefox-bin"
+		#   application.name = "Firefox"
+		#   media.name = "TempleOS - Terry Responds to the Haters-mBgIBF9Y6PE.webm"
+		for a in $(pactl list sink-inputs | awk -F '"' '/application\.name =/ {print $2}'); do
+			case $a in
+				(mpv *)    control-mpv $@     ;;
+				(Firefox)  control-firefox $@ ;;
+				(*)
+					print >&2 "wm-media: warning: unsupported application: $a"
+			esac
+		done
+esac

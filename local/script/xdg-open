@@ -2,22 +2,31 @@
 #
 # xdg-open, without suckage.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+[ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
+setopt err_exit no_unset pipefail
 
-set -eu
 (( $+1 )) || { print >&2 'need a parameter'; exit 1 }
 
+# Open URL.
 if [[ -z "${1:#*://*}" ]]; then
-	case "${(L)1%%://*}" in
+	proto=${(L)1%%://*}
+	case $proto in
 		(http|https)   exec firefox "$1" ;;
+		(*)
+			print >&2 "xdg-open: no URL handler for protocol '$proto://' (for: $1)"
+			exit 1
 	esac
-	print >&2 'No handler for this protocol'
-	exit 1
 fi
 
-case ${(L)1##*.} in
-	(html)                   exec firefox "$1" ;;
-	(png|webp|jpg|jpeg|heic) exec sxiv "$1" ;;
-	(mp?|m4v|mkv|avi)        exec mpv "$1" ;;
+# Open file.
+ext=${(L)1:e}
+case $ext in
+	(html|pdf)                     exec firefox   "$1" ;;
+	(png|webp|jpg|jpeg|heic)       exec sxiv      "$1" ;;
+	(mp?|ogg|flac|m4v|mkv|avi|mov) exec mpv       "$1" ;;
+	(md|markdown|txt)              exec st -e vim "$1" ;;
+	(epub)                         ;;
+	(*)
+		print >&2 "xdg-open: don't know how to open '.$ext' files (for: $1)"
+		exit 1
 esac
-
-exec st -e vim "$1"

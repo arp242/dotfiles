@@ -1,0 +1,30 @@
+#!/bin/sh
+#
+# Open a new terminal on first innovation, and show/hide it on subsequent
+# invocations. Useful for a "scratch" terminal to quickly write down some things
+# or whatnot.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+set -euC
+
+name=scratchwin
+scratch=$(xdotool search --classname $name ||:)
+
+if [ -n "${1:-}" ]; then
+	if [ -n "$scratch" ]; then
+		xdotool set_window --classname='' $scratch
+		xdotool windowmap $scratch
+	fi
+	xdotool getactivewindow set_window --classname=$name
+	exit 0
+fi
+
+if [ -z "$scratch" ]; then
+    st -n "$name" -g 80x25-2-2 &
+	exit 0
+fi
+
+c=windowmap
+if xdotool search --onlyvisible "$name" >/dev/null 2>&1; then
+	c=windowunmap
+fi
+xdotool $c $scratch

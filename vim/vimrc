@@ -136,6 +136,14 @@ augroup my-autocmds
     au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 
     # Filetype overrides.
+    au Filetype awk  {
+        setl et
+        # Don't need to highlight so much.
+        # TODO: this breaks if I put the "hi link" after "syn clear"
+        # hi link awkFieldVars NONE
+        # hi link awkVariables Function
+        # syn clear awkComma awkSemicolon awkExpression awkOperator awkSpecialPrintf awkPatterns awkBoolLogic awkCharClass awkBrktRegExp awkBrackets awkRegExp awkSpecialCharacter awkArrayElement awkArray
+    }
     au Filetype css         setl isk+=-
     au Filetype html {
                             setl textwidth=100 indentexpr=
@@ -143,6 +151,7 @@ augroup my-autocmds
                                 hi htmlItalic cterm=underline
                             endif
     }
+    au Filetype javascript  hi def link javaScriptValue Number
     au Filetype lua         hi link luaTable Normal
     au filetype make        setl ts=8
     au Filetype markdown {
@@ -261,7 +270,7 @@ command -range Sum {
 # Load the output of a command in the current buffer.
 command -complete=command -nargs=+ Load call(
     \ (getline(1, '$')->filter((_, v) => len(v) > 0)->len() == 0 ? 'setline' : 'append'),
-    \ ['.', execute(join([<f-args>], ' '))->split('\n')])
+    \ ['.', execute(<q-args>)->split('\n')])
 
 ### Mappings
 ############
@@ -354,6 +363,13 @@ enddef
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
 
+# Always insert spaces after non-whitespace, unless colorcolumn is enabled, in
+# which case cc_align to align with that.
+inoremap <expr> <Tab> &cc == '' ? (getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)) : cc_align#tab()
+# https://vi.stackexchange.com/a/37138/51
+#inoremap <expr> <Tab> getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', shiftwidth())
+#inoremap <expr> <Tab> getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)
+
 # Make <Tab> go to the next entry when using the popupmenu from commandline
 # completion.
 cnoremap <expr> <Tab> pumvisible() ? '<Down>' : "\<Tab>"
@@ -377,8 +393,8 @@ nnoremap HH :tab h<Space>
 # Open directory in new tab.
 nnoremap <Leader>d :tabe %:h<CR>
 
-# Scroll down on space.
-nnoremap <Space> <C-d>
+# Don't do anything on space in insert mode; it's almost always an accident.
+nnoremap <Space> <Nop>
 
 # gf and gF opens in a tab.
 nnoremap gf <C-w>gf
@@ -441,18 +457,17 @@ def <SID>wrap(): string
     setcmdpos(pos)
     return l
 enddef
-cnoremap <expr> <C-s> index(['/', '?'], getcmdtype()) is -1 ? "\<C-s>" : "\<C-\>e<SID>wrap()\<CR>"
+cnoremap <expr> <C-s> index(['/', '?'], getcmdtype()) == -1 ? "\<C-s>" : "\<C-\>e<SID>wrap()\<CR>"
 
 ### Plugins
 ###########
+g:loaded_netrwPlugin = 1
 
 ### switchy.vim
 nnoremap <silent> <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
 
 ### lazy.vim
-#def s:r(file: string): list<string>
-# TODO: can't use <SID> in map?
-def <SID>r(file: string): list<string>
+def R(file: string): list<string>
     var f = $HOME .. '/.vim/snip/' .. file
     return filereadable(f) ? readfile(f) : ''
 enddef
@@ -460,13 +475,13 @@ g:lazy_snippets = {
     go: {
         err:  "if err != nil {\n\treturn fmt.Errorf(\"\b: %w\", err)\n}",
         errt: "if err != nil {\n\tt.Fatal(err)\n}",
-        #tt:   s:r('/test.go'),
+        tt:   R('/test.go'),
         dp:   "fmt.Println(zdb.ApplyPlaceholders(\bquery, args...))",
         dd:   "zdb.Dump(ctx, os.Stdout, \"\b\")",
         bb:   "func Benchmark\b(b *testing.B){\n\tb.ReportAllocs()\n\tfor n := 0; n < b.N; n++ {\n\t}\n}\n"
     },
     html: {
-        #doc: s:r('/base.html'),
+        doc: R('/base.html'),
     },
 }
 
@@ -549,13 +564,14 @@ nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
 
 ### vim-lsc
 g:lsc_server_commands = {
-  go:           {command: 'gopls serve', log_level: -1, suppress_stderr: v:true},
-  c:            {command: 'clangd',      log_level: -1, suppress_stderr: v:true},
-  cpp:          {command: 'clangd',      log_level: -1, suppress_stderr: v:true},
-  sql:          {command: 'sqls',        log_level: -1, suppress_stderr: v:true},
-  'sql.runbuf': {command: 'sqls',        log_level: -1, suppress_stderr: v:true},
-  cs:           {command: '/home/martin/omni/run -lsp -v --hostPID ' .. getpid()},
-  rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
+    #go:           {command: '/home/martin/gopls',   log_level: -1, suppress_stderr: v:true},
+    go:           {command: 'gopls serve',   log_level: -1, suppress_stderr: v:true},
+    c:            {command: 'clangd',        log_level: -1, suppress_stderr: v:true},
+    cpp:          {command: 'clangd',        log_level: -1, suppress_stderr: v:true},
+    sql:          {command: 'sqls',          log_level: -1, suppress_stderr: v:true},
+    'sql.runbuf': {command: 'sqls',          log_level: -1, suppress_stderr: v:true},
+    rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
+    zig:          {command: 'zls',           log_level: -1, suppress_stderr: v:true},
 }
 # cmd = { "/path/to/omnisharp-roslyn/bin/omnisharp/run", "--languageserver" , "--hostPID", tostring(pid) },
 
@@ -670,9 +686,59 @@ enddef
 #nnoremap g/ <C-o>:call <SID>search_vix()<CR>
 nnoremap g/ <C-o>:call <SID>search_vix()<CR>/<C-R>=@/<CR><CR>
 
-g:loaded_lpeg = 1
-
 g:rust_recommended_style = 0
+
+g:cc_align_no_map = 1
+
+command! Slides {
+    set showtabline=2 laststatus=0 cmdheight=1 number scrolloff=0
+    &tabline = ' '
+    hi LineNr      guifg=#ffffff
+    hi EndOfBuffer guifg=#ffffff
+    hi TabLineFill gui=NONE guibg=#ffffff term=NONE cterm=NONE
+
+    # TODO: hide cursor better
+    set virtualedit=all
+    call cursor(1, winwidth(1))
+    # Otherwise the cursor position won't update(?)
+    normal! jk
+
+    nnoremap j jzt
+    nnoremap n nzt
+    nnoremap N Nzt
+    # TODO: these down't actually work?
+    nnoremap <Down> jzt
+    nnoremap <C-d>  jz<C-d>
+    nnoremap <C-u>  jz<C-u>
+    exe 'normal! zt'
+
+    # TOOD: gives "no mapping found"?
+    #nnoremap <Space> gt
+    nnoremap <Right> gt
+    nnoremap <Left>  gT
+}
+
+const registers = [
+    '"',
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    '_',
+    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    ':', '.', '%',
+    '#',
+    '=',
+    '*', '+', '~',
+    '/',
+]
+
+command -nargs=* Registers {
+    var f = registers->copy()->filter((_, v) => getreg(v) =~ <q-args>)
+    if len(f) == 0
+        echo printf('no registers contain "%s"', <q-args>)
+    else
+        exe 'registers' f->join()
+    endif
+}
 
 defcompile  # Compile functions so we get errors on startup.
 # vim: et

@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# Start or switch to tmux session for my site.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+set -euC
+
+cd ~/code/arp242.net
+s=site
+att() {
+	if [ -n "${TMUX:-}" ]; then
+		tmux switch-client -t "=$s"
+	else
+		tmux attach-session -t "=$s"
+	fi
+}
+if tmux has-session -t "=$s" 2> /dev/null; then
+	att
+	exit 0
+fi
+tmux new-session -d -s "$s"
+
+tmux new-window -d -t "=$s" -n server -c ~/code/arp242.net/_site
+tmux send-keys -t "=$s:=server" 'python -mhttp.server' Enter
+
+tmux new-window -d -t "=$s" -n jekyll
+tmux send-keys -t "=$s:=jekyll" 'JEKYLL_NO_BUNDLER_REQUIRE=1 jekyll build --strict_front_matter -w' Enter
+
+att

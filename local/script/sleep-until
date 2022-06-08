@@ -1,23 +1,34 @@
-#!/bin/sh
+#!/bin/zsh
 #
-# Sleep until a specific time.
+# Sleep until a specific time. This takes a time in 24-hour clock format and
+# sleeps until the next instance of this time is reached.
+#
+#   % sleep-until 15:30:45
+#   % sleep-until 15:30      # Until 15:30:00
+#   % sleep-until 15         # Until 15:00:00
+#
+# Or to sleep until a specific date:
+#
+#   % sleep-until 2023-01-01T15:00:00
+#
+# Or space instead of T; can abbreviate time like above.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+[ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
+setopt err_exit no_unset no_clobber pipefail
 
-set -euC
-
-if [ "${1:-}" = "" ]; then
-	echo >&/dev/stderr "need target time"
+if [[ -z ${1:-} ]]; then
+	print >&2 "sleep-until: need target time; use -h for help."
 	exit 1
 fi
 
 s=$(( $(date -d "$1" +%s) - $(date +%s) ))
-if [ $s -lt 0 ]; then
-	# TODO
+if [[ $s -lt 0 ]]; then
 	mn=$(( $(date -d 23:59 +%s) - $(date +%s) ))
-	s=$(( -$s + $mn + 60 ))
+	s=$(( $s + $mn + 60 ))
 fi
 
+print -n 'Sleeping for '
 m=$(($s / 60))
-[ $m -gt 60 ] && printf "$(($m / 60)) hours "
-echo "$(($m % 60)) minutes ($s seconds)"
+[[ $m -gt 60 ]] && printf "$(($m / 60)) hours, "
+print "$(($m % 60)) minutes ($s seconds)"
 sleep $s

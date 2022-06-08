@@ -1,21 +1,29 @@
-#!/bin/sh
+#!/bin/zsh
+#
+# Convert all FLAC files in a directory to MP3 V0. Requires the "flac" and
+# "lame" tools.
+#
+# Usage: flag2v0 [flac-dir] [flac-dir]
+#
+# MP3 files will be placed in a mp3 subdirectory.
+echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+setopt err_exit no_unset no_clobber pipefail
 
-set -euC
-
-# Get tagname
 _tag() {
 	metaflac "$1" --show-tag="$2" | cut -d= -f2-
 }
 
-[ -z "$1" ] && exit 2
+if [[ -z $1 ]]; then 
+	print >&2 'flac2v0: need directory; use -h for help.'
+	exit 2
+fi
 
 for flacdir in "$@"; do
-	outdir="$HOME/music/$flacdir"
+	outdir="$flacdir/mp3"
 	mkdir -p "$outdir"
 
-	# Convert flac
-	for f in "$flacdir"/*.flac; do
-		[ ! -e "$f" ] && continue
+	for f in $flacdir/*.flac; do
+		[[ ! -e $f ]] && continue
 
 		basename "$f"
 		flac -dcs "$f" |
@@ -30,10 +38,7 @@ for flacdir in "$@"; do
 	done
 
 	# Copy additional files
-	#for f in "$flacdir"/*.*[!flac]; do
-	#	cp "$f" "$outdir"
-	#done
-
-	# Make torrent
-	#mktorrent -p -a "$announce" -o "$outdir/../$(basename "$outdir").torrent" "$outdir"
+	for f in "$flacdir"/*~*.flac; do
+		cp "$f" "$outdir"
+	done
 done

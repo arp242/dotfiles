@@ -27,6 +27,8 @@ cookiefile = ~/.config/git/cookies
 
 [url "git@github.com:"]      # Prefer git protocol over http for GitHub.
 insteadOf = https://github.com/
+[url "git@gitlab.com:"]
+insteadOf = https://gitlab.com/
 
 [pretty]
 #myname=fmt

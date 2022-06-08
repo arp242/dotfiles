@@ -3,6 +3,7 @@
 # Remove local branches that no longer exist on remote.
 # https://www.reddit.com/r/commandline/comments/blcttq/i_got_tired_of_manually_cleaning_up_stale_local/
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
+set -euC
 
 git fetch origin --prune
 git branch --merged master | grep -v 'master$' | xargs git branch -d
