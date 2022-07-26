@@ -1,9 +1,17 @@
 /encoding=utf-8
-
 # Various spelling additions; added as I encounter them as I write. Not
-# comprehensive.
-#
-# Compile with :mkspell! %
+# comprehensive. Compile with :mkspell! %
+
+# Some spelling preferences.
+Maori/!
+naive/!
+reusable/!
+Māori
+reëvaluates
+reïmplementing
+reüsable
+coördinate
+reïmplemented
 
 # Various words that aren't in the main spellfile.
 COVID
@@ -42,8 +50,11 @@ handwaved
 hardline
 hissy
 hometown
+interpunction
 klansmen
+kthxbye
 math
+misfeatures
 monocultures
 muckery
 neurodivergency
@@ -58,6 +69,7 @@ pedophilia
 predates
 roommate
 shouty
+significand
 skeptical
 skeptics
 smoothes
@@ -74,6 +86,8 @@ tradeoff
 tsp
 tsp.
 twat
+unabstracted
+undecoded
 unfucking
 unpluralized
 unsubmitted
@@ -109,6 +123,7 @@ SVG/=
 SaaS/=
 TOML/=
 TOML/=
+VT220/=
 WYSIWYG
 YAGNI/=
 YAML/=
@@ -137,9 +152,11 @@ filesystem
 filesystems
 filetype
 filetypes
+flexbox
 frontend
 frontends
 frontmatter
+fullscreen
 glibc/=
 globals
 globbing
@@ -149,6 +166,7 @@ goroutines
 hostname
 i386/=
 keybind
+keybinds
 keyrings
 libre
 linebreaks
@@ -171,6 +189,7 @@ pageview
 pageviews
 plugin
 plugins
+png
 popup
 quickfix
 regex
@@ -189,6 +208,7 @@ subtests
 tagsoup
 teletype
 teletypes
+terminfo
 timesharing
 toolchain
 uncropped
@@ -208,10 +228,12 @@ wildcard
 wildcards
 
 # Program names.
+amixer/=
 chmod/=
 chown/=
 chroot/=
 csh/=
+dmenu/=
 fetchmail/=
 gcc/=
 gofmt/=
@@ -221,14 +243,17 @@ ksh/=
 makepkg/=
 npm/=
 openssl/=
+pactl/=
 pf/=
 printf/=
 sendmail/=
 setopt/=
 sftp/=
 ssh/=
+sxiv/=
 systemd/=
 tmux/=
+xbacklight/=
 xbps/=
 zsh/=
 
@@ -254,8 +279,10 @@ Hurd/=
 Inkscape/=
 Instagram/=
 Kubernetes/=
+Log4J/=
 Lua
 MSX/=
+Mailgun/=
 MariaDB/=
 MediaWiki's/=
 MediaWiki/=
@@ -265,6 +292,7 @@ Minix/=
 MongoDB/=
 MySQL/=
 Neovim/=
+Netlify/=
 OSI/=
 OpenAPI/=
 POSIX/=
@@ -340,33 +368,6 @@ Torvalds/=
 Tournoij/=
 Vixie/=
 Willison/=
-
-# Some spelling preferences.
-Maori/!
-naive/!
-reusable/!
-Māori
-reëvaluates
-reïmplementing
-reüsable
  
 # Unsorted (zg'd).
-fullscreen
-sxiv
-png
-xbacklight
-pactl
-amixer
-keybinds
-dmenu
-terminfo
-VT220
-interpunction
-#ometing
-someting/!
-misfeatures
-NUL
-Mailgun
-BG1
-BG2
-IWD
+subpackage

@@ -21,6 +21,7 @@ usage() {
 	   addr [ip] [route]  Manually set IP address with default route.
 	EOF
 	[[ -n ${argv[1]:-} ]] && exit 1
+	return 0
 }
 
 up() {
@@ -46,10 +47,11 @@ status() {
 
 	local link=$(iw dev $dev link)
 
+	# TODO: dev:    wlp0s2 (23:23...)
 	print -f '%-12s %s\n' 'dev'   "$dev"
 	print -f '%-12s %s\n' 'ip'    "$(ip addr show dev $dev | grep '    inet ' | cut -d ' ' -f6)"
 	print -f '%-12s %s\n' 'route' "$(ip route list dev $dev | sed '2,0s/^/             /')"
-	print -f '%-12s %s\n' 'bss'   "$(print $link | head -n1 | cut -d ' ' -f3)"
+	print -f '%-12s %s\n' 'bss'   "$(head -n1 <<<$link | cut -d ' ' -f3)"
 
 	iw dev $dev info  | tail -n+2 | awk -F ' ' \
 		'/(addr|ssid|channel|txpower) / { printf("%-12s", $1); $1=""; print $0 }'

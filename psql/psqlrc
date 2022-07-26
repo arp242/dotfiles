@@ -1,6 +1,10 @@
+select :'PROMPT1'='%/%R%x%# ' as default_prompt \gset
+\if :default_prompt
+  \set PROMPT1 '(%:ROW_COUNT:)%R%# '
+\endif
+
 \set QUIET
 \set HISTSIZE -1
-\set PROMPT1 '(%:ROW_COUNT:)%R%# '
 \set PROMPT2 '%R%# '
 \pset linestyle unicode
 \pset footer off

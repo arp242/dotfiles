@@ -11,7 +11,7 @@ setopt err_exit no_unset pipefail
 if [[ -z "${1:#*://*}" ]]; then
 	proto=${(L)1%%://*}
 	case $proto in
-		(http|https)   exec firefox "$1" ;;
+		(http|https)   exec firefox $1 ;;
 		(*)
 			print >&2 "xdg-open: no URL handler for protocol '$proto://' (for: $1)"
 			exit 1
@@ -21,11 +21,10 @@ fi
 # Open file.
 ext=${(L)1:e}
 case $ext in
-	(html|pdf)                     exec firefox   "$1" ;;
-	(png|webp|jpg|jpeg|heic)       exec sxiv      "$1" ;;
-	(mp?|ogg|flac|m4v|mkv|avi|mov) exec mpv       "$1" ;;
-	(md|markdown|txt)              exec st -e vim "$1" ;;
-	(epub)                         ;;
+	(html|pdf)                     exec firefox   $1 ;;
+	(png|webp|jpg|jpeg|heic)       exec sxiv      $1 ;;
+	(mp?|ogg|flac|m4v|mkv|avi|mov) exec mpv       $1 ;;
+	(md|markdown|txt|sh)           exec st -e vim $1 ;;
 	(*)
 		print >&2 "xdg-open: don't know how to open '.$ext' files (for: $1)"
 		exit 1

@@ -135,12 +135,11 @@ hash -d pack=~c/Vim
 hash -d cp=~c/Prog
 hash -d cm=~c/Misc
 hash -d cg=~c/Golib
-hash -d sy=~c/schoolyear
 hash -d gc=~/code/goatcounter
 hash -d d=~/code/arp242.net/_drafts
 hash -d p=~/code/arp242.net/_posts
-hash -d vim=/usr/local/share/vim/vim82
-hash -d go=/usr/lib/go/src
+hash -d vim=/usr/share/vim/vim90
+hash -d go=$(print -n /usr/go-*(N[-1]))
 
 setopt no_flow_control       # Disable ^S, ^Q, ^\
 stty -ixon quit undef        # For Vim etc; above is just for zsh.
@@ -148,6 +147,7 @@ setopt notify                # Report status of bg jobs immediately
 setopt no_clobber            # Don't clobber existing files with > ....
 setopt clobber_empty         # ... but do allow overwriting empty files.
 setopt append_create         # Refuse to create new files with >>
+setopt short_repeat          # Short repeat syntax ("repeat 5; echo x").
 setopt no_beep               # Don't beep
 setopt no_hup                # Don't kill background jobs when exiting
 setopt no_bg_nice            # Don't frob with nicelevels
@@ -380,6 +380,7 @@ alias zc='noglob zc'
 alias -g VV=' |& vim +S -'            # Global aliases to pipe output.
 alias -g LL=' |& less'
 alias -g LLl=' |& less'               # Typo after using ^l
+alias -g LLS=' |& less -S'            # No wrapping.
 alias -g GG=' |& grep'
 alias -g HH=' |& head -n20'
 alias -g CC=' |& xclip -in'           # TODO: ideally I'd like to copy to both, but xclip doesn't support that

@@ -17,6 +17,8 @@ defaultBranch = master       # Just keep the master branch for now.
 
 [gpg]
 format = ssh                 # Sign with SSH key.
+[gpg.ssh]
+allowedSignersFile = "~/.config/git/keys"
 
 [core]
 eol   = lf                   # Always use \n, even on Windows.
