@@ -6,10 +6,10 @@ HISTFILE=~/.zsh/history
 ##############
 # On some other systems /usr/bin links to /bin; use the full path to prevent dupes.
 _prepath() {
-	for dir in "$@"; [[ -d "${dir:A}" ]] && path+=("${dir:A}" $path[@])
+	for d in $@; [[ -d $d:A ]] && path=($d:A $path[@])
 }
 _postpath() {
-	for dir in "$@"; [[ -d "${dir:A}" ]] && path+=("${dir:A}")
+	for d in $@; [[ -d $d:A ]] && path+=($d:A)
 }
 
 typeset -U path                           # No duplicates
@@ -31,21 +31,21 @@ unfunction _postpath
 
 ### Various env variables
 #########################
+_exists() { (( $+commands[$1] )) }           # Helper; will be unset later.
+
 export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
 export LC_COLLATE=C                          # I prefer this sorting.
 if [[ -n ${TMUX:-} ]]; then                  # Do the TERM dance.
 	export TERM=tmux-256color
 elif [[ -n ${DISPLAY:-} ]]; then
 	export TERM=st-256color
-else
+elif [[ -d /sys/kernel ]]; then
 	export TERM=linux
 
 	# TODO: do this somewhere else.
-	setfont ter-932b
-	setterm -foreground black -background white -blink on -store
+	_exists setfont && setfont ter-932b
+	_exists setterm && setterm -foreground black -background white -blink on -store
 fi
-
-_exists() { (( $+commands[$1] )) }           # Helper; will be unset later.
 
 _exists vim      && export EDITOR=vim        # Default applications.
 _exists firefox  && export BROWSER=firefox

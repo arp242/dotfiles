@@ -10,32 +10,30 @@
 [ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
 setopt err_exit no_unset no_clobber pipefail
 
-args=($@)
-
 # Special case for projects that have the main package in ./cmd rather than
 # ./cmd/dir; go install will install that as $GOBIN/cmd, which isn't very
 # useful. Frob so that it installs as $GOBIN/$module instead.
 if [[ $1 = 'install' && $@[-1]:t == 'cmd' ]]; then
-	args=(build -o $(go env GOBIN)/${$(go list -m):t} $@[2,-1])
-	[[ -z $VIM ]] && print "rewrite: go $args"  # Bit annoying when using :make
+	argv=(build -o $(go env GOBIN)/${$(go list -m):t} $argv[2,-1])
+	[[ -z ${VIM:-} ]] && print "rewrite: go $argv"  # Bit annoying when using :make
 fi
 
 # Always show help for command if -h, -help, or --help is in the command line at
 # any position.
-if [[ $args[(r)-h] = '-h' ||  $args[(r)-help] = '-help' ||  $args[(r)--help] = '--help' ]]; then
+if [[ ${argv[(r)-h]:-} = '-h' ||  ${argv[(r)-help]:-} = '-help' ||  ${argv[(r)--help]:-} = '--help' ]]; then
 	for p in $@; do
 		if [[ $p[1] != '-' ]]; then
 			cmd=$p
 			break
 		fi
 	done
-	args=(help $cmd)
+	argv=(help $cmd)
 fi
 
-# Show flags in bold, and pipe to $PAGER.
-if [[ $args[1] = 'help' ]]; then
-	exec /usr/bin/go $args | sed -E 's/(^|\s)-[a-z=]+/\x1b[1m\0\x1b[0m/g' |& $PAGER
+# Show flags as bold in go help, and pipe to $PAGER.
+if [[ $argv[1] = 'help' ]]; then
+	/usr/bin/go $argv | sed -E 's/(^|\s)-[a-z0-9=]+/\x1b[1m\0\x1b[0m/g' |& $PAGER
 	exit $?
 fi
 
-exec /usr/bin/go $args
+exec /usr/bin/go $argv
