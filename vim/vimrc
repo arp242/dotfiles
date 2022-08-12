@@ -9,6 +9,9 @@ filetype plugin indent on              # Enable filetype detection.
 set termguicolors                      # Use true colors.
 &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"     # Set correct escape codes to make termguicolors work in st.
 &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+&t_SI = "\<Esc>[3 q"                   # Star Insert; set cursor to underline (1=block, 3=underline, 5=bar)
+&t_SR = &t_SI                          # Start Replace
+&t_EI = "\<Esc>[1 q"                   # End Insert (or Replace), set back to block cursor
 silent! colorscheme default2           # Load my color scheme if it exists.
 set backspace=indent,eol,start         # Allow backspacing over everything.
 set history=500                        # Keep 500 lines of command line history.
@@ -26,7 +29,7 @@ set breakindentopt=sbr,list:-1         # sbr  → Display showbreak before inden
                                        # list → indent list if it matches formatlistpat
 set autoindent                         # Copy indent from current line when starting a new line.
 set copyindent                         # Copy indent for new lines when auto-indenting.
-set preserveindent                     # Don't replace tabs/spaces with >> and <<.
+#set preserveindent                     # Don't replace tabs/spaces with >> and <<.
 set shiftround                         # Round indent to multiple of shiftwidth when using < and >
 set backup                             # Keep backup file when writing.
 set backupext=.bak                     # Extension for backup files (modified in autocmd below).
@@ -71,6 +74,9 @@ set laststatus=2                       # Always show statusline with more than o
 set undofile                           # Save undo to file.
 set notitle                            # Don't update term title.
 set shortmess-=S                       # Show match count on n.
+set shortmess+=aFI                     # a: abbreviate a few things
+                                       # F: don't show file info with :edit etc.
+                                       # I: don't show :intro message
 set virtualedit=block                  # Allow virtual editing in visual block mode.
 &ttyfast = $SSH_CLIENT == ''           # Assume the terminal is fast for smoother redrawing.
 set display=lastline,uhex              # lastline → Show as much of the last line as possible instead of @.
@@ -105,12 +111,12 @@ set statusline=
 &statusline ..= '%='                   # Right-align from here on.
 &statusline ..= ' [line %l of %L]'     # current line, total lines.
 &statusline ..= ' [col %v]'            # column.
-&statusline ..= ' [0x%B]'              # Byte value under cursor.
+&statusline ..= ' [0x%B]'              # Codepoint of character under cursor.
 
 # Set/create directory to keep backup, swap, undo files.
-set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0700)
-set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0700)
-set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir, 'p', 0700)
+set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0o700)
+set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0o700)
+set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir,   'p', 0o700)
 
 # Set viminfo file location unless explicitly turned off.
 if &viminfofile != 'NONE' | set viminfofile=$HOME/.cache/vim/viminfo | endif
@@ -475,7 +481,7 @@ nnoremap <silent> <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
 ### lazy.vim
 def R(file: string): list<string>
     var f = $HOME .. '/.vim/snip/' .. file
-    return filereadable(f) ? readfile(f) : ''
+    return filereadable(f) ? readfile(f) : []
 enddef
 g:lazy_snippets = {
     go: {
@@ -578,8 +584,8 @@ g:lsc_server_commands = {
     rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
     zig:          {command: 'zls',           log_level: -1, suppress_stderr: v:true},
 }
-g:lsc_enable_autocomplete = v:false      # Don't complete when typing.
-g:lsc_enable_diagnostics = v:false       # Don't lint code.
+g:lsc_enable_autocomplete  = v:false      # Don't complete when typing.
+g:lsc_enable_diagnostics   = v:false       # Don't lint code.
 g:lsc_reference_highlights = v:false     # Don't highlight references.
 #g:lsc_enable_incremental_sync = v:false  # Don't constantly send diffs to server.
 #g:lsc_preview_split_direction = 'below'  # Show preview at bottom, rather than top.
@@ -641,7 +647,7 @@ command! Slides {
     nnoremap <C-u>  jz<C-u>
     exe 'normal! zt'
 
-    # TOOD: gives "no mapping found"?
+    # TODO: gives "no mapping found"?
     #nnoremap <Space> gt
     nnoremap <Right> gt
     nnoremap <Left>  gT

@@ -17,6 +17,7 @@ path=()
 _prepath /bin /sbin /usr/bin /usr/sbin /usr/games
 _prepath /usr/pkg/bin   /usr/pkg/sbin     # NetBSD
 _prepath /usr/X11R6/bin /usr/X11R6/sbin   # OpenBSD
+_prepath /opt/ooce/bin                    # illumos
 _prepath /usr/local/bin /usr/local/sbin
 
 _prepath  ~/.local/gobin                     # Go
@@ -25,6 +26,7 @@ _prepath  ~/.local/script                    # My local stuff.
 _postpath ~/.gem/ruby/*/bin(N[-1])           # Ruby
 _postpath ~/.luarocks/bin(N[-1])             # Lua
 _postpath ~/.dotnet/root ~/.dotnet/tools     # .NET
+_postpath /usr/lib/plan9/bin                 # Plan 9 from userspace
 
 unfunction _prepath
 unfunction _postpath
@@ -75,6 +77,7 @@ export XAUTHORITY=~/.config/x11/authority
 export BUNDLE_PATH=~/.gem             # Deal with bundler
 export DOTNET_ROOT=~/.dotnet/root     # .NET root
 export ANDROID_SDK_ROOT=~/android/sdk # Android tools
+export PLAN9=/usr/lib/plan9           # Plan 9 from userspace
 export GOBIN=~/.local/gobin           # Go binaries ('go install').
 export GOPATH=/tmp/go                 # GOPATH mostly stores cache stuff these days.
 export GOCACHE=$GOPATH/cache          # Build and test cache.
@@ -175,16 +178,18 @@ HISTORY_IGNORE='([bf]g *|[bf]g|disown|cd ..|cd -)' # Don't add these to the hist
 setopt prompt_subst          # Expand parameters commands, and arithmetic in PROMPT
 setopt transient_rprompt     # Remove rprompt after a command is run.
 
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' enable git       # Enable just git.
-zstyle ':vcs_info:*' formats '(%b)'   # Show branch.
-
-set_prompt() {
-	vcs_info >/dev/null 2>&1
-	print -n "%(?..%130(?..%S%?%s))"         # Exit code in "standout" if non-0 and non-130 (^C to clear input)
-	print -n "[%~]${vcs_info_msg_0_:-}%# "   # Directory and VCS info (if any).
-}
-PROMPT=$'$(set_prompt)'
+PROMPT='%(?..%130(?..%S%?%s))[%~]%# '
+if _exists git; then
+	autoload -Uz vcs_info
+	zstyle ':vcs_info:*' enable git       # Enable just git.
+	zstyle ':vcs_info:*' formats '(%b)'   # Show branch.
+	set_prompt() {
+		vcs_info >/dev/null 2>&1
+		print -n "%(?..%130(?..%S%?%s))"         # Exit code in "standout" if non-0 and non-130 (^C to clear input)
+		print -n "[%~]${vcs_info_msg_0_:-}%# "   # Directory and VCS info (if any).
+	}
+	PROMPT=$'$(set_prompt)'
+fi
 
 _has_bat=$([[ -f /sys/class/power_supply/BAT1/capacity ]]; printf $?)
 set_rprompt() {
@@ -314,7 +319,7 @@ if [[ $(uname) = Linux ]]; then
 	alias lh='ls -d .*'            # "List Hidden"
 	alias lsd='ls -ld *(-/DN)'     # "List Directories"
 else
-	alias ls='ls -F'
+	alias ls='ls -Fh'
 	alias lc='ls -l'
 	alias la='ls -a'
 	alias lac='ls -la'
