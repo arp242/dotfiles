@@ -9,11 +9,11 @@
 #    micmute     Toggle mute for all microphones.
 #
 # For applications (supported: mpv, Firefox):
-#    pause    Toggle play/pause.
-#    next     Next track/file.
-#    prev     Previous track/file.
-#    forward  Seek forward 1 minute.
-#    rewind   Seek backwards 1 minute.
+#    pause       Toggle play/pause.
+#    next        Next track/file.
+#    prev        Previous track/file.
+#    forward     Seek forward 1 minute.
+#    rewind      Seek backwards 1 minute.
 #
 # For mpv, start mpv with "--input-ipc-server=/tmp/.mpv". You can stick this in
 # your ~/.config/mpv/mpv.conf. See mpv(1)

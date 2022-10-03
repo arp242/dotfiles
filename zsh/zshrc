@@ -1,59 +1,44 @@
-set -u                   # Undefined variables are an error.
-ZDOTDIR=~/.zsh           # Store all zsh-related stuff in ~/.zsh/ instead of ~/
+set -u                    # Undefined variables are an error.
+ZDOTDIR=~/.zsh            # Store all zsh-related stuff in ~/.zsh/ instead of ~/
 HISTFILE=~/.zsh/history
 
 ### Setup PATH
 ##############
-# On some other systems /usr/bin links to /bin; use the full path to prevent dupes.
-_prepath() {
-	for d in $@; [[ -d $d:A ]] && path=($d:A $path[@])
-}
-_postpath() {
-	for d in $@; [[ -d $d:A ]] && path+=($d:A)
-}
+prepath()  { for d in $@; [[ -d $d:A ]] && path=($d:A $path) } # Use the full path to prevent dupes.
+postpath() { for d in $@; [[ -d $d:A ]] && path+=($d:A) }
+have()     { (( $+commands[$1] )) }                            # Check if command exists.
 
-typeset -U path                           # No duplicates
+typeset -U path                          # No duplicates
 path=()
-_prepath /bin /sbin /usr/bin /usr/sbin /usr/games
-_prepath /usr/pkg/bin   /usr/pkg/sbin     # NetBSD
-_prepath /usr/X11R6/bin /usr/X11R6/sbin   # OpenBSD
-_prepath /opt/ooce/bin                    # illumos
-_prepath /usr/local/bin /usr/local/sbin
+prepath /bin /sbin /usr/bin /usr/sbin /usr/games
+prepath /usr/pkg/bin   /usr/pkg/sbin     # NetBSD
+prepath /usr/X11R6/bin /usr/X11R6/sbin   # OpenBSD
+prepath /opt/ooce/bin                    # illumos
+prepath /usr/local/bin /usr/local/sbin
 
-_prepath  ~/.local/gobin                     # Go
-_postpath ~/code/Vim/gopher.vim/tools/bin
-_prepath  ~/.local/script                    # My local stuff.
-_postpath ~/.gem/ruby/*/bin(N[-1])           # Ruby
-_postpath ~/.luarocks/bin(N[-1])             # Lua
-_postpath ~/.dotnet/root ~/.dotnet/tools     # .NET
-_postpath /usr/lib/plan9/bin                 # Plan 9 from userspace
-
-unfunction _prepath
-unfunction _postpath
+prepath  ~/.local/gobin                     # Go
+postpath ~/code/Vim/gopher.vim/tools/bin
+prepath  ~/.local/script                    # My local stuff.
+postpath ~/.gem/ruby/*/bin(N[-1])           # Ruby
+postpath ~/.luarocks/bin(N[-1])             # Lua
+postpath ~/.dotnet/root ~/.dotnet/tools     # .NET
+postpath /usr/lib/plan9/bin                 # Plan 9 from userspace
 
 ### Various env variables
 #########################
-_exists() { (( $+commands[$1] )) }           # Helper; will be unset later.
-
 export LANG=en_NZ.UTF-8                      # Use Kiwiland for sane date format, metric system, etc.
 export LC_COLLATE=C                          # I prefer this sorting.
 if [[ -n ${TMUX:-} ]]; then                  # Do the TERM dance.
 	export TERM=tmux-256color
 elif [[ -n ${DISPLAY:-} ]]; then
 	export TERM=st-256color
-elif [[ -d /sys/kernel ]]; then
-	export TERM=linux
-
-	# TODO: do this somewhere else.
-	_exists setfont && setfont ter-932b
-	_exists setterm && setterm -foreground black -background white -blink on -store
 fi
 
-_exists vim      && export EDITOR=vim        # Default applications.
-_exists firefox  && export BROWSER=firefox
-_exists less     && export PAGER=less
-_exists clang    && export CC=clang
-_exists clang++  && export CXX=clang++
+have vim      && export EDITOR=vim        # Default applications.
+have firefox  && export BROWSER=firefox
+have less     && export PAGER=less
+have clang    && export CC=clang
+have clang++  && export CXX=clang++
 
 # Store stuff in ~/.config and ~/.cache when we can.
 # https://github.com/grawity/dotfiles/blob/master/.dotfiles.notes
@@ -130,7 +115,7 @@ mkdir -m0700 -p "$XDG_RUNTIME_DIR"
 [[ -o interactive ]] || return 0
 
 # Load zsh-completions
-fpath=(~/.zsh/fpath ~/.zsh/zsh-completions/src $fpath)
+fpath=(~/.zsh/zsh-completions/src $fpath)
 
 # Directory shortcuts
 hash -d c=~/code
@@ -172,17 +157,17 @@ setopt hist_ignore_all_dups  # Remove older event if new event is duplicate.
 setopt hist_save_no_dups     # Older commands that duplicate newer ones are omitted.
 HISTSIZE=11000               # Max. entries to keep in memory
 SAVEHIST=10000               # Max. entries to save to file
-HISTORY_IGNORE='([bf]g *|[bf]g|disown|cd ..|cd -)' # Don't add these to the history file.
+HISTORY_IGNORE='([bf]g *|[bf]g|disown|cd ..|cd -|up|ww)' # Don't add these to the history file.
 
 ### Prompt
 setopt prompt_subst          # Expand parameters commands, and arithmetic in PROMPT
 setopt transient_rprompt     # Remove rprompt after a command is run.
 
 PROMPT='%(?..%130(?..%S%?%s))[%~]%# '
-if _exists git; then
+if have git; then
 	autoload -Uz vcs_info
-	zstyle ':vcs_info:*' enable git       # Enable just git.
-	zstyle ':vcs_info:*' formats '(%b)'   # Show branch.
+	zstyle ':vcs_info:*' enable git              # Enable just git.
+	zstyle ':vcs_info:*' formats '(%b)'          # Show branch.
 	set_prompt() {
 		vcs_info >/dev/null 2>&1
 		print -n "%(?..%130(?..%S%?%s))"         # Exit code in "standout" if non-0 and non-130 (^C to clear input)
@@ -191,14 +176,19 @@ if _exists git; then
 	PROMPT=$'$(set_prompt)'
 fi
 
-_has_bat=$([[ -f /sys/class/power_supply/BAT1/capacity ]]; printf $?)
+_has_bat0=$([[ ! -f /sys/class/power_supply/BAT0/capacity ]]; printf $?)
+_has_bat1=$([[ ! -f /sys/class/power_supply/BAT1/capacity ]]; printf $?)
 set_rprompt() {
-	local host=    # Show hostname only for ssh connections; otherwise just the local time.
+	local host=                # Show hostname only for ssh connections.
 	[[ -n "${SSH_CLIENT:-}${SSH2_CLIENT:-}${SSH_CONNECTION:-}" ]] && host="%F{red}%U%B%m%b%u%f:"
-	local bat=     # Battery status
-	(( $_has_bat )) || \
-		bat=":$(< /sys/class/power_supply/BAT1/capacity)%%"
-	print "${host}%T${bat}"
+
+	local bat=()               # Battery status
+	(( $_has_bat0 )) && bat+="$(< /sys/class/power_supply/BAT0/capacity)%%"
+	(( $_has_bat1 )) && bat+="$(< /sys/class/power_supply/BAT1/capacity)%%"
+	[[ -n $bat ]] && bat=" ${(j!:!)bat}"
+
+	print "${host}%T${bat}"    # %T prints the time
+
 }
 RPROMPT=$'$(set_rprompt)'
 
@@ -301,6 +291,7 @@ alias td='echo $(date +%Y-%m-%d)'       # "today"
 alias now='echo $(date +%Y-%m-%d\ %T)'
 alias hub='NO_COLOR=y gh'               # "git" and "go" already start with "g"; this is easier.
 alias df='df -h | grep -Ev "(cgroup|devtmpfs|/run|/shm)"'
+mkcd() { mkdir -p $@ && cd $1 }         # Create directories and cd to first one.
 
 # Disable this ridiculous banner and colours.
 alias ffmpeg='AV_LOG_FORCE_NOCOLOR=1  ffmpeg  -hide_banner'
@@ -313,11 +304,11 @@ if [[ $(uname) = Linux ]]; then
 	else
 		alias ls='ls -FN --color=auto' # -F adds trailing / etc; -N avoids adding quotes
 	fi
-	alias lc='ls -lh'              # "List Complete"
-	alias la='ls -A'               # "List All"
-	alias lac='ls -lhA'            # "List All Complete"
-	alias lh='ls -d .*'            # "List Hidden"
-	alias lsd='ls -ld *(-/DN)'     # "List Directories"
+	alias lc='ls -lh'                  # "List Complete"
+	alias la='ls -A'                   # "List All"
+	alias lac='ls -lhA'                # "List All Complete"
+	alias lh='ls -d .*'                # "List Hidden"
+	alias lsd='ls -ld *(-/DN)'         # "List Directories"
 else
 	alias ls='ls -Fh'
 	alias lc='ls -l'
@@ -325,18 +316,19 @@ else
 	alias lac='ls -la'
 fi
 
-if _exists systemctl; then
+if have systemctl; then
 	alias zzz='systemctl suspend'
 	alias ZZZ='systemctl hibernate'
-elif _exists pm-suspend; then
+elif have pm-suspend; then
 	alias zzz='pm-suspend'
 	alias ZZZ='pm-hibernate'
 fi
 
-_exists bsdtar && alias tar='bsdtar'
-_exists htop   && alias top='htop'
+have bsdtar && alias tar='bsdtar'
+have htop   && alias top='htop'
 alias youtube-dl='noglob yt-dlp --no-colors --no-part -o "%(title)s-%(id)s.%(ext)s"'
 alias youtube-dl-audio='youtube-dl --extract-audio --format "bestaudio*"'
+alias youtube-dl-chan='noglob yt-dlp --no-colors --no-part -o "%(upload_date)s %(title)s-%(id)s.%(ext)s"'
 youtube-dl-select() {
 	# Select two: 1+2
 	# Ideally want to select av1; much smaller!
@@ -347,14 +339,15 @@ youtube-dl-select() {
 	youtube-dl -f $s $1
 }
 alias sqlite=sqlite3
-alias gpg=gpg2
 alias ag='rg'                  # I'm so used to typing "ag".
 alias vim="vim -p --ttyfail"   # Open in tabs, and refuse to open if output is not a terminal.
 alias vi="vim"
 alias batchy='vim +":Batchy echo" +:S +":setl nowrap"'
 alias scc='scc --min-gen --no-complexity --no-cocomo --no-size'
 
-unfunction _exists   # Unset helper.
+unfunction have      # Unset helpers.
+unfunction prepath
+unfunction postpath
 
 alias sl='ls'        # Typos
 alias l='ls'
@@ -388,6 +381,8 @@ alias -g LLl=' |& less'               # Typo after using ^l
 alias -g LLS=' |& less -S'            # No wrapping.
 alias -g GG=' |& grep'
 alias -g HH=' |& head -n20'
+alias -g SS=' |& sort'
+alias -g SSH=' |& sort -h'
 alias -g CC=' |& xclip -in'           # TODO: ideally I'd like to copy to both, but xclip doesn't support that
 
 # Diff two directories
@@ -420,7 +415,8 @@ ssh-reagent() {
 	ssh-add -l >/dev/null || ssh-add
 }
 
-# Get random string.
+# Get random string; first parameter is length (default: 20), if the second is
+# set to any value it will only include alphanumeric characters.
 rnd() {
 	[[ -n ${2:-} ]] && filter='[:punct:][:space:][:cntrl]' || filter='[:space:]'
 	strings -n1 </dev/urandom | tr -d $filter | head -c${1:-20}
@@ -436,8 +432,7 @@ tgo() {
 	printf 'package main\n\nfunc main() {\n\n}\n' > "$tmp/main.go"
 	printf 'package main\n\nimport "testing"\n\nfunc TestA(t *testing.T) {\n\n}\n\n' > "$tmp/main_test.go"
 	printf 'func BenchmarkA(b *testing.B) {\n\tb.ReportAllocs()\n\tfor n := 0; n < b.N; n++ {\n\t}\n}\n' >> "$tmp/main_test.go"
-
-	printf 'module %s\n' "$(basename "$tmp")" > "$tmp/go.mod"
+	printf 'go %s\n\nmodule %s\n' $(go version | grep -o '1\.[0-9][0-9]') $(basename $tmp) > "$tmp/go.mod"
 	(
 		cd "$tmp"
 		vim -p main.go main_test.go
@@ -500,3 +495,35 @@ psql() {
 	[[ -n $db ]] && print >&2 "Using database $db"
 	LESS=S$LESS PGDATABASE=$db =psql $@
 }
+
+# "up 3" to go up 3 directories, or "up name" to go up until that directory.
+up() {
+	if [[ ${1:-1} =~ '[0-9]+' ]]; then
+		local d='./'
+		repeat ${1:-1}; d+='../'
+		cd $d
+	else
+		local d=(${(s:/:Oa)PWD})
+		for (( i=1; i<=$#d; i++ )); do
+			if [[ $d[$i] = $1 ]]; then
+				up $(( i - 1 ))
+				return
+			fi
+		done
+		print >&2 'not found'
+		return 1
+	fi
+}
+_up() {
+	local d=(${(s:/:Oa)PWD})
+	_arguments "1: :{_describe 'dir' d}"
+}
+compdef _up up
+# Easier to type than "up"; "ww" doesn't stand for anything, other than being
+# easy to type and not being a common command already.
+alias ww=up
+
+_uni() {
+	# _arguments "1: :{_describe 'dir' d}"
+}
+compdef _uni uni

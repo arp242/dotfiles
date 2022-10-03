@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 #
 # Frob a bit with the "go" command to work around some issues:
 #
@@ -13,21 +13,26 @@ setopt err_exit no_unset no_clobber pipefail
 # Special case for projects that have the main package in ./cmd rather than
 # ./cmd/dir; go install compiles that to $GOBIN/cmd, which isn't very useful.
 # Frob so that it installs as $GOBIN/$module instead.
-if [[ ${1:-} = 'install' && $@[-1]:t == 'cmd' ]]; then
+if [[ ${1:-} = 'install' && $argv[-1]:t = 'cmd' ]]; then
 	argv=(build -o $(go env GOBIN)/${$(go list -m):t} $argv[2,-1])
-	[[ -z ${VIM:-} ]] && print "rewrite: go $argv"  # Bit annoying when using :make
+	[[ -z ${VIM:-} ]] && print >&2 "rewrite: go $argv"  # Bit annoying when using :make
 fi
 
 # Always show help for command if -h, -help, or --help is in the command line at
 # any position.
-if [[ ${argv[(r)-h]:-} = '-h' ||  ${argv[(r)-help]:-} = '-help' ||  ${argv[(r)--help]:-} = '--help' ]]; then
-	for p in $@; do
+if (( $argv[(i)-h] <= $#argv || $argv[(i)-help] <= $#argv ||  $argv[(i)--help] <= $#argv )); then
+	for p in $argv; do
 		if [[ $p[1] != '-' ]]; then
 			argv=(help $p)
 			break
 		fi
 	done
 fi
+
+# Automatically pipe go test -bench output for nicer alignment and numbers.
+# if (( $argv[(i)-bench] <= $#argv && $+commands[gobench.awk] )); then
+# 	exec /usr/bin/go $argv | gobench.awk
+# fi
 
 # Show flags as bold in go help, and pipe to $PAGER.
 if [[ ${1:-} = 'help' ]]; then

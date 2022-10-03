@@ -8,7 +8,7 @@ echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '
 set -euC
 
 if [ -z "${3:-}" ]; then
-	print >&2 'Usage: set-meta mediafile artist-name album-name'
+	echo >&2 'Usage: set-meta mediafile artist-name album-name'
 	exit 1
 fi
 

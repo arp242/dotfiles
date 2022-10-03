@@ -18,7 +18,7 @@ if [[ -z $1 ]]; then
 	exit 2
 fi
 
-for flacdir in "$@"; do
+for flacdir in $@; do
 	outdir="$flacdir/mp3"
 	mkdir -p "$outdir"
 
@@ -38,7 +38,5 @@ for flacdir in "$@"; do
 	done
 
 	# Copy additional files
-	for f in "$flacdir"/*~*.flac; do
-		cp "$f" "$outdir"
-	done
+	for f in "$flacdir"/*~*.flac; cp "$f" "$outdir"
 done

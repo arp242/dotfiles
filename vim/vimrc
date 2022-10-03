@@ -1,17 +1,18 @@
 vim9script
 set encoding=utf-8                     # Make sure UTF-8 is used.
 scriptencoding utf-8
-
 set nocompatible                       # Ensure it works with 'vim -u'
 syntax on                              # Switch syntax highlighting on.
 filetype plugin indent on              # Enable filetype detection.
-
-set termguicolors                      # Use true colors.
-&t_8f = "\<Esc>[38;2;%lu;%lu;%lum"     # Set correct escape codes to make termguicolors work in st.
-&t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-&t_SI = "\<Esc>[3 q"                   # Star Insert; set cursor to underline (1=block, 3=underline, 5=bar)
-&t_SR = &t_SI                          # Start Replace
-&t_EI = "\<Esc>[1 q"                   # End Insert (or Replace), set back to block cursor
+if $TERM =~ '256color'
+    set termguicolors                  # Use true colors.
+    &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" # Set correct escape codes to make termguicolors work in st.
+    &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    &t_SI = "\<Esc>[3 q"               # Start Insert; set cursor to underline (1=block, 3=underline, 5=bar).
+    &t_SR = &t_SI                      # Start Replace.
+    &t_EI = "\<Esc>[1 q"               # End Insert (or Replace), set back to block cursor.
+endif
+set background=light                   # Sometimes gets overridden or changed from the default by distros.
 silent! colorscheme default2           # Load my color scheme if it exists.
 set backspace=indent,eol,start         # Allow backspacing over everything.
 set history=500                        # Keep 500 lines of command line history.
@@ -24,12 +25,12 @@ set gdefault                           # Always use the /g flag with :s; add /g 
 set textwidth=80                       # Wrap at at 80 characters.
 set linebreak                          # Wrap at word.
 set showbreak=↪                        # Display at the start of line for wrapped lines.
+set noshowmode                         # Don't show mode in cmdline.
 set breakindent                        # When wrapping show next line on the same indent level.
 set breakindentopt=sbr,list:-1         # sbr  → Display showbreak before indent.
                                        # list → indent list if it matches formatlistpat
 set autoindent                         # Copy indent from current line when starting a new line.
 set copyindent                         # Copy indent for new lines when auto-indenting.
-#set preserveindent                     # Don't replace tabs/spaces with >> and <<.
 set shiftround                         # Round indent to multiple of shiftwidth when using < and >
 set backup                             # Keep backup file when writing.
 set backupext=.bak                     # Extension for backup files (modified in autocmd below).
@@ -42,7 +43,7 @@ set scrolloff=2                        # Minimum number of lines to keep above/b
 set wildmenu                           # Better tab completion at the command-line.
 set wildmode=longest:full              # Complete longest match, list other matches in wildmenu.
 set wildignorecase                     # Case is ignored when completing file names and directories.
-set wildignore=*.o,*.png,*.jpg,*.jpeg,*.webp,*.gif  # Ignore these files in completion.
+set wildignore+=*.o,*.png,*.jpg,*.jpeg,*.webp,*.gif  # Ignore these files in completion.
 set wildoptions=pum                    # Show pop-up menu.
 set wildcharm=<Tab>                    # Trigger wild mode from mappings/macros.
 set completeopt=menuone,noselect       # Insert mode completion:
@@ -59,7 +60,7 @@ set smarttab                           # Backspace at start of line remove shift
 set matchpairs+=<:>                    # Also match < & > with %.
 set switchbuf=useopen,usetab,newtab    # Use open tab (if any) when trying to jump to a quickfix error.
 set noexpandtab                        # Real men use real tabs…
-set tabstop=4                          # …which are always 4 spaces wide.
+set tabstop=4                          # …which are 4 spaces wide.
 set shiftwidth=0                       # Use tabstop value.
 set softtabstop=-1                     # Use shiftwidth value.
 set synmaxcol=500                      # Maximum column in which to search for syntax items.
@@ -70,7 +71,6 @@ set paragraphs=                        # Don't include nroff stuff.
 set tildeop                            # Use ~ as an operator to switch case.
 set clipboard=                         # Never automatically interface with system clipboard.
 set nofoldenable                       # Disable folds by default.
-set laststatus=2                       # Always show statusline with more than one window.
 set undofile                           # Save undo to file.
 set notitle                            # Don't update term title.
 set shortmess-=S                       # Show match count on n.
@@ -81,16 +81,7 @@ set virtualedit=block                  # Allow virtual editing in visual block m
 &ttyfast = $SSH_CLIENT == ''           # Assume the terminal is fast for smoother redrawing.
 set display=lastline,uhex              # lastline → Show as much of the last line as possible instead of @.
                                        # uhex     → Always show unprintable chars as <xx> instead of ^C.
-set updatecount=50                     # Write to swap every 50 characters; swap file is also written if
-                                       # nothing happens for 4 seconds (as set by the 'updatetime' setting).
-set foldcolumn=0                       # Don't show foldcolumn.
-set diffopt+=foldcolumn:0              # Don't reset foldcolumn for diff files.
-set diffopt=internal,filler,closeoff,indent-heuristic,algorithm:histogram
-                                       # filler            Show filler lines.
-                                       # internal          Use internal library.
-                                       # closeoff          Run :diffoff when closing the other split.
-                                       # indent-heuristic  Better detection of whitespace diffs.
-                                       # algorithm         Better algorithm
+set updatecount=50                     # Write to swap every 50 characters.
 set formatoptions+=ncroqlj             # n   Recognize numbered lists when formatting (see formatlistpat)
                                        # c   Wrap comments with textwidth
                                        # r   Insert comment char after enter
@@ -98,40 +89,155 @@ set formatoptions+=ncroqlj             # n   Recognize numbered lists when forma
                                        # q   Format comments with gq
                                        # l   Don't break lines when they were longer than textwidth to start with.
                                        # j   Remove comment character when joining lines with J.
-&formatlistpat = '\v^\s*%(\d+[:.\)\t ]|-|TODO:)\s+'      # Indent lines that start with '- ' and 'TODO: ' too.
-&fillchars = 'vert: ,diff: ,fold: ,foldsep:│,foldopen:┌' # Don't show any fill characters for vsplit
-                                                         # or removed diff lines; colour is enough.
-
-set statusline=
-&statusline ..= '%<%f'                 # Filename, truncate right
-&statusline ..= ' %h%m%r'              # [Help] [modified] [read-only]
-&statusline ..= '%{len(getqflist()) > 0 ? "[QE]" : ""}'
-&statusline ..= '%{len(getloclist(0)) > 0 ? "[LE]" : ""}'
-
-&statusline ..= '%='                   # Right-align from here on.
-&statusline ..= ' [line %l of %L]'     # current line, total lines.
-&statusline ..= ' [col %v]'            # column.
-&statusline ..= ' [0x%B]'              # Codepoint of character under cursor.
+&diffopt = [
+    'internal',                        # Show filler lines.
+    'filler',                          # Use internal library rather than external shell tool.
+    'closeoff',                        # Run :diffoff when closing the other split.
+    'indent-heuristic',                # Better detection of whitespace diffs.
+    'algorithm:histogram',             # Better algorithm
+    'foldcolumn:0'                     # Don't reset foldcolumn for diff files.
+]->join(',')
+&formatlistpat = '\v^\s*%(\d+[:.\)\t ]|-|TODO:)\s+'  # Indent lines that start with '- ' and 'TODO: ' too.
+&fillchars = [
+    'vert: ',                          # Don't show fill for vsplit or removed diff lines; colour is enough.
+    'diff: ',
+    'fold: ',
+    'foldopen:┌',                      # text in foldcolumn
+    'foldsep:│',
+    'stl:━',                           # Bold line for active statusline
+    'stlnc:╌',                         # And dashed line for inactive
+]->join(',')
 
 # Set/create directory to keep backup, swap, undo files.
-set backupdir=$HOME/.cache/vim/backup | call mkdir(&backupdir, 'p', 0o700)
-set directory=$HOME/.cache/vim/swap   | call mkdir(&directory, 'p', 0o700)
-set undodir=$HOME/.cache/vim/undo     | call mkdir(&undodir,   'p', 0o700)
+set backupdir=~/.cache/vim/backup// |call mkdir(&backupdir, 'p', 0o700)
+set directory=~/.cache/vim/swap     |call mkdir(&directory, 'p', 0o700)
+set undodir=~/.cache/vim/undo       |call mkdir(&undodir,   'p', 0o700)
 
 # Set viminfo file location unless explicitly turned off.
 if &viminfofile != 'NONE' | set viminfofile=$HOME/.cache/vim/viminfo | endif
+
+set laststatus=0                       # Never show statusline
+&statusline = ' '                      # Blank statusline
+set showtabline=2                      # Always show tabline
+
+# Use the tabline as 'statusline' by putting the cursor position in there.
+def! g:Tabline(): string
+	# Get list of all tabs, together with the flags and name we want to display.
+	var tabs     = []
+	var tabs_len = 0
+	var sel_len  = 0
+	var sel_idx  = 0
+	var tabinfo  = gettabinfo()
+
+    for i in range(0, tabinfo->len() - 1)
+    	var t = tabinfo[i]
+
+    	# Get focused window.
+    	var focus = tabpagewinnr(t.tabnr)->win_getid(t.tabnr)
+		var w     = {}
+    	for wid in t.windows
+    		if wid == focus
+				w = getwininfo(wid)[0]
+    			break
+			endif
+		endfor
+
+		var sel     = bufwinid(w.bufnr) == w.winid
+        var is_help = getbufvar(w.bufnr, '&ft') == 'help'
+        var is_dir  = getbufvar(w.bufnr, '&ft') == 'dirvish'
+
+        var n = bufname(w.bufnr)->fnamemodify(':.') ?? '[No Name]'
+        var f = len(t.windows) > 1 ? len(t.windows)->string() : ''
+		if is_help
+			f ..= ':h'
+			n = fnamemodify(n, ':t')
+		elseif getbufvar(w.bufnr, '&modified')
+			f ..= '+'
+        elseif !getbufvar(w.bufnr, '&modifiable') && !is_help
+			f ..= '-'
+        endif
+
+		if n =~ $HOME  # Always using :~ means 'vi file' would become ~/file
+			n = fnamemodify(n, ':~')
+		endif
+
+		# Show only first character of every directory entry.
+		var slash = stridx(n, '/')
+		#if slash > -1 && slash != len(n) - 1
+		if !sel && slash > -1 && slash != len(n) - 1
+			var l = n->split('/')
+			n = l->map((j, v) => j == len(l) - 1 ? v : v[: (v[0] == '.' ? 1 : 0)])->join('/')
+			if is_dir  # Gets lost otherwise
+				n ..= '/'
+			endif
+		endif
+
+		tabs_len += len(n)
+		if sel
+			sel_len = len(n)
+			sel_idx = i
+		endif
+        add(tabs, {name: n, fname: n, flags: f, sel: sel})
+    endfor
+
+	# Create string for the right-hand side.
+	var right = line('.') .. '/' .. line('$') .. ' ' .. virtcol('.')
+
+	var [tr_left, tr_right] = ['', '']
+	# TODO: do this better; we want to make sure the active tab is always "in
+	#       view", and show indicators of how many more there are. e.g.
+	#           <4  file1  file2  file3  1>
+	#       Different from how standard tabline works, but makes more sense IMO.
+    if tabs_len > &columns - len(right)
+    	# tr_left  = '%#TabLineMore#…' .. (sel_idx) .. '%#TabLine#'
+    	# tr_right = '%#TabLineMore#' .. (len(tabs) - sel_idx - 1) .. '…%#TabLine#'
+    	# tabs = tabs[sel_idx - 3 : sel_idx + 3]
+
+    	# var trim_by = (&columns - 24 - sel_len) / len(tabs) - 1
+    	# for i in range(0, len(tabs) - 1)
+    	# 	if tabs[i].sel
+    	# 		continue
+		# 	endif
+		# 	var l = len(tabs[i].name) - trim_by
+		# 	l = [l, len(tabs[i].name) - 4]->min()
+
+		# 	tabs[i].name = tabs[i].name[l :]
+		# endfor
+	endif
+
+	# Create string for statusline
+	var tabstr = tr_left
+	for t in tabs
+		if t.sel
+			tabstr ..= '%#TabLineSel#'
+		endif
+
+		if t.flags != ''
+			tabstr ..= ' ' .. t.flags
+		endif
+
+		tabstr ..= ' ' .. t.name .. ' '
+		if t.sel
+			tabstr ..= '%#TabLine#'
+		endif
+	endfor
+	tabstr ..= tr_right
+
+	return '%#TabLine#' .. tabstr .. '%#TablineFill#%=' .. right
+enddef
+set tabline=%!Tabline()
+
+# Redraw tabline when the cursor moves.
+augroup my-tabline
+	au!
+	au CursorMoved,CursorMovedI * :redrawtabline
+augroup end
+
 
 ### Autocmds
 ############
 augroup my-autocmds
     au!
-
-    # Add full path as backup extension, so files with the same name don't
-    # override unrelated files:
-    #
-    #   README.markdown-%home%martin%code%uni%README%markdown
-    #   README.markdown-%home%martin%code%goatcounter%README%markdown
-    au BufWritePre * &backupext = '-' .. substitute(expand('<afile>:p'), '[^a-zA-Z0-9_-]', '%', 'g')
 
     # Don't ask to reload buffers changed on disk (but still get error on :w)
     au FileChangedShell * v:fcs_choice = 0
@@ -147,14 +253,7 @@ augroup my-autocmds
     au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 
     # Filetype overrides.
-    au Filetype awk  {
-        setl et
-        # Don't need to highlight so much.
-        # TODO: this breaks if I put the "hi link" after "syn clear"
-        # hi link awkFieldVars NONE
-        # hi link awkVariables Function
-        # syn clear awkComma awkSemicolon awkExpression awkOperator awkSpecialPrintf awkPatterns awkBoolLogic awkCharClass awkBrktRegExp awkBrackets awkRegExp awkSpecialCharacter awkArrayElement awkArray
-    }
+    au Filetype awk         setl et
     au Filetype css         setl isk+=-
     au Filetype html {
                             setl textwidth=100 indentexpr=
@@ -228,54 +327,27 @@ command -range UnicodeName {
     @a = save
 }
 
-# Stay on top of things!
-# TODO: maybe also hook in to cursormoved?
-command KeepTop {
-    if execute('nmap <buffer> j') =~# 'jzt$'
-        &scrolloff = b:scrolloff
-        unlet b:scrolloff
-        nunmap <buffer> j
-        nunmap <buffer> <Down>
-        nunmap <buffer> n
-        nunmap <buffer> N
-        echo 'Unmapped'
-    else
-        b:scrolloff = &scrolloff
-        set scrolloff=0
-        nnoremap <buffer> j jzt
-        nnoremap <buffer> n nzt
-        nnoremap <buffer> N Nzt
-        nnoremap <buffer> <Down> jzt
-        exe 'normal! zt'
-        echo 'Keeping on top of things!'
-    endif
-}
-
-# Sum up all numbers in a selection.
-#
-# This removes all non-numbers, so that it works when summing:
-#
-#  Personal plans        € 44
-#  Personal plus plans   € 20
-#  Stripe costs         -€ 14
-#
-# It will just add 44, 20, and -14 (resulting in 50).
-# TODO: :%Sum doesn't work quite right?
+# Sum up all numbers in a selection. This removes all non-numbers, so that it
+# works when summing lines that also contain text, as a "poor man's
+# spreadsheet". Use (block) visual mode to only sum one "column".
 command -range Sum {
-    if <count> == -1
-        echohl ErrorMsg | echom 'Sum: need selection' | echohl None
-    else
+    var lines = getline(<line1>, <line2>)->join(' ')
+
+    # Get visual selection if last visual mode was block. This is far from
+    # ideal, since "select some text, escape, run :%Sum" will give the wrong
+    # results, but as far as I can find it's the best we can do.
+    if visualmode() == "<C-v>"
         var save = @a
         exe 'silent normal! gv"ay'
-        var lines = @a
+        lines = @a->substitute('\n', ' ', 'g')
         @a = save
-
-        var total = 0.0
-        for line in substitute(lines, '[^0-9.\n-]', '', 'g')->split('\n')
-            total += line->str2float()
-        endfor
-        echom printf('Total: %f', total)
     endif
+
+    var t = 0.0
+    for n in lines->substitute('[^0-9 \t.-]', '', 'g')->split('\s\+')
+        t += n->str2float()
+    endfor
+    echom printf('Total: %f', t)->trim('0', 2)->trim('.', 2)
 }
 
 # Load the output of a command in the current buffer.
@@ -287,30 +359,30 @@ command -complete=command -nargs=+ Load call(
 ############
 
 # Reload config.
-nnoremap <Leader>r :source $MYVIMRC<CR>
+nnoremap <silent> <Leader>r :source $MYVIMRC<CR>:doautocmd Filetype<CR>:echo 'reloaded ' .. $MYVIMRC<CR>
 
 # Some useful-ish toggles.
-nnoremap <F9>  :set shiftround!<CR>:set shiftround?<CR>
-nnoremap <F10> :set list!<CR>:set list?<CR>
-nnoremap <F11> :set cursorcolumn!<CR>:set cursorcolumn?<CR>
-nnoremap <F12> :set cursorline!<CR>:set cursorline?<CR>
-inoremap <F9>  <Cmd>:set shiftround!<CR>
-inoremap <F10> <Cmd>:set list!<CR>
-inoremap <F11> <Cmd>:set cursorcolumn!<CR>
-inoremap <F12> <Cmd>:set cursorline!<CR>
-
+nnoremap <F9>       :setl shiftround!<CR>:setl shiftround?<CR>
+nnoremap <F10>      :setl list!<CR>:setl list?<CR>
+nnoremap <F11>      :setl cursorcolumn!<CR>:setl cursorcolumn?<CR>
+nnoremap <F12>      :setl cursorline!<CR>:setl cursorline?<CR>
+inoremap <F9>  <Cmd>:setl shiftround!<CR>
+inoremap <F10> <Cmd>:setl list!<CR>
+inoremap <F11> <Cmd>:setl cursorcolumn!<CR>
+inoremap <F12> <Cmd>:setl cursorline!<CR>
 
 # Switch spell check languages
-nnoremap <Leader>ss :set spell!<CR>:set spell?<CR>
-nnoremap <Leader>sn :set spelllang=nl<CR>
-nnoremap <Leader>se :set spelllang=en_gb<CR>
+nnoremap <Leader>ss :setl spell!<CR>:setl spell?<CR>
+nnoremap <Leader>sn :setl spelllang=nl<CR>
+nnoremap <Leader>se :setl spelllang=en_gb<CR>
 
 # Use <C-l> to clear some highlighting, and make sure it works from insert mode.
 nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR><C-l>
 inoremap <C-l> <Cmd>:exe "normal \<C-l>"<CR>
+# Sync syntax too.
 nnoremap <silent> <Leader>l :syntax sync fromstart<CR><C-l>
 
-# We don't need no stinkin' ex mode; use it for formatting.
+# We don't need ex mode; use it for formatting.
 noremap Q gq
 
 # Bloody annoying.
@@ -331,19 +403,19 @@ nnoremap <expr> n 'Nn'[v:searchforward]
 nnoremap <expr> N 'nN'[v:searchforward]
 
 # Don't move cursor on * and #
-nnoremap <silent> * :let @/ = '\<' .. expand('<cword>') ..  '\>' \| :call histadd('/', @/) \| :set hlsearch<CR>
+nnoremap <silent> * :let @/ = '\<'..expand('<cword>')..'\>' \| :call histadd('/', @/) \| :set hlsearch<CR>
 nmap # *
 
 # Use visual movement rather than line movement.
-nnoremap k gk
-nnoremap j gj
+nnoremap k      gk
+nnoremap j      gj
 nnoremap <Up>   gk
 nnoremap <Down> gj
 inoremap <expr> <Up>   pumvisible() ? "\<C-p>"  : "\<C-o>gk"
 inoremap <expr> <Down> pumvisible() ? "\<C-n>"  : "\<C-o>gj"
 
 # Suspend also works from insert.
-#inoremap <C-z> <Cmd><C-z>
+inoremap <C-z> <Esc><C-z>
 
 # Doc on <C-k> in insert.
 inoremap <C-k> <Cmd>:silent! normal! K<CR>
@@ -356,31 +428,19 @@ inoremap        <C-A> <C-O>^
 cnoremap        <C-A> <Home>
 inoremap <expr> <C-E> col('.') > strlen(getline('.')) \|\| pumvisible() ? "\<C-E>" : "\<End>"
 
-# Numpad
-nnoremap <Esc>Ox <Up>
-nnoremap <Esc>Ov <Right>
-nnoremap <Esc>Or <Down>
-nnoremap <Esc>Ot <Left>
-
 # Use a reasonable completion.
 def <SID>guessType(): string
-    # TODO: Show original word somewhere.
-    # TODO: Make completion start even if word is after badly spelled word.
-    if &spell && spellbadword()[1] != '' | return "\<C-x>s"
-    elseif &completefunc != ''           | return "\<C-x>\<C-u>"
-    elseif &omnifunc != ''               | return "\<C-x>\<C-o>"
-    else                                 | return "\<C-x>\<C-n>"
+    if &completefunc != '' | return "\<C-x>\<C-u>"
+    elseif &omnifunc != '' | return "\<C-x>\<C-o>"
+    else                   | return "\<C-x>\<C-n>"
     endif
 enddef
-inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  : <SID>guessType()
-nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' . <SID>guessType()
+inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  :        <SID>guessType()
+nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' .. <SID>guessType()
 
 # Always insert spaces after non-whitespace, unless colorcolumn is enabled, in
 # which case cc_align to align with that.
 inoremap <expr> <Tab> &cc == '' ? (getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)) : cc_align#tab()
-# https://vi.stackexchange.com/a/37138/51
-#inoremap <expr> <Tab> getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', shiftwidth())
-#inoremap <expr> <Tab> getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)
 
 # Make <Tab> go to the next entry when using the popupmenu from commandline
 # completion.
@@ -402,7 +462,7 @@ nnoremap <silent> OO :silent wincmd o<CR>
 nnoremap TT :tabe<Space>
 nnoremap HH :tab h<Space>
 
-# Open directory in new tab.
+# Open current directory in new tab.
 nnoremap <Leader>d :tabe %:h<CR>
 
 # Don't do anything on space in insert mode; it's almost always an accident.
@@ -419,15 +479,6 @@ nnoremap <F1>         gT
 nnoremap <F2>         gt
 inoremap <F1>         <Esc>gT
 inoremap <F2>         <Esc>gt
-# Control+F1 and F2
-nnoremap <Esc>[25~ gT :tabfirst<CR>
-nnoremap <Esc>[26~ gt :tablast<CR>
-nnoremap <Esc>[1;2P   :tabfirst<CR>
-nnoremap <Esc>[1;2Q   :tablast<CR>
-inoremap <Esc>[25~ gT <Esc>:tabfirst<CR>
-inoremap <Esc>[26~ gt <Esc>:tablast<CR>
-inoremap <Esc>[1;2P   <Esc>:tabfirst<CR>
-inoremap <Esc>[1;2Q   <Esc>:tablast<CR>
 
 # I often mistype this :-/
 cabbr Set set
@@ -485,13 +536,11 @@ def R(file: string): list<string>
 enddef
 g:lazy_snippets = {
     go: {
-        err:  "if err != nil {\n\treturn fmt.Errorf(\"\b: %w\", err)\n}",
-        errt: "if err != nil {\n\tt.Fatal(err)\n}",
-        tt:   R('/test.go'),
-        tc:   R('/ctest.go'),
-        dp:   "fmt.Println(zdb.ApplyPlaceholders(\bquery, args...))",
-        dd:   "zdb.Dump(ctx, os.Stdout, \"\b\")",
-        bb:   "func Benchmark\b(b *testing.B){\n\tb.ReportAllocs()\n\tfor n := 0; n < b.N; n++ {\n\t}\n}\n"
+        err-simple: "if err != nil {\n\treturn err\n}",
+        err-wrap:   "if err != nil {\n\treturn fmt.Errorf(\"\b: %w\", err)\n}",
+        err-test:   "if have != want {\n\tt.Errorf(\"\\nhave: %s\\nwant: %s\", have, want)\n}",
+        test:       R('/test.go'),
+        bench:      R('/bench.go'),
     },
     html: {
         doc: R('/base.html'),
@@ -503,15 +552,19 @@ g:lazy_snippets = {
 g:dirvish_relative_paths = 1       # Make paths in the Dirvish buffer relative to getcwd().
 augroup my-dirvish
     au!
-    au Filetype dirvish
-        #\ Remap as I often use q to close the Vim pager.
-        | silent! nunmap <buffer> q
-        | nmap <buffer> Q <Plug>(dirvish_quit)
-        #\ Add tab mappings
-        | nnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
-        | xnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
-        #\ Launch shell in cwd
-        | nnoremap <silent> <buffer> <C-t> :lcd %<CR>:silent exec '!' .. (has('gui_running') ? 'st -e ' : '') .. $SHELL<CR><C-l>
+    au Filetype dirvish {
+        # Q instead of gq is nicer.
+        nmap <buffer> Q <Plug>(dirvish_quit)
+        # Add tab mappings
+        nnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
+        xnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
+        # Make new directory
+        nnoremap <buffer> <silent> <nowait> M :let _d=input('mkdir ', '', 'dir')<Bar>:call mkdir(_d, 'p')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
+        # Make new file
+        nnoremap <buffer> <silent> <nowait> C :let _d=input('edit ', '', 'dir')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
+        # Launch shell in cwd
+        nnoremap <buffer> <silent> ! :lcd %<CR>:silent exec '!' .. (has('gui_running') ? 'st -e ' : '') .. $SHELL<CR><C-l>
+    }
 augroup end
 
 ### gopher.vim
@@ -519,12 +572,13 @@ g:gopher_debug     = ['commands', 'setup']
 g:gopher_highlight = ['string-spell', 'string-fmt']
 augroup my-gopher
     au!
-    au FileType go
-                #\ Make ! stand out a bit more in '!foo'.
-                | syn match goBang /!\ze[^=]/
-                | hi goBang gui=bold cterm=bold
-                #\ Compile without cgo unless explicitly enabled.
-                | if $CGO_ENABLED == '' | $CGO_ENABLED = 0 | endif
+    au FileType go {
+        # Make ! stand out a bit more in '!foo'.
+        syn match goBang /!\ze[^=]/
+        hi goBang gui=bold cterm=bold
+        # Compile without cgo unless explicitly enabled.
+        if $CGO_ENABLED == '' | $CGO_ENABLED = 0 | endif
+    }
 
     # Quick replace for go.mod
     au FileType gomod comm! -nargs=1 Replace append(4, printf('replace zgo.at/%s => ../../Golib/%s', <f-args>, <f-args>))
@@ -547,16 +601,16 @@ augroup end
 ### vim-qf
 g:qf_auto_open_quickfix = 1        # Automatically open qfix and loclist.
 g:qf_auto_open_loclist  = 1
-# let g:qf_auto_quit = 0  # Breaks with tabs.
+g:qf_auto_quit          = 0        # Breaks with tabs.
 augroup my-qf
     au!
     # Close list when entering tabs and they're empty.
     au TabEnter * {
         if len(getqflist()) == 0
             cclose
-        else
-            qf#OpenQuickfix()
-            wincmd w
+        # else
+        #     qf#OpenQuickfix()
+        #     wincmd w
         endif
     }
 augroup end
@@ -584,8 +638,8 @@ g:lsc_server_commands = {
     rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
     zig:          {command: 'zls',           log_level: -1, suppress_stderr: v:true},
 }
-g:lsc_enable_autocomplete  = v:false      # Don't complete when typing.
-g:lsc_enable_diagnostics   = v:false       # Don't lint code.
+g:lsc_enable_autocomplete  = v:false     # Don't complete when typing.
+g:lsc_enable_diagnostics   = v:false     # Don't lint code.
 g:lsc_reference_highlights = v:false     # Don't highlight references.
 #g:lsc_enable_incremental_sync = v:false  # Don't constantly send diffs to server.
 #g:lsc_preview_split_direction = 'below'  # Show preview at bottom, rather than top.
@@ -614,55 +668,6 @@ augroup end
 
 ### xdg_open.vim
 g:xdg_open_match = '&filetype == "dirvish" ? getline(".") : expand("<cWORD>")'
-
-
-### Random experiments and stuff
-################################
-
-augroup alda
-    au FileType alda setl makeprg=alda\ play\ --file\ %
-augroup end
-
-g:cc_align_no_map = 1
-
-command! Slides {
-    set showtabline=2 laststatus=0 cmdheight=1 number scrolloff=0
-    &tabline = ' '
-    hi LineNr      guifg=#ffffff
-    hi EndOfBuffer guifg=#ffffff
-    hi TabLineFill gui=NONE guibg=#ffffff term=NONE cterm=NONE
-
-    # TODO: hide cursor better
-    set virtualedit=all
-    call cursor(1, winwidth(1))
-    # Otherwise the cursor position won't update(?)
-    normal! jk
-
-    nnoremap j jzt
-    nnoremap n nzt
-    nnoremap N Nzt
-    # TODO: these down't actually work?
-    nnoremap <Down> jzt
-    nnoremap <C-d>  jz<C-d>
-    nnoremap <C-u>  jz<C-u>
-    exe 'normal! zt'
-
-    # TODO: gives "no mapping found"?
-    #nnoremap <Space> gt
-    nnoremap <Right> gt
-    nnoremap <Left>  gT
-}
-
-# Like :registers, but allow filtering (":Registers foo").
-const regs = '"0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:.%#=*+~/'->split('\zs')
-command -nargs=* Registers {
-    var f = regs->copy()->filter((_, v) => getreg(v) =~ <q-args>)
-    if len(f) == 0
-        echo printf('no registers contain "%s"', <q-args>)
-    else
-        exe 'registers' f->join()
-    endif
-}
 
 defcompile  # Compile functions so we get errors on startup.
 # vim: et

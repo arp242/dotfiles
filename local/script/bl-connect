@@ -19,9 +19,7 @@ connect() {
 	bluetoothctl <<<"connect $mac"
 }
 
-IFS="
-"
-devs=($(bluetoothctl <<<devices | grep '^Device'))
+IFS=$'\n' devs=($(<<<devices bluetoothctl | grep '^Device'))
 if [[ -n ${1:-} ]]; then
 	for dev in $devs; do
 		if print "$dev" | grep -iq "$1$"; then
