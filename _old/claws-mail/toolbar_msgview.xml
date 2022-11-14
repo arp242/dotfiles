@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<toolbar>
-	<item file="mail_reply" text="Reply" action="A_REPLY_MESSAGE"/>
-	<item file="mail_reply_to_list" text="List" action="A_REPLY_ML"/>
-	<item file="mail_reply_to_all" text="All" action="A_REPLY_ALL"/>
-	<item file="mail_forward" text="Forward" action="A_FORWARD"/>
-	<item file="trash_btn" text="Trash" action="A_TRASH"/>
-	<item file="close" text="Close" action="A_CLOSE"/>
-</toolbar>

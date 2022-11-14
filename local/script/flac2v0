@@ -1,11 +1,11 @@
 #!/bin/zsh
 #
-# Convert all FLAC files in a directory to MP3 V0. Requires the "flac" and
-# "lame" tools.
+# Convert all FLAC files in a directory to MP3 V0.
 #
-# Usage: flag2v0 [flac-dir] [flac-dir]
+# Requires the "flac" and "lame" tools; MP3 files will be placed in a mp3
+# subdirectory. Usage:
 #
-# MP3 files will be placed in a mp3 subdirectory.
+#  flac2v0 [flac-dir] [flac-dir]
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 setopt err_exit no_unset no_clobber pipefail
 

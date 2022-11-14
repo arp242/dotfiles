@@ -1,4 +1,6 @@
 #!/bin/zsh
+#
+# Manage Wi-Fi connections.
 [ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1
 setopt err_exit no_unset no_clobber pipefail
 

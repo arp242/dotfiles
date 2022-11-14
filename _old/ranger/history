@@ -1,8 +1,0 @@
-search ticket
-rename _get_alerts.html
-rename _get_inboxes.html
-rename _get_limits.html
-rename _get_owner.html
-rename _get_settings.html
-rename _get_sites.html
-rename _get_smartinboxes.html

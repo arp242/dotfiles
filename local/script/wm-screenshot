@@ -1,6 +1,8 @@
 #!/bin/zsh
 #
-# Take a screenshot. Depends on "cap" from https://github.com/arp242/cap
+# Take a screenshot.
+#
+# Depends on "cap" from https://github.com/arp242/cap
 #
 # "copy" uses xclip, and "open" sxiv.
 #

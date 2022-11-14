@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+#
+# Convert YAML to JSON.
+#
+# Use Ruby as that has yaml in the stdlib.
+
 require 'yaml'
 require 'json'
 puts JSON.pretty_generate(YAML.load_file(ARGV[0]))

@@ -2,21 +2,7 @@
 # encoding:utf-8
 #
 
-import glob
-import hashlib
-import os
-import pprint
-import re
-import shutil
-import subprocess
-import sys
-import tempfile
-import time
-
-
-if sys.version_info[0] < 3:
-    print('Needs Python 3')
-    sys.exit(2)
+import glob, hashlib, os, pprint, re, shutil, subprocess, sys, tempfile, time
 
 if sys.argv[0] in ['', '-']:
     sys.argv[0] = 'stdin'

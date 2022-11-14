@@ -47,7 +47,6 @@ export LESSKEY=~/.config/less/less
 export INPUTRC=~/.config/inputrc
 export SQLITE_HISTORY=~/.cache/sqlite_history
 export PSQLRC=~/.config/psqlrc
-export PSQL_HISTORY=~/.cache/psql_history
 export BUNDLE_USER_HOME=~/.cache/bundle
 export GNUPGHOME=~/.config/gnupg
 export CRAWL_DIR=~/.config/crawl
@@ -64,7 +63,7 @@ export DOTNET_ROOT=~/.dotnet/root     # .NET root
 export ANDROID_SDK_ROOT=~/android/sdk # Android tools
 export PLAN9=/usr/lib/plan9           # Plan 9 from userspace
 export GOBIN=~/.local/gobin           # Go binaries ('go install').
-export GOPATH=/tmp/go                 # GOPATH mostly stores cache stuff these days.
+export GOPATH=~/.cache/go             # GOPATH mostly stores cache stuff these days.
 export GOCACHE=$GOPATH/cache          # Build and test cache.
 export GOTMPDIR=$GOPATH/tmp           # tmp files during compile
 export GOFLAGS=-modcacherw            # Just leave mod cache writable.
@@ -83,28 +82,23 @@ export LS_COLORS="no=00:fi=00:di=34:ln=01;31:pi=34;43:so=31;43:bd=30;43:cd=30;43
 export GREP_COLOR=31                                           # Older GNU grep; BSD grep
 export GREP_COLORS="ms=31:mc=31:sl=0:cx=0:fn=0:ln=0:bn=0:se=0" # Newer GNU grep.
 export RIPGREP_CONFIG_PATH=$HOME/.config/ripgrep
-export GH_NO_UPDATE_NOTIFIER=y     # Annoying update check.
-export BLOCKSIZE=K                 # Output sizes in K instead of 512b blocks.
-export MANWIDTH=80                 # Only needed with GNU stuff; use mandoc for better man.
-export GTK_IM_MODULE=xim           # Make compose key work.
+export GH_NO_UPDATE_NOTIFIER=y        # Annoying update check.
+export BLOCKSIZE=K                    # Output sizes in K instead of 512b blocks.
+export MANWIDTH=80                    # Only needed with GNU stuff; use mandoc for better man.
+export GTK_IM_MODULE=xim              # Make compose key work.
 export QT_IM_MODULE=xim
-export GTK_OVERLAY_SCROLLING=0     # Disable annoying "overlay scrollbar".
-export SYSTEMD_PAGER=              # Don't output to a pager.
-
-# https://wiki.archlinux.org/title/Java
+export GTK_OVERLAY_SCROLLING=0        # Disable annoying "overlay scrollbar".
+export SYSTEMD_PAGER=                 # Don't output to a pager.
 export _JAVA_AWT_WM_NONREPARENTING=1  # This magic fixes Java applications.
-#export _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on"
-#export _JAVA_OPTIONS "-Dswing.aatext=true -Dawt.useSystemAAFontSettings=on -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 
 if [[ -d '/etc/service' ]]; then   # Set user service dir for runit.
 	export SVDIR=/etc/service
 elif [[ -d '/var/service' ]]; then
 	export SVDIR=/var/service
 fi
-export XDG_DESKTOP_DIR=$HOME       # Stop Firefox from creating ~/Desktop and ~/Downloads
-export XDG_DOWNLOAD_DIR=$HOME
-export XDG_RUNTIME_DIR=/tmp/xdg-runtime-$USER  # Needed for some programs.
+export XDG_RUNTIME_DIR=/tmp/run-$(id -un)  # Needed for some programs.
 mkdir -m0700 -p "$XDG_RUNTIME_DIR"
+export TMUX_TMPDIR=$XDG_RUNTIME_DIR
 
 # Run commands from this file on interactive session
 [[ -f "$HOME/.local/python-startup" ]] && export PYTHONSTARTUP=~/.local/python-startup
@@ -128,9 +122,11 @@ hash -d d=~/code/arp242.net/_drafts
 hash -d p=~/code/arp242.net/_posts
 hash -d vim=/usr/share/vim/vim90
 hash -d go=$(print -n /usr/go-*(N[-1]))
+hash -d epp=~c/epp-server
 
 setopt no_flow_control       # Disable ^S, ^Q, ^\
 stty -ixon quit undef        # For Vim etc; above is just for zsh.
+stty werase undef            # Needed to make C-w do something sane in readlone.
 setopt notify                # Report status of bg jobs immediately
 setopt no_clobber            # Don't clobber existing files with > ....
 setopt clobber_empty         # ... but do allow overwriting empty files.
@@ -188,7 +184,6 @@ set_rprompt() {
 	[[ -n $bat ]] && bat=" ${(j!:!)bat}"
 
 	print "${host}%T${bat}"    # %T prints the time
-
 }
 RPROMPT=$'$(set_rprompt)'
 
@@ -342,8 +337,9 @@ alias sqlite=sqlite3
 alias ag='rg'                  # I'm so used to typing "ag".
 alias vim="vim -p --ttyfail"   # Open in tabs, and refuse to open if output is not a terminal.
 alias vi="vim"
-alias batchy='vim +":Batchy echo" +:S +":setl nowrap"'
 alias scc='scc --min-gen --no-complexity --no-cocomo --no-size'
+alias batchy='vim +":Batchy echo" +:S +":setl nowrap"'
+runbuf() { vim +":Runbuf $@" }
 
 unfunction have      # Unset helpers.
 unfunction prepath
@@ -372,7 +368,7 @@ alias pharod='noglob pharod'
 
 autoload -U zcalc                     # Get quick results for "zc 6 * 6", or just use "zc" to get zcalc
 alias zc >/dev/null && unalias zc
-zc() { if (( $# )); then zcalc -e ${(j: :)@}; else zcalc; fi }
+zc() { if (( $# )); then zcalc -e ${(j: :)argv}; else zcalc; fi }
 alias zc='noglob zc'
 
 alias -g VV=' |& vim +S -'            # Global aliases to pipe output.
@@ -389,7 +385,7 @@ alias -g CC=' |& xclip -in'           # TODO: ideally I'd like to copy to both, 
 diffdir() { vim ${@[3,-1]} +":Diffdir $1 $2" }
 
 # So I can map ^Z in mpv
-mpv() { stty susp ''; =mpv $@; stty susp '^Z'; }
+mpv() { stty susp '' &>/dev/null; =mpv $@; stty susp '^Z' &>/dev/null; }
 
 # "ag edit" and "grep edit".
 age() {
@@ -411,7 +407,7 @@ grepe() {
 
 # Restart ssh-agent after restarting WM or x11 (may be old env var in tmux).
 ssh-reagent() {
-	export SSH_AUTH_SOCK=$(print /tmp/ssh-*/agent.*)
+	export SSH_AUTH_SOCK=$(print $XDG_RUNTIME_DIR/ssh-*/agent.*)
 	ssh-add -l >/dev/null || ssh-add
 }
 
@@ -475,7 +471,9 @@ compdef _sman sman
 
 # Find outdated modules.
 go-mod-update() {
-	go list -u -m $(go list -m -f '{{.Indirect}} {{.}}' all | awk '/^false/ {print $2}') | grep '\['
+	go list -u -m -mod=readonly \
+		$(go list -m -f '{{.Indirect}} {{.}}' -mod=readonly all |
+			awk '/^false/ {print $2}') | grep '\['
 }
 
 # - Automatically set PGDATABASE to the first path part that matches a database.
@@ -492,7 +490,7 @@ psql() {
 			fi
 		done
 	fi
-	[[ -n $db ]] && print >&2 "Using database $db"
+	#db=${db:-goatcounter}
 	LESS=S$LESS PGDATABASE=$db =psql $@
 }
 
@@ -522,8 +520,3 @@ compdef _up up
 # Easier to type than "up"; "ww" doesn't stand for anything, other than being
 # easy to type and not being a common command already.
 alias ww=up
-
-_uni() {
-	# _arguments "1: :{_describe 'dir' d}"
-}
-compdef _uni uni

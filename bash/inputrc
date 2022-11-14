@@ -23,6 +23,15 @@ set enable-keypad off
 # C-o is C-p
 C-O: history-search-backward
 
+# Make C-w actually kill a "word", rather than until the previous whitespace.
+# NOTE: needs "stty werase undef", otherwise readline will say "fuck you and
+#       your keybinding I will silently ignore them and do whatever made sense
+#       in 1987 hahah lol kthxfuckyoubye".
+# TODO: ideally I'd also like to add - and _ to the word characters, like in
+#       zsh, but I don't know if that's possible; probably too modern of a
+#       thing for the GNU folks.
+C-w: backward-kill-word
+
 # Home
 "\e[H": beginning-of-line
 "\e[1~": beginning-of-line
@@ -31,6 +40,6 @@ C-O: history-search-backward
 "\e[F": end-of-line
 "\e[4~": end-of-line
 
-# Page Up, Page Down
+# Unbind Page Up, Page Down
 "\e[5~":
 "\e[6~":

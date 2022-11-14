@@ -1,9 +1,9 @@
 #!/bin/sh
 #
-# List a set of options in dmenu from the first argument instead of stdin. This
-# avoids having to create lots of wrapper scripts and/or dealing with stdin.
+# List a set of options in dmenu from the first argument instead of stdin.
 #
-# Usage:
+# This avoids having to create lots of wrapper scripts and/or dealing with
+# stdin. Usage:
 #
 #   dmenu-list "item one\nitem two" <any other dmenu flags>
 #

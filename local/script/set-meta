@@ -1,9 +1,12 @@
 #!/bin/sh
 #
-# Set tags for an audio file. Useful after downloading video/albums from YouTube
-# to copy to phone etc.
+# Set tags for an audio file.
 #
-# Usage: set-meta mediafile artist-name album-name
+# Useful after downloading video/albums from YouTube to copy to phone etc.
+#
+# Usage:
+#
+#   set-meta mediafile artist-name album-name
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 set -euC
 

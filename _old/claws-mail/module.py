@@ -1,3 +1,0 @@
-dirs = {
-	'~/.claws-mail': '.',
-}

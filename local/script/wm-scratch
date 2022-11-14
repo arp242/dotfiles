@@ -1,12 +1,21 @@
 #!/bin/sh
 #
-# Open a new terminal on first innovation, and show/hide it on subsequent
-# invocations. Useful for a "scratch" terminal to quickly write down some things
-# or whatnot.
+# Toggle show/hide for a window.
+#
+# Without arguments it will open a new terminal on first innovation, and
+# show/hide it on subsequent invocations. Useful for a "scratch" terminal to
+# quickly write down some things or whatnot.
+#
+# If the first argument is set it will make the currently active window the
+# scratch window.
+#
+# The second argument is the window class name; if this is the default
+# ("scratchwin") then it will spawn a terminal if no such window exists,
+# otherwise it won't do anything if it can't find the window.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 set -euC
 
-name=scratchwin
+name=${2:-scratchwin}
 scratch=$(xdotool search --classname $name ||:)
 
 if [ -n "${1:-}" ]; then
@@ -19,7 +28,12 @@ if [ -n "${1:-}" ]; then
 fi
 
 if [ -z "$scratch" ]; then
-    st -n "$name" -g 80x25-2-2 &
+	# Only launch a terminal with the default argument; this allows us to do
+	# things like "wm-scratch '' Devtools" to show/hide Firefox devtools if it
+	# exists.
+	if [ $name = 'scratchwin' ]; then
+		st -n "$name" -g 80x25-2-2 &
+	fi
 	exit 0
 fi
 

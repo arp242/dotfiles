@@ -1,12 +1,29 @@
+-- Show row count of last query in prompt.
+-- Gosh, why did I do it like this...? There was a reason for it and it fixes
+-- something, but I forgot what.
 select :'PROMPT1'='%/%R%x%# ' as default_prompt \gset
 \if :default_prompt
   \set PROMPT1 '(%:ROW_COUNT:)%R%# '
 \endif
 
-\set QUIET
-\set HISTSIZE -1
-\set PROMPT2 '%R%# '
-\pset linestyle unicode
-\pset footer off
-\pset null 'NULL'
-\timing on
+\set QUIET                                    \\-- Don't print welcome message etc.
+\set HISTFILE ~/.cache/psql-history- :DBNAME  \\-- Keep history per database
+\set HISTSIZE          -1                     \\-- Infinite history
+\set HISTCONTROL       ignoredups             \\-- Don't store duplicates in history
+\set PROMPT2           '%R%# '                \\-- No database name in the line continuation prompt.
+\set COMP_KEYWORD_CASE lower                  \\-- Complete keywords to lower case.
+\pset linestyle        unicode                \\-- Nicely formatted tables.
+\pset footer           off                    \\-- Don't display "(n rows)" at the end of the table.
+\pset null             'NULL'                 \\-- Display null values as NULL
+\timing                on                     \\-- Show query timings
+
+\set pretty '\\pset numericlocale'            \\-- Toggle between thousands separators in numbers
+
+-- \set IGNOREEOF         2                      \\-- Press ^D twice to exit.
+
+-- \set ECHO_HIDDEN ON     \\-- Show "internal" queries
+-- \set SINGLELINE on      \\-- Run query on enter
+--
+-- TODO: Don't show ↵ for newlines
+
+-- \echo 'Using database' :DBNAME

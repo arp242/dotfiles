@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+# Run Go "scripts", with cache.
+#
+# "go run" will compile things on every invocation, which is kinda slow. This
+# will cache the results in GOPATH:
+#
+#   % time ./jsonfmt <<<{}
+#   ./jsonfmt <<< {}  0.21s user 0.07s system 122% cpu 0.291 total
+#   
+#   % time ./jsonfmt <<<{}
+#   ./jsonfmt <<< {}  0.00s user 0.01s system 93% cpu 0.016 total
+#
+# To use it, set the hashbang as:
+#
+#   #!/usr/bin/env gorun
+#
+# Unfortunately, this isn't valid Go syntax; on Linux at least you can also use:
+#
+#   ///usr/bin/true; exec /usr/bin/env gorun "$0" "$@"
+#
+# TODO: automatically print help of the program similar to:
+#   echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }
+
+name="$(basename "$1")"
+sum="$(sha256sum <"$1")"
+cache="$(go env GOPATH)/gorun/$name/$name"
+
+mkdir -p "$(dirname "$cache")"
+
+if [ "$sum" != "$(cat "$cache.sum" 2>/dev/null)" ]; then
+	tail -n+2 "$1" >"$cache.go"
+	go build -o "$cache" "$cache.go" || exit $?
+	echo "$sum" >$cache.sum
+fi
+
+shift
+exec "$cache" "$@"

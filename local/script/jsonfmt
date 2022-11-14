@@ -1,0 +1,79 @@
+///usr/bin/true; exec /usr/bin/env gorun "$0" "$@"
+//
+// Format JSON.
+
+package main
+
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"regexp"
+)
+
+func main() {
+	if err := main2(); err != nil {
+		fmt.Fprintln(os.Stderr, "jsonfmt:", err)
+		os.Exit(1)
+	}
+}
+
+func main2() error {
+	if len(os.Args) == 1 {
+		return do(os.Stdin, os.Stdout)
+	}
+
+	wFlag := false
+	for i := range os.Args {
+		if os.Args[i] == "-w" {
+			wFlag = true
+			os.Args = append(os.Args[:i], os.Args[i+1:]...)
+			break
+		}
+	}
+
+	for _, f := range os.Args[1:] {
+		fp, err := os.Open(f)
+		if err != nil {
+			return err
+		}
+
+		out := os.Stdout
+		if wFlag {
+			return errors.New("-w not implemented")
+		}
+
+		err = do(fp, out)
+		if err != nil {
+			return err
+		}
+
+		fp.Close()
+	}
+	return nil
+}
+
+var reComma = regexp.MustCompile(`,\s*([}\]])`)
+
+func do(fp io.Reader, out io.Writer) error {
+	// Read data and replace trailing commads in maps and arrays first; just
+	// makes it easier to edit stuff.
+	data, err := io.ReadAll(fp)
+	if err != nil {
+		return nil
+	}
+	data = reComma.ReplaceAll(data, []byte("$1"))
+
+	var j interface{}
+	err = json.Unmarshal(data, &j)
+	if err != nil {
+		return err
+	}
+
+	enc := json.NewEncoder(out)
+	enc.SetIndent("", "  ")
+	enc.SetEscapeHTML(false)
+	return enc.Encode(j)
+}

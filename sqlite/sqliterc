@@ -1,5 +1,6 @@
 .headers on
 .mode box
+.nullvalue NULL
 .bail on
 
 -- .width 100

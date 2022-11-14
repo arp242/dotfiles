@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Frob with git so that "main" gets rewritten to "master" if that's the default
-# branch, or vice versa.
+# Frob with git to rewrite "main" to "master" and vice versa.
 #
 # The "real" git is assumed to be in /usr/bin/git.
 [ "${ZSH_VERSION:-}" = "" ] && echo >&2 "Only works with zsh" && exit 1

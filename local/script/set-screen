@@ -16,7 +16,7 @@ laptop="eDP-1"
 laptop_mode=(--auto)
 laptop_scale=0.8
 
-hdmi="HDMI-2"
+hdmi="HDMI-1"
 hdmi_mode=(--auto)
 hdmi_scale=1
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 #
+# Show difference between two times.
+#
 # TODO: support overflows to next day: timecalc 14:00 08:00
 # TODO: support different formats: 14.00, 1400, 14, 2pm
 #echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
@@ -10,13 +12,16 @@ def to_date(s):
     s = list(map(int, re.split('[:.]', s)))
     return datetime.datetime.now().replace(hour=s[0], minute=s[1])
 
+args = sys.argv[1:]
+if len(args) == 0:
+    args = sys.stdin.read().split(' ')
 
-d1 = to_date(sys.argv[1])
+d1 = to_date(args[0])
 
-if len(sys.argv) == 2:
+if len(args) == 1:
     d2 = datetime.datetime.now()
 else:
-    d2 = to_date(sys.argv[2])
+    d2 = to_date(args[1])
 
 spent = str(d2 - d1).split(':')
 spent.pop()

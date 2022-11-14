@@ -40,6 +40,7 @@ set spelllang=en_gb                    # Default language for spell check.
 set spelloptions=camel                 # Spellcheck CamelCase words separately.
 set helplang=en langmenu=en            # Always use English in help and UI.
 set scrolloff=2                        # Minimum number of lines to keep above/below cursor.
+silent! set smoothscroll               # Scroll (wrapped) screenlines, rather than actual lines.
 set wildmenu                           # Better tab completion at the command-line.
 set wildmode=longest:full              # Complete longest match, list other matches in wildmenu.
 set wildignorecase                     # Case is ignored when completing file names and directories.
@@ -73,6 +74,7 @@ set clipboard=                         # Never automatically interface with syst
 set nofoldenable                       # Disable folds by default.
 set undofile                           # Save undo to file.
 set notitle                            # Don't update term title.
+set nowarn                             # :! doesn't warn if buffer is unsaved.
 set shortmess-=S                       # Show match count on n.
 set shortmess+=aFI                     # a: abbreviate a few things
                                        # F: don't show file info with :edit etc.
@@ -90,14 +92,14 @@ set formatoptions+=ncroqlj             # n   Recognize numbered lists when forma
                                        # l   Don't break lines when they were longer than textwidth to start with.
                                        # j   Remove comment character when joining lines with J.
 &diffopt = [
-    'internal',                        # Show filler lines.
-    'filler',                          # Use internal library rather than external shell tool.
+    'internal',                        # Use internal library rather than external shell tool.
+    'filler',                          # Show filler lines.
     'closeoff',                        # Run :diffoff when closing the other split.
     'indent-heuristic',                # Better detection of whitespace diffs.
     'algorithm:histogram',             # Better algorithm
     'foldcolumn:0'                     # Don't reset foldcolumn for diff files.
 ]->join(',')
-&formatlistpat = '\v^\s*%(\d+[:.\)\t ]|-|TODO:)\s+'  # Indent lines that start with '- ' and 'TODO: ' too.
+&formatlistpat = '\v^\s*%(\d+[:.\)\t ]|-)\s+'  # Indent lines that start with '- ' too.
 &fillchars = [
     'vert: ',                          # Don't show fill for vsplit or removed diff lines; colour is enough.
     'diff: ',
@@ -107,6 +109,9 @@ set formatoptions+=ncroqlj             # n   Recognize numbered lists when forma
     'stl:━',                           # Bold line for active statusline
     'stlnc:╌',                         # And dashed line for inactive
 ]->join(',')
+
+hi StatusLine   ctermbg=black ctermfg=white
+hi StatusLineNC ctermbg=black ctermfg=white
 
 # Set/create directory to keep backup, swap, undo files.
 set backupdir=~/.cache/vim/backup// |call mkdir(&backupdir, 'p', 0o700)
@@ -153,7 +158,10 @@ def! g:Tabline(): string
 			n = fnamemodify(n, ':t')
 		elseif getbufvar(w.bufnr, '&modified')
 			f ..= '+'
-        elseif !getbufvar(w.bufnr, '&modifiable') && !is_help
+        elseif (!getbufvar(w.bufnr, '&modifiable') || getbufvar(w.bufnr, '&readonly')) && !is_help
+            if !getbufvar(w.bufnr, 'had_swap')->empty()
+                f ..= 'S'
+            endif
 			f ..= '-'
         endif
 
@@ -239,13 +247,35 @@ augroup end
 augroup my-autocmds
     au!
 
-    # Don't ask to reload buffers changed on disk (but still get error on :w)
+    # Don't ask to reload buffers changed on disk; you still get error on write
     au FileChangedShell * v:fcs_choice = 0
+
+    au SwapExists * {
+        v:swapchoice = 'o' # Never bug me if a swap file already exists; just open as read-only
+        b:had_swap   = 1   # For display in the statusline/tabline
+    }
 
     # Go to the last cursor location when a file is opened unless this is a git commit.
     au BufReadPost * {
         if line("'\"") > 1 && line("'\"") <= line("$") && &filetype != 'gitcommit'
             exe 'normal! g`"'
+        endif
+    }
+
+    # Disable indent in visual block mode; it's often annoying when inserting
+    # text with <C-v>I, which changes the alignment of the first line only and
+    # mucks up the text for the other lines.
+    au ModeChanged *:[\x16] {
+        b:save_indent = [&l:indentexpr, &l:autoindent, &l:cindent, &l:smartindent]
+        setl indentexpr= noautoindent nocindent nosmartindent
+    }
+    au ModeChanged [\x16]:* {
+        if get(b:, 'save_indent', [])->len() > 0
+            &l:indentexpr  = b:save_indent[0]
+            &l:autoindent  = b:save_indent[1]
+            &l:cindent     = b:save_indent[2]
+            &l:smartindent = b:save_indent[3]
+            unlet b:save_indent
         endif
     }
 
@@ -255,10 +285,10 @@ augroup my-autocmds
     # Filetype overrides.
     au Filetype awk         setl et
     au Filetype css         setl isk+=-
-    au Filetype html {
-                            setl textwidth=100 indentexpr=
-                            if $TMUX != ""
-                                hi htmlItalic cterm=underline
+    au Filetype html        setl textwidth=100 indentexpr=
+    au Filetype gotxt {
+                            if expand('%:p')->stridx('/db/') != -1
+                                set ft=sql
                             endif
     }
     au Filetype javascript  hi def link javaScriptValue Number
@@ -270,16 +300,9 @@ augroup my-autocmds
     }
     au Filetype python {
                             setl ts=4
-                            g:pyindent_open_paren = 'shiftwidth()'
-                            g:pyindent_continue   = 'shiftwidth()'
-    }
-    # Don't spellcheck comments, but do spellcheck strings.
-    au Filetype toml {
-                            syn match tomlComment /#.*/ contains=tomlTodo
-                            syn region tomlString oneline start=/"/ skip=/\\\\\|\\"/ end=/"/ contains=tomlEscape,@Spell
-                            syn region tomlString oneline start=/'/ end=/'/                  contains=@Spell
-                            syn region tomlString start=/"""/ end=/"""/ contains=tomlEscape,tomlLineEscape,@Spell
-                            syn region tomlString start=/'''/ end=/'''/ contains=@Spell
+                            # g:python_indent = {}
+                            # g:pyindent_open_paren = 'shiftwidth()'
+                            # g:pyindent_continue   = 'shiftwidth()'
     }
     au Filetype vim {
                             setl keywordprg=:tab\ help
@@ -362,14 +385,12 @@ command -complete=command -nargs=+ Load call(
 nnoremap <silent> <Leader>r :source $MYVIMRC<CR>:doautocmd Filetype<CR>:echo 'reloaded ' .. $MYVIMRC<CR>
 
 # Some useful-ish toggles.
-nnoremap <F9>       :setl shiftround!<CR>:setl shiftround?<CR>
-nnoremap <F10>      :setl list!<CR>:setl list?<CR>
-nnoremap <F11>      :setl cursorcolumn!<CR>:setl cursorcolumn?<CR>
-nnoremap <F12>      :setl cursorline!<CR>:setl cursorline?<CR>
-inoremap <F9>  <Cmd>:setl shiftround!<CR>
-inoremap <F10> <Cmd>:setl list!<CR>
-inoremap <F11> <Cmd>:setl cursorcolumn!<CR>
-inoremap <F12> <Cmd>:setl cursorline!<CR>
+# TODO: show a menu on just <Leader>t, and we can add some other options.
+# Maybe put in "toggle.vim" plugin.
+nnoremap <Leader>tl  :setl list!<CR>:setl list?<CR>
+nnoremap <Leader>tc  :setl cursorcolumn!<CR>:setl cursorcolumn?<CR>
+nnoremap <Leader>tC  :setl cursorline!<CR>:setl cursorline?<CR>
+nnoremap <Leader>ts  :setl shiftround!<CR>:setl shiftround?<CR>
 
 # Switch spell check languages
 nnoremap <Leader>ss :setl spell!<CR>:setl spell?<CR>
@@ -381,6 +402,9 @@ nnoremap <silent> <C-l> :nohlsearch<CR>:setl nolist nospell<CR>:diffupdate<CR><C
 inoremap <C-l> <Cmd>:exe "normal \<C-l>"<CR>
 # Sync syntax too.
 nnoremap <silent> <Leader>l :syntax sync fromstart<CR><C-l>
+
+# Use ; instead of :, bit easier as you don't need shift.
+#nnoremap ; :
 
 # We don't need ex mode; use it for formatting.
 noremap Q gq
@@ -550,9 +574,26 @@ g:lazy_snippets = {
 ### vim-dirvish
 ###############
 g:dirvish_relative_paths = 1       # Make paths in the Dirvish buffer relative to getcwd().
+
+fun <SID>open() abort
+    let line = getline('.')
+    let ext  = fnamemodify(line, ':e')
+    if ext =~ '\v^%(mp[34]|mkv|avi|ogg|m4a|opus)$'
+        exe '!mpv ' .. fnameescape(line)
+    elseif ext =~ '\v^%(pdf)$'
+        exe '!firefox ' .. fnameescape(line) .. ' &'
+    else
+        call dirvish#open('edit', 0)
+    endif
+endfun
+
 augroup my-dirvish
     au!
     au Filetype dirvish {
+        # Open non-text files.
+        # n  <CR>        *@:<C-U>.call dirvish#open("edit", 0)<CR>
+        nnoremap <buffer> <silent> <CR> :<C-U>.call <SID>open()<CR>
+
         # Q instead of gq is nicer.
         nmap <buffer> Q <Plug>(dirvish_quit)
         # Add tab mappings
@@ -572,7 +613,7 @@ g:gopher_debug     = ['commands', 'setup']
 g:gopher_highlight = ['string-spell', 'string-fmt']
 augroup my-gopher
     au!
-    au FileType go {
+    au Filetype go {
         # Make ! stand out a bit more in '!foo'.
         syn match goBang /!\ze[^=]/
         hi goBang gui=bold cterm=bold
@@ -581,7 +622,7 @@ augroup my-gopher
     }
 
     # Quick replace for go.mod
-    au FileType gomod comm! -nargs=1 Replace append(4, printf('replace zgo.at/%s => ../../Golib/%s', <f-args>, <f-args>))
+    au Filetype gomod comm! -nargs=1 Replace append(4, printf('replace zgo.at/%s => ../../Golib/%s', <f-args>, <f-args>))
 
     # Format buffer on write; https://vi.stackexchange.com/questions/7116
     au BufWritePre *.go {
@@ -599,21 +640,21 @@ augroup my-gopher
 augroup end
 
 ### vim-qf
-g:qf_auto_open_quickfix = 1        # Automatically open qfix and loclist.
-g:qf_auto_open_loclist  = 1
-g:qf_auto_quit          = 0        # Breaks with tabs.
-augroup my-qf
-    au!
-    # Close list when entering tabs and they're empty.
-    au TabEnter * {
-        if len(getqflist()) == 0
-            cclose
-        # else
-        #     qf#OpenQuickfix()
-        #     wincmd w
-        endif
-    }
-augroup end
+# g:qf_auto_open_quickfix = 1        # Automatically open qfix and loclist.
+# g:qf_auto_open_loclist  = 1
+#g:qf_auto_quit          = 0        # Breaks with tabs.
+# augroup my-qf
+#     au!
+#     # Close list when entering tabs and they're empty.
+#     au TabEnter * {
+#         if len(getqflist()) == 0
+#             cclose
+#         # else
+#         #     qf#OpenQuickfix()
+#         #     wincmd w
+#         endif
+#     }
+# augroup end
 
 # Go to next/prev error; need to use escape codes as <C-Arrow> isn't reliable.
 nmap <C-Left>    <Plug>(qf_qf_previous)
@@ -668,6 +709,24 @@ augroup end
 
 ### xdg_open.vim
 g:xdg_open_match = '&filetype == "dirvish" ? getline(".") : expand("<cWORD>")'
+fun g:MyOpen()
+    if &filetype == 'dirvish'
+        return getline(".")
+    elseif expand('<cWORD>') =~ '^#\d\+'
+        return 'https://github.com/arp242/' .. expand('%:p:h:t') .. '/issues/' .. expand('<cword>')
+    else
+        return expand('<cWORD>')
+    endif
+endfun
+g:xdg_open_match = 'MyOpen()'
+
+# g:xdg_open_match = { -> &filetype == "dirvish" ? getline(".") : expand("<cWORD>") }
+# g:Xdg_open_match = () => &filetype == "dirvish" ? getline(".") : expand("<cWORD>")
+
+nnoremap <silent> g. :let [@,, @;] = [@;, '']<CR>
+
+silent! set shortmess+=e!
+
 
 defcompile  # Compile functions so we get errors on startup.
 # vim: et

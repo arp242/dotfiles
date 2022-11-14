@@ -1,7 +1,6 @@
 #!/bin/sh
 #
-# Disable xbanish and xcape while a command is running (as the name implies,
-# mostly for games).
+# Disable xbanish and xcape while a command is running.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 set -euC
 

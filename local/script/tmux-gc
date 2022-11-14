@@ -21,6 +21,6 @@ tmux new-session -d -s "$s"
 
 tmux new-window -d -t "=$s" -n goatcounter
 tmux send-keys -t "=$s:=goatcounter" \
-	"goatcounter saas -dev -db 'postgresql+' -stripe 'sk_:pk_:whsec_' -listen localhost:8081" Enter
+	"goatcounter saas -dev -db 'postgresql+dbname=goatcounter' -listen localhost:8081 -websocket" Enter
 
 att

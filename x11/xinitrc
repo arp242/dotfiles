@@ -7,6 +7,6 @@ xmodmap ~/.config/x11/modmap
 xsetroot -solid "#3a6ea5"
 
 while :; do
-	ssh-agent /home/martin/code/Prog/craicwm/craicwm > /tmp/.wm.log 2>&1
+	ssh-agent -a /tmp/run-$USER/ssh-agent /home/martin/code/Prog/craicwm/craicwm > /tmp/run-$USER/wm.log 2>&1
 	sleep 0.5
 done

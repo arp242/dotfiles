@@ -21,8 +21,9 @@ format = ssh                 # Sign with SSH key.
 allowedSignersFile = "~/.config/git/keys"
 
 [core]
-eol   = lf                   # Always use \n, even on Windows.
-pager = less -F              # Quit pager if the contents can fit on the screen.
+eol         = lf             # Always use \n, even on Windows.
+pager       = less -F        # Quit pager if the contents can fit on the screen.
+commentChar = "!"            # "#" conflicts with Markdown headers, Github #123 issues
 
 [http]                       # Send cookes (e.g. to signal Google SLA signage).
 cookiefile = ~/.config/git/cookies

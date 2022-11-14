@@ -1,7 +1,9 @@
 #!/bin/zsh
 #
-# Sleep until a specific time. This takes a time in 24-hour clock format and
-# sleeps until the next instance of this time is reached.
+# Sleep until a specific time.
+#
+# This takes a time in 24-hour clock format and sleeps until the next instance
+# of this time is reached.
 #
 #   % sleep-until 15:30:45
 #   % sleep-until 15:30      # Until 15:30:00

@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 #
-# Frob a bit with the "go" command to work around some issues:
+# Frob a bit with the "go" command to work around some issues.
 #
 # - Use module name instead of "cmd" for "go install ./cmd"
 # - "go help" will highlight flags as bold and pipes to $PAGER

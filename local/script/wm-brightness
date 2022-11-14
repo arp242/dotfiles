@@ -32,7 +32,7 @@ else
 	exit 1
 fi
 
-cur=$(cat "$dev")
+cur=$(< $dev)
 if [ -z "$cur" ]; then
 	print >&2 "wm-brightness: could not read current value from $dev"
 	exit 1
@@ -51,12 +51,12 @@ for a in "$@"; do
 	break
 done
 
-for a in "$@"; do
-	cur=$(cat "$dev")
+for a in $argv; do
+	cur=$(< $dev)
 	case "$a" in
 		(scale) ;;
 		(up)    print $(( $cur + $step )) > "$dev" ;;
-		(down)   [ $(( $cur - $step )) -le $min ] && print $min > "$dev" || print $(( $cur - $step )) > "$dev" ;;
+		(down)  [ $(( $cur - $step )) -le $min ] && print $min > "$dev" || print $(( $cur - $step )) > "$dev" ;;
 		(print) cat "$dev" ;;
 		(*)     print "$1" > "$dev"
 	esac
