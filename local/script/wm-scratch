@@ -6,8 +6,8 @@
 # show/hide it on subsequent invocations. Useful for a "scratch" terminal to
 # quickly write down some things or whatnot.
 #
-# If the first argument is set it will make the currently active window the
-# scratch window.
+# If the first argument is set to any non-empty value it will make the currently
+# active window the scratch window.
 #
 # The second argument is the window class name; if this is the default
 # ("scratchwin") then it will spawn a terminal if no such window exists,
@@ -20,10 +20,10 @@ scratch=$(xdotool search --classname $name ||:)
 
 if [ -n "${1:-}" ]; then
 	if [ -n "$scratch" ]; then
-		xdotool set_window --classname='' $scratch
-		xdotool windowmap $scratch
+		xdotool set_window --classname '' "$scratch"
+		xdotool windowmap "$scratch"
 	fi
-	xdotool getactivewindow set_window --classname=$name
+	xdotool getactivewindow set_window --classname "$name"
 	exit 0
 fi
 
@@ -31,9 +31,22 @@ if [ -z "$scratch" ]; then
 	# Only launch a terminal with the default argument; this allows us to do
 	# things like "wm-scratch '' Devtools" to show/hide Firefox devtools if it
 	# exists.
-	if [ $name = 'scratchwin' ]; then
+	if [ "$name" = 'scratchwin' ]; then
 		st -n "$name" -g 80x25-2-2 &
 	fi
+
+	# Hack to open Firefox devtools ("K" makes it always start on the console
+	# tab, rather than the last active tab like with "I" or F12).
+	#
+	# Should probably add some arguments for this:
+	#
+	#    wm-scratch toggle scratchwin "st -n scratchwin -g 80x25-2-2"
+	#    wm-scratch toggle Devtools   "xdotool search --classname 'Navigator' key 'Control_L+Shift_L+K'"
+	#    wm-scratch set-active
+	if [ "$name" = 'Devtools' ]; then
+		xdotool search --classname 'Navigator' key 'Control_L+Shift_L+K' &
+	fi
+
 	exit 0
 fi
 
@@ -41,4 +54,4 @@ c=windowmap
 if xdotool search --onlyvisible "$name" >/dev/null 2>&1; then
 	c=windowunmap
 fi
-xdotool $c $scratch
+xdotool "$c" "$scratch"
