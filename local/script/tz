@@ -1,13 +1,32 @@
 #!/bin/zsh
 #
 # Show times in various different timezones.
+#
+# Use "tz 01:00" to set the local time and display all times for that.
+#
+# Use "tz 01:00 America/Los_Angeles to set the time in that TZ, and display all
+# local times for that.
 echo " $@" | grep -q -- ' -h' && { sed '1,2d; /^[^#]/q; s/^# \?//;' "$0" | sed '$d'; exit 0; }  # Show docs
 
-[[ -n ${1:-} ]] && time="-d @$(date -d "$1" +%s)" || time=
+tz=${2:-}
+if [[ -z ${2:-} ]]; then
+	zmodload zsh/stat
+	typeset -A arr
+	zstat -LH arr /etc/localtime
+	tz=$arr[link]:h:t/$arr[link]:t
+	# TODO: allow reversing $1 and $2
+fi
+
+time=
+[[ -n ${1:-} ]] && time="-d @$(TZ=$tz date -d "$1" +%s)"
+
 printf '%-15s' 'US West';     TZ='America/Los_Angeles' date '+%H:%M %z %Z' $time
 printf '%-15s' 'US East';     TZ='America/New_York'    date '+%H:%M %z %Z' $time
 printf '%-15s' 'UTC';         TZ='UTC'                 date '+%H:%M %z %Z' $time
 printf '%-15s' 'Ireland/UK';  TZ='Europe/Dublin'       date '+%H:%M %z %Z' $time
 printf '%-15s' 'West Europe'; TZ='Europe/Amsterdam'    date '+%H:%M %z %Z' $time
 printf '%-15s' 'New Zealand'; TZ='NZ'                  date '+%H:%M %z %Z' $time
+
+# TODO: just print this is none of the above is in the current TZ; and print the
+# above one as bold Also print selected TZ as bold.
 printf '\n\x1b[1m%-15s%s\x1b[0m\n' 'Current' "$(date '+%H:%M %z %Z' $time)"
