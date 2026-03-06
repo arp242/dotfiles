@@ -7,11 +7,6 @@ Maori/!
 naive/!
 reusable/!
 Māori
-reëvaluates
-reïmplementing
-reüsable
-coördinate
-reïmplemented
 
 # Various words that aren't in the main spellfile.
 COVID
@@ -28,38 +23,54 @@ asshole
 assholery
 assholes
 asterism
+auld
+backdoor
 blogspam
+bukkake
+cartoonish
 christmas
+circlejerk
 clusterfuck
 cofounder
 coworker
 coworkers
+craic
 cruft
 célèbre
 decorational
+dementing
 denialism
+eejit
+eyerolling
 feck
 fecking
 fixie
+footgun
 frob
 frobbing
 fuckery
+fuckity
 gung-ho
 hackery
+hamfisted
 handwaved
 hardline
 hissy
+hmkay
 hometown
 interpunction
 klansmen
 kthxbye
 math
+mindfuck
 misfeatures
 monocultures
 muckery
+muppet
 neurodivergency
 neurodivergent
 neurodiversity
+non-brainer
 nondisclosure
 ol'
 ostracization
@@ -88,12 +99,20 @@ tsp.
 twat
 unabstracted
 undecoded
+unempathic
 unfucking
 unpluralized
+unportable
+unrelatable
 unsubmitted
+walkthrough
+wank
+wankery
 watercooler
 webshop
+whodunnit
 worldview
+wtf
 
 # Some computer jargon.
 BDD/=
@@ -112,6 +131,7 @@ GPG/=
 GPL's/=
 GoatCounter/=
 JSON/=
+LLM/=
 LSP/=
 Linode/=
 Matomo/=
@@ -148,6 +168,7 @@ datetime
 dict
 dir
 docbook
+filesize
 filesystem
 filesystems
 filetype
@@ -156,6 +177,7 @@ flexbox
 frontend
 frontends
 frontmatter
+fsnotify
 fullscreen
 glibc/=
 globals
@@ -165,9 +187,11 @@ goroutine
 goroutines
 hostname
 i386/=
+inotify/=
 keybind
 keybinds
 keyrings
+kqueue/=
 libre
 linebreaks
 linter
@@ -185,6 +209,8 @@ monorepos
 monospace
 multibyte
 multiline
+omitempty
+overline
 pageview
 pageviews
 plugin
@@ -192,10 +218,12 @@ plugins
 png
 popup
 quickfix
+recurse
 regex
 regexp
 screensaver
 src
+staticcheck
 stderr
 stdin
 stdlib
@@ -203,6 +231,7 @@ stdout
 struct
 structs
 stylesheet
+subpackage
 subtest
 subtests
 tagsoup
@@ -210,12 +239,15 @@ teletype
 teletypes
 terminfo
 timesharing
+timestamp
 toolchain
 uncropped
+undercurl
 unexported
 unicode
 unkeyed
 userbase
+userspace
 varchar
 vendored
 vendoring
@@ -274,6 +306,7 @@ GNU's/=
 GTK/=
 GitHub/=
 HN/=
+Hamas/=
 Harvard's/=
 Hurd/=
 Inkscape/=
@@ -315,6 +348,7 @@ Symbolics/=
 TECO's/=
 TECO/=
 Tcl/=
+Tesco/=
 ThinkPad/=
 Trolltech/=
 TypeScript/=
@@ -329,6 +363,7 @@ WebKit/=
 WhatsApp/=
 XFree86/=
 iframe
+illumos/=
 jQuery/=
 k8s/=
 macOS/=
@@ -370,17 +405,3 @@ Vixie/=
 Willison/=
  
 # Unsorted (zg'd).
-subpackage
-omitempty
-uncomparable
-fsnotify
-accessor
-backends
-inotify
-kqueue
-fallbacks
-losslessly
-filesize
-illumos
-EPP
-Gransy

@@ -2,10 +2,10 @@ vim9script
 set encoding=utf-8                     # Make sure UTF-8 is used.
 scriptencoding utf-8
 set nocompatible                       # Ensure it works with 'vim -u'
-syntax on                              # Switch syntax highlighting on.
+silent! syntax on                      # Switch syntax highlighting on.
 filetype plugin indent on              # Enable filetype detection.
 if $TERM =~ '256color'
-    set termguicolors                  # Use true colors.
+    set termguicolors                  # Use true colours.
     &t_8f = "\<Esc>[38;2;%lu;%lu;%lum" # Set correct escape codes to make termguicolors work in st.
     &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     &t_SI = "\<Esc>[3 q"               # Start Insert; set cursor to underline (1=block, 3=underline, 5=bar).
@@ -13,8 +13,7 @@ if $TERM =~ '256color'
     &t_EI = "\<Esc>[1 q"               # End Insert (or Replace), set back to block cursor.
 endif
 set background=light                   # Sometimes gets overridden or changed from the default by distros.
-silent! colorscheme default2           # Load my color scheme if it exists.
-set backspace=indent,eol,start         # Allow backspacing over everything.
+silent! colorscheme default2           # Load my colour scheme if it exists.
 set history=500                        # Keep 500 lines of command line history.
 set incsearch                          # Jump to match while typing the pattern in /.
 set hlsearch                           # Highlight last used search pattern.
@@ -40,7 +39,7 @@ set spelllang=en_gb                    # Default language for spell check.
 set spelloptions=camel                 # Spellcheck CamelCase words separately.
 set helplang=en langmenu=en            # Always use English in help and UI.
 set scrolloff=2                        # Minimum number of lines to keep above/below cursor.
-silent! set smoothscroll               # Scroll (wrapped) screenlines, rather than actual lines.
+#silent! set smoothscroll               # Scroll (wrapped) screenlines, rather than actual lines.
 set wildmenu                           # Better tab completion at the command-line.
 set wildmode=longest:full              # Complete longest match, list other matches in wildmenu.
 set wildignorecase                     # Case is ignored when completing file names and directories.
@@ -50,12 +49,15 @@ set wildcharm=<Tab>                    # Trigger wild mode from mappings/macros.
 set completeopt=menuone,noselect       # Insert mode completion:
                                        # menuone   → always show menu, even when there is 1 match.
                                        # noselect  → don't select an option when starting.
+                                       # preview   → show preview window
 set completepopup=highlight:Pmenu,border:off  # Options for preview popup in completion.
 set pumheight=10                       # Don't make completion menu too high.
 set previewheight=6                    # Height of preview window.
+#set splitbelow                        # Show preview window at bottom
+#set previewpopup=
 set infercase                          # Like smartcase for insert completion.
-set tabpagemax=500                     # Max. number of tabs to be open with -p argument or :tab all.
-set showcmd                            # Show partial command in the last line of the screen.
+set tabpagemax=500                     # Max number of tabs to be open with -p argument or :tab all.
+set showcmd                            # Show partial command...
 set nojoinspaces                       # Don't add two spaces after interpunction when using J.
 set smarttab                           # Backspace at start of line remove shiftwidith worth of space.
 set matchpairs+=<:>                    # Also match < & > with %.
@@ -64,7 +66,7 @@ set noexpandtab                        # Real men use real tabs…
 set tabstop=4                          # …which are 4 spaces wide.
 set shiftwidth=0                       # Use tabstop value.
 set softtabstop=-1                     # Use shiftwidth value.
-set synmaxcol=500                      # Maximum column in which to search for syntax items.
+#set synmaxcol=500                      # Maximum column in which to search for syntax items.
 set t_ti= t_te=                        # Prevent clearing the terminal on exit.
 set mouse=                             # I don't want mouse support.
 set nrformats=bin,hex,unsigned         # Don't increment octal numbers, and ignore '-' in front of nrs.
@@ -75,6 +77,7 @@ set nofoldenable                       # Disable folds by default.
 set undofile                           # Save undo to file.
 set notitle                            # Don't update term title.
 set nowarn                             # :! doesn't warn if buffer is unsaved.
+set makeprg=true                       # Default to empty since 'make' usually doesn't work.
 set shortmess-=S                       # Show match count on n.
 set shortmess+=aFI                     # a: abbreviate a few things
                                        # F: don't show file info with :edit etc.
@@ -84,13 +87,21 @@ set virtualedit=block                  # Allow virtual editing in visual block m
 set display=lastline,uhex              # lastline → Show as much of the last line as possible instead of @.
                                        # uhex     → Always show unprintable chars as <xx> instead of ^C.
 set updatecount=50                     # Write to swap every 50 characters.
-set formatoptions+=ncroqlj             # n   Recognize numbered lists when formatting (see formatlistpat)
+set formatoptions+=ncroqlj/            # n   Recognize numbered lists when formatting (see formatlistpat)
                                        # c   Wrap comments with textwidth
                                        # r   Insert comment char after enter
                                        # o   Insert comment char after o/O
                                        # q   Format comments with gq
                                        # l   Don't break lines when they were longer than textwidth to start with.
                                        # j   Remove comment character when joining lines with J.
+                                       # /   Don't insert indented // on 'o', only at start.
+set laststatus=0                       # Don't show statusline.
+set rulerformat=%=%l/%L\ %v/%{virtcol('$')-1}  # line/numlines col/numcols
+set statusline=\                       # Blank statusline, so it's just a divider between windows.
+set showtabline=2                      # Always show tabline
+set tabline=%!Tabline()                # Set custom tabline and tabpanel
+set tabpanel=%!TabPanel()
+set tabpanelopt=vert,columns:36        # Add vertical separator, bit wider by default.
 &diffopt = [
     'internal',                        # Use internal library rather than external shell tool.
     'filler',                          # Show filler lines.
@@ -101,17 +112,24 @@ set formatoptions+=ncroqlj             # n   Recognize numbered lists when forma
 ]->join(',')
 &formatlistpat = '\v^\s*%(\d+[:.\)\t ]|-)\s+'  # Indent lines that start with '- ' too.
 &fillchars = [
-    'vert: ',                          # Don't show fill for vsplit or removed diff lines; colour is enough.
+    'vert:│',                          # Don't show fill for vsplit or removed diff lines; colour is enough.
     'diff: ',
     'fold: ',
     'foldopen:┌',                      # text in foldcolumn
     'foldsep:│',
-    'stl:━',                           # Bold line for active statusline
-    'stlnc:╌',                         # And dashed line for inactive
+    'tpl_vert:│',                      # Tabpanel
+    'stl:━',                           # Bold line to separate windows.
+    'stlnc:━',
 ]->join(',')
 
-hi StatusLine   ctermbg=black ctermfg=white
-hi StatusLineNC ctermbg=black ctermfg=white
+# Don't highlight statusline/horizontal window divider.
+hi StatusLine   ctermbg=NONE ctermfg=NONE cterm=NONE
+hi StatusLineNC ctermbg=NONE ctermfg=NONE cterm=NONE
+# Don't make it all black
+hi TabPanelSel  guibg=#e5e5e5 cterm=bold
+hi TabPanel     guibg=NONE
+hi TabPanelFill guibg=NONE
+hi VertSplit    cterm=NONE gui=NONE
 
 # Set/create directory to keep backup, swap, undo files.
 set backupdir=~/.cache/vim/backup// |call mkdir(&backupdir, 'p', 0o700)
@@ -121,19 +139,24 @@ set undodir=~/.cache/vim/undo       |call mkdir(&undodir,   'p', 0o700)
 # Set viminfo file location unless explicitly turned off.
 if &viminfofile != 'NONE' | set viminfofile=$HOME/.cache/vim/viminfo | endif
 
-set laststatus=0                       # Never show statusline
-&statusline = ' '                      # Blank statusline
-set showtabline=2                      # Always show tabline
+### Custom tabline and tabpanel
+###############################
+def! g:TabPanel(): string
+    var path = tabpagebuflist(g:actual_curtabpage)[tabpagewinnr(v:lnum) - 1]->bufname()
+    var head = fnamemodify(path, ':h:~:.') .. '/'
+    if head == './'
+        return printf("%2d %s", g:actual_curtabpage, path)
+    endif
+    if head->len() > 30
+        head = '…' .. head[head->len() - 31 : ]
+    endif
+    return printf("%2d %s\n   %s", g:actual_curtabpage, head, fnamemodify(path, ':t'))
+enddef
 
-# Use the tabline as 'statusline' by putting the cursor position in there.
+# Show the full path for the active tab, instead of an abbreviated one.
 def! g:Tabline(): string
-	# Get list of all tabs, together with the flags and name we want to display.
-	var tabs     = []
-	var tabs_len = 0
-	var sel_len  = 0
-	var sel_idx  = 0
+	var tabstr = '%#TabLine#'
 	var tabinfo  = gettabinfo()
-
     for i in range(0, tabinfo->len() - 1)
     	var t = tabinfo[i]
 
@@ -146,12 +169,22 @@ def! g:Tabline(): string
     			break
 			endif
 		endfor
+		if w->get('bufnr', 0) == 0
+		    continue
+        endif
 
 		var sel     = bufwinid(w.bufnr) == w.winid
         var is_help = getbufvar(w.bufnr, '&ft') == 'help'
-        var is_dir  = getbufvar(w.bufnr, '&ft') == 'dirvish'
+        # filetype won't be set until buffer becomes active; before that it's
+        # essentially an empty buffer.
+        var is_dir  = getbufvar(w.bufnr, '&ft') == 'dirvish' ||
+            (getbufvar(w.bufnr, '')->len() == 1 && getbufvar(w.bufnr, 'changedtick') == 1)
 
-        var n = bufname(w.bufnr)->fnamemodify(':.') ?? '[No Name]'
+        var n = bufname(w.bufnr)
+        if !is_dir
+            n = bufname(w.bufnr)->fnamemodify(':.')
+        endif
+        n = n ?? '[No Name]'
         var f = len(t.windows) > 1 ? len(t.windows)->string() : ''
 		if is_help
 			f ..= ':h'
@@ -165,81 +198,24 @@ def! g:Tabline(): string
 			f ..= '-'
         endif
 
-		if n =~ $HOME  # Always using :~ means 'vi file' would become ~/file
-			n = fnamemodify(n, ':~')
-		endif
+        # Always using :~ means 'vi file' would become ~/file
+		if n =~ $HOME | n = fnamemodify(n, ':~') | endif
 
 		# Show only first character of every directory entry.
 		var slash = stridx(n, '/')
-		#if slash > -1 && slash != len(n) - 1
-		if !sel && slash > -1 && slash != len(n) - 1
-			var l = n->split('/')
-			n = l->map((j, v) => j == len(l) - 1 ? v : v[: (v[0] == '.' ? 1 : 0)])->join('/')
-			if is_dir  # Gets lost otherwise
-				n ..= '/'
-			endif
+		if !sel
+		    n = n->trim('/', 2)->pathshorten()
+			if is_dir | n ..= '/' | endif
 		endif
 
-		tabs_len += len(n)
-		if sel
-			sel_len = len(n)
-			sel_idx = i
-		endif
-        add(tabs, {name: n, fname: n, flags: f, sel: sel})
+        # Build tabstr
+        if sel     | tabstr ..= '%#TabLineSel#' | endif
+        if f != '' | tabstr ..= ' ' .. f        | endif
+                     tabstr ..= ' ' .. n .. ' '
+        if sel |     tabstr ..= '%#TabLine#'    | endif
     endfor
-
-	# Create string for the right-hand side.
-	var right = line('.') .. '/' .. line('$') .. ' ' .. virtcol('.')
-
-	var [tr_left, tr_right] = ['', '']
-	# TODO: do this better; we want to make sure the active tab is always "in
-	#       view", and show indicators of how many more there are. e.g.
-	#           <4  file1  file2  file3  1>
-	#       Different from how standard tabline works, but makes more sense IMO.
-    if tabs_len > &columns - len(right)
-    	# tr_left  = '%#TabLineMore#…' .. (sel_idx) .. '%#TabLine#'
-    	# tr_right = '%#TabLineMore#' .. (len(tabs) - sel_idx - 1) .. '…%#TabLine#'
-    	# tabs = tabs[sel_idx - 3 : sel_idx + 3]
-
-    	# var trim_by = (&columns - 24 - sel_len) / len(tabs) - 1
-    	# for i in range(0, len(tabs) - 1)
-    	# 	if tabs[i].sel
-    	# 		continue
-		# 	endif
-		# 	var l = len(tabs[i].name) - trim_by
-		# 	l = [l, len(tabs[i].name) - 4]->min()
-
-		# 	tabs[i].name = tabs[i].name[l :]
-		# endfor
-	endif
-
-	# Create string for statusline
-	var tabstr = tr_left
-	for t in tabs
-		if t.sel
-			tabstr ..= '%#TabLineSel#'
-		endif
-
-		if t.flags != ''
-			tabstr ..= ' ' .. t.flags
-		endif
-
-		tabstr ..= ' ' .. t.name .. ' '
-		if t.sel
-			tabstr ..= '%#TabLine#'
-		endif
-	endfor
-	tabstr ..= tr_right
-
-	return '%#TabLine#' .. tabstr .. '%#TablineFill#%=' .. right
+	return tabstr .. '%#TablineFill#'
 enddef
-set tabline=%!Tabline()
-
-# Redraw tabline when the cursor moves.
-augroup my-tabline
-	au!
-	au CursorMoved,CursorMovedI * :redrawtabline
-augroup end
 
 
 ### Autocmds
@@ -251,7 +227,7 @@ augroup my-autocmds
     au FileChangedShell * v:fcs_choice = 0
 
     au SwapExists * {
-        v:swapchoice = 'o' # Never bug me if a swap file already exists; just open as read-only
+        v:swapchoice = 'o' # Never bug me if a swap file already exists; just open as read-only.
         b:had_swap   = 1   # For display in the statusline/tabline
     }
 
@@ -282,35 +258,155 @@ augroup my-autocmds
     # Don't spellcheck urls.
     au BufReadPost * syn match UrlNoSpell '\w\+:\/\/[^[:space:]]\+' contains=@NoSpell
 
+    # My own filetypes.
+    au BufRead,BufNewFile *.state   setf state
+    au BufRead,BufNewFile TODO,todo setf markdown
+    au BufRead,BufNewFile *.twig    set ft=jinja
+
     # Filetype overrides.
+    au Filetype asm         setl ts=8
     au Filetype awk         setl et
     au Filetype css         setl isk+=-
-    au Filetype html        setl textwidth=100 indentexpr=
+    au Filetype dockerfile  syn clear shOption | syn clear dockerfileOption
+    au Filetype html {
+                            setl textwidth=100 indentexpr=
+                            hi link javaScript Normal
+    }
+    au Filetype go          syn clear goType goBuiltins
     au Filetype gotxt {
                             if expand('%:p')->stridx('/db/') != -1
                                 set ft=sql
                             endif
     }
-    au Filetype javascript  hi def link javaScriptValue Number
+    au Filetype gomod {
+                            command! -buffer -nargs=1 Replace
+                                \ append('.', ['', printf('replace zgo.at/%s => /home/martin/code/Golib/%s', <q-args>, <q-args>), ''])
+    }
+    au Filetype javascript {
+                            hi link javaScriptValue Number
+                            hi link javaScriptBraces Normal
+                            syn keyword javaScriptMember document location
+                            # Don't highlight "event"
+                            syn clear javaScriptMember
+    }
+    au Filetype jsonc       syn clear jsonTrailingCommaError
     au Filetype lua         hi link luaTable Normal
-    au filetype make        setl ts=8
+    au Filetype make        setl ts=8
     au Filetype markdown {
                             setl expandtab noshiftround
                             hi markdownError ctermbg=NONE
     }
-    au Filetype python {
-                            setl ts=4
-                            # g:python_indent = {}
-                            # g:pyindent_open_paren = 'shiftwidth()'
-                            # g:pyindent_continue   = 'shiftwidth()'
+    au Filetype php         setl cindent indentexpr=
+    au Filetype python      setl ts=4
+    au Filetype sql         g:sql_type_default = 'pgsql'
+    au Filetype toml {
+                            hi link tomlKey        Normal
+                            hi link tomlTable      Normal
+                            hi link tomlTableArray Normal
+                            syn clear tomlKeySq tomlKeyDq
     }
-    au Filetype vim {
+    au Filetype typescript,typescriptreact {
+                            hi link typescriptExport         Keyword
+                            hi link typescriptImport         Keyword
+                            hi link typescriptImportType     Keyword
+                            hi link typescriptKeywordOp      Keyword
+                            hi link typescriptOperator       Keyword
+                            hi link typescriptVariable       Keyword
+                            hi link typescriptBraces         Normal
+                            hi link typescriptCall           Normal
+                            hi link typescriptDOMStorageProp Normal
+                            hi link typescriptIdentifier     Normal
+                            hi link typescriptRequestProp    Normal
+                            hi link typescriptTypeReference  Type
+                            silent syn clear typescriptTestGlobal typescriptFuncCallArg typescriptURLUtilsProp
+                                           \ typescriptDOMDocProp typescriptBOMLocationMethod typescriptDateMethod
+                                           \ typescriptObjectMethod typescriptArrayMethod typescriptStringMethod
+                                           \ typescriptNumberMethod typescriptBOMLocationProp typescriptBOMWindowProp
+                                           \ typescriptBOMWindowMethod typescriptHeadersMethod typescriptReflectMethod
+                                           \ typescriptES6MapMethod typescriptGlobal typescriptDestructureVariable
+                                           \ typescriptFuncName typescriptXHRProp typescriptResponseProp
+                                           \ typescriptArrowFuncArg typescriptArrowFunc typescriptDOMFormProp
+                                           \ typescriptRegexpCharClass typescriptRegexpBoundary typescriptRegexpBackRef
+                                           \ typescriptRegexpQuantifier typescriptRegexpOr typescriptRegexpMod
+                                           \ typescriptRegexpGroup
+    }
+    au Filetype rust        {
+                            # "cargo check" is supposed to be faster?
+                            g:cargo_makeprg_params = 'build -q --color=never --message-format=short'
+
+                            hi link rustQuestionMark   Normal
+                            hi link rustFuncCall       Normal
+                            hi link rustModPath        Normal
+                            hi link rustModPathSep     Normal
+                            hi link rustSigil          Normal
+                            hi link rustOperator       Normal
+                            hi link rustMacro          Normal
+                            hi link rustFuncName       Normal
+                            hi link rustTrait          Normal
+                            hi link rustIdentifier     Normal
+                            hi link rustLabel          Normal
+                            hi link rustAssert         Normal
+                            hi link rustStorage        Keyword
+                            hi link rustSelf           Keyword
+                            hi link rustEnumVariant    Keyword
+                            hi link rustCommentLineDoc Comment
+                            syn clear rustCommentLinesDocRustCode
+    }
+    au Filetype vim         {
                             setl keywordprg=:tab\ help
-                            silent! syn clear vimCommentString vimCommentTitle
-                            silent! hi vimSep guifg=NONE
+                            if getline(1) == 'vim9script'
+                                setl syntax=vim9
+                            endif
     }
     au Filetype yaml        setl expandtab ts=2
+    au Filetype zig {
+                            g:zig_fmt_autosave     = 0
+                            g:zig_fmt_parse_errors = 0
+                            hi link zigExecution Statement
+                            hi link zigPreProc   Statement
+                            hi link zigMacro     Statement
+                            hi link zigVarDecl   Statement
+                            hi link zigBuiltinFn Function
+                            syn clear zigOperator
+    }
     au Filetype zsh         hi link zshTypes Statement
+augroup end
+
+# Format buffer on write; https://vi.stackexchange.com/questions/7116
+#
+# TODO: if this is the first undo and there are no other changes, then
+# "u" will put cursor at the top.
+#
+# TODO: cat /dev/stdin doesn't work on FreeBSD in this setup.
+#
+#undojoin | LSClientFindCodeActions 'Organize'
+augroup autofmt
+    au!
+    # TODO: only if .clang-format exists in the root, or something.
+    #au BufWritePre *.c,*.cc,*.h {
+    #    try | silent undojoin | catch | endtry
+    #    var save = winsaveview()
+    #    exe ':%!clang-format --style=file:/home/martin/.config/clang-format 2>/dev/null || cat /dev/stdin'
+    #    winrestview(save)
+    #}
+    au BufWritePre *.go {
+        try | silent undojoin | catch | endtry
+        var save = winsaveview()
+        exe ':%!goimports 2>/dev/null || cat /dev/stdin'
+        winrestview(save)
+    }
+    au BufWritePre *.zig {
+        try | silent undojoin | catch | endtry
+        var save = winsaveview()
+        exe ':%!zig fmt --stdin 2>/dev/null || cat /dev/stdin'
+        winrestview(save)
+    }
+    au BufWritePre *.rs {
+        try | silent undojoin | catch | endtry
+        var save = winsaveview()
+        exe ':%!rustfmt 2>/dev/null || cat /dev/stdin'
+        winrestview(save)
+    }
 augroup end
 
 ### Commands
@@ -378,19 +474,56 @@ command -complete=command -nargs=+ Load call(
     \ (getline(1, '$')->filter((_, v) => len(v) > 0)->len() == 0 ? 'setline' : 'append'),
     \ ['.', execute(<q-args>)->split('\n')])
 
+# Quickly measure syntax highlight performance.
+command Syntime {
+    syntime on
+    for _ in range(10) | :redraw! | endfor
+    syntime report
+    syntime off
+}
+
+
 ### Mappings
 ############
 
 # Reload config.
 nnoremap <silent> <Leader>r :source $MYVIMRC<CR>:doautocmd Filetype<CR>:echo 'reloaded ' .. $MYVIMRC<CR>
 
-# Some useful-ish toggles.
-# TODO: show a menu on just <Leader>t, and we can add some other options.
-# Maybe put in "toggle.vim" plugin.
-nnoremap <Leader>tl  :setl list!<CR>:setl list?<CR>
-nnoremap <Leader>tc  :setl cursorcolumn!<CR>:setl cursorcolumn?<CR>
-nnoremap <Leader>tC  :setl cursorline!<CR>:setl cursorline?<CR>
-nnoremap <Leader>ts  :setl shiftround!<CR>:setl shiftround?<CR>
+silent! popsikey#register()  # Trigger autoload
+if exists('*popsikey#register')
+    # Some useful-ish toggles.
+    def Toggle(opt: string): string
+        return printf('setl %s%s', (eval('&l:' .. opt) ? 'no' : ''), opt)
+    enddef
+    popsikey#register('<Leader>t', [
+        {key: 'l', info: () => Toggle('list'),         action: ":setl list!\<CR>"},
+        {key: 'c', info: () => Toggle('cursorcolumn'), action: ":setl cursorcolumn!\<CR>"},
+        {key: 'C', info: () => Toggle('cursorline'),   action: ":setl cursorline!\<CR>"},
+        {key: 's', info: () => Toggle('shiftround'),   action: ":setl shiftround!\<CR>"},
+        {key: 'w', info: () => Toggle('wrap'),         action: ":setl wrap!\<CR>"},
+        {key: 'e', info: () => Toggle('et'),           action: ":setl et!\<CR>"},
+    ], {padding: [0, 0, 0, 1], border: [0, 0, 0, 0], title: ''})
+
+    # List some registers on "
+    def Regs(): any
+        var list = []
+        #add(list, {key: "\<Esc>", info: '"', action: '"'})
+        #for r in '"0123456789-.'
+
+        # TODO: on " it should list all the named registers.
+        add(list, {key: '"', info: '"', action: '"'})
+        for r in '0123456789-.'
+            var c = r  # Capture for lambda
+            add(list, {
+                key:    c,
+                info:   () => c->getreg()->substitute('[ \t\n]\+', ' ', 'g')->trim()->map((_, v) => v == ' ' ? v : v->keytrans()),
+                action: '"' .. c,
+            })
+        endfor
+        return list
+    enddef
+    call popsikey#register('"', Regs(), {title: '', padding: [0, 0, 0, 0], border: [0, 0, 0, 0]})
+endif
 
 # Switch spell check languages
 nnoremap <Leader>ss :setl spell!<CR>:setl spell?<CR>
@@ -411,6 +544,9 @@ noremap Q gq
 
 # Bloody annoying.
 nnoremap q: :q
+
+# Repeat last :ex command.
+nnoremap <Leader>. :<Up><CR>
 
 # Interface with system clipboard.
 noremap <Leader>y "*y
@@ -462,9 +598,9 @@ enddef
 inoremap <expr> <C-@> pumvisible() ? "\<C-n>"  :        <SID>guessType()
 nnoremap <expr> <C-@> pumvisible() ? "i\<C-n>" : 'i' .. <SID>guessType()
 
-# Always insert spaces after non-whitespace, unless colorcolumn is enabled, in
-# which case cc_align to align with that.
-inoremap <expr> <Tab> &cc == '' ? (getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)) : cc_align#tab()
+# Always insert spaces after non-whitespace.
+#inoremap <expr> <Tab> &cc == '' ? (getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)) : cc_align#tab()
+inoremap <expr> <Tab> getline('.')[: col('.') - 2] =~ '^\s*$' ? "\<Tab>" : repeat(' ', (virtcol('.') % shiftwidth()) + 1)
 
 # Make <Tab> go to the next entry when using the popupmenu from commandline
 # completion.
@@ -473,6 +609,9 @@ cnoremap <expr> <Tab> pumvisible() ? '<Down>' : "\<Tab>"
 # Yank without clobbering registers.
 nnoremap dD "_dd
 
+# Like ZZ, but without quiting.
+nnoremap ZX :w<CR>
+
 # Replace the current line with the unnamed register.
 nnoremap RR "_ddP
 
@@ -480,16 +619,17 @@ nnoremap RR "_ddP
 nnoremap <silent> MM :silent! :wa<CR>:echo &makeprg<CR>:silent make<CR>:redraw!<CR>
 
 # Close all windows except the current one.
-nnoremap <silent> OO :silent wincmd o<CR>
+#nnoremap <silent> OO :silent wincmd o<CR>
 
 # Open tabs faster.
 nnoremap TT :tabe<Space>
 nnoremap HH :tab h<Space>
+nnoremap EE :e<Space>
 
 # Open current directory in new tab.
 nnoremap <Leader>d :tabe %:h<CR>
 
-# Don't do anything on space in insert mode; it's almost always an accident.
+# Don't do anything on space in normal mode; it's almost always an accident.
 nnoremap <Space> <Nop>
 
 # gf and gF opens in a tab.
@@ -499,10 +639,21 @@ nnoremap gF <C-w>gF
 vnoremap gF <C-w>gF
 
 # Navigate tabs
-nnoremap <F1>         gT
-nnoremap <F2>         gt
-inoremap <F1>         <Esc>gT
-inoremap <F2>         <Esc>gt
+nnoremap <F1> gT
+nnoremap <F2> gt
+inoremap <F1> <Esc>gT
+inoremap <F2> <Esc>gt
+
+# Move tab to left/right
+# TODO: make it wrap around
+nnoremap <S-F1>      :silent! tabmove -<CR>
+nnoremap <S-F2>      :silent! tabmove +<CR>
+inoremap <S-F1> <Cmd>:silent! tabmove -<CR>
+inoremap <S-F2> <Cmd>:silent! tabmove +<CR>
+
+# Toggle tabpanel
+nnoremap <silent> <F3>      :let &showtabpanel = &showtabpanel ? '0' : '2'<CR>
+inoremap <silent> <F3> <Cmd>:let &showtabpanel = &showtabpanel ? '0' : '2'<CR>
 
 # I often mistype this :-/
 cabbr Set set
@@ -522,6 +673,7 @@ iabbr ;= :=
 iabbr :+ :=
 iabbr err1= err !=
 iabbr err!= err !=
+iabbr nol nil
 
 # Add/remove word delimiters in search pattern.
 # word → \<word\> → word
@@ -546,187 +698,278 @@ def <SID>wrap(): string
 enddef
 cnoremap <expr> <C-s> index(['/', '?'], getcmdtype()) == -1 ? "\<C-s>" : "\<C-\>e<SID>wrap()\<CR>"
 
+### Quickfix
+############
+var qf_closed = false
+def OpenQF()
+    cclose
+    if qf_closed
+        return
+    endif
+    var l = getqflist()->len()
+    if l > 0
+        exe 'copen ' .. min([10, l])
+        wincmd p
+    endif
+enddef
+def ToggleQF()
+    for n in range(1, winnr('$'))
+        if getwinvar(n, '&filetype') == 'qf'
+            qf_closed = true
+            cclose
+            return
+        endif
+    endfor
+    qf_closed = false
+    s:OpenQF()
+enddef
+
+augroup qf
+    au!
+    # Open quickfix after :make if there are any errors.
+    au QuickFixCmdPost make :call s:OpenQF()
+    # List is "sticky" between tabs.
+    au TabEnter * :call s:OpenQF()
+    # Close when closing main window.
+    autocmd QuitPre * silent! cclose
+augroup end
+
+# Go to next/prev error; need to use escape codes as <C-Arrow> isn't reliable.
+nmap <C-Left>    :cprev<CR>
+nmap <Esc>[D >   :cprev<CR>
+nmap <Esc>[1;5D  :cprev<CR>
+nmap <C-Right>   :cnext<CR>
+nmap <Esc>[C     :cnext<CR>
+nmap <Esc>[1;5C  :cnext<CR>
+
+# Toggle quickfix list.
+nmap <silent> <C-Up>      :call <SID>ToggleQF()<CR>
+nmap <silent> <Esc>[A     :call <SID>ToggleQF()<CR>
+nmap <silent> <Esc>[1;5A  :call <SID>ToggleQF()<CR>
+
 ### Plugins
 ###########
-g:loaded_netrwPlugin = 1
 
 ### switchy.vim
 nnoremap <silent> <Leader>a :call switchy#switch('tabedit', 'sbuf')<CR>
 
 ### lazy.vim
-def R(file: string): list<string>
-    var f = $HOME .. '/.vim/snip/' .. file
-    return filereadable(f) ? readfile(f) : []
-enddef
-g:lazy_snippets = {
-    go: {
-        err-simple: "if err != nil {\n\treturn err\n}",
-        err-wrap:   "if err != nil {\n\treturn fmt.Errorf(\"\b: %w\", err)\n}",
-        err-test:   "if have != want {\n\tt.Errorf(\"\\nhave: %s\\nwant: %s\", have, want)\n}",
-        test:       R('/test.go'),
-        bench:      R('/bench.go'),
-    },
-    html: {
-        doc: R('/base.html'),
-    },
-}
+if get(g:, 'loaded_lazy', false)
+    def R(file: string): list<string>
+        var f = $HOME .. '/.vim/snip/' .. file
+        return filereadable(f) ? readfile(f) : []
+    enddef
+    g:lazy_snippets = {
+        go: {
+            err:        "if err != nil { return err\b }",
+            errf:       "if err != nil { t.Fatal(\berr) }",
+            errp:       "if err != nil { panic(\berr) }",
+            #errw:       "if err != nil { return fmt.Errorf(\"\b: %w\", err) }",
+            walk:       "err := filepath.Walk(\b, func(path string, fi fs.FileInfo, err error) error {\nreturn nil\n})",
+
+            err-test:   "if have != want { t.Errorf(\"\\nhave: %s\\nwant: %s\", have, want) }",
+            p:          "fmt.Printf(\"%#v\\n\", \b )",
+            test:       R('/test.go'),
+            testcase:   R('/testcase.go'),
+            benchcase:  R('/benchcase.go'),
+        },
+        c: {
+            main: "int main(int argc, char **argv) {\n\t\b\n}",
+        },
+        html: {
+            doc: R('/base.html'),
+            a:   "<a href=\"#\">\b</a>",
+            img: "<img src=\"\b\">",
+        },
+    }
+endif
 
 ### vim-dirvish
-###############
-g:dirvish_relative_paths = 1       # Make paths in the Dirvish buffer relative to getcwd().
+if get(g:, 'loaded_dirvish', false)
+    g:loaded_netrwPlugin = 1           # Don't need no netrw
+    g:dirvish_relative_paths = 1       # Make paths in the Dirvish buffer relative to getcwd().
 
-fun <SID>open() abort
-    let line = getline('.')
-    let ext  = fnamemodify(line, ':e')
-    if ext =~ '\v^%(mp[34]|mkv|avi|ogg|m4a|opus)$'
-        exe '!mpv ' .. fnameescape(line)
-    elseif ext =~ '\v^%(pdf)$'
-        exe '!firefox ' .. fnameescape(line) .. ' &'
-    else
-        call dirvish#open('edit', 0)
-    endif
-endfun
-
-augroup my-dirvish
-    au!
-    au Filetype dirvish {
-        # Open non-text files.
-        # n  <CR>        *@:<C-U>.call dirvish#open("edit", 0)<CR>
-        nnoremap <buffer> <silent> <CR> :<C-U>.call <SID>open()<CR>
-
-        # Q instead of gq is nicer.
-        nmap <buffer> Q <Plug>(dirvish_quit)
-        # Add tab mappings
-        nnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
-        xnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
-        # Make new directory
-        nnoremap <buffer> <silent> <nowait> M :let _d=input('mkdir ', '', 'dir')<Bar>:call mkdir(_d, 'p')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
-        # Make new file
-        nnoremap <buffer> <silent> <nowait> C :let _d=input('edit ', '', 'dir')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
-        # Launch shell in cwd
-        nnoremap <buffer> <silent> ! :lcd %<CR>:silent exec '!' .. (has('gui_running') ? 'st -e ' : '') .. $SHELL<CR><C-l>
-    }
-augroup end
-
-### gopher.vim
-g:gopher_debug     = ['commands', 'setup']
-g:gopher_highlight = ['string-spell', 'string-fmt']
-augroup my-gopher
-    au!
-    au Filetype go {
-        # Make ! stand out a bit more in '!foo'.
-        syn match goBang /!\ze[^=]/
-        hi goBang gui=bold cterm=bold
-        # Compile without cgo unless explicitly enabled.
-        if $CGO_ENABLED == '' | $CGO_ENABLED = 0 | endif
-    }
-
-    # Quick replace for go.mod
-    au Filetype gomod comm! -nargs=1 Replace append(4, printf('replace zgo.at/%s => ../../Golib/%s', <f-args>, <f-args>))
-
-    # Format buffer on write; https://vi.stackexchange.com/questions/7116
-    au BufWritePre *.go {
-        var save = winsaveview()
-        silent! exe 'undojoin | keepjumps :%!goimports -local exams-api 2>/dev/null || cat /dev/stdin'
-        winrestview(save)
-    }
-
-    # Replace tabs in comments.
-    # au BufWritePre *.go {
-    #     var save = winsaveview()
-    #     keepjumps s!//[\t ]+!\='//' .. substitute('\t', ' ') !
-    #     winrestview(save)
-    # }
-augroup end
-
-### vim-qf
-# g:qf_auto_open_quickfix = 1        # Automatically open qfix and loclist.
-# g:qf_auto_open_loclist  = 1
-#g:qf_auto_quit          = 0        # Breaks with tabs.
-# augroup my-qf
-#     au!
-#     # Close list when entering tabs and they're empty.
-#     au TabEnter * {
-#         if len(getqflist()) == 0
-#             cclose
-#         # else
-#         #     qf#OpenQuickfix()
-#         #     wincmd w
-#         endif
-#     }
-# augroup end
-
-# Go to next/prev error; need to use escape codes as <C-Arrow> isn't reliable.
-nmap <C-Left>    <Plug>(qf_qf_previous)
-nmap <Esc>[D >   <Plug>(qf_qf_previous)
-nmap <Esc>[1;5D  <Plug>(qf_qf_previous)
-nmap <C-Right>   <Plug>(qf_qf_next)
-nmap <Esc>[C     <Plug>(qf_qf_next)
-nmap <Esc>[1;5C  <Plug>(qf_qf_next)
-
-# Toggle quickfix list.
-nmap <C-Up>      <Plug>(qf_qf_toggle_stay)
-nmap <Esc>[A     <Plug>(qf_qf_toggle_stay)
-nmap <Esc>[1;5A  <Plug>(qf_qf_toggle_stay)
-
-### vim-lsc
-g:lsc_server_commands = {
-    go:           {command: 'gopls serve',   log_level: -1, suppress_stderr: v:true},
-    c:            {command: 'clangd',        log_level: -1, suppress_stderr: v:true},
-    cpp:          {command: 'clangd',        log_level: -1, suppress_stderr: v:true},
-    sql:          {command: 'sqls',          log_level: -1, suppress_stderr: v:true},
-    'sql.runbuf': {command: 'sqls',          log_level: -1, suppress_stderr: v:true},
-    rust:         {command: 'rust-analyzer', log_level: -1, suppress_stderr: v:true},
-    zig:          {command: 'zls',           log_level: -1, suppress_stderr: v:true},
-}
-g:lsc_enable_autocomplete  = v:false     # Don't complete when typing.
-g:lsc_enable_diagnostics   = v:false     # Don't lint code.
-g:lsc_reference_highlights = v:false     # Don't highlight references.
-#g:lsc_enable_incremental_sync = v:false  # Don't constantly send diffs to server.
-#g:lsc_preview_split_direction = 'below'  # Show preview at bottom, rather than top.
-
-g:lsc_auto_map = {defaults: v:true, GoToDefinitionSplit: ''}
-augroup my-lsc
-    au!
-    # Open in tab, rather than split.
-    au BufNewFile,BufReadPost * {
-        if has_key(get(g:, 'lsc_servers_by_filetype', {}), &filetype) && lsc#server#filetypeActive(&filetype)
-            nnoremap <buffer> gd :tab LSClientGoToDefinitionSplit<CR>
+    def Open()
+        var line = getline('.')
+        if fnamemodify(line, ':e') =~ '\v^%(mp[34]|mkv|avi|ogg|m4a|opus|flac|pdf|png|webp|jpg|jpeg|heic)$'
+            xdg_open#open(line)
+        else
+            exe ':edit ' .. line->fnameescape()
         endif
-    }
-augroup end
+    enddef
+
+    augroup my-dirvish
+        au!
+        au Filetype dirvish {
+            # Open non-text files.
+            nnoremap <buffer> <silent> <CR> :<C-U>call <SID>Open()<CR>
+            # Q instead of gq is nicer.
+            nmap <buffer> Q <Plug>(dirvish_quit)
+            # Add tab mappings
+            nnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
+            xnoremap <buffer> t :call dirvish#open('tabedit', 0)<CR>
+            # Make new directory
+            nnoremap <buffer> <silent> <nowait> M :let _d=input('mkdir ', '', 'dir')<Bar>:call mkdir(_d, 'p')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
+            # Make new file
+            nnoremap <buffer> <silent> <nowait> C :let _d=input('edit ', '', 'dir')<Bar>:exe 'e ' .. _d<Bar>:unlet _d<CR>
+            # Launch shell in cwd
+            nnoremap <buffer> <silent> ! :lcd %<CR>:silent exec '!' .. (has('gui_running') ? 'st -e ' : '') .. $SHELL<CR><C-l>
+        }
+    augroup end
+endif
 
 ### runbuf.vim
-g:runbuf_commands = {gc: 'psql goatcounter'}
-g:runbuf_map      = '<C-q>'
-augroup my-runbuf
-    au!
-    au Filetype *.runbuf {
-        nnoremap <buffer> <C-j> :echo win_execute(win_getid(bufnr(b:output)), "normal! 3\<lt>C-e>")<CR>
-        nnoremap <buffer> <C-k> :echo win_execute(win_getid(bufnr(b:output)), "normal! 3\<lt>C-y>")<CR>
+if get(g:, 'loaded_runbuf', false)
+    g:runbuf_commands = {
+        gc-local:   'psql goatcounter',
+        gc-docker:  'psql "postgres://goatcounter:goatcounter@localhost/goatcounter"',
+        pgboffin:   'psql "postgres://pgboffin:pgboffin@localhost/pgboffin"',
     }
-augroup end
+    g:runbuf_map = '<C-q>'
+    augroup my-runbuf
+        au!
+        au Filetype *.runbuf {
+            nnoremap <buffer> <C-j> :echo win_execute(win_getid(bufnr(b:output)), "normal! 3\<lt>C-e>")<CR>
+            nnoremap <buffer> <C-k> :echo win_execute(win_getid(bufnr(b:output)), "normal! 3\<lt>C-y>")<CR>
+        }
+    augroup end
+endif
 
 ### xdg_open.vim
-g:xdg_open_match = '&filetype == "dirvish" ? getline(".") : expand("<cWORD>")'
-fun g:MyOpen()
-    if &filetype == 'dirvish'
-        return getline(".")
-    elseif expand('<cWORD>') =~ '^#\d\+'
-        return 'https://github.com/arp242/' .. expand('%:p:h:t') .. '/issues/' .. expand('<cword>')
-    else
-        return expand('<cWORD>')
-    endif
-endfun
-g:xdg_open_match = 'MyOpen()'
+if get(g:, 'loaded_xdg_open', false)
+    g:xdg_open_match = '&ft == "dirvish" ? getline(".") : expand("<cWORD>")'
+    fun g:MyOpen()
+        if &filetype == 'dirvish'
+            return getline('.')
+        elseif expand('<cWORD>') =~ '^#\d\+'
+            # TODO: get repo URL from git
+            return 'https://github.com/arp242/' .. expand('%:p:h:t') .. '/issues/' .. expand('<cword>')
+        else
+            return expand('<cWORD>')
+        endif
+    endfun
+    g:xdg_open_match = 'MyOpen()'
+endif
 
-# g:xdg_open_match = { -> &filetype == "dirvish" ? getline(".") : expand("<cWORD>") }
-# g:Xdg_open_match = () => &filetype == "dirvish" ? getline(".") : expand("<cWORD>")
+### https://github.com/yegappan/lsp
+if get(g:, 'loaded_lsp', false)
+    packadd lsp
+    import autoload 'lsp/lsp.vim'
+    augroup my-lsp
+        def g:Sig()
+            var s = lsp.Server()
+            if s->empty()
+                return
+            endif
 
-nnoremap <silent> g. :let [@,, @;] = [@;, '']<CR>
+            var save = winsaveview()
+            var sig = s.rpc('textDocument/signatureHelp', s.getTextDocPosition(false))
+            if sig.result->empty()
+                # TODO: don't go to next line with w
+                # actually, would be better if we just leave the cursor alone altogether.
+                normal! w
+                if getline('.')[charcol('.') - 1] == '.'
+                    normal! l
+                    sig = s.rpc('textDocument/signatureHelp', s.getTextDocPosition(false))
+                endif
+            endif
+            if sig.result->empty()
+                normal! F(
+                if getline('.')[charcol('.') - 1] == '('
+                    sig = s.rpc('textDocument/signatureHelp', s.getTextDocPosition(false))
+                endif
+            endif
+            winrestview(save)
 
-silent! set shortmess+=e!
+            echon "\r\r"
+            if sig.result->empty()
+                echon 'No signature found'
+            else
+                echon sig.result.signatures[0].label
+            endif
+        enddef
+
+        autocmd User LspOutlineSetup {
+            setl foldcolumn=0
+            nnoremap <buffer> <Leader>o :LspOutline toggle<CR>
+        }
+        autocmd User LspOutlineUpdated {
+            var w = getline(1, '$')->map((_, l) => l->len())->max() + 1
+            exe ':vert resize ' .. min([w, 40])
+        }
+
+        autocmd User LspAttached {
+            hi LspSigActiveParameter term=NONE
+            setl keywordprg=:LspHover
+            #nnoremap <buffer> <C-k>     :LspShowSignature<CR>
+            nnoremap <buffer> <C-k>     :call g:Sig()<CR>
+            nnoremap <buffer> gd        :tab :LspGotoDefinition<CR>
+            nnoremap <buffer> gh        :LspHighlight<CR>
+            nnoremap <buffer> gH        :LspHighlightClear<CR>
+            nnoremap <buffer> <Leader>o :LspOutline toggle<CR>
+            nnoremap <buffer> MD        ::LspDiag highlight toggle<CR>
+        }
+    augroup end
+
+    call LspOptionsSet({
+        autoComplete:            false,  # No autocomplete.
+        omniCompleteAllowBare:   true,   # Allow omnicomplete if there are no characters.
+
+        autoHighlightDiags:      false,  # Don't automatically show diag.
+        showDiagWithSign:        false,  # Don't place signs.
+        showDiagInPopup:         false,  # echo :LspDiag current, instead of using popup.
+        #autoPopulateDiags:       true,   # Populate location list
+        #populateDiagsQF:         true,   # Use quickfix instead of location list.
+
+        usePopupInCodeAction:    true,   # Use popup for :LspCodeAction
+        showSignature:           false,  # Don't automatically show signature.
+        echoSignature:           true,   # echo :LspShowSignature instead of creating a popup.
+        showInlayHints:          false,  # Don't place inline "hints" (e.g. type info).
+        outlineOnRight:          true,   # Outline window on the right.
+        popupBorder:             true,   # Border around popup windows.
+        documentationFormat:     ['plaintext'],
+
+        # useQuickfixForLocations: true,
+        # completionMatcher: 'icase',   # ignore case when matching items.
+        # highlightDiagInline: false,
+        # hoverInPreview: true,
+        # hideDisabledCodeActions: true,  # Hide all the disabled code actions
+    })
+
+    call LspAddServer([
+        {
+            name:      'go',
+            filetype:  ['go', 'gomod', 'gohtml', 'gotxt'],
+            path:      'gopls',
+            args:      ['serve'],
+            syncInit:  true,
+            omnicompl: true,
+        },
+        {
+            name:      'clangd',
+            filetype:  ['c', 'cpp'],
+            path:      'clangd',
+            omnicompl: true,
+            args:      ['--background-index', '--clang-tidy'],
+        },
+        # {
+        #     name:     'sqls',
+        #     filetype: ['sql'],
+        #     path:     'sqls',
+        #     args:     ['-config', '/home/martin/sqls.yaml'],
+        #     debug: true,
+        #     #initializationOptions: {
+        #     #    lowercaseKeywords: true,
+        #     #    connections: {
+        #     #        alias:          'gc',
+        #     #        driver:         'sqlite3',
+        #     #        dataSourceName: '/home/martin/code/Prog/goatcounter/goatcounter-data/db.sqlite3',
+        #     #    },
+        #     #},
+        # },
+    ])
+endif
 
 
 defcompile  # Compile functions so we get errors on startup.
-# vim: et
+# vim: et syntax=vim9
